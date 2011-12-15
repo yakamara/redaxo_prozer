@@ -1,0 +1,440 @@
+
+format_month = F Y
+format_ddmy = l d. F Y
+format_d_month = d. m
+format_d_m_y = d.m.Y
+format_d_m_y_h_i = d.m.Y - H:i
+format_h_i = H:i
+
+format_DdFY = D d. F Y
+
+enter_keyword = Suchbegriff eingeben...
+
+monday = Montag
+tuesday = Dienstag
+wednesday = Mittwoch
+thursday = Donnerstag
+friday = Freitag
+saturday = Samstag
+sunday = Sonntag
+
+monday_short = Mo
+tuesday_short = Di
+wednesday_short = Mi
+thursday_short = Do
+friday_short = Fr
+saturday_short = Sa
+sunday_short = So
+
+clipboard = Clipboard
+creator = Ersteller
+
+title = Titel
+hours = Stunden
+
+page_emails_inbox = Inbox
+page_emails_outbox = Outbox
+page_emails_drafts = Entwürfe
+page_emails_spam = Spam
+page_emails_trash = Müll
+page_emails_new = Neue Mail
+page_emails_history = Logbuch
+page_emails_search = Suche
+page_emails_setup = Setup
+
+page_emails_create = Neue E-Mail
+
+page_emails_order_id_new = ID
+page_emails_order_title = Titel
+page_emails_order_date = Datum
+
+page_projects_my = Meine Projekte
+page_projects_all = Alle Projekte
+page_projects_archive = Archivierte Projekte
+page_projects_customers = Kunden
+page_projects_labels = Labels
+page_projects_new = Neues Projekt
+
+page_project_view = Aktuelles
+page_project_user = Projektteilnehmer
+page_project_jobs = Liste der Jobs
+page_project_wiki = Wiki
+page_project_files = Dateien
+page_project_emails = E-Mails
+page_project_history = Logbuch
+
+history = Logbuch
+
+dragdrop_files_for_upload = Dateien zum Upload auswählen / per Drag & Drop ablegen
+dragdrop_files_upload_failed = fehlgeschlagen
+dragdrop_files_exit = abbrechen
+dragdrop_files_remove_from_list = aus Liste entfernen
+
+dragdrop_file_for_upload = Datei zum Upload auswählen / per Drag & Drop ablegen
+dragdrop_file_upload_failed = fehlgeschlagen
+dragdrop_file_exit = abbrechen
+dragdrop_file_remove_from_list = aus Liste entfernen
+
+page_calendars_day = Tag
+page_calendars_month = Monat
+page_calendars_week = Woche
+page_calendars_list = Liste
+page_calendars_usertime = Benutzer-/Zeitansicht
+page_calendars_projectjob = Projekt-/Terminansicht
+page_calendars_new = Neuer Eintrag
+
+
+page_addresses_my = Meine Adressen
+page_addresses_all = Alle Adressen
+page_addresses_export = Export
+page_addresses_new = Neuer Eintrag
+
+page_tools_profile = Profil
+page_tools_jobs = Jobs
+page_tools_sms = SMS
+page_tools_users = Benutzer
+
+address_name = Name
+address_firstname = Vorname
+address_title = Position
+address_department = Abteilung
+address_company = Firma
+address_is_company = ist Firmenadresse
+address_telephone = Telefon
+address_url = URL
+address_note = Notiz
+
+address_emails = E-Mails
+add_address = Adresse hinzufügen
+address_added = Adresse wurde hinzugefügt
+address_updated = Adresse wurde aktualisiert
+address = Adresse
+edit_address = Adresse bearbeiten
+delete_address = Adresse löschen
+address_confirm_delete = Adresse `{0}` löschen ?
+address_deleted = Adresse `{0}` wurde gelöscht
+
+address_phone = Telefon
+address_email = E-Mail
+address_postaddress = Postadresse
+
+add_phonefield = Telefonfeld hinzufügen
+add_emailfield = E-Mailfeld hinzufügen
+add_postaddressfield = Adressfeld hinzufügen
+add_urlfield = URL hinzufügen
+
+
+delete_calendar_event = Termin/Job löschen
+calendar_event_confirm_delete = Termin/Job `{0}` löschen ?
+delete_calendar_deleted = Termin/Job `{0}` wurde gelöscht
+
+select_project = Bitte Projekt auswählen
+address_type = Adressart
+
+please_select_project_for_email = Bitte E-Mail einem Projekt zuweisen...
+
+street = Straße
+address_extra1 = Zusatz 1
+address_extra2 = Zusatz 2 
+city = Stadt
+region = Bundesland
+zip = PLZ
+country = Land
+
+
+customers = Kunden
+customer = Kunde
+no_customer = [Kein Kunde]
+
+customer_edit = Kunde editieren
+customer_add = Kunde hinzufügen
+customer_delete = Kunde löschen
+customer_edited = Kunde wurde editiert
+customer_added = Kunde wurde hinzugefügt
+customer_deleted = Kunde wurde gelöscht
+customer_updated = Kunde wurde aktualisiert
+
+photo = Foto
+
+
+label = Label
+labels = Labels
+
+label_edit = Label editieren
+label_add = Label hinzufügen
+label_delete = Label löschen
+
+label_edited = Label wurde editiert
+label_added = Label wurde hinzugefügt
+label_deleted = Label wurde gelöscht
+label_updated = Label wurde aktualisiert
+
+label_name = Name
+label_color = Farbe
+
+add_label = Label hinzufügen
+
+ok = Ok
+
+projects_archive = Projektarchiv
+
+
+project_name = Name
+project_description = Beschreibung
+project_customer = Kunde
+project_label = Label
+project_has_emails = Projekt braucht E-Mails
+project_has_calendar = Projekt braucht einen Kalender
+project_has_files = Projekt braucht Dateien
+project_jobs = Liste der Jobs
+project_info = Aktuelles
+
+project_added = Projekt wurde angelegt
+
+project_file_edit = Projektdatei editieren
+project_file_add = Projektdatei hinzufügen
+project_files_search_for = Nach Projektdatei suchen
+project_file_comment = Kommentar
+project_file_path = Pfad
+project_file_name = Name
+
+add_project = Projekt anlegen
+edit_project = Projekt bearbeiten
+
+emails_search = E-Mail Suche
+
+error_customer_name_empty = Bitte den Kundennamen eingeben
+error_project_enter_name = Bitte die Projektbezeichnung eingeben
+error_label_name_empty = Bitte Labelnamen eingeben
+error_label_color_empty = Bitte Labelfarbe definieren
+error_label_bordercolor_empty = Bitte Labelrandfarbe definieren
+error_user_already_exists = Benutzer existiert bereits
+error_please_choose_user = Bitte einen Benutzer auswählen
+error_name_empty = Bitte den Namen eingeben
+error_email_account_name_empty = Bitte die E-Mail-Account Bezeichnung eingeben
+error_email_subject_empty = Bitte den Betreff eingeben.
+error_email_to_empty = Bitte den Empfänger eingeben.
+error_email_body_empty = Bitte einen E-Mail Text eingeben
+error_address_enter_name = Bitte den Namen eintragen
+error_password_empty = Passwort ist leer
+error_passwords_different = Passwörter sind unterschiedlich
+error_address_enter_birthday = Bitte den Geburtstag in folgendem Format eingeben 1972-11-19
+
+
+no_emails_found = Keine E-Mails gefunden
+
+pz_login_enterloginpsw = Bitte das Login und das Passwort eingeben
+pz_login_failed = Login ist leider fehlgeschlagen
+
+pz_login_please = Bitte einloggen
+project_createdate = Erstellungsdatum
+project_options = Optionen
+project_files = Projektdateien
+project_stream = Logbuch
+
+
+please_choose = --- Bitte auswählen ---
+id = ID
+stay = eingeloggt bleiben
+psw = Passwort
+options = Optionen
+
+mark_as_unread = als ungelesen markieren
+mark_as_unproject = Projektzuordnung entfernen
+
+projectuserlist = Projektteilnehmer
+
+search_for_customer = Nach Kunden suchen
+search_for_projects = Nach Projekten suchen
+search_for_files = Nach Dateien suchen
+search_for_jobs = Nach Jobs suchen
+search_for_addresses = Nach Adressen suchen
+search_for_users = Nach Benutzern suchen
+
+events = Termine
+jobs = Jobs
+mycontacts = Meine
+createdate = Erstelldatum
+
+all_projects = Alle Projekte
+archived_projects = Archivierte Projekte
+project_admins = Projektverwalter
+my_projects = Meine Projekte
+
+duration = Dauer
+
+username = Benutzername
+
+project_calendar = Kalenderrecht
+project_wiki = Wiki
+project_admin = Admin
+
+projects_selected = Projekt/e ausgewählt
+
+address_birthday = Geburtstag
+
+add_projectuser = Projektteilnehmer hinzufügen
+projectuser_added = Projektteilnehmer wurde hinzugefügt
+projectuser_info = Meine Projektteilnehmerinfo
+
+emails_access = E-Mailzugriff
+calendar_access = Kalenderzugriff
+files_access = Dateizugriff
+admin_access = Adminzugriff
+
+filename = Dateiname
+filesize = Dateigröße
+comment = Kommentar
+createuser = Ersteller
+updateuser = aktualisiert von
+
+email = E-Mail
+emails = E-Mails
+calendar = Kalender
+files = Dateien
+wiki = Wiki
+archived = archiviert
+
+edit_projectuser = Projektteilnehmer bearbeiten
+projectuser_updated = Projektteilnehmerdaten wurden aktualisiert
+
+no_permission_contact_admin = Bitte kontaktieren Sie den Admin, es ist ein Fehler aufgetaucht.
+
+project_updated = Projekt wurde aktualisiert
+
+search_for_emails = Nach E-Mails suchen
+project_emails = Projektemails
+
+view_project = Projektinfos
+
+no = nein
+yes = ja
+active = aktiviert
+trash = Müll
+untrash = Wiederverwerten
+reply = Antworten
+replyall = Allen Antworten
+forward = Weiterleiten
+options = Optionen
+print = Print
+move = verschieben
+and_finished = und bearbeitet
+
+
+
+search_for_history = Im Logbuch suchen
+
+functions = Funktionen
+no_subject_entered = [Es wurde kein Subject eingegeben]
+no_filename = kein_dateiname_vorhanden
+
+
+projectuser_deleted = Projektteilnehmeruser wurde gelöscht
+projectuser_deleted_failed = Projektteilnehmer konnte nicht gelöscht werden
+
+label_border = Farbe / Rand
+
+customer_name = Name
+customer_description = Beschreibung
+customer_archived = archiviert
+
+
+email_account_add = E-Mail Account hinzufügen
+email_accounts = E-Mail Accounts
+email_account = E-Mail Account
+email_account_name = Name
+email_account_email = E-Mail Adresse
+email_account_host = Server
+email_account_login = Login
+email_account_password = Passwort
+email_account_smtp_host = SMTP Server
+email_account_signature = Signature
+email_account_updated = E-Mail Account wurde aktualisiert
+email_account_secure_download = Gesicherter Download / SSL
+email_account_delete = E-Mail Account wurde gelöscht
+email_account_delete_emails = E-Mails nach dem Herunterladen löschen
+email_account_mailboxtype = Art des Kontos
+email_account_not_exists = E-Mail Account existiert nicht
+email_account_download_emails = Download der Emails gestartet
+email_account_download_ok = Download mit Email-Account {0} ist gelungen
+email_account_download_failed = Download mit Email-Account {0} ist nicht gelungen
+
+email_account_added = E-Mail-Account wurde hinzugefügt
+email_account_edit = E-Mail-Account editieren
+
+default_email_account = Standardaccount
+
+emails_inbox = E-Mail Inbox
+emails_outbox = E-Mail Outbox
+emails_spam = E-Mail Spam
+emails_trash = E-Mail Mülleimer
+
+only_my_emails = Nur meine E-Mails
+
+email_account = E-Mail Account
+email_cc = Cc
+email_to = To
+email_bcc = Bcc
+email_attachments = Anhänge
+email_subject = Betreff
+email_body = Textbody
+email_html = HTML Body
+project = Projekt
+email_drafts = Entwürfe
+email_add = E-Mail erstellen und abschicken
+email_edit = E-Mail bearbeiten und abschicken
+save_as_draft = Als Entwurf ablegen
+email_saved_in_drafts = E-Mail wurde in Entwürfe gespeichert
+email_send = E-Mail wurde abgeschickt
+
+emlname = mail
+
+previous = zurück
+next = weiter
+today = Heute
+new_event = Neuer Eintrag
+calendarweek = Kalenderwoche
+calendarweek_short = KW
+calendar_day_list = Tagesansicht
+
+user_add = Benutzer hinzufügen
+user_edit = Benutzer bearbeiten
+user_updated = Benutzer wurde aktualisiert
+
+emailaccount_last_login_failed = Letzter E-Mail-Abruf ist fehlgeschlagen.
+emailaccount_last_login_ok = Letzter E-Mail-Abruf ist gelungen.
+emailaccount_last_login = Letzter E-Mail-Abruf
+
+users = Benutzer
+admin = Admin
+login = Login
+
+spam = Spam
+ham = Kein-Spam
+
+calendar_event_edit = Termin editieren
+calendar_event_add = Termin hinzufügen
+calendar_event_title = Titel
+calendar_event_location = Ort
+calendar_event_allday = Ganztagestermin
+calendar_event_description = Notiz
+calendar_event_booked = als Job buchen
+calendar_event_from = von
+calendar_event_to = bis
+calendar_event_url = URL
+calendar_event_not_exists = Dieser Termin existiert nicht oder es bestehen keine Rechte daran
+calendar_event_updated = Termin/Job wurde aktualisiert
+calendar_event_added = Termin/Job wurde hinzugefügt
+error_calendar_from_datetime = Bitte das "von"-Datum prüfen
+error_calendar_to_datetime = Bitte das "bis"-Datum prüfen
+error_calendar_event_not_added = Termin konnte nicht hinzugefügt werden
+error_calendar_event_project_id = Das Projekt existiert nicht. Bitte ein Projekt auswählen.
+error_calendar_event_fromto_compare = Das "von" Datum muss vor dem "bis" Datum sein
+
+error_calendar_event_title_empty = Bitte die Bezeichnung eingeben
+
+profile_edit = Mein Profil bearbeiten
+profile_edit_password = Mein Passwort ändern
+
+password_reenter = wiederholen
+user_password_updated = Passwort wurde aktualisiert

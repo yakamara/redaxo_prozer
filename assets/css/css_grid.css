@@ -1,0 +1,238 @@
+
+
+/*  Body ***********************************************************************
+*******************************************************************************/
+
+/*  Header *********************************************************************
+*******************************************************************************/
+#header {
+  width: 1170px;
+  height: 78px;
+  margin: 0 auto;
+} 
+
+
+
+/*  Function *******************************************************************
+*******************************************************************************/
+#function {
+  clear: both;
+  width: 1170px;
+  margin: 0 auto;
+}
+#function .wrapper {
+  padding: 13px 0 4px 0;
+}
+#function section {
+  float: left;
+}
+#function aside {
+  float: right;
+  width: 500px;
+  margin-right: 25px;
+}
+
+
+/*  Main ***********************************************************************
+*******************************************************************************/
+#main {
+  width: 1170px;
+  margin: 0 auto;
+}
+
+
+/*  Login **********************************************************************
+*******************************************************************************/
+body#login #function, 
+body#login #main {
+  width: 100%;
+}
+body#login #main {
+  background-color: #fff;
+}
+body#login #function .wrapper {
+  padding: 0;
+}
+body#login #main .wrapper {
+  width: 1170px;
+  margin: 0 auto;
+}
+
+
+
+/*  Grid ***********************************************************************
+*******************************************************************************/
+.column {
+  float: left;
+}
+.column.last {
+  float: right !important;
+}
+.column.first.last {
+  float: none !important;
+}
+.column.first, 
+.column.last {
+  margin-left: 0px !important;
+}
+
+.grid1col, 
+.grid2col, 
+.grid3col, 
+.grid4col, 
+.grid5col, 
+.grid6col, 
+.grid7col {
+  width: 100%;
+}
+
+.clearfix:after, 
+.grid1col:after,
+.grid2col:after, 
+.grid3col:after, 
+.grid4col:after, 
+.grid5col:after, 
+.grid6col:after, 
+.grid7col:after {
+  clear: both;
+  content: '.';
+  display: block;
+  height: 0;
+  visibility: hidden;
+  font-size: 0px;
+  line-height: 0;
+}
+
+.grid2col .column {
+  width: 49%;
+}
+.grid3col .column {
+  width: 32%;
+  margin-left: 2%;
+}
+.grid4col .column {
+  width: 22.75%;
+  margin-left: 3%;
+}
+.grid5col .column {
+  width: 19.2%;
+  margin-left: 1%;
+}
+.grid6col .column {
+  width: 15%;
+  margin-left: 2%;
+}
+.grid7col .column {
+  width: 13.4%;
+  margin-left: 1%;
+}
+
+.grid2col.full .column {
+  width: 50%;
+}
+
+
+/*  Grid Col *******************************************************************
+*******************************************************************************/
+#function .grid2col .column.first, 
+.entry-email .grid2col .column.first {
+  width: 60%;
+}
+#function .grid2col .column.last, 
+.entry-email .grid2col .column.last {
+  width: 39%;
+}
+.grid2col.setting .column.first {
+  width: 70%;
+}
+.grid2col.setting .column.last {
+  width: 29%;
+}
+
+/*  Area ***********************************************************************
+*******************************************************************************/
+.area {
+  float: left;
+}
+/*
+.area.last {
+  float: right !important;
+}
+.area.first, 
+.area.last {
+  margin-left: 0px !important;
+}
+
+.grid2area, 
+.grid3area {
+  width: 100%;
+}
+.grid2area:after, 
+.grid3area:after {
+  clear: both;
+  content: '.';
+  display: block;
+  height: 0;
+  visibility: hidden;
+}
+
+body.grid-a-bc .grid2area .area.first {
+  width: 370px;
+}
+body.grid-a-bc .grid2area .area.last {
+  width: 780px;
+}
+*/
+
+
+
+.design1col, 
+.design2col, 
+.design3col {
+  position: relative;
+}
+.design1col {
+  width: 370px;
+}
+.design2col {
+  width: 760px;
+}
+.design3col {
+  width: 1150px;
+}
+.area .design1col, 
+.area .design2col {
+  margin-left: 20px;
+}
+.section1 .design1col, 
+.section1 .design2col {
+  margin-left: 0 !important;
+}
+
+
+/*  Width **********************************************************************
+*******************************************************************************/
+/* Spaltenabstand 20px */
+.w1 { width: 1150px !important;}
+.w2 { width: 760px !important; }
+.w3 { width: 370px !important; }
+.w4 { width: 175px !important; }
+
+/* Spaltenabstand 15px */
+.w5 { width: 80px !important; }
+
+/* Spaltenabstand 10px */
+.w6 { width: 35px !important; }
+
+/* Spaltenabstand 5px */
+.w7 { width: 15px !important; }
+
+.w3.w4 { width: 565px !important; } /* w3 + w4 + 20px (Spaltenabstand) */
+.w5.w6 { width: 130px !important; } /* w5 + w6 + 15px (Spaltenabstand) */
+.w6.w7 { width: 60px !important; }  /* w6 + w7 + 10px (Spaltenabstand) */
+
+.wauto { width: auto !important; }
+
+.wauto.sl1 {
+  float: left;
+}

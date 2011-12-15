@@ -1,0 +1,321 @@
+
+ul.sl1 li.selected {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+
+
+/* Main  ***********************************************************************
+*******************************************************************************/
+#navi-main {
+  display: block;
+  float: left;
+  width: 44%;
+  padding: 24px 0 0 0;
+}
+#navi-main li.lev1 {
+  position: relative;
+  display: block;
+  float: left;
+  padding: 0 16px;
+}
+#navi-main li.lev1.first {
+  padding-left: 0;
+}
+/*
+#navi-main li.lev1.last {
+  padding-right: 0;
+}
+*/
+#navi-main li.lev1 a {
+  display: block;
+}
+#navi-main li.logo {
+  margin-right: 30px;
+  padding: 0;
+}
+
+
+
+/* Meta  ***********************************************************************
+*******************************************************************************/
+#navi-meta {
+  display: block;
+  float: right;
+/*  width: 55%; */
+  padding: 28px 0 0 0;
+}
+#navi-meta li.lev1 {
+  display: inline-block;
+  margin-right: 22px;
+  vertical-align: top;
+}
+#navi-meta li.date {
+  padding-top: 2px;
+}
+#navi-meta li.search {
+  width: 177px;
+  margin-right: 2px;
+}
+#navi-meta li.clipboard {
+  width: 20px;
+}
+#navi-meta li.user {
+  width: 147px;
+  margin-right: 4px;
+}
+#navi-meta li.user span.user {
+  display: block;
+  padding-top: 2px;
+  text-align: right;
+}
+#navi-meta li.logout {
+  float: right;
+  margin-right: 15px;
+}
+
+
+
+/* Navi Lev2  ******************************************************************
+*******************************************************************************/
+/* In Navi-Main-Flyout */
+.navi-lev2 li.lev2 {
+  position: relative;
+  display: block;
+  margin: 0 0 1px 0;
+}
+
+/* In Function */
+#navi-lev2 li.lev2 {
+  display: block;
+  float: left;
+  margin: 0 6px 0 0;
+  padding-bottom: 13px;
+}
+
+
+
+/* Navi Lev3  ******************************************************************
+*******************************************************************************/
+#navi-lev3 {
+  margin-right: 20px;
+  padding: 10px;
+  background-color: #d8d8d8;
+}
+#navi-lev3 li.lev3 {
+  display: block;
+  float: left;
+  margin-right: 6px;
+}
+
+#navi-lev3 li.lev3 a.lev3 {
+  padding-left: 25px;
+  padding-right: 25px;
+}
+
+
+
+/* Navi Box1  *****************************************************************
+*******************************************************************************/
+/* Wiki Navi */
+.navi-box1 {
+}
+.navi-box1 dt, 
+.navi-box1 dd {
+  display: block;
+  padding: 10px 15px;
+}
+
+
+
+/* Navi List1  *****************************************************************
+*******************************************************************************/
+/* Wiki Artikel-Navi */
+.navi-list1 {
+}
+.navi-list1 li {
+  display: block;
+  margin-bottom: 1px;
+}
+.navi-list1 li a {
+  display: block;
+  padding-right: 6px;
+}
+.navi-list1 li a:hover, 
+.navi-list1 li a.active {
+}
+.navi-list1 li a span {
+  display: block;
+  padding: 1px 13px 2px 10px;
+}
+.navi-list1 li a:hover span {
+}
+
+
+
+/* Navi List2  *****************************************************************
+*******************************************************************************/
+/* Wiki Tab-Navi */
+.navi-list2 {
+}
+.navi-list2 li {
+  display: block;
+  float: left;
+  border-right-width: 1px;
+  border-right-style: solid;
+}
+.navi-list2 li a {
+  display: block;
+  padding: 10px 25px;
+}
+.navi-list2 li.active {
+}
+.navi-list2 li a:hover, 
+.navi-list2 li a.active {
+  margin-top: -4px;
+  padding-top: 14px;
+}
+
+
+
+
+
+/* Navi Butler  ******************************************************************
+*******************************************************************************/
+.navi-butler {
+  clear: both;
+}
+.navi-butler li.lev1 {
+  display: block;
+  float: left;
+  margin-left: 1px;
+  margin-bottom: 1px;
+}
+
+
+
+/* Paginierung  ****************************************************************
+*******************************************************************************/
+ul.pagination {}
+
+ul.pagination li {
+  display: inline-block;
+  margin: 0 2px;
+}
+ul.pagination li.prev {
+  margin-right: 3px;
+}
+ul.pagination li.next {
+  margin-right: 12px;
+}
+ul.pagination li.prev a.page span.inner, 
+ul.pagination li.next a.page span.inner {
+  display: inline-block;
+}
+
+.calendar.view-overview header ul.pagination li.prev, 
+.calendar.view-overview header ul.pagination li.next, 
+.calendar.view-flyout header ul.pagination li.prev, 
+.calendar.view-flyout header ul.pagination li.next {
+  position: absolute;
+  top: 0;
+  margin-right: 0px;
+}
+.calendar.view-overview header ul.pagination li.prev {
+  left: 15px;
+}
+.calendar.view-overview header ul.pagination li.next {
+  right: 15px;
+}
+.calendar.view-flyout header ul.pagination li.prev {
+  left: 6px;
+}
+.calendar.view-flyout header ul.pagination li.next {
+  right: 6px;
+}
+
+
+
+
+/* Layoutauswahl  **************************************************************
+*******************************************************************************/
+ul.view-layout {}
+
+ul.view-layout li {
+  display: inline-block;
+}
+
+
+
+/* Selectlisten  ***************************************************************
+*******************************************************************************/
+/*  Bspl.: Projektauswahl */
+#function ul.sl1 {
+  float: right;
+  margin-right: 15px;
+}
+ul.sl1 li.felement, 
+ul.sl1 li.selected {
+  position: relative;
+}
+ul.sl1 li.selected:hover {
+  cursor: pointer;
+}
+ul.sl1 li.selected span.selected {
+  display: block;
+  padding: 0 40px 0 10px;
+}
+
+.entry-email header ul.sl1 {
+  margin-right: 25px;
+}
+
+/*  Bspl.: Optionen in der E-Mail */
+ul.sl2 {}
+
+ul.sl2 li.selected {
+  position: relative;
+}
+ul.sl2 li.selected:hover {
+  cursor: pointer;
+}
+ul.sl2 li.selected span.selected {
+  display: block;
+}
+.entry-email header ul.sl2 {
+  position: absolute;
+  bottom: 11px;
+  right: 35px;
+}
+.entry-email .open header ul.sl2 {
+  bottom: auto;
+  top: 60px;
+  z-index: 1000;
+}
+
+
+/*  Bspl.: Kalender-Button Flyout */
+ul.sl3 {
+}
+
+ul.sl3 li.selected {
+  position: relative;
+  display: inline-block;
+}
+ul.sl3 li.selected:hover {
+  cursor: pointer;
+}
+.fdate1 ul.sl3 {
+  float: left;
+}
+
+
+
+/*  Bspl.: Kalender Monatsuebersicht - Termin Flyout */
+ul.sl4 {
+}
+ul.sl4 li:hover {
+  cursor: pointer;
+}
+

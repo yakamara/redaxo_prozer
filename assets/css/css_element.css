@@ -1,0 +1,305 @@
+
+/*   ********************************************************************
+*******************************************************************************/
+
+a.bt1, a.bt2, a.bt3, a.bt4, a.bt5, a.bt6, a.bt7, a.bt8, a.bt9, a.bt10, 
+a.bt11, a.bt12, a.bt13, a.bt14, a.bt15, a.bt16, 
+.info1, .info1 .inner, 
+.status, 
+.xform-submit[type="submit"] {
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+}
+a.bt1, a.bt2, a.bt3, a.bt4, a.bt5, a.bt6, 
+.info1, .info1 .inner, 
+span.tooltip .inner, 
+.xform-submit[type="submit"] {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+
+/* Buttons  ********************************************************************
+*******************************************************************************/
+/* 23 Hoehe - N: Grau - H: Blau */
+a.bt1 {
+  padding: 0 5px;
+}
+
+/* 23 Hoehe - N: Blau - H: Grau */
+a.bt2, 
+.xform-submit[type="submit"] {
+  height: 21px;
+  padding: 0 5px;
+}
+.xform-submit[type="submit"] {
+  padding-bottom: 2px;
+  cursor: pointer;
+}
+a.bt2 span.icon {
+  display: block;
+}
+
+/* 25 Hoehe - N: Grau - H: Blau */
+a.bt3 {
+  padding: 0 10px;
+}
+
+/* 25 Hoehe - N: Blau - H: Grau */
+a.bt4 {
+  padding: 0 10px;
+}
+
+/* 21 Hoehe - N: Silber - H: Blau 
+    - Paginierung - vor / zurueck
+*/
+a.bt5 {
+  padding: 0 5px;
+  height: 21px;
+}
+a.bt5 span.icon {
+  display: block;
+}
+
+/* 21 Hoehe - N: Blau - H: Silber
+    - Paginierung - vor / zurueck
+*/
+a.bt6 {
+  padding: 0 5px;
+}
+
+/* 21 Hoehe - N: Silber - H: Blau 
+    - ohne Abrundung, Paginierungszahlen
+*/
+a.bt7 {
+  padding: 0 6px;
+}
+
+/* 21 Hoehe - N: Blau - H: Silber
+    - ohne Abrundung, Paginierungszahlen
+*/
+a.bt8 {
+  padding: 0 6px;
+}
+
+
+/* 23 Hoehe - N: Blau - H: Dunkelgrau
+    - ohne Abrundung, E-Mail-Adresses hinzufuegen
+*/
+a.bt9 {
+  width: 23px;
+  height: 23px;
+}
+
+/* 23 Hoehe - N: Dunkelgrau - H: Blau
+    - ohne Abrundung, E-Mail-Adresses hinzufuegen
+*/
+a.bt10 {
+  width: 23px;
+  height: 23px;
+}
+
+
+/* 22 Hoehe - N: Weiss - H: Blau
+    - ohne Abrundung, Zeiten 6, 7, 8 ...
+*/
+a.bt11 {
+  width: 22px;
+  height: 22px;
+}
+
+/* 22 Hoehe - N: Blau - H: Weiss
+    - ohne Abrundung, 
+*/
+a.bt12 {
+  width: 22px;
+  height: 22px;
+}
+
+
+/* 22 Hoehe - N: Silber - H: Blau
+    - ohne Abrundung, Zeiten 6, 7, 8 ... (Navi Butler)
+*/
+a.bt13 {
+  width: 22px;
+  height: 22px;
+}
+
+/* 22 Hoehe - N: Blau - H: Silber
+    - ohne Abrundung, 
+*/
+a.bt14 {
+  width: 22px;
+  height: 22px;
+}
+
+
+/* 22 Hoehe - N: Weiss - H: Blau
+    - ohne Abrundung, Monate Jan, Feb, Mar ... (Navi Butler)
+*/
+a.bt15 {
+  width: 41px;
+  height: 22px;
+}
+
+/* 22 Hoehe - N: Blau - H: Weiss
+    - ohne Abrundung, 
+*/
+a.bt16 {
+  width: 41px;
+  height: 22px;
+}
+
+
+
+
+/* Infos  **********************************************************************
+*******************************************************************************/
+.info1 {
+  position: absolute;
+  top: -4px;
+  right: 3px;
+  padding: 1px;
+}
+.info1 {
+}
+.info1 .inner {
+  padding: 0 5px;
+}
+
+.flyout .info1 {
+  right: -15px;
+}
+
+
+/* Tooltip  ********************************************************************
+*******************************************************************************/
+a.tooltip {
+  position: relative;
+}
+a.tooltip:hover span.tooltip {
+  display: block;
+}
+span.tooltip {
+  position: absolute;
+  top: -30px;
+  left: -6px;
+  display: none;
+  padding-bottom: 6px;
+  z-index: 1000;
+}
+span.tooltip .inner {
+  display: block;
+  padding: 3px 9px;
+  white-space: nowrap;
+  -moz-box-shadow: 1px 1px 3px #b4b4b4;
+  -webkit-box-shadow: 1px 1px 3px #b4b4b4;
+  box-shadow: 1px 1px 3px #b4b4b4;
+}
+
+
+
+/* Status  *********************************************************************
+*******************************************************************************/
+.status {
+  position: absolute;
+  top: 34px;
+  right: 24px;
+}
+.tbl1 .status {
+  position: static;
+  top: auto;
+  right: auto;
+}
+.entry-email .status {
+  position: absolute;
+  top: 60px;
+  left: 23px;
+}
+
+
+/* Label  **********************************************************************
+*******************************************************************************/
+.entries .entry article header a.label, 
+.entries .entry article header span.label, 
+.entries .entry article footer a.label, 
+.entries .entry article footer span.label {
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: block;
+  width: 20px;
+  height: 100%;
+}
+
+
+/* Aktionen  *******************************************************************
+*******************************************************************************/
+.view-layout a.block, 
+.view-layout a.list {
+  display: inline-block;
+  margin-top: 3px;
+}
+
+
+/* Split  **********************************************************************
+*******************************************************************************/
+.split-v {
+  margin-left: 9px;
+  padding-left: 10px;
+}
+.split-h {
+  clear: both;
+  height: 1px;
+  margin: 20px 0;
+  overflow: hidden;
+}
+/*
+  1 = 5 -> n x 5 
+  d = distance (top bottom)
+  t = top
+  b = bottom
+*/
+.split-h-d1 {
+  margin: 5px 0;
+}
+.split-h-d2 {
+  margin: 10px 0;
+}
+.split-h-d4 {
+  margin: 20px 0;
+}
+.split-h-t1-b0 {
+  margin: 5px 0 0 0;
+}
+.split-h-t2-b0 {
+  margin: 10px 0 0 0;
+}
+.split-h1 {
+  height: 0;
+  border-top: 1px solid #aaabad;
+  border-bottom: 1px solid #f6f7f7;
+}
+
+
+/* Bloat  **********************************************************************
+*******************************************************************************/
+.bloat {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Resizebales  ****************************************************************
+*******************************************************************************/
+.ui-resizable { position: relative;}
+.ui-resizable-handle { position: absolute;font-size: 0.1px;z-index: 99999; display: block; }
+.ui-resizable-disabled .ui-resizable-handle, .ui-resizable-autohide .ui-resizable-handle { display: none; }
+.ui-resizable-n { cursor: n-resize; height: 7px; width: 100%; top: 0px; left: 0;}
+.ui-resizable-s { cursor: s-resize; height: 7px; width: 100%; bottom: 0; left: 0;}
+
+.resizable {
+	overflow:hidden!important;
+	/*-moz-box-sizing:content-box!important;*/
+}

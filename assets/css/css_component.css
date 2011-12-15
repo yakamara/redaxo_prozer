@@ -1,0 +1,917 @@
+/* Flyout Allgemein  ***********************************************************
+*******************************************************************************/
+.flyout {
+  display: none;
+  position: absolute;
+  width: 100%;
+  z-index: 10000;
+}
+
+.flyout > .content {
+  padding: 6px;
+  -moz-box-shadow: 1px 1px 3px #b4b4b4;
+  -webkit-box-shadow: 1px 1px 3px #b4b4b4;
+  box-shadow: 1px 1px 3px #b4b4b4;
+}
+li:hover .flyout {
+  display: block;
+}
+li:hover ul li .flyout {
+  display: none;
+}
+li:hover ul li:hover .flyout {
+  display: block;
+}
+
+.flyout .grid2col {
+  width: auto;
+}
+.flyout .grid2col .column.first {
+  width: 110px;
+}
+.flyout .grid2col .column.last {
+  width: 456px;
+}
+.flyout .items dd {
+  margin-bottom: 6px;
+}
+.flyout .items dd:last-child {
+  margin-bottom: 0;
+}
+
+
+.sl1b .flyout {
+  width: 500px;
+}
+.sl1.sl-r .flyout {
+  right: 0;
+}
+.sl2 .flyout,
+.sl3 .flyout, 
+.sl4 .flyout, 
+#navi-main .flyout {
+  padding-top: 10px;
+}
+.sl2 .flyout {
+  left: 50%;
+  margin-left: -50px;
+  width: 100px;
+  
+  left: -20px;
+  margin-left: 0;
+  width: auto;
+}
+.sl3 .flyout {
+  left: 50%;
+  margin-left: -90px;
+  width: 180px;
+}
+.sl3 .flyout > .content {
+  padding: 0;
+}
+
+.sl4 .has-flyout {
+  position: relative;
+}
+.sl4 .flyout {
+  left: 50%;
+  margin-left: -180px;
+  width: 360px;
+}
+.sl4 .output {
+  position: relative;
+  padding: 10px 50px 10px 10px;
+  background-color: #f6f7f7;
+}
+.sl4 .output .close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+#navi-main .flyout {
+  left: -27px;
+  width: 600px;
+}
+
+
+
+/*
+.sl1 .flyout .content {
+  max-height: 200px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+*/
+
+/* Eintraege pro Seite  ********************************************************
+*******************************************************************************/
+.flyout .entries.perpage .entry {
+  display: block;
+  padding: 0 6px;
+  background-color: #f6f7f7;
+  border-bottom: 1px solid #fff;
+  line-height: 25px;
+}
+.flyout .entries.perpage .entry:hover {
+  background-color: #06a9d6;
+}
+.flyout .entries.perpage .entry:hover a {
+  color: #fff;
+}
+
+
+/* Header  *********************************************************************
+*******************************************************************************/
+.header {
+  margin-bottom: 18px;
+  padding-top: 36px;
+}
+
+
+/* Einstellungen der Resultate  ************************************************
+*******************************************************************************/
+.setting, 
+.setting-layout {
+  margin-bottom: 18px;
+}
+.setting {
+  padding: 8px 0;
+  background-color: #cfdce2;
+}
+.setting .first > ul {
+  margin-left: 9px;
+}
+.setting .last > ul, /* neu ab 14.10.2011 */
+footer .setting .last > ul, 
+.setting-layout .last > ul {
+  float: right;
+  margin-right: 9px;
+}
+
+
+/* Entries *********************************************************************
+*******************************************************************************/
+.entries .entry {
+  display: block;
+  margin-bottom: 8px;
+}
+.entries .entry article {
+  position: relative;
+  padding: 10px;
+}
+.entries .entry article header figure {
+/*
+  position: absolute;
+  top: 15px;
+  left: 10px;
+*/
+  float: left;
+}
+.entries .entry article .name {
+  margin-right: 7px;
+  padding-right: 7px;
+  border-right-width: 1px;
+  border-right-style: solid;
+  font-weight: bold;
+}
+.entries .entry article header .title {
+  display: inline-block;
+  padding: 5px 0;
+}
+.entries .entry article footer {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+}
+
+/* View - Block ------------------------------------ */
+.entries.view-block .entry article header hgroup, 
+.entries.view-block .entry article section.content {
+  margin: 0 50px 0 50px;
+}
+.entries.view-block .entry-email article header hgroup {
+  margin-right: 0;
+}
+
+/* View - List ------------------------------------ */
+.entries.view-list .entry article {
+  padding: 0;
+}
+.entries.view-list .entry article header a.detail {
+  display: block;
+  padding: 10px;
+}
+.entries.view-list .entry article header figure ~ hgroup, 
+.entries.view-list .entry article section.content {
+  margin: 0 50px;
+}
+.entries.view-list .entry article footer {
+  right: 30px;
+  top: 25%;
+  height: auto;
+}
+
+/* View - Matrix ------------------------------------ */
+.entries.view-matrix > .entry {
+  float: left;
+  width: 370px;
+  margin-right: 20px;
+}
+.entries.view-matrix > .entry article {
+  min-height: 82px;
+}
+.entries.view-matrix > .entry:nth-child(3n) {
+  margin-right: 0;
+}
+.entries.view-matrix .entry article header figure ~ hgroup, 
+.entries.view-matrix .entry article section.content {
+  margin: 0 50px;
+}
+
+
+/* Flyout */
+.flyout .entries .entry {
+  margin-bottom: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.flyout .entries .entry:hover {
+  cursor: pointer;
+}
+.flyout .entries .entry.split-b {
+  margin-bottom: 0;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+}
+.flyout .entries .entry a, 
+.flyout .entries .entry label, 
+.flyout .entries .entry .wrapper {
+  display: block !important;
+  padding: 6px 30px 6px 6px !important;
+}
+.flyout .entries .entry .wrapper {
+  padding-right: 6px !important;
+}
+.flyout .entries .entry .wrapper a {
+  display: inline !important;
+  padding: 0 6px 0 0 !important;
+}
+.flyout .entries .entry .wrapper span {
+  padding: 0 !important;
+}
+.flyout .entries .entry .wrapper .links {
+  float: right !important;
+}
+.flyout .entries .entry .wrapper .links a {
+  margin-right: 6px !important;
+  border-right: 1px solid #ccc !important;
+}
+.flyout .entries .entry .wrapper .links a:last-child {
+  margin-right: 0;
+  padding-right: 0;
+  border-right: 0;
+}
+.flyout .entries .entry label:hover, 
+.flyout .entries .entry .wrapper:hover {
+  cursor: pointer;
+}
+.flyout .entries .entry .xform-checkbox {
+  margin-right: 4px;
+}
+.flyout .entries .entry .name {
+  margin-right: 6px;
+  padding-right: 6px;
+  border-right-style: solid;
+  border-right-width: 2px;
+}
+.flyout .entries .entry .wrapper .name {
+  border-right-width: 0;
+  font-weight: bold !important;
+}
+.flyout .entries .entry .info {
+  margin-right: 14px;
+}
+.flyout .entries .entry .title {
+  white-space: nowrap;
+}
+
+
+
+/* Attachments */
+.attachments .entries .entry {
+  margin-bottom: 0px;
+  padding: 6px 0;
+  background: none;
+  border-top-width: 1px;
+  border-top-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+}
+.attachments .entries .first {
+  border-top: 0;
+}
+.attachments .entries .last {
+  border-bottom: 0;
+}
+.attachments .entries .entry .name {
+  margin-right: 6px;
+  padding-right: 6px;
+  border-right-style: solid;
+  border-right-width: 1px;
+}
+
+.entry-email header ul.functions li.function, 
+.entry-email header ul.functions li.option {
+  display: block;
+  float: left;
+  height: 30px;
+}
+.entry-email header ul.functions li.function {
+  margin-left: 10px;
+}
+.entry-email header ul.functions li.option span.option {
+  margin-top: 8px;
+}
+.entry-email header ul.functions li.function a, 
+.entry-email header ul.functions li.function a {
+  display: block;
+}
+
+
+.entry-email section.attachments ul.functions {
+  float: right;
+}
+.entry-email section.attachments ul.functions li.function {
+  display: inline-block;
+  padding-left: 20px;
+}
+
+
+
+/* Sidebar  ********************************************************************
+*******************************************************************************/
+.sidebar {
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 200px;
+  height: 100%;
+  border-left-width: 3px;
+  border-left-style: solid;
+  overflow: hidden;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.sidebar2 {
+  right: 200px;
+}
+.sidebar3 {
+  right: 400px;
+}
+
+
+.sidebar .navi {
+  display: block;
+  float: left;
+  width: 100%;
+  padding: 10px 0;
+}
+.sidebar .navi li {
+  display: block;
+  float: left;
+  margin-left: 12px;
+}
+.sidebar .navi li.last {
+  float: right;
+}
+.sidebar .navi li a {
+  display: block;
+  height: 30px;
+  text-indent: -1000em;
+}
+
+.sidebar .list {
+  padding: 9px 8px;
+}
+.sidebar .list .item {
+  display: block;
+  margin: 2px 0;
+}
+.sidebar .list .item a {
+  display: block;
+  padding: 0 8px;
+}
+
+
+
+/* Aktionen  *******************************************************************
+*******************************************************************************/
+ul.actions li.action {
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+}
+ul.actions li.last {
+  border-bottom-width: 0;
+}
+ul.actions li.action a {
+  display: block;
+  text-indent: -1000em;
+}
+ul.actions li.action a.close {
+  height: 60px;
+}
+ul.actions li.action a.up, 
+ul.actions li.action a.down {
+  height: 19px;
+}
+
+
+/* E-Mail **********************************************************************
+*******************************************************************************/
+.email {
+}
+.email header, 
+.email section.attachments, 
+.email section.editor, 
+.email section.content {
+  margin-right: 20px;
+  padding: 15px;
+}
+.email header {
+  padding-top: 0;
+}
+.email section.attachments {
+  border-top-width: 1px;
+  border-top-style: solid;
+}
+.email footer {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 20px;
+  z-index: 1;
+}
+.email dl.data {
+  width: 100%;
+}
+.email dl.data dt, 
+.email dl.data dd {
+  display: block;
+  float: left;
+}
+.email dl.data dt {
+  clear: both;
+  width: 54px;
+  margin-left: 45px;
+}
+.email dl.data dd {
+  width: 320px;
+}
+
+.email-read {
+  margin: 0 -10px;
+}
+.entry-email .open section.content.detail {
+  margin: 20px 0 0 0 !important;
+}
+.entry-email .open .email-read section.content {
+  margin: 0 !important;
+}
+
+/* Kalender  *******************************************************************
+*******************************************************************************/
+.calendar {
+}
+
+.calendar header.header {
+  padding: 8px 15px;
+}
+.calendar header.header .info {
+  font-style: italic;
+  text-align: center;
+}
+.calendar header.header .pagination {
+  float: right;
+}
+
+.calendar div.header {
+  margin: 0 15px;
+  padding: 15px 0;
+}
+
+/******************************************************************** Day */
+.calendar.view-day .allday .entry {
+  padding-left: 8%;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.calendar.view-day .allday .label {
+  display: block;
+  padding: 0 5px;
+}
+
+
+.calendar.view-day .wrapper {
+  position: relative;
+  margin: 0 15px 15px 15px;
+  height: 781px;
+  overflow-y: scroll;
+}
+.calendar.view-day .grid {
+  border-width: 1px;
+  border-style: none solid solid solid;
+}
+.calendar.view-day .grid .hour {
+  display: inline-block;
+  float: left;
+  border-width: 1px;
+  border-style: solid none none none;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.calendar.view-day .grid .hour.title {
+  width: 8%;
+  height: 60px;
+  padding-right: 6px;
+  border-right-style: solid;
+  text-align: right;
+}
+.calendar.view-day .grid .hour.box {
+  width: 92%;
+  height: 31px;
+  margin-bottom: 29px;
+  border-bottom-style: dashed;
+}
+
+.calendar.view-day .events {
+  position: absolute;
+  top: 0px;
+  left: 8%;
+}
+.calendar.view-day .events .event {
+  position: absolute;
+  left: 0;
+  width: 200px;
+  overflow: auto;
+}
+.calendar.view-day .events .event .event-info {
+  padding: 5px;
+  height: 100%;
+  border-width: 1px;
+  border-style: solid;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.calendar.view-day .timeline {
+  position: absolute;
+  left: 0;
+  width: 100%;
+}
+.calendar.view-day .timeline .icon {
+  position: absolute;
+  left: 10px;
+  top: -5px;
+  display: block;
+  margin-left: 0;
+}
+.calendar.view-day .timeline .line {
+  display: block;
+  width: 92%;
+  margin-left: 8%;
+  border-top-width: 2px;
+  border-top-style: dashed;
+}
+
+
+
+
+/******************************************************************** Week */
+.calendar.view-week .wrapper {
+  position: relative;
+  margin: 0 15px 15px 15px;
+}
+.calendar.view-week .grid {
+}
+.calendar.view-week .grid .weekday {
+  display: inline-block;
+  float: left;
+  width: 13%;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.calendar.view-week .grid .weekday.first {
+  width: 9%;
+}
+.calendar.view-week .grid .weekday .title {
+  padding: 0 0 8px 0;
+  text-align: center;
+}
+.calendar.view-week .grid .weekday .hours {
+  border-width: 1px;
+  border-style: none none solid solid;
+}
+.calendar.view-week .grid .weekday.last .hours {
+  border-style: none solid solid solid;
+}
+.calendar.view-week .grid .weekday .hours .hour {
+  display: block;
+  border-width: 1px;
+  border-style: solid none none none;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.calendar.view-week .grid .weekday .hours .hour.title {
+  height: 60px;
+  padding: 0 6px 0 0;
+  text-align: right;
+}
+.calendar.view-week .grid .weekday .hours .hour.box {
+  height: 31px;
+  margin-bottom: 29px;
+  border-bottom-style: dashed;
+}
+
+.calendar.view-week .grid .weekday .allday {
+  margin-bottom: 10px;
+  border-width: 1px;
+  border-style: none none solid none;
+}
+.calendar.view-week .grid .weekday .allday .box {
+  display: block;
+  padding: 0 8px;
+  height: 20px;
+  border-width: 1px;
+  border-style: solid none none solid;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  line-height: 20px;
+}
+.calendar.view-week .grid .weekday.first .allday .box {
+  border-style: none none none none;
+}
+.calendar.view-week .grid .weekday.last .allday .box {
+  border-style: solid solid none solid;
+}
+
+.calendar.view-week .events {
+  position: absolute;
+  top: 0px;
+  left: 9%;
+}
+.calendar.view-week .events .event {
+  position: absolute;
+  left: 0;
+  width: 90px;
+/*
+  padding: 5px;
+  border-width: 1px;
+  border-style: solid;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+*/
+  overflow: auto;
+}
+
+
+
+/******************************************************************** Month */
+.calendar.view-month .boxes {
+  height: 750px;
+  margin: 0 15px 15px 15px;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+}
+.calendar.view-month .day {
+  display: inline-block;
+  float: left;
+  width: 14%;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.calendar.view-month .day:nth-child(7n+1), 
+.calendar.view-month .day:nth-child(7n+7) {
+    width: 15%;
+}
+.calendar.view-month .day.box {
+  position: relative;
+  height: 20%;
+  border-width: 1px;
+  border-style: solid solid none none;
+}
+.calendar.view-month .day:nth-child(7n+1) {
+  border-left-style: solid;
+}
+.calendar.view-month .title, 
+.calendar.view-month .date, 
+.calendar.view-month .event {
+  display: block;
+  padding: 0 9px;
+}
+.calendar.view-month .event .event-entry {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.calendar.view-month .date {
+  padding-top: 9px;
+}
+.calendar.view-month .calendar-week {
+  float: right;
+  margin: 2px;
+  padding: 0 2px;
+}
+
+.calendar.view-month .day.box.day-big {
+  position: absolute;
+  top: -20%;
+  left: -40%;
+  width: 180%;
+  height: auto;
+  min-height: 140%;
+  z-index: 900;
+  border-style: solid solid solid solid;
+}
+.calendar.view-month .day.box.day-big .close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+
+
+
+.calendar.view-month .day.box.day-big {
+  background-color: #f6f7f7;
+}
+
+/******************************************************************** Overview */
+/******************************************************************** Flyout */
+.calendar.view-overview header, 
+.calendar.view-flyout header {
+  position: relative;
+  padding: 0 15px;
+  text-align: center;
+  line-height: 37px;
+}
+.calendar.view-overview section.content {
+  padding: 15px;
+}
+.calendar.view-overview .column.first section.content {
+  padding-right: 10px;
+}
+.calendar.view-overview .column.last section.content {
+  padding-left: 10px;
+}
+
+
+.calendar.view-flyout section.content {
+  padding: 6px;
+}
+
+/******************************************************************** Calendar */
+.calendar table.overview {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+.calendar table.overview th, 
+.calendar table.overview td {
+  text-align: center;
+}
+.calendar table.overview th {
+  padding: 3px 0;
+}
+.calendar table.overview td {
+  border-width: 1px;
+  border-style: solid;
+}
+.calendar table.overview td a {
+  display: block;
+  padding: 3px 0;
+}
+.calendar table.overview td.today a {
+  padding: 2px 0;
+  border-width: 1px;
+  border-style: solid;
+}
+
+
+
+.calendar.view-month .calendar-week {
+  display: none;
+}
+.calendar.view-month .day:nth-child(7n+1) .calendar-week {
+  display: block;
+}
+.calendar.view-month .day.box.move:after {
+  content: 'Klasse "move" beim verschieben';
+}
+
+/* Tabellen ********************************************************************
+*******************************************************************************/
+td.img1 {
+  width: 40px;
+}
+.tbl1 td.img1 {
+  padding-right: 0px;
+}
+
+.tbl1 {
+  width: 100%;
+}
+.tbl1 th, 
+.tbl1 td {
+  padding: 10px 15px;
+  text-align: left;
+  vertical-align: top;
+}
+.tbl1 thead th {
+  background-color: #d8d8d8;
+  font-weight: bold;
+}
+.tbl1 tbody td {
+  background-color: #fff;
+  border-bottom: 1px solid #dedede;
+}
+.tbl1 tbody tr:hover td {
+  background-color: #f6f7f7;
+}
+.tbl1 th.label, 
+.tbl1 td.label {
+  padding: 0;
+  width: 20px;
+}
+
+
+
+
+.tbl2 {
+  width: 100%;
+}
+.tbl2 th, 
+.tbl2 td {
+  border-bottom: 1px solid #dedede;
+  height: 38px;
+  text-align: center;
+  vertical-align: middle;
+}
+.tbl2 th {
+  background-color: #d8d8d8;
+  font-weight: bold;
+  white-space: nowrap;
+}
+.tbl2 tr th:first-child {
+  padding-left: 15px;
+  text-align: left;
+}
+.tbl2 td {
+  background-color: #fff;
+  border-bottom: 1px solid #dedede;
+  border-left: 1px solid #e7e7e7;
+}
+.tbl2 td.highlighted {
+  background-color: #f6f7f7;
+}
+.tbl2 tr:hover td {
+  background-color: #f6f7f7;
+}
+.tbl2 tfoot th {
+  background-color: #cecece;
+}
+.tbl2 tfoot td.highlighted {
+  background-color: #d8d8d8;
+}
+
+.tbl2 th div, 
+.tbl2 td div {
+  text-align: left;
+  white-space: normal;
+}
+
+.tbl2 .sl4, 
+.tbl2 .sl4 .has-flyout {
+  display: block;
+  height: 100%;
+}
+
+/* Loader  *********************************************************************
+*******************************************************************************/
+.loader {
+  position: absolute;
+  top: 0;
+  left: 0;  
+  width: 100%;
+  height: 100%;
+}
