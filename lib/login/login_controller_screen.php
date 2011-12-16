@@ -46,7 +46,7 @@ class pz_login_controller_screen extends pz_login_controller{
 
 	public function getMainPage($p = array()) {
 		
-		$function = '<figure class="me1"><img src="/layout_prozer/themes/blue_grey/assets/intro.jpg" alt="" width="100%" /></figure>';
+		$function = '<figure class="me1"><img src="/assets/addons/prozer/themes/blue_grey/assets/intro.jpg" alt="" width="100%" /></figure>';
 		
 		$section1 = '
 		        <div class="design2col formatted">

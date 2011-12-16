@@ -345,11 +345,11 @@ class pz {
 		
 		if($ext = pz::getExtensionByMimetype($mimetype)) 
 		{
-			$file = rex_path::frontend("/layout_prozer/themes/blue_grey/mimetypes/".$ext.".png");
+			$file = rex_path::frontend("/assets/addons/prozer/themes/blue_grey/mimetypes/".$ext.".png");
 			if(file_exists($file))
-				return "/layout_prozer/themes/blue_grey/mimetypes/".$ext.".png";
+				return "/assets/addons/prozer/themes/blue_grey/mimetypes/".$ext.".png";
 		}
-		return "/layout_prozer/themes/blue_grey/mimetypes/file.png";;
+		return "/assets/addons/prozer/themes/blue_grey/mimetypes/file.png";;
 	}
 
 

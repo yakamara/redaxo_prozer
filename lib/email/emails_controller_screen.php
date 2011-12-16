@@ -710,6 +710,13 @@ class pz_emails_controller_screen extends pz_emails_controller {
 
 		}
 
+		if(isset($_REQUEST["to"]))
+			$_REQUEST["to"] = trim($_REQUEST["to"], "\n\t\0\r\x0B, ");
+		if(isset($_REQUEST["cc"]))
+			$_REQUEST["cc"] = trim($_REQUEST["cc"], "\n\t\0\r\x0B, ");
+		if(isset($_REQUEST["bcc"]))
+			$_REQUEST["bcc"] = trim($_REQUEST["bcc"], "\n\t\0\r\x0B, ");
+
 		$return = "";
 		$mode = rex_request("mode","string");
 		switch($mode)

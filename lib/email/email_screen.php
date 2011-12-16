@@ -171,7 +171,7 @@ class pz_email_screen{
     	
     	$link_delete = "javascript:pz_exec_javascript('".pz::url("screen","emails","create",array_merge($p["linkvars"],array("mode"=>"delete_email")))."')";
 
-		$image_from_address = '/layout_prozer/css/user.png';
+		$image_from_address = pz_user::getDefaultImage();
 		if($address = $this->email->getFromAddress())
 		{
 			$image_from_address = $address->getInlineImage();
@@ -248,7 +248,7 @@ class pz_email_screen{
 		$link_replyall = static::getAddLink(array("reply_email_id"=>$this->email->getId(),"reply_all" => 1));
 		$link_print = pz::url();
 
-		$image_from_address = '/layout_prozer/css/user.png';
+		$image_from_address = pz_user::getDefaultImage();
 		if($address = $this->email->getFromAddress())
 		{
 			$image_from_address = $address->getInlineImage();
@@ -378,7 +378,7 @@ class pz_email_screen{
 		$return = '
 		      <article>
             <header>
-              <figure><img src="/layout_prozer/css/user.png" width="40" height="40" alt="" /></figure>
+              <figure><img src="'.pz_user::getDefaultImage().'" width="40" height="40" alt="" /></figure>
               <hgroup>
                 <h2 class="hl7"><span class="name">'.$this->email->getVar("from").'</span><span class="info">'.$this->email->getVar("date").'</span></h2>
                 <h3 class="hl7"><a href=""><span class="title">'.$this->email->getSubject().'</span></a></h3>
@@ -419,7 +419,7 @@ class pz_email_screen{
 	
 	 $return = '
               <tr>
-                <td><img src="/layout_prozer/css/person.png" width="40" height="40" alt="" /></td>
+                <td><img src="'.pz_user::getDefaultImage().'" width="40" height="40" alt="" /></td>
                 <td><span class="name">'.$this->email->getVar("afrom","plain").'</span></td>
                 <td><span class="info">'.$this->email->getVar("stamp","datetime").'</span></td>
                 <td><a href=""><span class="title">'.$this->email->getSubject().'</span></a></td>

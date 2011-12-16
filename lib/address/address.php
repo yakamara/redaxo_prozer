@@ -156,7 +156,7 @@ class pz_address extends pz_model
 	}
 
 	static public function getDefaultImage() {
-		return 	"/layout_prozer/css/user.png";
+		return "/assets/addons/prozer/css/user.png";
 	}
 
 	public function getFields()

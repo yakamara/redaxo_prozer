@@ -53,6 +53,7 @@ class Sabre_DAV_Locks_Backend_File extends Sabre_DAV_Locks_Backend_Abstract {
         $currentPath = '';
 
         $locks = $this->getData();
+
         foreach($locks as $lock) {
 
             if ($lock->uri === $uri ||
@@ -90,9 +91,15 @@ class Sabre_DAV_Locks_Backend_File extends Sabre_DAV_Locks_Backend_Abstract {
         $lockInfo->created = time();
         $lockInfo->uri = $uri;
 
-        $locks = $this->getLocks($uri,false);
+        $locks = $this->getData();
+
         foreach($locks as $k=>$lock) {
-            if ($lock->token == $lockInfo->token) unset($locks[$k]);
+            if (
+                ($lock->token == $lockInfo->token) ||
+                (time() > $lock->timeout + $lock->created)
+            ) {
+                unset($locks[$k]);
+            }
         }
         $locks[] = $lockInfo;
         $this->putData($locks);
@@ -109,7 +116,7 @@ class Sabre_DAV_Locks_Backend_File extends Sabre_DAV_Locks_Backend_Abstract {
      */
     public function unlock($uri,Sabre_DAV_Locks_LockInfo $lockInfo) {
 
-        $locks = $this->getLocks($uri,false);
+        $locks = $this->getData();
         foreach($locks as $k=>$lock) {
 
             if ($lock->token == $lockInfo->token) {

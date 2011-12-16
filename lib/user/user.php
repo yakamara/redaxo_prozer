@@ -63,7 +63,11 @@ class pz_user extends rex_user
 			return pz::makeInlineImage($image_path, "m");
 		}
 
-		return "/layout_prozer/css/user.png";
+		return pz_user::getDefaultImage();
+	}
+
+	public function getDefaultImage() {
+		return "/assets/addons/prozer/css/user.png";
 	}
 
 	static function digest($login,$password) 
@@ -312,7 +316,7 @@ class pz_user extends rex_user
 	$filter[] = array("field" => "has_calendar", "value" => 1);
 	$filter[] = array("field" => "archived", "value" => 0);
 
-    return $this->_getProjects('(pu.caldav = 1 OR pu.admin = 1)', true, $filter);
+    return $this->_getProjects('(pu.caldav = 1 )', true, $filter);
   }
 
   public function getCalDavJobsProjects($filter = array())
@@ -324,7 +328,7 @@ class pz_user extends rex_user
 	$filter[] = array("field" => "has_calendar", "value" => 1);
 	$filter[] = array("field" => "archived", "value" => 0);
 
-    return $this->_getProjects('(pu.caldav_jobs = 1 OR pu.admin = 1)', true, $filter);
+    return $this->_getProjects('(pu.caldav_jobs = 1 )', true, $filter);
   }
 
   public function getWebDavProjects($filter = array())

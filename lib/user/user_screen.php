@@ -101,6 +101,137 @@ class pz_user_screen {
 	}
 	
 	
+	public function getProjectTableView($p, $projects)
+	{
+		$list = "";
+		
+		$p["linkvars"]["mode"] = "list_userperm";
+		
+		$paginate_screen = new pz_paginate_screen($projects);
+		$paginate = $paginate_screen->getPlainView($p);
+		
+		foreach($paginate_screen->getCurrentElements() as $project) {
+			$list .= $this->getProjectTableRowView($p, $project);
+		}
+		
+		$content = $paginate.'
+          <table class="userperm tbl1">
+          <thead><tr>
+              <th></th>
+              ';
+              
+		$content .= '<th>'.rex_i18n::msg("project_name").'</th>';
+		$content .= '<th>'.rex_i18n::msg("emails").'</th>';
+		$content .= '<th>'.rex_i18n::msg("calendar").'</th>';
+		$content .= '<th>'.rex_i18n::msg("calendar_caldav").'</th>';
+		$content .= '<th>'.rex_i18n::msg("calendar_jobs_caldav").'</th>';
+		$content .= '<th>'.rex_i18n::msg("files").'</th>';
+		$content .= '<th>'.rex_i18n::msg("webdav").'</th>';
+		$content .= '<th>'.rex_i18n::msg("wiki").'</th>';
+		
+        $content .= '
+          </tr></thead>
+          <tbody>
+            '.$list.'
+          </tbody>
+          </table>';
+		
+		if(isset($p["info"])) {
+			$content = $p["info"].$content;
+		}
+		
+		$f = new rex_fragment();
+		$f->setVar('title', $p["title"], false);
+		$f->setVar('content', $content , false);
+		return '<div id="userperm_list" class="design2col">'.$f->parse('pz_screen_list').'</div>';
+		return $f->parse('pz_screen_list');
+	
+	}
+	
+	
+	
+	public function getProjectTableRowView($p = array(),$project)
+	{
+		
+		if(!($projectuser = pz_projectuser::get($this->user,$project)))
+			return "";
+		
+		$toggle_caldav_events_link = pz::url("screen",$p["controll"],$p["function"],array("project_id"=>$project->getId(),"mode"=>"toggle_caldav_events"));
+		$toggle_caldav_jobs_link = pz::url("screen",$p["controll"],$p["function"],array("project_id"=>$project->getId(),"mode"=>"toggle_caldav_jobs"));
+		$toggle_webdav_link = pz::url("screen",$p["controll"],$p["function"],array("project_id"=>$project->getId(),"mode"=>"toggle_webdav"));
+		
+		$toggle_caldav_events_link = "pz_exec_javascript('".$toggle_caldav_events_link."')";
+		$toggle_caldav_jobs_link = "pz_exec_javascript('".$toggle_caldav_jobs_link."')";
+		$toggle_webdav_link = "pz_exec_javascript('".$toggle_webdav_link."')";
+		
+		$return = '
+              <tr>
+                <td class="img1"><img src="'.$project->getInlineImage().'" width="40" height="40" alt="" /></td>';
+                
+		$return .= '<td><span class="title">'.$project->getName().'</span></td>';
+
+		if($project->hasEmails() == 1) {
+			if($projectuser->hasEmails())  
+				$return .= '<td><span class="status status1">'.rex_i18n::msg("yes").'</span></td>';
+			else 
+				$return .= '<td><span class="status status2">'.rex_i18n::msg("no").'</span></td>';
+		}else {
+			$return .= '<td><span class="status status3">'.rex_i18n::msg("not_available").'</span></td>';
+		}
+		
+		if($project->hasCalendar() == 1) {
+			if($projectuser->hasCalendar())
+				$return .= '<td><span class="status status1">'.rex_i18n::msg("yes").'</span></td>';
+			else 
+				$return .= '<td><span class="status status2">'.rex_i18n::msg("no").'</span></td>';
+
+			if($projectuser->hasCalDAVEvents())  
+				$return .= '<td><a href="javascript:void(0);" onclick="'.$toggle_caldav_events_link.'"><span class="status status1 project-'.$project->getId().'-caldavevents">'.rex_i18n::msg("yes").'</span></a></td>';
+			else 
+				$return .= '<td><a href="javascript:void(0);" onclick="'.$toggle_caldav_events_link.'"><span class="status status2 project-'.$project->getId().'-caldavevents">'.rex_i18n::msg("no").'</span></a></td>';
+			
+			if($projectuser->hasCalDAVJobs())  
+				$return .= '<td><a href="javascript:void(0);" onclick="'.$toggle_caldav_jobs_link.'"><span class="status status1 project-'.$project->getId().'-caldavjobs">'.rex_i18n::msg("yes").'</span></a></td>';
+			else 
+				$return .= '<td><a href="javascript:void(0);" onclick="'.$toggle_caldav_jobs_link.'"><span class="status status2 project-'.$project->getId().'-caldavjobs">'.rex_i18n::msg("no").'</span></a></td>';
+
+		}else {
+			$return .= '<td><span class="status status3">'.rex_i18n::msg("not_available").'</span></td>';
+			$return .= '<td><span class="status status3">'.rex_i18n::msg("not_available").'</span></td>';
+			$return .= '<td><span class="status status3">'.rex_i18n::msg("not_available").'</span></td>';
+		}
+		
+		if($project->hasFiles() == 1) {
+			if($projectuser->hasFiles())  
+				$return .= '<td><span class="status status1">'.rex_i18n::msg("yes").'</span></td>';
+			else 
+				$return .= '<td><span class="status status2">'.rex_i18n::msg("no").'</span></td>';
+		}else {
+			$return .= '<td><span class="status status3">'.rex_i18n::msg("not_available").'</span></td>';
+		}
+		
+		if($project->hasFiles() == 1) {
+			if($projectuser->hasFiles())  
+				$return .= '<td><span class="status status1">'.rex_i18n::msg("yes").'</span></td>';
+			else 
+				$return .= '<td><span class="status status2">'.rex_i18n::msg("no").'</span></td>';
+		}else {
+			$return .= '<td><span class="status status3">'.rex_i18n::msg("not_available").'</span></td>';
+		}
+		
+		if($project->hasWiki() == 1) {
+			if($projectuser->hasWiki())  
+				$return .= '<td><span class="status status1">'.rex_i18n::msg("yes").'</span></td>';
+			else 
+				$return .= '<td><span class="status status2">'.rex_i18n::msg("no").'</span></td>';
+		}else {
+			$return .= '<td><span class="status status3">'.rex_i18n::msg("not_available").'</span></td>';
+		}
+        
+		return $return;
+	}
+	
+	
 	
 	
 	

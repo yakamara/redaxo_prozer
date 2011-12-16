@@ -58,7 +58,7 @@ class pz_customer extends pz_model{
 	}
 	
 	static public function getDefaultImage() {
-		return "/layout_prozer/css/customer.png";
+		return "/assets/addons/prozer/css/customer.png";
 	}
 	
 	

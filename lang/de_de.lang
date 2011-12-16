@@ -42,6 +42,8 @@ page_emails_history = Logbuch
 page_emails_search = Suche
 page_emails_setup = Setup
 
+userperm_list = Projektrechte
+
 page_emails_create = Neue E-Mail
 
 page_emails_order_id_new = ID
@@ -321,6 +323,9 @@ move = verschieben
 and_finished = und bearbeitet
 
 
+calendar_caldav = CalDAV Termine
+calendar_jobs_caldav = CalDAV Jobs
+webdav = WebDAV
 
 search_for_history = Im Logbuch suchen
 
@@ -362,7 +367,7 @@ email_account_download_failed = Download mit Email-Account {0} ist nicht gelunge
 email_account_added = E-Mail-Account wurde hinzugefügt
 email_account_edit = E-Mail-Account editieren
 
-default_email_account = Standardaccount
+default_email_account = E-Mail-Konto
 
 emails_inbox = E-Mail Inbox
 emails_outbox = E-Mail Outbox

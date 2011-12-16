@@ -9,7 +9,7 @@
 		$class = '';
 		if (isset($item["classes"]) && $item["classes"] != '') $class = ' '.$item["classes"];
 		echo '<li class="lev1'.$active.$class.'">';
-		echo '<a class="lev1'.$active.$class.'" href="'.$item["url"].'">'.$item["name"].'<span class="info1"><span class="inner">'.rand(0,200).'</span></span></a>';
+		echo '<a class="lev1'.$active.$class.'" href="'.$item["url"].'">'.$item["name"].'<!--<span class="info1"><span class="inner">'.rand(0,200).'</span>--></span></a>';
 		
 		if(isset($item["flyout"]))
 		{

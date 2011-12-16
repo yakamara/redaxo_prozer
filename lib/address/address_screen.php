@@ -18,7 +18,7 @@ class pz_address_screen{
 		$return = '
 		      <article>
             <header>
-              <figure><img src="/layout_prozer/css/user.png" width="40" height="40" alt="" /></figure>
+              <figure><img src="'.pz_user::getDefaultImage().'" width="40" height="40" alt="" /></figure>
               <hgroup>
                 <h2 class="hl7"><span class="name">'.$customer_name.'</span><span class="info">'.$this->address->getVar("created", 'datetime').'</span></h2>
                 <h3 class="hl7"><a href="'.pz::url("screen","addresses","view",array("address_id"=>$this->address->getId())).'"><span class="title">'.$this->address->getVar("name").'</span></a></h3>
@@ -341,7 +341,7 @@ class pz_address_screen{
 		$delete_link = pz::url("screen","addresses",$p["function"],array("address_id"=>$this->address->getId(),"mode"=>"delete_address"));
 
 		$return .= '<div class="xform">
-				<p><a class="bt5" onclick="check = confirm(\''.rex_i18n::msg("address_confirm_delete",htmlspecialchars($this->address->getFullName())).'\'); if (check == true) pz_loadPage(\'address_form\',\''.$delete_link.'\')" href="javascript:void(0);">- '.rex_i18n::msg("delete_address").'</a></p>
+				<p><a class="bt17" onclick="check = confirm(\''.rex_i18n::msg("address_confirm_delete",htmlspecialchars($this->address->getFullName())).'\'); if (check == true) pz_loadPage(\'address_form\',\''.$delete_link.'\')" href="javascript:void(0);">- '.rex_i18n::msg("delete_address").'</a></p>
 				</div>';
 
 		$return = '<div id="address_form"><div id="address_edit" class="design1col xform-edit">'.$return.'</div></div>';

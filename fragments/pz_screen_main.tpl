@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-	<title>Home | Prozer </title>
+	<title>PROZER 2.0 </title>
 	<meta charset="utf-8">
 	<base href="http://<?php echo rex::getProperty('server'); ?>/" />
 	<link rel="stylesheet" type="text/css" href="/assets/addons/prozer/fonts/css_fonts.css" media="screen" />
@@ -11,7 +11,6 @@
 	<link rel="stylesheet" type="text/css" href="/assets/addons/prozer/css/fileuploader.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="/assets/addons/prozer/labels_screen.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="/assets/addons/prozer/css/jquery_ui.css" media="screen" />
-	
 	
 	<script type="text/javascript" src="/assets/addons/prozer/js/jquery.min.js"></script>
 	<script type="text/javascript" src="/assets/addons/prozer/js/jquery-ui.min.js"></script>
@@ -65,7 +64,6 @@ if(isset($this->javascript) && $this->javascript != "") {
 ?>
 
 <div id="sidebar" class="sidebar sidebar1" style="display:none"></div>
- 
 <div id="pz_tracker"></div>
 
 </body>

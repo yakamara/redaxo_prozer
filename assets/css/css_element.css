@@ -3,7 +3,7 @@
 *******************************************************************************/
 
 a.bt1, a.bt2, a.bt3, a.bt4, a.bt5, a.bt6, a.bt7, a.bt8, a.bt9, a.bt10, 
-a.bt11, a.bt12, a.bt13, a.bt14, a.bt15, a.bt16, 
+a.bt11, a.bt12, a.bt13, a.bt14, a.bt15, a.bt16, a.bt17, 
 .info1, .info1 .inner, 
 .status, 
 .xform-submit[type="submit"] {
@@ -11,7 +11,7 @@ a.bt11, a.bt12, a.bt13, a.bt14, a.bt15, a.bt16,
   text-align: center;
   vertical-align: middle;
 }
-a.bt1, a.bt2, a.bt3, a.bt4, a.bt5, a.bt6, 
+a.bt1, a.bt2, a.bt3, a.bt4, a.bt5, a.bt6, a.bt17, 
 .info1, .info1 .inner, 
 span.tooltip .inner, 
 .xform-submit[type="submit"] {
@@ -54,7 +54,8 @@ a.bt4 {
 /* 21 Hoehe - N: Silber - H: Blau 
     - Paginierung - vor / zurueck
 */
-a.bt5 {
+a.bt5,
+a.bt17 {
   padding: 0 5px;
   height: 21px;
 }

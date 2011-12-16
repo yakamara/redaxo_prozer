@@ -202,12 +202,12 @@ a,
   background-position: -50px -96px;
 }
 #navi-main li.lev1 a.lev1.addresses {
-  width: 34px;
-  background-position: 0px -145px;
+  background-position: 0 -148px;
+  width: 25px;
 }
 #navi-main li.lev1 a.lev1.addresses:hover, 
 #navi-main li.active a.lev1.addresses {
-  background-position: -50px -145px;
+  background-position: -50px -148px;
 }
 #navi-main li.lev1 a.lev1.tools {
   width: 27px;
@@ -654,10 +654,11 @@ ul.actions li.action a.down:hover {
 }
 
 .entry-email .email-hasproject .function .unproject {
-  background-position: 4px 0px;
+  background-position: 4px -453px;
+  width: 30px;
 }
 .entry-email .email-hasproject .function .unproject:hover {
-  background-position: -46px 0px;
+  background-position: -46px -453px;
 }
 
 .entry-email .email-readed .function .unread {
@@ -683,7 +684,6 @@ ul.actions li.action a.down:hover {
 .entry-email .function .replyall:hover {
   background-position: -50px -396px;
 }
-
 
 .entry-email .function .forward {
   background-position: 0 -96px;
@@ -867,6 +867,15 @@ a.bt7.active {
   color: #fff;
 }
 
+/* 21 Hoehe - N: hellrot - H: rot */
+a.bt17, 
+a.bt17.inactive:hover {
+    background: -moz-linear-gradient(center top , #E34433 50%, #DC1500 50%) repeat scroll 0 0 transparent;
+    border: 1px solid #DC1500;
+    color: #FFFFFF;
+    font-size: 13px;
+    line-height: 21px;
+}
 
 /* 23 Hoehe - N: Blau - H: Dunkelgrau */
 a.bt9 {

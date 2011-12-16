@@ -898,7 +898,7 @@ class pz_calendar_event_screen{
 		
 		$delete_link = pz::url("screen","calendars",$p["function"],array("calendar_event_id"=>$this->calendar_event->getId(),"mode"=>"delete_calendar_event"));
 		$return .= '<div class="xform">
-				<p><a class="bt5" onclick="check = confirm(\''.rex_i18n::msg("calendar_event_confirm_delete",htmlspecialchars($this->calendar_event->getTitle())).'\'); if (check == true) pz_loadPage(\'calendar_event_form\',\''.$delete_link.'\')" href="javascript:void(0);">- '.rex_i18n::msg("delete_calendar_event").'</a></p>
+				<p><a class="bt17" onclick="check = confirm(\''.rex_i18n::msg("calendar_event_confirm_delete",htmlspecialchars($this->calendar_event->getTitle())).'\'); if (check == true) pz_loadPage(\'calendar_event_form\',\''.$delete_link.'\')" href="javascript:void(0);">- '.rex_i18n::msg("delete_calendar_event").'</a></p>
 				</div>';
 		
 		

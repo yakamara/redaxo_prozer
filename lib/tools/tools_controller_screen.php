@@ -16,6 +16,9 @@ class pz_tools_controller_screen extends pz_tools_controller {
 		$this->function = $function;
 
 		$p = array();
+		$p["mediaview"] = "screen";
+		$p["controll"] = "tools";
+		$p["function"] = $this->function;
 
 		switch($this->function)
 		{
@@ -47,8 +50,6 @@ class pz_tools_controller_screen extends pz_tools_controller {
 
 	function getProfilePage($p = array()) 
 	{
-		$p["title"] = rex_i18n::msg("page_users_list");
-		
 		/*
 			TODO:
 			Eigene Userdaten
@@ -58,26 +59,79 @@ class pz_tools_controller_screen extends pz_tools_controller {
 			Rechte an andere User mit vergeben
 			- Kalender, Mail, User, Read Write Delete
 		*/
+
+		$p["title"] = rex_i18n::msg("userperm_list");
+		$p["layer"] = "userperm_list";
+
+		$user = pz::getUser();
+		$u_screen = new pz_user_screen($user);
+		
 		$mode = rex_request("mode","string");
 		switch($mode) {
+			case("toggle_caldav_events"):
+				$return = "";
+				$project_id = rex_request("project_id","int");
+				if( ($project = pz_project::get($project_id)) && $project->hasCalendar() && ($projectuser = pz_projectuser::get($user,$project))) {
+					$status = 1;
+					if($projectuser->hasCalDAVEvents())
+						$status = 0;
+					$status = $projectuser->setCalDavEvents($status);
+
+					$icon_status_active = 2; // no
+					$icon_status_inactive = 1; // yes
+					if($status == 1) {
+						$icon_status_active = 1; // yes
+						$icon_status_inactive = 2; // no
+					}
+					$return.= '<script language="Javascript">';
+					$return.= '$(".project-'.$project->getId().'-caldavevents").removeClass("status'.$icon_status_inactive.'");';
+					$return.= '$(".project-'.$project->getId().'-caldavevents").addClass("status'.$icon_status_active.'");';
+					$return.= '</script>';
+				}
+				return $return;
+				
+			case("toggle_caldav_jobs"):
+				$return = "";
+				$project_id = rex_request("project_id","int");
+				if( ($project = pz_project::get($project_id)) && $project->hasCalendar() && ($projectuser = pz_projectuser::get($user,$project))) {
+					$status = 1;
+					if($projectuser->hasCalDAVJobs())
+						$status = 0;
+					$status = $projectuser->setCalDavJobs($status);
+
+					$icon_status_active = 2; // no
+					$icon_status_inactive = 1; // yes
+					if($status == 1) {
+						$icon_status_active = 1; // yes
+						$icon_status_inactive = 2; // no
+					}
+					$return.= '<script language="Javascript">';
+					$return.= '$(".project-'.$project->getId().'-caldavjobs").removeClass("status'.$icon_status_inactive.'");';
+					$return.= '$(".project-'.$project->getId().'-caldavjobs").addClass("status'.$icon_status_active.'");';
+					$return.= '</script>';
+				}
+				return $return;
+				
+			case("list_userperm"):
+				$projects = $user->getMyProjects();
+				return $u_screen->getProjectTableView($p,$projects);
+				
 			case("edit_user"):
-				$u = pz::getUser();
-				$u_screen = new pz_user_screen($u);
 				return $u_screen->getMyEditForm($p);
+				
 			case("edit_password"):
-				$u = pz::getUser();
-				$u_screen = new pz_user_screen($u);
 				return $u_screen->getMyPasswordEditForm($p);
+				
 			default:		
 		}
-		$u = pz::getUser();
-		$u_screen = new pz_user_screen($u);
-
+		
 		$section_1 = $u_screen->getMyEditForm($p);
 		$section_1.= $u_screen->getMyPasswordEditForm($p);
 		
-		$section_2 = "WebDav/ CalDav aktiveren für die einzelnen Projekte";
-		$section_3 = "Userrechte an andere geben";
+		$projects = $user->getMyProjects();
+		$section_2 = $u_screen->getProjectTableView($p,$projects);
+		
+		$section_3 = ""; // Userrechte an andere geben";
 		
 		$f = new rex_fragment();
 		$f->setVar('header', pz_screen::getHeader(), false);

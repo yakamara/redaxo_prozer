@@ -64,8 +64,10 @@ class pz_project extends pz_model{
 		{
 			return $this->customer->getInlineImage();
 		}
-		return "/layout_prozer/css/project.png";
+		return "/assets/addons/prozer/themes/blue_grey/ic_project.png";
 	}
+
+	
 
 	public function hasCustomer()
 	{

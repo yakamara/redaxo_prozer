@@ -7,6 +7,8 @@
       <li class="lev1 first date"><span class="date"><?php echo date(rex_i18n::msg("format_DdFY"))?></span></li>
       <?php if(pz::getUser()) { ?>
       
+      <!--
+
       <li class="lev1 search">
         <div class="search">
         <form action="index.php" method="post" enctype="multipart/form-data">
@@ -21,6 +23,7 @@
       </li>
       
       <li class="lev1 clipboard"><a class="bt1 clipboard" href="javascript:void(0)" onclick="pz_loadPage('sidebar','<?php echo pz::url('screen','clipboard','my',array('mode'=>'list')); ?>');"><span><?php echo htmlspecialchars(rex_i18n::msg("clipboard")); ?></span></a></li>
+      -->
       
       <?php } ?>
 
