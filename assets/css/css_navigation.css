@@ -62,13 +62,16 @@ ul.sl1 li.selected {
   width: 20px;
 }
 #navi-meta li.user {
-  width: 147px;
+  width: 170px;
   margin-right: 4px;
 }
 #navi-meta li.user span.user {
   display: block;
   padding-top: 2px;
   text-align: right;
+}
+#navi-meta li.user span {
+  white-space: nowrap;
 }
 #navi-meta li.logout {
 /*  float: right; */

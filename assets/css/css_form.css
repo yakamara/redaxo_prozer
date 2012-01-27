@@ -238,8 +238,11 @@ width:600px;
 /* Einfaches Suchform **********************************************************
 *******************************************************************************/
 .xform-search-small {
-  padding: 0 10px 10px 10px;
+  padding: 0 10px 9px 10px;
   overflow: hidden;
+}
+.xform-search-small .data {
+  margin-top: 9px;
 }
 .xform-search-small .data .flabel, 
 .xform-search-small .data .felement {

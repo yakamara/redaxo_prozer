@@ -21,6 +21,8 @@ body {
 .entry-email a:hover span {
   text-decoration: underline;
 }
+.entry-email .sl2 a, 
+.entry-email .sl2 a span, 
 .entry-email a:hover span.tooltip, 
 .entry-email a:hover span.tooltip span {
   text-decoration: none;
@@ -172,6 +174,8 @@ a,
   padding-left: 8px;
   background: url(formatted_link.png) 0% 50% no-repeat;
 }
+
+
 
 
 
@@ -658,8 +662,8 @@ ul.actions li.action a.down:hover {
 }
 
 #header .clipboard a.clipboard span {
-  width: 13px;
-  background-image: url(ic_clipboard_014_015.png);
+  width: 17px;
+  background-image: url(ic_clipboard_017_018.png);
   background-position: 50% 50%;
   text-indent: -1000em;
   display: block;
@@ -757,6 +761,17 @@ ul.actions li.action a.down:hover {
 }
 .entry-email .function .attachment:hover {
   background-position: -47px -246px;
+}
+
+.entry-email .function .clipboard {
+  display: inline-block;
+  width: 29px;
+  height: 18px;
+  background: url(ic_email_clipboard.png) -8px -16px no-repeat;
+  text-indent: -1000em;
+}
+.entry-email .function .clipboard:hover {
+  background-position: -56px -16px;
 }
 
 
@@ -1106,6 +1121,9 @@ span.tooltip .inner {
   background-image: url(ic_file_25.png);
   background-position: 0 0;
 }
+#clipboard_list .file25i {
+  background-image: url(ic_file_25_clipboard.png);
+}
 
 .folder25, 
 .folder40 {
@@ -1170,24 +1188,34 @@ span.tooltip .inner {
 .file40.mp3 { background-position: 0 -450px; }
 
 .file25i:hover, 
+.active .file25i, 
 li.attachment:hover .file25 { background-position: -500px 0; }
 .file25i.mov:hover, 
+.active .file25i.move, 
 li.attachment:hover .file25.mov { background-position: -500px -50px; }
 .file25i.pdf:hover, 
+.active .file25i.pdf, 
 li.attachment:hover .file25.pdf { background-position: -500px -100px; }
 .file25i.zip:hover, 
+.active .file25i.zip, 
 li.attachment:hover .file25.zip { background-position: -500px -150px; }
 .file25i.jpg:hover, 
+.active .file25i.jpg, 
 li.attachment:hover .file25.jpg { background-position: -500px -200px; }
 .file25i.doc:hover, 
+.active .file25i.doc, 
 li.attachment:hover .file25.doc { background-position: -500px -250px; }
 .file25i.xls:hover, 
+.active .file25i.xls, 
 li.attachment:hover .file25.xls { background-position: -500px -300px; }
 .file25i.eps:hover, 
+.active .file25i.eps, 
 li.attachment:hover .file25.eps { background-position: -500px -350px; }
 .file25i.ppt:hover, 
+.active .file25i.ppt, 
 li.attachment:hover .file25.ppt { background-position: -500px -400px; }
 .file25i.mp3:hover, 
+.active .file25i.mp3, 
 li.attachment:hover .file25.mp3 { background-position: -500px -450px; }
 
 a:hover .file40 { background-position: -40px 0; }
@@ -1712,7 +1740,7 @@ clear:both;
   background-position: 0px -47px;
 }
 .sidebar .navi li.lev1 a.clipboard {
-  width: 37px;
+  width: 29px;
   background-image: url(ic_clipboard.png);
 }
 /*
@@ -1727,10 +1755,8 @@ clear:both;
 */
 
 .sidebar .list .item {
-  background-color: #fff;
-}
-.sidebar .list .item:nth-child(2n) {
-  background-color: #f7f7f7;
+  background-color: #4c595f;
+  border-bottom: 5px solid #5d6971;
 }
 .sidebar .list .item a {
   color: #06a9d6;
@@ -1738,12 +1764,14 @@ clear:both;
 }
 .sidebar .list .item a:hover, 
 .sidebar .list .item.active a {
-  background-color: #d8d8d8;
+  background-color: #06a9d6;
+  color: #fff;
 }
 .sidebar .list .item ul {
-  padding: 0 8px;
-  background-color: #f6f7f7;
-  border-top: 1px solid #fff;
+  padding: 3px 8px 0 25px;
+  background-color: #f7f7f7;
+  border-top: 1px solid #5d6971;
+  color: #626d72;
 }
 .sidebar .list .item ul li {
   display: inline;
@@ -1759,6 +1787,7 @@ clear:both;
   display: inline;
   padding: 0;
   background: none;
+  color: #06a9d6;
 }
 .sidebar .list .item.active ul a:hover {
   text-decoration: underline;
@@ -1780,6 +1809,101 @@ clear:both;
 #function .me1 {
   margin-top: 30px;
 }
+
+
+/*  Login **********************************************************************
+*******************************************************************************/
+body#login {
+  background-color: #393939;
+}
+body#login #main a {
+  margin: 0;
+  padding: 0 8px;
+  background: none;
+  background-color: #1a1a1a;
+  border: 0;
+  text-decoration: none;
+}
+body#login #main a:hover {
+  background-color: #63676a;
+  color: #fff;
+}
+body#login #function {
+  background: url(page_login_function.png);
+}
+body#login #function .me1 {
+  margin: 0;
+}
+body#login #function .slogan {
+  position: absolute;
+  top: 80px;
+  left: 15px;
+}
+body#login #function .slogan h1 {
+  margin-bottom: 14px;
+}
+body#login #function .slogan h1 span {
+  display: inline-block;
+  margin-bottom: 1px;
+  padding: 0 7px;
+  background-color: #fff;
+  color: #2cacd5;
+  font-size: 45px;
+  font-weight: bold;
+  line-height: 56px;
+}
+body#login #function .slogan h2 span {
+  display: inline-block;
+  margin-bottom: 1px;
+  padding: 0 7px;
+  background-color: #353535;
+  color: #fff;
+  font-size: 21px;
+  line-height: 30px;
+  letter-spacing: 1px;
+}
+body#login #main .wrapper {
+  margin-top: 40px;
+  background: url(ln1.png) 0 0 repeat-x;
+}
+body#login .section1 {
+  padding: 0 15px;
+  background: url(ln2.png) 0 100% repeat-x;
+}
+
+body#login .formatted {
+  margin-bottom: 15px;
+  color: #cfcfcf;
+}
+body#login .formatted h1 {
+  color: #00b2e5;
+  font-size: 24px;
+}
+body#login .formatted h2 {
+  margin-bottom: 10px;
+  padding-top: 26px;
+  color: #879293;
+  font-size: 18px;
+}
+body#login #footer {
+  position: fixed;
+  bottom: 0;
+  padding: 35px 0;
+  background: url(footer.png);
+  color: #899293;
+}
+body#login #footer p {
+  font-size: 17px;
+}
+body#login #footer ul {
+  text-align: right;
+}
+body#login #footer ul li {
+  display: inline;
+  margin-left: 14px;
+}
+
+
 
 
 #loginbox {

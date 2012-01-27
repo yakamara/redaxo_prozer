@@ -183,6 +183,9 @@ footer .setting .last > ul,
   display: inline-block;
   padding: 5px 0;
 }
+.entries .entry article header .entries .entry .title {
+  padding: 0;
+}
 .entries .entry article footer {
   position: absolute;
   right: 0;
@@ -394,7 +397,7 @@ footer .setting .last > ul,
   display: block;
   float: left;
   width: 100%;
-  padding: 10px 0;
+  padding: 22px 0 27px 0;
 }
 .sidebar .navi li {
   display: block;
@@ -412,7 +415,7 @@ footer .setting .last > ul,
 .sidebar .navi li a.close {
   position: absolute;
   right: 10px;
-  top: 12px;
+  top: 24px;
 }
 
 .sidebar .hl3 {
@@ -423,25 +426,12 @@ footer .setting .last > ul,
 }
 .sidebar .list .item {
   display: block;
-  margin-bottom: 5px;
 }
 .sidebar .list .item a {
   display: block;
   padding: 0 8px;
 }
 
-
-
-#clipboard_list li.item {
-}
-
-#clipboard_list  li.item ul li{
-border-bottom:0;
-}
-
-#clipboard_list li.item.active {
-background-color:#26C9F6;
-}
 
 
 /* Aktionen  *******************************************************************
