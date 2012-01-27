@@ -37,6 +37,24 @@ class pz_label_screen{
 		return $return;
 	}
 
+
+	function getDeleteForm($p = array())
+	{
+		$header = '
+	        <header>
+	          <div class="header">
+	            <h1 class="hl1">'.rex_i18n::msg("delete_address").'</h1>
+	          </div>
+	        </header>';
+		
+		$return = $header.'<p class="xform-info">'.rex_i18n::msg("label_deleted", htmlspecialchars($p["label_name"])).'</p>';
+		$return .= pz_screen::getJSLoadFormPage('labels_list','labels_search_form',pz::url('screen','projects',$p["function"],array("mode"=>'list')));
+		$return = '<div id="label_form"><div id="label_delete" class="design1col xform-delete">'.$return.'</div></div>';
+
+		return $return;
+	}
+
+
 	function getEditForm($p = array()) 
 	{
 	
@@ -83,11 +101,23 @@ class pz_label_screen{
 			$return = $header.$return;
 		}
 
+		if($p["show_delete"])
+		{
+			$delete_link = pz::url("screen","projects","labels",array("label_id"=>$this->label->getId(),"mode"=>"delete_label"));
+			$return .= '<div class="xform">
+				<p><a class="bt17" onclick="check = confirm(\''.
+				rex_i18n::msg("label_confirm_delete",htmlspecialchars($this->label->getName())).
+				'\'); if (check == true) pz_loadPage(\'label_form\',\''.
+				$delete_link.'\')" href="javascript:void(0);">- '.rex_i18n::msg("delete_label").'</a></p>
+				</div>';
+		}
+
 		$return = '<div id="label_form"><div id="label_edit" class="design1col xform-edit">'.$return.'</div></div>';
 
 		return $return;	
 		
 	}
+
 
 	function getAddForm($p = array()) 
 	{

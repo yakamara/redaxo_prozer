@@ -199,20 +199,20 @@ class pz_project_screen{
 		$xform->setObjectparams("form_id", "project_add_form");
 		
 		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform'));
-		$xform->setValueField("text",array("name",rex_i18n::msg("project_name"),"","0","","","","",""));
+		$xform->setValueField("text",array("name",rex_i18n::msg("project_name"),"","0"));
 		$xform->setValidateField("empty",array("name",rex_i18n::msg("error_project_enter_name")));
-		$xform->setValueField("textarea",array("description",rex_i18n::msg("project_description"),"","0","","","","",""));
+		$xform->setValueField("textarea",array("description",rex_i18n::msg("project_description"),"","0"));
 		$xform->setValueField("pz_select_screen",array("label_id",rex_i18n::msg("project_label"),pz_labels::getAsString(), '', '', '0'));
-		$xform->setValueField("stamp",array("created","created","mysql_datetime","0","1","","","",""));
-		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0","","","",""));
+		$xform->setValueField("stamp",array("created","created","mysql_datetime","0","1"));
+		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0"));
 		$xform->setValueField("pz_select_screen",array("customer_id",rex_i18n::msg("project_customer"),pz_customers::getAsString(),"","",1,rex_i18n::msg("please_choose")));
 		$xform->setValueField("hidden",array("create_user_id",pz::getUser()->getId()));
 		$xform->setValueField("hidden",array("update_user_id",pz::getUser()->getId()));
 		$xform->setValueField("hidden",array("archived",0));
-		$xform->setValueField("checkbox",array("has_calendar",rex_i18n::msg("calendar"),"1","1","0","","","",""));
-		$xform->setValueField("checkbox",array("has_wiki",rex_i18n::msg("wiki"),"1","1","0","","","",""));
-		$xform->setValueField("checkbox",array("has_files",rex_i18n::msg("files"),"1","1","0","","","",""));
-		$xform->setValueField("checkbox",array("has_emails",rex_i18n::msg("emails"),"1","1","0","","","",""));
+		$xform->setValueField("checkbox",array("has_calendar",rex_i18n::msg("calendar"),"1","1","0"));
+		$xform->setValueField("checkbox",array("has_wiki",rex_i18n::msg("wiki"),"1","1","0"));
+		$xform->setValueField("checkbox",array("has_files",rex_i18n::msg("files"),"1","1","0"));
+		$xform->setValueField("checkbox",array("has_emails",rex_i18n::msg("emails"),"1","1","0"));
 
 		$xform->setActionField("db",array());
 		$return = $xform->getForm();

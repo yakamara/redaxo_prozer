@@ -23,7 +23,6 @@ class pz_sabre_dav_server extends Sabre_DAV_Server
 
   public function exec()
   {
-    //ob_end_clean();
     error_reporting(E_ALL ^ E_NOTICE);
 
     set_error_handler(function($errno, $errstr, $errfile, $errline ) {
@@ -32,15 +31,9 @@ class pz_sabre_dav_server extends Sabre_DAV_Server
       return true;
     });
 
-    ob_start();
+    while(ob_end_clean());
 
     parent::exec();
-
-    $CONTENT = ob_get_contents();
-    ob_end_clean();
-
-    header('Content-Length: '.strlen($CONTENT));
-    echo $CONTENT;
 
     exit;
   }

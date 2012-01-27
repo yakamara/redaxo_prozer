@@ -6,6 +6,8 @@ class pz_customer extends pz_model{
 	var $isCustomer = FALSE;
 
 	static $var_labels = 6;
+	static private $customers = array();
+
 
 	public function __construct($vars) {
 		$this->isCustomer = TRUE;
@@ -14,18 +16,22 @@ class pz_customer extends pz_model{
 
 	static public function get($id = "")
 	{
-		if($id == "") return FALSE;
 		$id = (int) $id;
+		if($id == 0) 
+			return FALSE;
+
+		if(isset(pz_customer::$customers[$id]))
+			return pz_customer::$customers[$id];
 		
 		$class = get_called_class();
 
 		$sql = rex_sql::factory();
-		$sql->setQuery('select * from pz_customer where id = '.$id).' LIMIT 2';
 		
-		$customers = $sql->getArray();
+		$customers = $sql->getArray('select * from pz_customer where id = ? LIMIT 2', array($id));
 		if(count($customers) != 1) return FALSE;
-				
-		return new $class($customers[0]);
+		
+		pz_customer::$customers[$id] = new $class($customers[0]);
+		return pz_customer::$customers[$id];
 	}
 
 	public function getId()
@@ -41,7 +47,6 @@ class pz_customer extends pz_model{
 	public function getFolder() {
 		return rex_path::addonData('prozer', 'customers/'.$this->getId());	
 	}
-	
 	
 	public function getInlineImage()
 	{
@@ -61,7 +66,14 @@ class pz_customer extends pz_model{
 		return "/assets/addons/prozer/css/customer.png";
 	}
 	
-	
+	public function hasProjects() 
+	{
+		$sql = rex_sql::factory();
+		$customers = $sql->getArray('select * from pz_project where customer_id = ? LIMIT 2',array($this->getId()));
+		if(count($customers)>0)
+			return true;
+		return false;
+	}
 	
 	
 	public function update() {
@@ -74,7 +86,9 @@ class pz_customer extends pz_model{
 	}
 
 	public function delete() {
-		
+		$sql = rex_sql::factory();
+		$sql->setQuery('delete from pz_customer where id = ?',array($this->getId()));
+		return true;
 	}
 
 

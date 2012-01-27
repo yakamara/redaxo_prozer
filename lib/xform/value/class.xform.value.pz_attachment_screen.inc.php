@@ -3,8 +3,6 @@
 /*
 	// TODO
 		- wenn Bild nicht übernommen wird, dann Clip löschen ?
-
-
 */
 
 class rex_xform_value_pz_attachment_screen extends rex_xform_value_abstract
@@ -131,22 +129,18 @@ class rex_xform_value_pz_attachment_screen extends rex_xform_value_abstract
 		if (isset($this->params["warning"][$this->getId()]))
 			$classes .= ' '.$this->params["warning"][$this->getId()];
 		
-		$classes = (trim($classes) != '') ? ' class="'.trim($classes).'"' : '';
-		$before = '';
-		$after = '';    
-		$label = ($this->getElement(2) != '') ? '<label'.$classes.' for="' . $this->getFieldId() . '">' . rex_i18n::translate($this->getElement(2)) . '</label>' : '';	
-		$field = '<input'.$classes.' id="'.$this->getFieldId().'" type="hidden" name="'.$this->getFieldName().'" value="'.htmlspecialchars(stripslashes($this->getValue())).'" />'.$output;
-		$extra = '';
+		$after = '<a class="bt-upload" id="'.$this->getFieldId('clipboard_button').'" href="javascript:pz_clipboard_select(\'#'.$this->getFieldId('clipboard_button').'\',\'#pz_multiupload_'.$this->getId().' .qq-uploaded-list\',\'#'.$this->getFieldId().'\')">'.rex_i18n::msg("get_from_clipboard").'</a>';
+
+
+		$label = ($this->getElement(2) != '') ? '<label class="'.$classes.'" for="' . $this->getFieldId() . '">' . rex_i18n::translate($this->getElement(2)) . '</label>' : '';	
+		$field = '<input class="'.$classes.' clip-ids" id="'.$this->getFieldId().'" type="hidden" name="'.$this->getFieldName().'" value="'.htmlspecialchars(stripslashes($this->getValue())).'" />'.$output;
 		$html_id = $this->getHTMLId();
 		$name = $this->getName();
 		
-		
 		$f = new rex_fragment();
-		$f->setVar('before', $before, false);
 		$f->setVar('after', $after, false);
 		$f->setVar('label', $label, false);
 		$f->setVar('field', $field, false);
-		$f->setVar('extra', $extra, false);
 		$f->setVar('html_id', $html_id, false);
 		$f->setVar('name', $name, false);
 		$f->setVar('class', $class, false);

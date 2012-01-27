@@ -46,32 +46,53 @@ class pz_login_controller_screen extends pz_login_controller{
 
 	public function getMainPage($p = array()) {
 		
-		$function = '<figure class="me1"><img src="/assets/addons/prozer/themes/blue_grey/assets/intro.jpg" alt="" width="100%" /></figure>';
+		$function = '
+		        <div class="slogan">
+		          <h1><span>PROZER 2.0 </span><br /><span>Agentursoftware</span></h1>
+		          <h2><span>Das kostenlose Open-Source </span><br /><span>Projekt-Kommunikations-System</span></h2>
+		        </div>
+		        <figure class="me1">
+		          <img src="/assets/addons/prozer/themes/blue_grey/assets/page_login_yakamara.png" alt="" width="100%" />
+		        </figure>';
 		
 		$section1 = '
-		        <div class="design2col formatted">
-		          <h1>Willkommen bei Prozer</h1>
-		          <p>Erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. 
-Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. 
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod. 
-Erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. 
-Stet clita kasd gubergren, no sea takimata sanctus est .</p>
+		        <div class="grid2col formatted">
+		          <div class="column first">
+                <h1>Willkommen bei PROZER 2.0</h1>
+                <p>PROZER ist eine Agentursoftware, die alle typischen Kommunikationsaufgaben der Projektarbeit abdeckt - vielseitig und leicht zu handhaben. Termine oder Arbeitsstunden können online sowie über CalDav-Clients (iPhone, Android) gepflegt und synchronisiert werden. Auch Adressen, E-Mails und andere Dateien sind mit PROZER immer leicht im Blick zu behalten.</p>
+              </div>
+              
+              <div class="column last">
+                <h2>Software-Updates, Weiterentwicklung & Unterstützung</h2>
+                <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. <a href="http://prozer.org">mehr Infos auf PROZER.ORG</a></p>
+                <h2>Impressum</h2>
+                <p>Yakamara Media GmbH & Co. KG  .  Kaiserstrasse 69  .  60329 Frankfurt<br />
+                Tel.: 069 900.20.60.30  .  Fax.: 069 900.20.60.33<br />
+                <a href="mailto:info@yakamara.de">info@yakamara.de</a>  .  <a href="http://www.yakamara.de">www.yakamara.de</a></p>
+              </div>
 		        </div>';
-		        
-		$section2 = '
-		        <div class="design1col formatted">
-		          <h1>Impressum</h1>
-		          <p>Yakamara Media GmbH & Co. KG  .  Kaiserstrasse 69  .  60329 Frankfurt<br />
-		          Tel.: 069 900.20.60.30  .  Fax.: 069 900.20.60.33<br />
-		          <a href="mailto:info@yakamara.de">info@yakamara.de</a>  .  <a href="http://www.yakamara.de">www.yakamara.de</a></p>
-		        </div>';
+
+		$footer = '
+		        <div class="grid2col">
+		          <div class="column first">
+		            <p>Yakamara Media, Frankfurt, Germany</p>
+		          </div>
+              
+              <div class="column last">
+                <ul>
+                  <li><a href="http://www.yakamara.de">www.yakamara.de</a></li>
+                  <li><a href="http://www.prozer.org">www.prozer.org</a></li>
+                </ul>
+              </div>
+            </div>';
 		
 		$f = new rex_fragment();
 		$f->setVar('header', pz_screen::getHeader($p), false);
 		$f->setVar('function', $function , false);
 		$f->setVar('section_1', $section1 , false); // $this->getLoginForm($p)
-		$f->setVar('section_2', $section2 , false); // $this->getLoginForm($p)
-		// $f->setVar('page_id', 'login');
+//		$f->setVar('section_2', $section2 , false); // $this->getLoginForm($p)
+		$f->setVar('footer', $footer , false);
+		$f->setVar('page_id', 'login');
 		$f->setVar('javascript', "pz_getLoginForm();");
 		
 		return $f->parse('pz_screen_main');

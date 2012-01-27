@@ -6,7 +6,7 @@ class pz_project_directory extends pz_project_node
   {
     $sql = rex_sql::factory();
     $params = array($this->vars['project_id'], $this->getId());
-    $array = $sql->getArray('SELECT * FROM pz_project_file WHERE project_id = ? AND parent_id = ? ORDER BY name', $params);
+    $array = $sql->getArray('SELECT * FROM pz_project_file WHERE project_id = ? AND parent_id = ? ORDER BY is_directory desc,name', $params);
     $children = array();
     foreach($array as $row)
     {
@@ -30,22 +30,31 @@ class pz_project_directory extends pz_project_node
     return is_object($this->getChild($name));
   }
 
-  public function createFile($name, $data = null)
+  public function createFile($name, $data = '', $comment = '')
   {
-    if(!$this->createNode($name, false))
+    if(!$this->createNode($name, false, $comment))
       return false;
 
     $file = $this->getChild($name);
-    $file->putContent($data);
+    $file->putContent($data, false);
+
+    $file->saveToHistory('create');
+
     return true;
   }
 
   public function createDirectory($name)
   {
-    return $this->createNode($name, true);
+    if(!$this->createNode($name, true))
+      return false;
+
+    $dir = $this->getChild($name);
+    $dir->saveToHistory('create');
+
+    return true;
   }
 
-  private function createNode($name, $is_directoy = false)
+  private function createNode($name, $is_directoy = false, $comment = '')
   {
     if($this->childExists($name))
       return false;
@@ -56,6 +65,7 @@ class pz_project_directory extends pz_project_node
       ->setValue('parent_id', $this->getId())
       ->setValue('is_directory', $is_directoy)
       ->setValue('project_id', $this->vars['project_id'])
+      ->setValue('comment', $comment)
       ->setRawValue('created', 'NOW()')
       ->setRawValue('updated', 'NOW()')
       ->setValue('created_user_id', pz::getUser()->getId())
@@ -77,7 +87,7 @@ class pz_project_root_directory extends pz_project_directory
   public function __construct(pz_project $project)
   {
     $vars['id'] = 0;
-    $vars['name'] = $project->getId() .' - '. str_replace('/', '-', $project->getName());
+    $vars['name'] = str_replace('/', '-', $project->getName()) .' ['. $project->getId() .']';
     $vars['parent_id'] = 0;
     $vars['project_id'] = $project->getId();
     parent::__construct($vars);

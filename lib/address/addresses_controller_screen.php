@@ -40,41 +40,16 @@ class pz_addresses_controller_screen extends pz_addresses_controller {
 
 	function getNavigation($p = array())
 	{
-		return pz_screen::getNavigation($p,$this->navigation, $this->function, $this->name);
+		
+		return pz_screen::getNavigation(
+			$p,
+			$this->navigation, 
+			$this->function, 
+			$this->name
+		);
+
 	}
 
-	private function getAddressTableView($addresses,$p = array())
-	{
-		$content = "";
-		$p["layer"] = 'addresses_list';
-		
-		$paginate_screen = new pz_paginate_screen($addresses);
-		$paginate = $paginate_screen->getPlainView($p);
-		
-		foreach($paginate_screen->getCurrentElements() as $address) {
-			$ps = new pz_address_screen($address);
-			$content .= $ps->getTableView($p);
-		}
-		$content = $paginate.'
-          <table class="projects tbl1">
-          <thead><tr>
-              <th></th>
-              <th>'.rex_i18n::msg("address_name").'</th>
-              <th>'.rex_i18n::msg("address_telephone").'</th>
-              <th>'.rex_i18n::msg("address_emails").'</th>
-              <th>'.rex_i18n::msg("address").'</th>
-              <th class="label"></th>
-          </tr></thead>
-          <tbody>
-            '.$content.'
-          </tbody>
-          </table>';
-		
-		$f = new rex_fragment();
-		$f->setVar('title', $p["title"], false);
-		$f->setVar('content', $content , false);
-		return '<div id="addresses_list" class="design2col">'.$f->parse('pz_screen_list').'</div>';
-	}
 
 	// --------------------------------------------------- Formular Views
 
@@ -87,8 +62,28 @@ class pz_addresses_controller_screen extends pz_addresses_controller {
 		$r_addresses = array();
 		switch($mode)
 		{
+		
+			case("get_user_emails"):
+				$filter = array();
+				$filter[] = array('field'=>'status', 'value'=>1);
+				$filter[] = array('field'=>'name', 'type' => 'like', 'value'=>'%'.$fulltext.'%');
+				// $fulltext
+				// status = 1
+				$users = pz::getUsers($filter); 
+				foreach($users as $user) 
+				{
+					$r_addresses[] = array(
+						"id" => $user->getId(),
+						"label" => $user->getName()." [".$user->getEmail()."]",
+						"value" => $user->getEmail()
+					);
+				}
+				break;
+		
 			case("get_emails"):
+
 				$addresses = pz_address::getAllByFulltext($fulltext);
+
 				foreach($addresses as $address) 
 				{
 					foreach($address->getFields() as $field) 
@@ -142,34 +137,7 @@ class pz_addresses_controller_screen extends pz_addresses_controller {
 
 
 
-	function getAddressesSearchForm ()
-	{
-		
-    $return = '
-        <header>
-          <div class="header">
-            <h1 class="hl1">'.rex_i18n::msg("search_for_addresses").'</h1>
-          </div>
-        </header>';
-		
-		$xform = new rex_xform;
-		$xform->setObjectparams("real_field_names",TRUE);
-		$xform->setObjectparams("form_showformafterupdate", TRUE);
-		
-		$xform->setObjectparams("form_action", "javascript:pz_loadFormPage('addresses_list','addresses_search_form','".pz::url('screen','addresses',$this->function,array("mode"=>'list'))."')");
-		$xform->setObjectparams("form_id", "addresses_search_form");
-		
-		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform', 'runtime'));
-		$xform->setValueField("text",array("search_name",rex_i18n::msg("project_name")));
-		// $xform->setValueField('pz_select_screen',array('search_user', rex_i18n::msg('user'), pz_customers::getAsString(),"","",1,rex_i18n::msg("please_choose")));
-		// $xform->setValueField('pz_date_screen',array('search_datetime', rex_i18n::msg('createdate')));
-		$xform->setValueField("submit",array('submit',rex_i18n::msg('search'), '', 'search'));
-		$return .= $xform->getForm();
-		
-		$return = '<div id="addresses_search" class="design1col xform-search">'.$return.'</div>';
-		return $return;
-
-	}
+	
 
 
 	// ------------------------------------------------------- page views
@@ -208,7 +176,9 @@ class pz_addresses_controller_screen extends pz_addresses_controller {
 				$address_id = rex_request("address_id","int");
 				if($address = pz_address::get($address_id)) {
 					$r = new pz_address_screen($address);
-					return $r->getDeleteForm($p);
+					$return = $r->getDeleteForm($p);
+					$address->delete();
+					return $return;
 				}
 				
 			case("edit_address"):
@@ -223,15 +193,15 @@ class pz_addresses_controller_screen extends pz_addresses_controller {
 				break;
 			case("list"):
 				$addresses = pz::getUser()->getAddresses($fulltext);
-				return $this->getAddressTableView(
+				return pz_address_screen::getTableListView(
 							$addresses,
 							array_merge( $p, array("linkvars" => array("mode" =>"list", "search_name" => $fulltext) ) )
 						);
 				break;
 			case(""):
-				$s1_content .= $this->getAddressesSearchForm($p);
+				$s1_content .= pz_address_screen::getAddressesSearchForm($p);
 				$addresses = pz::getUser()->getAddresses($fulltext);
-				$s2_content .= $this->getAddressTableView(
+				$s2_content .= pz_address_screen::getTableListView(
 							$addresses,
 							array_merge( $p, array("linkvars" => array("mode" =>"list", "search_name" => $fulltext) ) )
 						);
@@ -268,7 +238,9 @@ class pz_addresses_controller_screen extends pz_addresses_controller {
 				$address_id = rex_request("address_id","int");
 				if($address = pz_address::get($address_id)) {
 					$r = new pz_address_screen($address);
-					return $r->getDeleteForm($p);
+					$return = $r->getDeleteForm($p);
+					$address->delete();
+					return $return;
 				}
 				
 			case("edit_address"):
@@ -283,15 +255,15 @@ class pz_addresses_controller_screen extends pz_addresses_controller {
 				break;
 			case("list"):
 				$addresses = pz_address::getAllByFulltext($fulltext);
-				return $this->getAddressTableView($addresses,array_merge(
+				return pz_address_screen::getTableListView($addresses,array_merge(
 						$p,
 						array("linkvars" => array("mode" =>"list","search_name" => rex_request("search_name","string")) )
 						));
 				break;
 			case(""):
-				$s1_content .= $this->getAddressesSearchForm($p);
+				$s1_content .= pz_address_screen::getAddressesSearchForm($p);
 				$addresses = pz_address::getAllByFulltext($fulltext);
-				$s2_content .= $this->getAddressTableView(
+				$s2_content .= pz_address_screen::getTableListView(
 							$addresses,
 							array_merge( $p, array("linkvars" => array("mode" =>"list") ) )
 						);

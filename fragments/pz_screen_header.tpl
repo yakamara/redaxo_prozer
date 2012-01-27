@@ -22,14 +22,15 @@
         </div>
       </li>
       
-      <li class="lev1 clipboard"><a class="bt1 clipboard" href="javascript:void(0)" onclick="pz_loadPage('sidebar','<?php echo pz::url('screen','clipboard','my',array('mode'=>'list')); ?>');"><span><?php echo htmlspecialchars(rex_i18n::msg("clipboard")); ?></span></a></li>
       -->
+
+      <li class="lev1 clipboard"><a class="bt1 clipboard" href="javascript:void(0)" onclick="pz_loadClipboard();"><span><?php echo htmlspecialchars(rex_i18n::msg("clipboard")); ?></span></a></li>
       
       <?php } ?>
 
       <?php if(@$this->user != "") { ?>
 
-      <li class="lev1 user selected"><span class="selected"><?php echo pz::cutText($this->user,20); ?></span>
+      <li class="lev1 user selected"><span class="selected"><?php echo htmlspecialchars(pz::cutText($this->user,18)); ?></span>
       <!--
         <div class="flyout">
           <div class="content">

@@ -7,7 +7,7 @@ class pz_labels {
 	static function get() {
 		
 		$sql = rex_sql::factory();
-		$sql->setQuery('select * from pz_label order by id');
+		$sql->setQuery('select * from pz_label order by name');
 		
 		$labels = array();
 		foreach($sql->getArray() as $l)

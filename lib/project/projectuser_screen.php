@@ -179,7 +179,7 @@ class pz_projectuser_screen{
 			$xform->setValueField("hidden",array("wiki","0"));
 		}
 
-		$xform->setValueField("checkbox",array("admin",rex_i18n::msg("admin"),"1","1","0","","","",""));
+		$xform->setValueField("checkbox",array("admin",rex_i18n::msg("admin"),"1","0","0","","","",""));
 
 		$xform->setActionField("db",array());
 		$return = $xform->getForm();
@@ -271,7 +271,7 @@ class pz_projectuser_screen{
 			$xform->setValueField("hidden",array("wiki","0"));
 		}
 
-		$xform->setValueField("checkbox",array("admin",rex_i18n::msg("admin"),"1","1","0","","","",""));
+		$xform->setValueField("checkbox",array("admin",rex_i18n::msg("admin"),"1","0","0","","","",""));
 
 		$xform->setActionField("db",array('pz_project_user','id='.$this->projectuser->getId()));
 		$return = $xform->getForm();

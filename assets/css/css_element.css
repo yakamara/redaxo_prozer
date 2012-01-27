@@ -22,6 +22,14 @@ span.tooltip .inner,
 
 /* Buttons  ********************************************************************
 *******************************************************************************/
+
+a.bt5.bt-loading span {
+	background-image:url(loading.gif);
+	background-repeat:no-repeat;
+	background-position:3px 50%;
+	padding-left:25px;
+}
+
 /* 23 Hoehe - N: Grau - H: Blau */
 a.bt1 {
   padding: 0 5px;

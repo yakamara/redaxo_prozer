@@ -11,13 +11,19 @@
 	<link rel="stylesheet" type="text/css" href="/assets/addons/prozer/css/fileuploader.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="/assets/addons/prozer/labels_screen.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="/assets/addons/prozer/css/jquery_ui.css" media="screen" />
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/addons/prozer/themes/blue_grey/faviconn.ico" />
+	
+  <!--[if IE]>
+    <link rel="stylesheet" type="text/css" href="/assets/addons/prozer/themes/blue_grey/css_ie.css" media="screen" />
+	<![endif]-->
+	
 	
 	<script type="text/javascript" src="/assets/addons/prozer/js/jquery.min.js"></script>
 	<script type="text/javascript" src="/assets/addons/prozer/js/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="/assets/addons/prozer/js/facebox.js"></script>
 	<script type="text/javascript" src="/assets/addons/prozer/js/prozer.js"></script>
 	<script type="text/javascript" src="/assets/addons/prozer/js/fileuploader.js"></script>
-
+  
 </head>
 <body class="grid-a-bc"<?php echo (isset($this->page_id) && $this->page_id != '') ? ' id="'.$this->page_id.'"' : ''; ?>>
 
@@ -52,14 +58,30 @@
         
     </div>
   </div>
+  
+<?php  
+if(isset($this->footer) && $this->footer != '')
+{
+  echo '
+  <footer id="footer">
+    <div class="wrapper clearfix">
+      '.$this->footer.'
+    </div>
+  </footer>';
+}
+?>
 
 <?php 
 
+echo '<script type="text/javascript">';
 if(isset($this->javascript) && $this->javascript != "") {
-	echo '<script type="text/javascript">';
 	echo $this->javascript;
-	echo '</script>';
 }
+
+if(pz::getUser())
+	echo 'pz_tracker();';
+
+echo '</script>';
 
 ?>
 

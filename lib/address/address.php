@@ -58,7 +58,10 @@ class pz_address extends pz_model
 	{
 		$where = array();
 		$params = array();
-		
+
+		$return_filter = pz::getFilter($filter, $where, $params);
+
+		/*
 	    foreach($filter as $f)
 	    {
 	    	switch(@$f["type"]) {
@@ -72,16 +75,16 @@ class pz_address extends pz_model
 			    	$params[] = $f["value"];
 	    	}
 	    }
-	
 	    $sql_where = '';
 	    if(count($where) > 0)
 	    {
 			$sql_where.= ' where ('.implode(" AND ",$where).') ';
 	    }
-	
+		*/
+
 	  $sql = rex_sql::factory();
 	  // $sql->debugsql = 1;
-	  $sql->setQuery('SELECT * FROM pz_address '.$sql_where,$params);
+	  $sql->setQuery('SELECT * FROM pz_address '.$return_filter['where_sql'],$return_filter['params']);
 	  $addresses = array();
 	  foreach($sql->getArray() as $row)
 	  {
@@ -107,7 +110,7 @@ class pz_address extends pz_model
 
 	public function getFullName()
 	{
-	  return implode(' ', 
+	  return implode(' ',
 		  		array_filter(
 		  			array( $this->vars['prefix'], $this->vars['firstname'], $this->vars['additional_names'], $this->vars['name'], $this->vars['suffix'] )
 	 	 			)
@@ -140,23 +143,37 @@ class pz_address extends pz_model
 		return $return;
 	}
 
-	static public function makeInlineImage($photo, $size = "xl", $mimetype = "image/jpg") {
-	
+	static public function makeInlineImage($photo, $size = "m", $mimetype = "image/jpg") {
+
 		// PHOTO;ENCODING=b;TYPE=JPEG;X-ABCROP-RECTANGLE=ABClipRect_1&0&64&480&480&EZ+ Q5v4Z5Ou9atiMTeB+8w==:
 		// PHOTO;BASE64=: /9j/4AAQSkZJRgABAQAAAQABAAD//gAoCgo
 		// PHOTO;ENCODING=b;TYPE=JPEG:/9j/4AAQSkZJRgABAQA
 		// check possible encodings: base64_decode
 		// check possible image types: JPEG
-	
+
 		$photo = str_replace(" ","", $photo);
 		$photo = explode(":",$photo);
 		$src = base64_decode($photo[1]);
-		return pz::makeInlineImageFromSource($src, $size, $mimetype);	
+		return pz::makeInlineImageFromSource($src, $size, $mimetype);
 
 	}
 
 	static public function getDefaultImage() {
 		return "/assets/addons/prozer/css/user.png";
+	}
+
+	public function getFieldsByType($type = "EMAIL")
+	{
+		$emails = array();
+		foreach($this->getFields() as $field)
+		{
+			switch($field->getVar("type")) {
+				case($type):
+					$emails[] = $field->getVar("value");
+					break;
+			}
+		}
+		return $emails;
 	}
 
 	public function getFields()
@@ -178,7 +195,7 @@ class pz_address extends pz_model
 	  $sql = rex_sql::factory();
 	  $sql->setTable('pz_address_history')
 	    ->setValue('address_id', $this->getId())
-	    ->setValue('user_id', $this->vars['updated_user_id'])
+	    ->setValue('user_id', pz::getUser()->getId())
 	    ->setRawValue('stamp', 'NOW()')
 	    ->setValue('mode', $mode);
 	  if($mode != 'delete')

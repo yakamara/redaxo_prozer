@@ -13,6 +13,8 @@ class pz_sabre_carddav_backend extends Sabre_CardDAV_Backend_Abstract
 
   public function getAddressBooksForUser($principalUri)
   {
+    if(!pz::getUser()->isAdmin() && !pz::getUser()->hasPerm('carddav'))
+      return array();
     return array(array(
       'id' => 1,
       'uri' => 'prozer_addressbook',
@@ -35,9 +37,21 @@ class pz_sabre_carddav_backend extends Sabre_CardDAV_Backend_Abstract
     foreach(pz_address::getAll() as $address)
     {
       if($address->getVar('uri'))
-        $addresses[] = $this->getCardArray($address);
+      {
+        $addresses[] = $this->getCardMeta($address);
+      }
     }
     return $addresses;
+  }
+
+  protected function getCardMeta(pz_address $address)
+  {
+    $time = strtotime($address->getVar('updated'));
+    return array(
+      'uri' => $address->getVar('uri'),
+      'lastmodified' => $time,
+      'etag' => '"'. $time .'"'
+    );
   }
 
   /**
@@ -108,41 +122,55 @@ class pz_sabre_carddav_backend extends Sabre_CardDAV_Backend_Abstract
       $card->bday = $birthday;
       $card->bday['value'] = 'date';
     }
-    if($photo = $address->getVar('photo'))
-      $card->photo = Sabre_VObject_Reader::read($photo);
 
     $sql = rex_sql::factory();
-    $sql->setQuery('SELECT * FROM pz_address_field WHERE address_id = ? ORDER BY type ASC, preferred DESC', array($address->getId()));
-    $i = 1;
-    foreach($sql as $row)
+    $fields = $sql->getArray('SELECT * FROM pz_address_field WHERE address_id = ? ORDER BY type ASC, preferred DESC', array($address->getId()));
+    $add = array();
+    foreach($fields as $row)
     {
-      $type = $sql->getValue('type');
-      $property = new Sabre_VObject_Property("item$i.$type", $sql->getValue('value'));
+      if($row['type'] = 'IMPP' && in_array($row['value_type'], array('AIM', 'ICQ', 'Jabber', 'MSN', 'Yahoo')))
+      {
+        $newRow = array();
+        $newRow['type'] = 'X-'. strtoupper($row['value_type']);
+        $newRow['label'] = $row['label'];
+        $newRow['preferred'] = $row['preferred'];
+        $newRow['value_type'] = '';
+        $newRow['value'] = substr($row['value'], strpos($row['value'], ':') + 1);
+        $add[] = $newRow;
+      }
+    }
+    $fields = array_merge($fields, $add);
+    $i = 1;
+    foreach($fields as $row)
+    {
+      $type = $row['type'];
+      $property = new Sabre_VObject_Property("item$i.$type", $row['value']);
       $card->add($property);
       switch($type)
       {
-        case 'ADR': $card->add(new Sabre_VObject_Property("item$i.X-ABADR", $sql->getValue('value_type'))); break;
-        case 'IMPP': $property['x-service-type'] = $sql->getValue('value_type'); break;
-        case 'X-SOCIALPROFILE': $property[] = new Sabre_VObject_Parameter('type', $sql->getValue('value_type')); break;
+        case 'ADR': $card->add(new Sabre_VObject_Property("item$i.X-ABADR", $row['value_type'])); break;
+        case 'IMPP': $property['x-service-type'] = $row['value_type']; break;
+        case 'X-SOCIALPROFILE': $property[] = new Sabre_VObject_Parameter('type', $row['value_type']); break;
         case 'EMAIL': $property[] = new Sabre_VObject_Parameter('type', 'internet'); break;
       }
-      foreach(explode(',', $sql->getValue('label')) as $label)
+      foreach(explode(',', $row['label']) as $label)
       {
         if(in_array($label, $this->knownLabels))
           $property[] = new Sabre_VObject_Parameter('type', $label);
         elseif($type != 'X-SOCIALPROFILE' && $label)
           $card->add(new Sabre_VObject_Property("item$i.X-ABLabel", $label));
       }
-      if($sql->getValue('preferred'))
+      if($row['preferred'])
         $property[] = new Sabre_VObject_Parameter('type', 'pref');
       ++$i;
     }
 
-    return array(
-      'uri' => $address->getVar('uri'),
-      'lastmodified' => strtotime($address->getVar('updated')),
-      'carddata' => str_replace(';BASE64=:', ';BASE64:', $card->serialize())
-    );
+    if($photo = $address->getVar('photo'))
+      $card->photo = Sabre_VObject_Reader::read($photo);
+
+    $array = $this->getCardMeta($address);
+    $array['carddata'] = str_replace(';BASE64=:', ';BASE64:', $card->serialize());
+    return $array;
   }
 
   private function addToCard($card, $key, $value, $comp = '')
@@ -256,9 +284,11 @@ class pz_sabre_carddav_backend extends Sabre_CardDAV_Backend_Abstract
     $count = 0;
     $params = array();
     $fields = array('EMAIL', 'TEL', 'ADR', 'X-SOCIALPROFILE', 'URL', 'IMPP', 'X-ABDATE', 'X-ABRELATEDNAMES');
+    $imppFields = array('X-AIM', 'X-ICQ', 'X-JABBER', 'X-MSN', 'X-YAHOO');
+    $imppIsset = isset($card->impp);
     foreach($card->children() as $property)
     {
-      if(!in_array($property->name, $fields))
+      if(!in_array($property->name, $fields) && ($imppIsset || !in_array($property->name, $imppFields)))
         continue;
 
       ++$count;
@@ -289,8 +319,37 @@ class pz_sabre_carddav_backend extends Sabre_CardDAV_Backend_Abstract
       $label = implode(',', $label);
       switch($property->name)
       {
-        case 'ADR':  $value_type = ((string) $card->__get($property->group .'.X-ABADR')) ?: 'de'; break;
-        case 'IMPP': $value_type = (string) $property['x-service-type']; break;
+        case 'ADR':
+          $value_type = ((string) $card->__get($property->group .'.X-ABADR')) ?: 'de';
+          break;
+        case 'IMPP':
+          $value_type = (string) $property['x-service-type'];
+          break;
+        case 'X-AIM':
+          $type = 'IMPP';
+          $value = 'aim:'. $value;
+          $value_type = 'AIM';
+          break;
+        case 'X-ICQ':
+          $type = 'IMPP';
+          $value = 'aim:'. $value;
+          $value_type = 'ICQ';
+          break;
+        case 'X-JABBER':
+          $type = 'IMPP';
+          $value = 'xmpp:'. $value;
+          $value_type = 'Jabber';
+          break;
+        case 'X-MSN':
+          $type = 'IMPP';
+          $value = 'msnim:'. $value;
+          $value_type = 'MSN';
+          break;
+        case 'X-YAHOO':
+          $type = 'IMPP';
+          $value = 'ymsgr:'. $value;
+          $value_type = 'Yahoo';
+          break;
       }
       array_push($params, $addressId, $type, $label, $preferred, $value, $value_type);
     }

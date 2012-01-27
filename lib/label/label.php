@@ -49,15 +49,25 @@ class pz_label extends pz_model{
 
 	public function update() {
 		pz_labels::update();
-
 	}
 
 	public function create() {
 		pz_labels::update();
-
 	}
 
-	public function delete() {
+	public function hasProjects() 
+	{
+		$sql = rex_sql::factory();
+		$projects = $sql->getArray('select * from pz_project where label_id = ? LIMIT 2',array($this->getId()));
+		if(count($projects)>0)
+			return true;
+		return false;
+	}
+
+	public function delete() 
+	{
+		$sql = rex_sql::factory();
+		$sql->setQuery('delete from pz_label where id = ?',array($this->getId()));
 		pz_labels::update();
 
 	}

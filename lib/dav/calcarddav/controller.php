@@ -1,16 +1,16 @@
 <?php
 
-class pz_calcarddav_controller extends pz_controller {
+class pz_calcarddav_controller extends pz_controller
+{
+  function controller($function)
+  {
+    if($_SERVER['REQUEST_METHOD'] == 'POST')
+    {
+      header('HTTP/1.1 204 No Content');
+      exit;
+    }
 
-	function controller($function)
-	{
-	  if($_SERVER['REQUEST_METHOD'] == 'POST')
-	  {
-	    header('HTTP/1.1 204 No Content');
-	    exit;
-	  }
-
-		/* Backends */
+    /* Backends */
     $calendarBackend = new pz_sabre_caldav_backend();
     $carddavBackend = new pz_sabre_carddav_backend();
     $principalBackend = new pz_sabre_principal_backend();
@@ -38,5 +38,5 @@ class pz_calcarddav_controller extends pz_controller {
 
     // And off we go!
     $server->exec();
-	}
+  }
 }

@@ -33,10 +33,17 @@ class pz_screen {
 			if($controll->isVisible())
 			{
 				$items[$k]["classes"] = $k.$first;
-				$items[$k]["name"] = $controll->getName();
+				$items[$k]["name"] = $controll->getName().$controll->name;
 				if(method_exists($controll,'getMainFlyout'))
 					$items[$k]["flyout"] = $controll->getMainFlyout();
 				$items[$k]["url"] = pz::url('screen',$controll->name);
+				
+				if($controll->name == "emails")
+					$items[$k]["span"] = pz::getUser()->countInboxEmails();
+				
+				if($controll->name == "calendars")
+					$items[$k]["span"] = pz::getUser()->countAttendeeEvents();
+				
 				$first = "";
 				$temp_k = $k;
 			}
@@ -49,7 +56,11 @@ class pz_screen {
 		return $f->parse('pz_screen_main_navigation');
 	}
 
-	static function getNavigation($params, $navigation = array(), $function = "", $name = "", $flyout = "") {
+	static function getNavigation($p, $navigation = array(), $function = "", $name = "", $flyout = "") {
+		
+		if($flyout == "")
+			$flyout = pz_project_controller_screen::getProjectsFlyout($p);
+		
 		$first = " first";
 		$temp_k = "";
 		$items = array();

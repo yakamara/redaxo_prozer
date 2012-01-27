@@ -75,11 +75,12 @@ class pz_paginate_screen{
 		  $echo .=  '<li class="first prev"><a class="page prev bt5 inactive" href="'.pz::url().'"><span class="inner">zurück</span></a></li>';
 		}
 		
-		$show_pages = array(0=>0,1=>1,2=>2,3=>3,4=>4,5=>5,6=>6);
-		if($page_all > 6) {
+		$show_pages = array(0=>0,1=>1,2=>2,3=>3,4=>4,5=>5,6=>6,7=>7,8=>8,9=>9);
+		if($page_all > count($show_pages)) {
 			$show_pages = array();
 			$show_pages[0] = 0;
 			$show_pages[1] = 1;
+			$show_pages[2] = 2;
 			if($page_current<($page_all/3) || $page_current>($page_all/3*2)) {
 				$m = (int) ($page_all / 2);
 				$show_pages[$m-1] = $m-1;
@@ -89,6 +90,7 @@ class pz_paginate_screen{
 			$show_pages[$page_current-1] = $page_current-1;
 			$show_pages[$page_current] = $page_current;
 			$show_pages[$page_current+1] = $page_current+1;
+			$show_pages[$page_all-2] = $page_all-2;
 			$show_pages[$page_all-1] = $page_all-1;
 			$show_pages[$page_all] = $page_all;
 		}
@@ -120,9 +122,10 @@ class pz_paginate_screen{
 		$count_to = (($page_current+1)*$this->list_amount);
 		if($count_to > $this->counter_all) 
 			$count_to = $this->counter_all;
-		$text = $count_from.' - '.$count_to.' von '.$this->counter_all.' Treffern';
+		$links = array();
+		$links[] = '<li>'.$count_from.' - '.$count_to.' von '.$this->counter_all.' Treffern</li>';
 		
-		$echo = '<div class="grid2col setting"><div class="column first">'.$echo.'</div><div class="column last"><ul><li>'.$text.'</li></ul></div></div>';
+		$echo = '<div class="grid2col setting"><div class="column first">'.$echo.'</div><div class="column last"><ul>'.implode("",$links).'</ul></div></div>';
 	
 		$this->current_elements = array();
 		for($i=$current;$i<($current+$this->list_amount);$i++)

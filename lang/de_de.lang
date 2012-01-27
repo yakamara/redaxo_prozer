@@ -1,14 +1,25 @@
 
+locale = de_DE
+
 format_month = F Y
 format_ddmy = l d. F Y
 format_d_month = d. m
+format_month_y = m Y
 format_d_m_y = d.m.Y
 format_d_m_y_h_i = d.m.Y - H:i
 format_h_i = H:i
-
 format_DdFY = D d. F Y
 
+minutes = Minuten
+
+jobtime_total = Gesamtzeit:
+
 enter_keyword = Suchbegriff eingeben...
+
+location = Ort
+close = schließen
+download = Download
+is_job = Ist Job
 
 monday = Montag
 tuesday = Dienstag
@@ -26,8 +37,36 @@ friday_short = Fr
 saturday_short = Sa
 sunday_short = So
 
+january = Januar
+february = Februar
+march = März
+april = April
+may = Mai
+june = Juni
+july = Juli
+august = August
+september = September
+october = Oktober
+november = November
+december = Dezember
+
+january_short = Jan
+february_short = Feb
+march_short = Mar
+april_short = Apr
+may_short = Mai
+june_short = Jun
+july_short = Jul
+august_short = Aug
+september_short = Sep
+october_short = Okt
+november_short = Nov
+december_short = Dez
+
 clipboard = Clipboard
 creator = Ersteller
+calendars = Kalender
+projects = Projekte
 
 title = Titel
 hours = Stunden
@@ -95,6 +134,26 @@ page_tools_profile = Profil
 page_tools_jobs = Jobs
 page_tools_sms = SMS
 page_tools_users = Benutzer
+page_tools_system = Systeminfo
+
+
+calendar_event_attendees = Einladungen
+add_attendee = Einladung hinzufügen
+
+calendar_event_attendee_accepted = bestätigt
+calendar_event_attendee_tentative = unverbindlich
+calendar_event_attendee_declined = abgelehnt
+calendar_event_attendee_needs-action = wartend
+
+calendar_event_rule = Typ
+calendar_event_has_rule = Wiederholungstermin
+calendar_event_frequence = Frequenz
+calendar_event_interval = Häufigkeit
+
+
+address_prefix = Titel
+address_suffix = Ergänzung
+address_suffix_labels = Dr.,Prof.,Herr,Frau 
 
 address_name = Name
 address_firstname = Vorname
@@ -104,6 +163,10 @@ address_company = Firma
 address_is_company = ist Firmenadresse
 address_telephone = Telefon
 address_url = URL
+address_socialprofile = Soziale Profile
+address_impp = Instant Messenger
+
+
 address_note = Notiz
 
 address_emails = E-Mails
@@ -124,6 +187,11 @@ add_phonefield = Telefonfeld hinzufügen
 add_emailfield = E-Mailfeld hinzufügen
 add_postaddressfield = Adressfeld hinzufügen
 add_urlfield = URL hinzufügen
+add_socialprofile = Profil hinzufügen
+add_impp = Instant Messenger hinzufügen
+
+api_key = API - Token
+api_info = Dein API-Token ist "{0}" bitte halte ihn geheim. Wenn ein neues Passwort erstellt wird, aktualisiert sich auch der API-Token.
 
 
 delete_calendar_event = Termin/Job löschen
@@ -143,6 +211,7 @@ region = Bundesland
 zip = PLZ
 country = Land
 
+download_emails = E-Mails abrufen
 
 customers = Kunden
 customer = Kunde
@@ -150,11 +219,14 @@ no_customer = [Kein Kunde]
 
 customer_edit = Kunde editieren
 customer_add = Kunde hinzufügen
-customer_delete = Kunde löschen
+delete_customer = Kunde löschen
 customer_edited = Kunde wurde editiert
 customer_added = Kunde wurde hinzugefügt
 customer_deleted = Kunde wurde gelöscht
 customer_updated = Kunde wurde aktualisiert
+
+customer_confirm_delete = Kunde `{0}` löschen ?
+customer_deleted = Kunde `{0}` wurde gelöscht
 
 photo = Foto
 
@@ -164,7 +236,7 @@ labels = Labels
 
 label_edit = Label editieren
 label_add = Label hinzufügen
-label_delete = Label löschen
+delete_label = Label löschen
 
 label_edited = Label wurde editiert
 label_added = Label wurde hinzugefügt
@@ -174,12 +246,19 @@ label_updated = Label wurde aktualisiert
 label_name = Name
 label_color = Farbe
 
+label_confirm_delete = Label `{0}` löschen ?
+label_deleted = Label `{0}` wurde gelöscht
+
 add_label = Label hinzufügen
 
 ok = Ok
+select = auswählen
 
 projects_archive = Projektarchiv
 
+get_from_clipboard = Aus dem Clipboard auswählen
+clips_exist = Sie haben {0} Clips
+2clipboard = 2C
 
 project_name = Name
 project_description = Beschreibung
@@ -193,8 +272,9 @@ project_info = Aktuelles
 
 project_added = Projekt wurde angelegt
 
-project_file_edit = Projektdatei editieren
-project_file_add = Projektdatei hinzufügen
+project_file_download = Download
+project_file_edit = Datei editieren
+project_file_add = Datei hinzufügen
 project_files_search_for = Nach Projektdatei suchen
 project_file_comment = Kommentar
 project_file_path = Pfad
@@ -222,6 +302,12 @@ error_password_empty = Passwort ist leer
 error_passwords_different = Passwörter sind unterschiedlich
 error_address_enter_birthday = Bitte den Geburtstag in folgendem Format eingeben 1972-11-19
 
+error_folder_name_chars = Bitte den Ordnernamen überprüfen
+error_folder_name_empty = Bitte den Ordnernamen eingeben
+error_files_no_files_selected = Bitte Dateien auswählen
+error_folder_in_same_folder = Ordner kann nicht in sich selbst verschoben werden
+error_folder_not_unique = Dieser Ordner existiert bereits
+error_file_not_unique = Diese Datei existiert bereits
 
 no_emails_found = Keine E-Mails gefunden
 
@@ -233,6 +319,30 @@ project_createdate = Erstellungsdatum
 project_options = Optionen
 project_files = Projektdateien
 project_stream = Logbuch
+
+project_folder_name = Ordnername
+
+project_folder_edit = Ordner editieren
+project_folder_add = Ordner hinzufügen
+project_folder_delete = Ordner löschen
+
+project_folder_updated = Ordner wurde aktualisiert
+project_folder_added = Ordner wurde hinzugefügt
+project_folder_home = Home
+
+project_files = Datei/en
+
+project_file_updated = Datei wurde aktualisiert
+project_file_added = Datei wurde hinzugefügt
+
+project_file_delete = Datei löschen
+
+
+project_folder_confirm_delete = Ordner `{0}` löschen ?
+project_folder_deleted = Ordner `{0}` wurde gelöscht
+
+project_file_confirm_delete = Datei `{0}` löschen ?
+project_file_deleted = Datei `{0}` wurde gelöscht
 
 
 please_choose = --- Bitte auswählen ---
@@ -254,6 +364,7 @@ search_for_addresses = Nach Adressen suchen
 search_for_users = Nach Benutzern suchen
 
 events = Termine
+job = Job
 jobs = Jobs
 mycontacts = Meine
 createdate = Erstelldatum
@@ -302,6 +413,8 @@ projectuser_updated = Projektteilnehmerdaten wurden aktualisiert
 
 no_permission_contact_admin = Bitte kontaktieren Sie den Admin, es ist ein Fehler aufgetaucht.
 
+default_startpage_account = Startseite
+
 project_updated = Projekt wurde aktualisiert
 
 search_for_emails = Nach E-Mails suchen
@@ -322,10 +435,19 @@ print = Print
 move = verschieben
 and_finished = und bearbeitet
 
+excel_export = Als Excel exportieren
 
 calendar_caldav = CalDAV Termine
 calendar_jobs_caldav = CalDAV Jobs
+
 webdav = WebDAV
+carddav = CardDav
+projectsadmin = Projekte administrieren
+
+admin_info = User anlegen, Alle Projekte einsehen können
+carddav_info = CardDav Schnittstelle verwendbar
+webdav_info = WebDav Schnittstelle verwendbar
+projectsadmin_info = Projekte erstellen
 
 search_for_history = Im Logbuch suchen
 
@@ -375,10 +497,12 @@ emails_spam = E-Mail Spam
 emails_trash = E-Mail Mülleimer
 
 only_my_emails = Nur meine E-Mails
+only_noproject_emails = Nur nicht zugewiesene E-Mails
 
 email_account = E-Mail Account
 email_cc = Cc
 email_to = To
+email_from = Von
 email_bcc = Bcc
 email_attachments = Anhänge
 email_subject = Betreff
@@ -391,6 +515,10 @@ email_edit = E-Mail bearbeiten und abschicken
 save_as_draft = Als Entwurf ablegen
 email_saved_in_drafts = E-Mail wurde in Entwürfe gespeichert
 email_send = E-Mail wurde abgeschickt
+
+email_original = -----Ursprüngliche Nachricht-----
+email_original_send = Gesendet
+
 
 emlname = mail
 
@@ -405,6 +533,8 @@ calendar_day_list = Tagesansicht
 user_add = Benutzer hinzufügen
 user_edit = Benutzer bearbeiten
 user_updated = Benutzer wurde aktualisiert
+
+user_comment = Kommentar
 
 emailaccount_last_login_failed = Letzter E-Mail-Abruf ist fehlgeschlagen.
 emailaccount_last_login_ok = Letzter E-Mail-Abruf ist gelungen.

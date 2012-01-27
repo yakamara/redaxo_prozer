@@ -37,6 +37,23 @@ class pz_clipboard_controller_screen extends pz_clipboard_controller {
 		{
 			$mode = rex_request("mode","string");
 			switch($mode) {
+				case("delete_clip"):
+					$return = "";
+					if(pz::getUser()->getId() == $clip["user_id"])
+					{
+						pz_clipboard::deleteClipById($clip_id);
+						$return .= '<script>
+						$(".clip-'.$clip["id"].'").css("display","none");
+						// $(".clip-ids").val($(".clip-ids").val().replace("'.$clip["id"].',",""));
+						</script>';
+					}
+					return $return;
+				case("download_clip"):
+					$clip_path = pz_clipboard::getPath($clip_id);
+					$data = file_get_contents($clip_path);
+					header('Content-Disposition: attachment; filename="'.$clip["filename"].'";'); // 
+					header('Content-type: '.$clip["content_type"]);
+					return $data;
 				case("image_src_raw"):
 					$image_size = rex_request("image_size","string","m");
 					$image_type = rex_request("image_type","string","image/jpg");
@@ -57,8 +74,6 @@ class pz_clipboard_controller_screen extends pz_clipboard_controller {
 		}
 		
 	}
-
-
 
 	public function setUpload($p) {
 
@@ -97,45 +112,69 @@ class pz_clipboard_controller_screen extends pz_clipboard_controller {
 		return htmlspecialchars(json_encode($return), ENT_NOQUOTES);
 	}
 
-	public function getClipboard($p) {
-		
-		$xform = new rex_xform;
-		$xform->setDebug(true);
 
-		$xform->setValueField('objparams',array('form_wrap', '<div class="xform xform-search-small">#</div>'));
-		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform'));
-		$xform->setValueField('objparams',array('form_action', 'javascript:alert(3);'));
+
+
+	public function getClipboard($p) {
+
+		$search_name = rex_request("search_name","string");
+		$mode = rex_request("mode","string");
 		
+		$filter = array();
+		if($search_name != "")
+			$filter[] = array('field'=>'filename','type'=>'like','value'=>$search_name);
 		
-		$xform->setValueField('text',array('title',rex_i18n::msg('label_title'), 'Kontakt'));
-		$xform->setValueField('submit',array('submit',rex_i18n::msg('ok')));
-//		$xform->setValueField('html',array('', '<a class="bt1 search" href=""><span>Suche</span></a>'));
-		$xform_search = $xform->getForm();
+		switch($mode) {
+			case("list"):
+				// TODO:
+				$cb = pz_clipboard::getByUserId(pz::getUser()->getId());
+				$return = pz_clipboard_screen::getClipboardSideView($cb->getClips($filter),$p);
+				return $return;
+				break;
+			case("add"):
+				// TODO:
+				break;
+			case("delete"):
+				// TODO:
+				break;
+		
+		}
+		
+		// id user_id filename created updated content_length content_type hidden
+		
+		// clip kann
+		// - unsichtbar sein, wenn bei email oder ähnlichem hochgeladen. wird nach einer gewissen zeit geloest
+		// - sichtbar, wenn aus mail rausgezogen, aus files folders rausgezogen
+		// - veröffentlichabr, wenn on und offlinedatum vergeben, eigene url erstellt sich
+		
+		// pz_clipboard:
+		// open				tinyint(1)
+		// online_date		datetime
+		// offline_date		datetime
+		// uri				varchar(255)
+		// hidden			tinyint(1)
+		
+		// - suche einbauen
+		// - link generieren
+		// - aufklappen der clips anzeigen
+		// - löschen
 		
 		$return = '		
 		<ul class="navi">
-		<li class="lev1 first"><a class="addresses" href="#">'.rex_i18n::msg("addressbook").'</a></li>
-		<li class="lev1"><a class="clipboard active" href="#">'.rex_i18n::msg("clipboard").'</a></li>
-		<li class="lev1 last"><a class="close" href="javascript:void(0);" onclick="$(\'#sidebar\').hide();">'.rex_i18n::msg("close").'</a></li>
+			<!-- <li class="lev1 first"><a class="addresses" href="#">'.rex_i18n::msg("addressbook").'</a></li> -->
+			<li class="lev1"><a class="clipboard active" href="#">'.rex_i18n::msg("clipboard").'</a></li>
+			<li class="last"><a class="close bt5" href="javascript:void(0);" onclick="$(\'#sidebar\').hide();" title="'.rex_i18n::msg("close").'"><span class="icon"></span></a></li>
 		</ul>';
 		
-		$return .= $xform_search;
+		$return .= pz_clipboard_screen::getSearchForm($p);
 
-		$return .= '<ul class="list">';
-		
-		$cb = pz_clipboard::getByUserId( pz::getUser()->getId() );
-		
-		foreach($cb->getClips() as $file) {
-			$return .= '<li class="item"><a href="javascript:void(0);" title="'.htmlspecialchars($file["filename"]).'">'.htmlspecialchars(pz::cutText($file["filename"],25)).'<br />['.$file["id"].']</a></li>';
-			
-			
-		}
-
-		$return .= '</ul>';
+		$cb = pz_clipboard::getByUserId(pz::getUser()->getId());
+		$return .= pz_clipboard_screen::getClipboardSideView($cb->getClips($filter),$p);
 		
 		$return = '<div id="sidebar" class="sidebar sidebar1" >'.$return.'</div>';
-		
+
 		return $return;	
+
 	}
 
 

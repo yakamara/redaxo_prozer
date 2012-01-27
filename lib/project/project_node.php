@@ -37,6 +37,11 @@ abstract class pz_project_node extends pz_model
     return $this->vars['name'];
   }
 
+  public function getUserId()
+  {
+    return $this->vars['updated_user_id'];
+  }
+
   public function getProjectId()
   {
     return $this->vars['project_id'];
@@ -52,21 +57,67 @@ abstract class pz_project_node extends pz_model
     return self::get($this->getParentId());
   }
 
+  public function getParentsIds()
+  {
+    $parents = array();
+    $current = $this;
+    $stop = 0;
+    while($current->getParentId() != 0)
+    {
+      $stop++; if($stop>1000) return $parents;
+      $current = $current->getParent();
+      $parents[] = $current->getId();
+    }
+    return $parents;
+  }
+
   public function getPath()
   {
     $path = '/';
     $current = $this;
+    $stop = 0;
     while($current->getParentId() != 0)
     {
-      $current = $this->getParent();
+      $stop++; if($stop>1000) return $parents;
+      $current = $current->getParent();
       $path = '/'. $current->getName() . $path;
     }
     return $path;
   }
 
+  public function setComment($comment)
+  {
+	$sql = rex_sql::factory();
+    $sql->setQuery('UPDATE pz_project_file SET comment = ?, updated = NOW(), updated_user_id = ? WHERE id = ?', array($comment, pz::getUser()->getId(), $this->getId()));
+    $this->vars['comment'] = $comment;
+
+    $this->saveToHistory('update');
+  }
+
   public function setName($name)
   {
     $this->moveTo($this->getParent(), $name);
+  }
+
+  public function getAvailableName($name = "")
+  {
+    $sql = rex_sql::factory();
+    $sql->setQuery('SELECT id FROM pz_project_file WHERE project_id = ? AND name = ? AND parent_id = ?', array($this->getProjectId(), $name, $this->getParentId()));
+
+	if($sql->getRows() == 0)
+	{
+		return $name;
+	}else
+	{
+		for($i=0;$i<=10000;$i++)
+		{
+			$new_name = $i.'_'.$name;
+		    $sql->setQuery('SELECT id FROM pz_project_file WHERE project_id = ? AND name = ? AND parent_id = ?', array($this->getProjectId(), $new_name, $this->getParentId()));
+			if($sql->getRows() == 0)
+				return $new_name;
+		}
+	}
+	return FALSE;
   }
 
   public function moveTo(pz_project_directory $destination, $name = null)
@@ -84,10 +135,14 @@ abstract class pz_project_node extends pz_model
 
     $this->vars['parent_id'] = $destination->getId();
     $this->vars['name'] = $name;
+
+    $this->saveToHistory('update');
   }
 
   public function delete()
   {
+    $this->saveToHistory('delete');
+
     static $sql;
     if(!$sql)
     {
@@ -100,5 +155,25 @@ abstract class pz_project_node extends pz_model
   public function getLastModified()
   {
     return strtotime($this->getVar('updated'));
+  }
+
+  protected function saveToHistory($mode = 'update')
+  {
+    $sql = rex_sql::factory();
+    $sql->setTable('pz_project_file_history')
+      ->setValue('file_id', $this->getId())
+      ->setValue('user_id', pz::getUser()->getId())
+      ->setRawValue('stamp', 'NOW()')
+      ->setValue('mode', $mode);
+    if($mode != 'delete')
+    {
+      $data = $this->vars;
+      unset($data['id']);
+      unset($data['updated']);
+      unset($data['updated_user_id']);
+      unset($data['vt']);
+      $sql->setValue('data', json_encode($data));
+    }
+    $sql->insert();
   }
 }

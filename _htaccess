@@ -18,7 +18,7 @@ RewriteCond %{REQUEST_URI} !^calcarddav/
 RewriteRule ^(principals|calendars|addressbooks)/.* calcarddav/
 
 # WEBDAV
-RewriteCond %{HTTP_USER_AGENT} davfs|webdav|evolution/|BitKinex|cadaver/|cyberduck|gvfs/|Microsoft\ Data\ Access [NC]
+RewriteCond %{HTTP_USER_AGENT} davfs|webdav|evolution/|BitKinex|cadaver/|cyberduck|gvfs/|Transmit|Microsoft\ Data\ Access [NC]
 RewriteCond %{REQUEST_URI} !^(webdav|principals|calendars|addressbooks|calcarddav)/
 RewriteRule .* webdav/
 

@@ -25,7 +25,7 @@ class pz_emails_controller_cronjob extends pz_controller{
 			case("all"):
 				$email_accounts = pz_email_account::getAccounts("",1);
 				foreach($email_accounts as $email_account) {
-					$return .= "<br />d".$email_account->downloadEmails();
+					$return .= "<br />".$email_account->downloadEmails();
 				}
 				break;
 		

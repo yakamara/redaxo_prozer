@@ -284,7 +284,7 @@ class pz_calendar_rule_event extends pz_calendar_event
     list($id, $baseFrom) = explode('_', $id);
     $baseFrom = new DateTime('@'. $baseFrom);
     $base = parent::get($id);
-    $rule = pz_calendar_rule::getRule($base);
+    $rule = pz_calendar_rule::get($base);
 
     return self::getByBaseFrom($rule, $baseFrom);
   }

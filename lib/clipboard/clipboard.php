@@ -20,13 +20,32 @@ class pz_clipboard
 		return self::$clipboards[$user_id];
 	}
 
-	public function getClips()
+	public function getClips($filter = array())
+	{
+		
+		$where = array();
+		$where[] = 'user_id = ?';
+		$where[] = 'hidden = ?';
+		$params = array();
+		$params[] = $this->user->getId();
+		$params[] = 0;
+		
+		$return = pz::getFilter($filter, $where, $params);
+		
+		$sql = rex_sql::factory();
+		// $sql->debugsql = 1;
+		$files = $sql->getArray('SELECT c.* FROM pz_clipboard as c '.$return['where_sql'].' ORDER BY c.id desc', $return["params"]);
+		return $files;
+	}
+
+	static function deleteClipById($clip_id)
 	{
 		$sql = rex_sql::factory();
 		// $sql->debugsql = 1;
-		$files = $sql->getArray('SELECT c.* FROM pz_clipboard as c where user_id = ? ORDER BY c.filename', array($this->user->getId()));
-		return $files;
+		$clips = $sql->setQuery('delete from pz_clipboard where id = ?', array($clip_id));
+		return true;
 	}
+
 
 	static function getClipById($clip_id, $user_id = 0)
 	{
@@ -49,7 +68,7 @@ class pz_clipboard
 	}
 
 	/* Creates Clip with ID */
-	public function getClipname($filename,$content_length,$content_type,$hidden = TRUE)
+	public function getClipname($filename, $content_length, $content_type, $hidden = TRUE)
 	{
 		$s = rex_sql::factory();
 		$s->setTable('pz_clipboard');
@@ -71,20 +90,27 @@ class pz_clipboard
 		return $return;
 	}
 
-	public function addClipAsStream($stream,$filename,$content_length,$content_type)
+	public function addClipAsStream($stream, $filename, $content_length, $content_type)
 	{
 		$clipdata = $this->getClipname($filename,$content_length,$content_type);
 		rex_dir::create(dirname($clipdata["path"]));
-	
 		$target = fopen($clipdata["path"], "w");        
         fseek($stream, 0, SEEK_SET);
         stream_copy_to_stream($stream, $target);
         fclose($target);
-        
         unset($clipdata["path"]);
-        
         return $clipdata;
 	}
+
+	public function addClipAsSource($filesource, $filename, $content_length, $content_type, $hidden)
+	{
+		$clipdata = $this->getClipname($filename, $content_length, $content_type, $hidden);
+		rex_dir::create(dirname($clipdata["path"]));
+		file_put_contents($clipdata["path"], $filesource);
+		return $clipdata;
+	}
+
+
 
 }
 

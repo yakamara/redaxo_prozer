@@ -9,7 +9,7 @@ class pz_sabre_project_file extends pz_sabre_project_node implements Sabre_DAV_I
 
   public function get()
   {
-    return $this->node->getContent();
+    return fopen($this->node->getRealPath(), 'rb');
   }
 
   public function getSize()

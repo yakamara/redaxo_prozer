@@ -1,5 +1,17 @@
 <?php
 
+class pz_mailer extends PHPMailer {
+				
+	public function getMimeHeader() {
+		return $this->MIMEHeader;
+	}	
+
+	public function getMimeBody() {
+		return $this->MIMEBody;
+	}	
+	
+}
+
 class pz_email extends pz_model{
 
 	public
@@ -85,57 +97,20 @@ class pz_email extends pz_model{
 		}
 		
 		$where[] = $where_projects_users;
-		
-	    $nfilter = $filter;
-	
-	    foreach($nfilter as $f)
-	    {
-	    	
-	    	if(!isset($f["type"]))
-	    		$f["type"] = "";
-	    	
-	    	switch(@$f["type"]) {
-	    		case("plain"):
-			    	$where[] = $f["value"];
-	    			break;
-	    		case("like"):
-	    			$w = $f["field"];
-	    			$w .= ' LIKE ? ';
-	    			$f["value"] = "%".$f["value"]."%";
-			    	$where[] = $w;
-			    	$params[] = $f["value"];
-	    			break;
-	    		case("orlike"):
-	    			$fields = explode(",",$f["field"]);
-	    			$w = array();
-	    			foreach($fields as $field)
-	    			{
-		    			$w[] = ' ( `'.$field.'` LIKE ? )';
-				    	$params[] = "%".$f["value"]."%";
-	    			}
-				    $where[] = '('.implode(" OR ",$w).')';
-	    			break;
-	    		case("="):
-				default:
-					$w = $f["field"];
-					$w .= ' = ? ';
-			    	$where[] = $w;
-			    	$params[] = $f["value"];
-	    	}
-	    }
-	
-	    $sql_where = '';
-	    if(count($where) > 0)
-	    {
-		    	$sql_where.= ' where ('.implode(" AND ",$where).') ';
-	    }
 	
 	    // ----- Filter
+
+		$f = pz::getFilter($filter,$where,$params);
+		$where = $f["where"];
+		$params = $f["params"];
+		$where_sql = $f["where_sql"];
 	
 	    $sql = rex_sql::factory();
 	    // $sql->debugsql = 1;
-	    $sql->setQuery('SELECT * FROM pz_email '.$sql_where .' order by id desc LIMIT 5000', $params); // ORDER BY p.name
-	    $emails_array = $sql->getArray();
+	    // $sql->setQuery('SELECT * FROM pz_email '.$where_sql .' order by id desc LIMIT 5000', $params); // ORDER BY p.name
+	    // $emails_array = $sql->getArray();
+	    $emails_array = $sql->getArray('SELECT * FROM pz_email '.$where_sql .' order by id desc LIMIT 5000', $params);
+	    
 	    $emails = array();
 	    foreach($emails_array as $email)
 	    {
@@ -452,7 +427,10 @@ class pz_email extends pz_model{
 		if($email_account = pz_email_account::get($this->getAccountId()))
 		{
 		
-			$mail = new PHPMailer();
+			
+		
+		
+			$mail = new pz_mailer();
 
 			$mail->From             = $email_account->getEmail();
 		    $mail->FromName         = $email_account->getName();
@@ -515,7 +493,7 @@ class pz_email extends pz_model{
 				$u = rex_sql::factory();
 				// $u->debugsql = 1;
 				$u->setTable("pz_email");
-				$u->setWhere('id='.$this->getId());
+				$u->setWhere(array('id'=>$this->getId()));
 				$u->setValue("status",1);
 				$u->setValue("date",date("Y-m-d H:i:s"));
 				$u->setValue("send",1);
@@ -524,9 +502,9 @@ class pz_email extends pz_model{
 				$u->update();
 
 				$filepath = $this->getFilePath();
-				rex_file::put($filepath,$mail->raw_header.$mail->raw_body);
+				rex_file::put($filepath,$mail->getMIMEHeader().$mail->getMIMEBody());
 
-				$this->setRawHeader($mail->raw_header);
+				$this->setRawHeader($mail->getMIMEHeader());
 				$this->refreshHeaderInfo();
 
 				$reply_id = (int) $this->getReplyId();
@@ -535,7 +513,7 @@ class pz_email extends pz_model{
 				{
 					$u = rex_sql::factory();
 					$u->setTable("pz_email");
-					$u->setWhere('id='.$reply_id);
+					$u->setWhere(array('id'=>$reply_id));
 					$u->setValue("replied_id",$this->getId());
 					$u->update();
 				}
@@ -545,7 +523,7 @@ class pz_email extends pz_model{
 				{
 					$u = rex_sql::factory();
 					$u->setTable("pz_email");
-					$u->setWhere('id='.$forward_id);
+					$u->setWhere(array('id'=>$forward_id));
 					$u->setValue("forwarded_id",$this->getId());
 					$u->update();
 				}

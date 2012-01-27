@@ -25,7 +25,7 @@ class pz_login extends rex_login
   {
     $sql = rex_sql::factory();
     $userId = $this->getSessionVar('UID');
-    $cookiename = 'pz_user_'. sha1(rex::getProperty('instname'));
+    $cookiename = 'pz_user_'. sha1($this->system_id.rex::getProperty('instname'));
 
     if($cookiekey = rex_cookie($cookiename, 'string'))
     {

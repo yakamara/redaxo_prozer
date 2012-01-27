@@ -16,13 +16,35 @@ $(document).ready(function()
   // pz_set_calendarday_dragresize_init();
 
   // $('<div id="hovery"></div>').prependTo(document.body);
-
-
-
-
-	// var pz_timer = window.setTimeout(pz_tracker, 10000);
+  
+	pz_screen_select_event('ul.sl1 li.selected');
 
 });
+
+
+/* ******************* Click Event **************** */
+
+function pz_screen_select_event(where)
+{
+	$(where).unbind('click');
+	$(where).bind('click', function() {
+    	$(this).toggleClass('hover');
+    });
+}
+
+
+/* ******************* Tracker **************** */
+var pz_timer;
+function pz_tracker()
+{
+	clearTimeout(pz_timer);
+	link = '/screen/tools/tracker/';
+	$.post(link, '', function(data) {
+		$("#pz_tracker").html(data);
+		pz_timer = window.setTimeout(pz_tracker, 30000);
+     });
+}
+
 
 /* ******************* check Login **************** */
 
@@ -32,6 +54,7 @@ function pz_isLoggedIn(data)
 {
 	// data und "login" vergleichen
 	if(data == "relogin") {
+		clearTimeout(pz_timer);
 		pz_login_refresh = false;
 		pz_getLoginForm()
 		return false;
@@ -65,18 +88,6 @@ function pz_getLoginForm()
 }
 
 
-/* ******************* Tracker **************** */
-
-function pz_tracker() 
-{
-	link = '/screen/tools/tracker/';
-	$.post(link, '', function(data) {
-		$("#pz_tracker").html(data);
-		window.setTimeout(pz_tracker, 10000);
-     });
-}
-
-
 /* ******************* Dropdown **************** */
 
 // Select
@@ -96,10 +107,15 @@ function pz_save_dropdown_value($clickid)
 
 /* ******************* LAYER LOADING, LOGIN **************** */
 
+pz_zIndex = 10000;
+function pz_setZIndex(layer) {
+	pz_zIndex++;	
+	$(layer).css('zIndex',pz_zIndex);
+}
+
 function pz_hide(node) {
 	$(node).hide();
 }
-
 
 function pz_load_main(layer_id) {
 	// layer laden
@@ -120,13 +136,21 @@ function pz_loading_start(layer_id)
 	// $('#'+layer_id).fadeOut("fast");
 	// $('<div class="loader"></div>').appendTo('#'+layer_id);
     // , left: "-=50", top: "-=50", height: "+=100", width: "+=100"
-	$('#'+layer_id).animate({ opacity: 0 }, 1000 );
+	if(layer_id.substring(0,1) == ".")
+		$(layer_id).animate({ opacity: 0 }, 1000 );
+	else
+		$('#'+layer_id).animate({ opacity: 0 }, 1000 );
+	
 }
 
 function pz_loading_end(layer_id)
 {
 	// $('<div class="loader"></div>').appendTo('#'+layer_id);
-	$('#'+layer_id).animate({ opacity: 1 }, 1000 );
+	if(layer_id.substring(0,1) == ".")
+		$(layer_id).animate({ opacity: 1 }, 1000 );
+	else
+		$('#'+layer_id).animate({ opacity: 1 }, 1000 );
+
 }
 
 function pz_loadFormPage(layer_id,form_id,link)
@@ -146,7 +170,7 @@ function pz_loadFormPage(layer_id,form_id,link)
      });
 }
 
-function pz_loadPage(layer_id,link)
+function pz_loadPage(layer_id, link)
 {
 	pz_loading_start(layer_id);
 	if(link.indexOf("?")) link += "&pz_login_refresh=1";
@@ -154,11 +178,18 @@ function pz_loadPage(layer_id,link)
 	$.post(link, '', function(data) {
 		if(pz_isLoggedIn(data))
 		{
-			$("#"+layer_id).replaceWith(data);
-			$("#"+layer_id).css("opacity",0);
-			// $("#"+layer_id).hide();
-			// $("#"+layer_id).fadeIn("fast");
-			// $("#"+layer_id).animate({ "opacity": 1.0 }, 300 );
+			if(layer_id.substring(0,1) == ".")
+			{
+				$(layer_id).replaceWith(data);
+				$(layer_id).css("opacity",0);
+			}else
+			{
+				$("#"+layer_id).replaceWith(data);
+				$("#"+layer_id).css("opacity",0);
+				// $("#"+layer_id).hide();
+				// $("#"+layer_id).fadeIn("fast");
+				// $("#"+layer_id).animate({ "opacity": 1.0 }, 300 );
+			}
 		}
 		pz_loading_end(layer_id);
      });
@@ -194,12 +225,130 @@ function pz_open_email(id,link) {
 	
 }
 
+function pz_setEmailAutocomplete(layer) 
+{
+	$(layer)
+		// don t navigate away from the field on tab when selecting an item
+		.bind( "keydown", function( event ) {
+			if ( event.keyCode === $.ui.keyCode.TAB &&
+					$( this ).data( "autocomplete" ).menu.active ) {
+				event.preventDefault();
+			}
+		})
+		.autocomplete({
+			source: function( request, response ) {
+				$.getJSON( "/screen/addresses/addresses/", {
+					mode: "get_emails",
+					search_name: extractLast( request.term )
+				}, response );
+			},
+			search: function() {
+				// custom minLength
+				var term = extractLast( this.value );
+				if ( term.length < 3 ) {
+					return false;
+				}
+			},
+			focus: function() {
+				// prevent value inserted on focus
+				return false;
+			},
+			select: function( event, ui ) {
+				var terms = split( this.value );
+				// remove the current input
+				terms.pop();
+				// add the selected item
+				terms.push( ui.item.value );
+				// add placeholder to get the comma-and-space at the end
+				terms.push( "" );
+				this.value = terms.join( ", " );
+				return false;
+			}
+		});
+	
+}
+
+
+function split( val ) {
+			return val.split( /,\s*/ );
+		}
+		function extractLast( term ) {
+			return split( term ).pop();
+		}
+
+		
+
+
+
+
+
+/* ******************* Clipboard **************** */
+
+function pz_loadClipboard() 
+{
+	if($("#sidebar").css("display") == "none")
+		pz_loadPage('sidebar','/screen/clipboard/my/');
+	else
+		pz_loadPage('clipboard_list','/screen/clipboard/my/?mode=list');
+}
+
+// - current position
+
+var pz_clipboard_field_layer = "";
+var pz_clipboard_uploaded_list_layer = "";
+var pz_clipboard_button_layer = "";
+
+function pz_clipboard_select(button_layer, uploaded_list_layer, field_layer) 
+{
+	if(pz_clipboard_button_layer != "")
+		$(pz_clipboard_button_layer).removeClass("current");
+	
+	pz_clipboard_field_layer = field_layer;
+	pz_clipboard_uploaded_list_layer = uploaded_list_layer;
+	pz_clipboard_button_layer = button_layer;
+
+	$(button_layer).addClass("current");
+	pz_loadClipboard();
+
+	/*
+	if(pz_clipboard_current != "")
+		$("#"+pz_clipboard_current).removeClass('selected');
+
+	pz_clipboard_current = clipboard_id
+	$("#"+pz_clipboard_current).addClass('selected');
+	*/
+	
+	// todo class="clip_select" auf active setzen
+
+}
+
+function pz_clip_select(clip_id, clip_name, clip_size) {
+
+	var remove_text = "remove"; // rex_i18n::msg("dragdrop_files_remove_from_list")
+
+	// TODO:
+	// Filesize noch übergeben
+	// Filenamne noch übergeben
+	// clip_name = qq.FileUploaderBasic._formatFileName(clip_name);
+	// clip_size = qq.FileUploaderBasic._formatSize(clip_size);
+	
+	li = ('<li class="qq-upload-success clip-'+clip_id+'" data-clip_id="'+clip_id+'">'+
+			'<span class="qq-upload-file">'+clip_name+'</span>'+
+			'<span class="qq-upload-size">'+clip_size+
+				'<span class="clear_link">'+
+					'<a href="javascript:void(0);" onclick="li_field = $(this).parents(\'li\'); clip_id = li_field.attr(\'data-clip_id\'); hidden_field = $(\''+pz_clipboard_field_layer+'\'); hidden_field.val( hidden_field.val().replace(clip_id+\',\',\'\') ); li_field.remove();">'+remove_text+'</a></span>'+
+			'</span></li>');
+
+	$(pz_clipboard_field_layer).val($(pz_clipboard_field_layer).val()+clip_id+",");
+	$(pz_clipboard_uploaded_list_layer).append(li);
+}
+
 
 
 
 /* ******************* Calendar **************** */
 
-var pz_event_day_url = "/screen/calendars/api/";
+var pz_event_day_url = "/screen/calendars/event/";
 
 // Calendar Einträge verschieben
 function pz_set_calendarday_dragresize_init() {

@@ -20,6 +20,7 @@ class pz_eml{
 		$this->element_id = $depth."-".$part_id;
 		$this->children = array();
 		$this->extractHeaderBody();
+		$this->mail_filename = rex_i18n::msg("emlname");
 	}
 
 
@@ -59,6 +60,11 @@ class pz_eml{
 		
 		return @$this->vars["header"]["content-type"];
 	}
+	
+	public function getContentTypeCharset()
+	{
+		return @$this->vars["header"]["content-type-charset"];
+	}
 
 	public function getContentTypeName()
 	{
@@ -80,7 +86,7 @@ class pz_eml{
 	public function getFileName()
 	{
 		if($this->parent === NULL)
-			return rex_i18n::msg("emlname").".eml";
+			return $this->getMailFilename().".eml";
 		
 		$filename = $this->getContentTypeName();
 		if($filename == "")
@@ -96,6 +102,8 @@ class pz_eml{
 				$filename .= '.'.$ext;
 		}
 
+		$filename = pz_eml::decodeCharset($filename);
+
 		return $filename;
 	}
 
@@ -106,8 +114,8 @@ class pz_eml{
 		return strlen($this->vars["body"]);
 	}
 
-	public function getInlineImage() {
-	
+	public function getInlineImage() 
+	{
 		switch($this->getContentType()) {
 			case("image/jpeg"):
 			case("image/jpg"):
@@ -120,7 +128,17 @@ class pz_eml{
 
 	}	
 
+	public function setMailFilename($filename) 
+	{
+		$this->mail_filename = $filename;
+		
+	}
 
+	public function getMailFilename() 
+	{
+		return $this->mail_filename;
+		
+	}
 
 	// ---- func
 
@@ -220,6 +238,16 @@ class pz_eml{
 		return FALSE;
 	}
 
+	public function getElementByContentId($element_id) {
+		
+		$elements = $this->getAllElements();
+		foreach($elements as $element) {
+			if(isset($element->vars["header"]["content-id"]) && $element->vars["header"]["content-id"] == "$element_id") {
+				return $element;
+			}
+		}
+		return FALSE;
+	}
 
 /*
 	
@@ -267,8 +295,21 @@ Content-Type: text/calendar; charset="utf-8"; method=REQUEST
 	{
 		$body = "";
 		$body = $this->getFirstContentTypeElement("text/plain");
-		if($body == "") 
-			$body = html_entity_decode(strip_tags($this->getFirstContentTypeElement("text/html")),ENT_COMPAT,"UTF-8");
+		if($body == "") {
+			
+			$body = $this->getFirstContentTypeElement("text/html");
+			$body = preg_replace("#<[ ]*style.*>.*<[ ]*/style[ ]*>#isU", "", $body);
+			$body = preg_replace("#<[ ]*script.*>.*<[ ]*/script[ ]*>#isU", "", $body);
+			$body = preg_replace("#<!--.*-->#isU", "", $body);
+			$body = preg_replace("#<[ ]*table.*>.*#isU", "\n", $body);
+			$body = preg_replace("#<[ ]*tr.*>.*#isU", "\n", $body);
+			$body = preg_replace("#<[ ]*td.*>.*#isU", " ", $body);
+			$body = preg_replace("#<[ ]*p.*>.*#isU", "\n", $body);
+			// $body = preg_replace("#<[ ]*br.*>.*#isU", "", $body);
+			$body = html_entity_decode(strip_tags($body),ENT_COMPAT,"UTF-8");
+
+		}
+
 		if($body == "") 
 			$body = strip_tags($this->getFirstContentTypeElement("multipart/report"));
 		if($body == "") 
@@ -281,9 +322,13 @@ Content-Type: text/calendar; charset="utf-8"; method=REQUEST
 		
 		$body = str_replace("\r","\n",$body);
 		$body = str_replace("\t","",$body);
-		$body = str_replace("&nbsp;"," ",$body);
+		
+$body = str_replace("#&nbsp;#isU"," ",$body);
 
-		$body = preg_replace("#([\n|\ ]{3,50})#", "\n", $body);
+
+		$body = preg_replace("#([\ ]{2,50})#", "", $body);
+		$body = preg_replace("#([\n]{3,50})#", "\n", $body);
+		
 		$body = trim($body);
 		
 		return $body;
@@ -403,7 +448,7 @@ Content-Type: text/calendar; charset="utf-8"; method=REQUEST
    			if (preg_match("#content-disposition: ([^;\ ]*)#im", $subject_all, $subject)){
    				$return["content-disposition"] = trim($subject[1]); 
    			}
-   			if (preg_match("#[filename|filename\*]=(.*)#im", $subject_all, $subject)){
+   			if (preg_match("#[filename|filename\*]=([^;]*)#im", $subject_all, $subject)){
    				$return["content-disposition-filename"] = str_replace(array('"',"'"),"",trim($subject[1])); 
    			}
 		}

@@ -79,6 +79,15 @@
   float: right;
   width: 253px;
 }
+.xform1b.data .flabel {
+  width: 174px;
+}
+.xform1b.data .felement {
+  width: 163px;
+}
+.xform1b.data label {
+  margin-right: 3px;
+}
 
 /* Checkbox Reverse */
 .xform1-reverse.xform-checkbox .flabel {
@@ -161,6 +170,9 @@
   float: left;
   width: 42px;
   margin-right: 6px;
+}
+.xform .xform1b input[type=text] {
+  width: 163px;
 }
 
 .xform .xform1.xform-submit {
@@ -248,7 +260,7 @@ width:600px;
 
 .sidebar .xform-search-small .data.xform-text {
   float: left;
-  width: 130px;
+  width: 230px;
 }
 .sidebar .xform-search-small .data.xform-text:after {
   clear: none;

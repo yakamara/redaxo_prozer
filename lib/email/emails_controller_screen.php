@@ -4,7 +4,7 @@ class pz_emails_controller_screen extends pz_emails_controller {
 
 	public $name = "emails";
 	public $function = "";
-	public $functions = array("inbox", "outbox", "spam", "trash", "email", "create", "search", "setup"); // "history", "search",
+	public $functions = array("inbox", "outbox", "spam", "trash", "email", "emails", "create", "search", "setup"); // "history", "search",
 	public $function_default = "inbox";
 	public $navigation = array("inbox", "outbox", "spam", "trash", "search", "setup", "create"); // "history", "search",
 
@@ -27,6 +27,7 @@ class pz_emails_controller_screen extends pz_emails_controller {
 			case("create"):	return $this->getEmailForm($p);
 			case("api"):	return $this->controllerApi($p);
 			case("email"):	return $this->getEmail($p);
+			case("emails"): return $this->getEmails($p);
 			case("setup"):	return $this->getSetupPage($p);
 		}
 		return "";
@@ -35,7 +36,7 @@ class pz_emails_controller_screen extends pz_emails_controller {
 	private function getProjects()
 	{
 		$projects = pz::getUser()->getEmailProjects();
-		if(!isset($_REQUEST["project_ids"]))
+		if(!isset($_REQUEST["email_project_ids"]))
 		{
 			$project_ids = rex_request::session("pz_email_project_ids","array");
 			if(count($project_ids) == 0) {
@@ -43,7 +44,7 @@ class pz_emails_controller_screen extends pz_emails_controller {
 			}
 		}else
 		{
-			$project_ids = explode(",",rex_request("project_ids","string"));
+			$project_ids = explode(",",rex_request("email_project_ids","string"));
 		}
 
 		$return_projects = array();
@@ -93,62 +94,48 @@ class pz_emails_controller_screen extends pz_emails_controller {
 	*/
 
 
-	private function getNavigation($p = array(),$flyout = "")
+	private function getNavigation($p = array())
 	{
 		return pz_screen::getNavigation(
 			$p,
 			$this->navigation, 
 			$this->function, 
-			$this->name, 
-			$flyout
+			$this->name
 		);
 	}
 
-	function getEmailsSearchForm ($p = array())
-	{
-
-		$link_refresh = pz::url("screen","emails",
-							$this->function,
-							array_merge( $p["linkvars"], array( "mode" => "emails_search", "project_ids" => "___value_ids___" ) )
-						);
-		
-	    $return = '
-	        <header>
-	          <div class="header">
-	            <h1 class="hl1">'.rex_i18n::msg("search_for_emails").'</h1>
-	          </div>
-	        </header>';
-		
-		$xform = new rex_xform;
-		$xform->setObjectparams("real_field_names",TRUE);
-		$xform->setObjectparams("form_showformafterupdate", TRUE);
-		$xform->setObjectparams("form_action", "javascript:pz_loadFormPage('emails_list','emails_search_form','".pz::url('screen','emails',$this->function,array("mode"=>'list'))."')");
-		$xform->setObjectparams("form_id", "emails_search_form");
-		
-		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform', 'runtime'));
-		$xform->setValueField("text",array("search_name",rex_i18n::msg("project_name")));
-		// $xform->setValueField('pz_select_screen',array('search_label', rex_i18n::msg('label'), pz_labels::getAsString(),"","",1,rex_i18n::msg("please_choose")));
-		// $xform->setValueField('pz_select_screen',array('search_customer', rex_i18n::msg('customer'), pz_customers::getAsString(),"","",1,rex_i18n::msg("please_choose")));
-		// $xform->setValueField('pz_date_screen',array('search_datetime', rex_i18n::msg('createdate')));
-		
-		$xform->setValueField('pz_select_screen',array('search_account_id', rex_i18n::msg('email_account'), pz::getUser()->getEmailaccountsAsString(),"","",1,rex_i18n::msg("please_choose")));
-		
-		$xform->setValueField("checkbox",array("search_mymails",rex_i18n::msg("only_my_emails")));
-		
-		
-		$xform->setValueField("submit",array('submit',rex_i18n::msg('search'), '', 'search'));
-
-		$return .= $xform->getForm();
-		
-		$return = '<div id="emails_search" class="design1col xform-search" data-url="'.$link_refresh.'">'.$return.'</div>';
-		return $return;
-
-	}
-
+	
 
 
 
 	// ------------------------------------------------------------------- Pages
+	
+	function getEmails($p = array())
+	{
+		$mode = rex_request("mode","string","");
+		switch($mode)
+		{
+			case("download_emails"):
+			
+				$return = '<script language="Javascript">';
+				$emails = array();
+				$email_accounts = pz_email_account::getAccounts(pz::getUser()->getId(), 1);
+				foreach($email_accounts as $email_account) {
+					$email_account->downloadEmails();
+					$emails = array_merge($emails, $email_account->getEmails());
+				}
+				// $return.= 'alert("'.count($emails).' E-mails downloaded");';
+
+				$return.= '$(".emails-download").removeClass("bt-loading");';
+				$return.= 'pz_tracker();';
+				$return.= '</script>';
+			
+				return $return;
+				break;
+		}
+		
+	}
+
 
 	function getEmail($p = array())
 	{
@@ -175,15 +162,16 @@ class pz_emails_controller_screen extends pz_emails_controller {
 				$return.= '<script language="Javascript">';
 				$return.= '$(".email-'.$email->getId().'").removeClass("email-unreaded");';
 				$return.= '$(".email-'.$email->getId().'").addClass("email-readed");';
+				$return.= 'pz_tracker();';
 				$return.= '</script>';
 
 				return $return;
 
-			case("view_element"):
-
+			case("view_element_by_content_id"):
 				$pz_eml = new pz_eml($email->getEml());
-				$element_id = rex_request("element_id","string",0);
-				if($element = $pz_eml->getElementByElementId($element_id))
+				$pz_eml->setMailFilename($email->getId());
+				$content_id = rex_request("content_id","string",0);
+				if($element = $pz_eml->getElementByContentId($content_id))
 				{
 					// ob_end_clean();
 					// header("Cache-Control: no-cache, must-revalidate");
@@ -199,22 +187,59 @@ class pz_emails_controller_screen extends pz_emails_controller {
 				return FALSE;
 
 
-			case("download"):
+			case("view_element"):
+
 				$pz_eml = new pz_eml($email->getEml());
+				$pz_eml->setMailFilename($email->getId());
 				$element_id = rex_request("element_id","string",0);
 				if($element = $pz_eml->getElementByElementId($element_id))
 				{
-					// ob_end_clean();
-					// header("Cache-Control: no-cache, must-revalidate");
-					// header("Cache-Control","private");
-					// header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // in the past
-					header('Content-Disposition: attachment; filename="'.$element->getFileName().'";'); // 
-					// header('Content-type: '.$element->getContentType());
-					// header("Content-Transfer-Encoding: binary");
-					// header("Content-Length: ".$element->getSize());
-					return $element->getBody();
+					$body = $element->getBody();
+					$content_type = $element->getContentType();
+
+					if($element->getContentType() == "text/html")
+					{
+						$search = '#cid:([a-zA-Z-0-9\\\/_.]*)#i';
+						$replace = pz::url('screen','emails','email',array("mode"=>"view_element_by_content_id","email_id"=>$email->getId(),"content_id"=>""))."\${1}";
+						$body = preg_replace($search, $replace, $body);
+						if($element->getContentTypeCharset() != "") {
+							$content_type .= ' charset='.$element->getContentTypeCharset();
+							$body = mb_convert_encoding($body, $element->getContentTypeCharset(), "UTF-8");
+						}
+					}
+					header('Content-Disposition: inline; filename="'.$element->getFileName().'";');
+					header('Content-type: '.$element->getContentType());
+					return $body;
 				}
 				return FALSE;
+
+			case("download"):
+				$pz_eml = new pz_eml($email->getEml());
+				$pz_eml->setMailFilename($email->getId());
+				$element_id = rex_request("element_id","string",0);
+				if($element = $pz_eml->getElementByElementId($element_id))
+				{
+					pz::getDownloadHeader($element->getFileName(), $element->getBody());
+					return '';
+
+				}
+				return FALSE;
+
+			case("element2clipboard"):
+				$pz_eml = new pz_eml($email->getEml());
+				$pz_eml->setMailFilename($email->getId());
+				$element_id = rex_request("element_id","string",0);
+				if($element = $pz_eml->getElementByElementId($element_id))
+				{
+					$cb = pz_clipboard::getByUserId(pz::getUser()->getid());
+					$return = $cb->addClipAsSource($element->getBody(), $element->getFileName(), $element->getSize(), $element->getContentType(), false);
+					// $return = array('id' => $id, 'path' => $path, 'filename' => $filename);
+
+					return '<script>pz_loadClipboard();</script>';
+
+				}
+				return FALSE;
+
 
 			case("update_status"):
 				$email_status = rex_request("email_status","int",0);
@@ -254,6 +279,7 @@ class pz_emails_controller_screen extends pz_emails_controller {
 				if($status == 1 || !in_array($project->getId(),$project_ids)) {
 						$return.= 'pz_hide(".email-'.$email->getId().'");';
 				}
+				$return.= 'pz_tracker();';
 				$return.= '</script>';
 				return $return;
 
@@ -269,6 +295,7 @@ class pz_emails_controller_screen extends pz_emails_controller {
 				$email->trash();
 				$return = '<script language="Javascript">';
 				$return.= 'pz_hide(".email-'.$email->getId().'");';
+				$return.= 'pz_tracker();';
 				$return.= '</script>';
 				return $return;
 
@@ -276,6 +303,7 @@ class pz_emails_controller_screen extends pz_emails_controller {
 				$email->untrash();
 				$return = '<script language="Javascript">';
 				$return.= 'pz_hide(".email-'.$email->getId().'");';
+				$return.= 'pz_tracker();';
 				$return.= '</script>';
 				return $return;
 
@@ -284,6 +312,7 @@ class pz_emails_controller_screen extends pz_emails_controller {
 				$return = '<script language="Javascript">';
 				$return.= '$(".email-'.$email->getId().'").removeClass("email-readed");';
 				$return.= '$(".email-'.$email->getId().'").addClass("email-unreaded");';
+				$return.= 'pz_tracker();';
 				$return.= '</script>';
 				return $return;
 
@@ -304,6 +333,9 @@ class pz_emails_controller_screen extends pz_emails_controller {
 		$p["layer_search"] = "emails_search";
 		$p["layer_list"] = "emails_list";
 
+		$p["list_links"] = array();
+		$p["list_links"][] = '<a class="emails-download bt5" href="javascript:void(0);" onclick="if($(this).hasClass(\'bt-loading\')) return false; $(this).addClass(\'bt-loading\'); pz_exec_javascript(\''.pz::url("screen","emails","emails",array_merge(array("mode"=>"download_emails"))).'\');"><span>'.rex_i18n::msg("download_emails").'</span></a>';
+
 		$s1_content = "";
 		$s2_content = "";
 
@@ -313,26 +345,35 @@ class pz_emails_controller_screen extends pz_emails_controller {
 		$filter = array();
 		$filter[] = array("type"=>"plain", "value"=>"( (project_id>0 AND status=0) || (project_id=0))");
 		
-		if(rex_request("search_name","string") != "")
+		if(rex_request("search_name","string") != "") {
 			$filter[] = array("type"=>"orlike", "field"=>"subject,body,to,cc", "value"=>rex_request("search_name","string"));
-		if(rex_request("search_mymails","int") == 1)
+			$p["linkvars"]["search_name"] = rex_request("search_name","string");
+		}
+		if(rex_request("search_mymails","int") == 1) {
 			$filter[] = array("type"=>"=", "field"=>"user_id", "value"=>pz::getUser()->getId());
-		if(rex_request("search_account_id","int") != 0)
+			$p["linkvars"]["search_mymails"] = rex_request("search_mymails","int");
+		}
+		if(rex_request("search_account_id","int") != 0) {
 			$filter[] = array("type"=>"=", "field"=>"account_id", "value"=>rex_request("search_account_id","int"));
+			$p["linkvars"]["search_account_id"] = rex_request("search_account_id","int");
+		}
+		if(rex_request("search_noprojects","int") != 0) {
+			$filter[] = array("type"=>"=", "field"=>"project_id", "value"=>"0");
+			$p["linkvars"]["search_noprojects"] = 1;
+		}
 		
 		$emails = pz::getUser()->getInboxEmails($filter,$projects);
 
-		$return = "";
-		
 		$mode = rex_request("mode","string");
 		switch($mode) {
 		
 			case("emails_search"):
-				return $this->getEmailsSearchForm($p);
+				return pz_email_screen::getEmailsSearchForm($p);
 			default:
 				break;
 		}
 
+		$return = "";
 		$return .= pz_email_screen::getInboxListView(
 					$emails,
 					array_merge( $p, array("linkvars" => array( "mode" =>"list"	) )	)
@@ -342,12 +383,12 @@ class pz_emails_controller_screen extends pz_emails_controller {
 			return $return;
 		}
 
-		$s1_content .= $this->getEmailsSearchForm($p);
+		$s1_content .= pz_email_screen::getEmailsSearchForm($p);
 		$s2_content .= $return;
 
 		$f = new rex_fragment();
 		$f->setVar('header', pz_screen::getHeader($p), false);
-		$f->setVar('function', $this->getNavigation($p, pz_project_controller_screen::getProjectsFlyout($p)), false);
+		$f->setVar('function', $this->getNavigation($p), false);
 		$f->setVar('section_1', $s1_content, false);
 		$f->setVar('section_2', $s2_content, false);
 
@@ -372,10 +413,24 @@ class pz_emails_controller_screen extends pz_emails_controller {
 		$project_ids = pz_project::getProjectIds($projects);
 
 		$filter = array();
-		if(rex_request("search_name","string") != "")
+		if(rex_request("search_name","string") != "") {
 			$filter[] = array("type"=>"orlike", "field"=>"subject,body,to,cc", "value"=>rex_request("search_name","string"));
-		if(rex_request("search_mymails","int") == 1)
+			$p["linkvars"]["search_name"] = rex_request("search_name","string");
+		}
+		if(rex_request("search_mymails","int") == 1) {
 			$filter[] = array("type"=>"=", "field"=>"user_id", "value"=>pz::getUser()->getId());
+			$p["linkvars"]["search_mymails"] = rex_request("search_mymails","int");
+		}
+		if(rex_request("search_account_id","int") != 0) {
+			$filter[] = array("type"=>"=", "field"=>"account_id", "value"=>rex_request("search_account_id","int"));
+			$p["linkvars"]["search_account_id"] = rex_request("search_account_id","int");
+		}
+		if(rex_request("search_noprojects","int") != 0) {
+			$filter[] = array("type"=>"=", "field"=>"project_id", "value"=>"0");
+			$p["linkvars"]["search_noprojects"] = 1;
+		}
+		
+		$filter[] = array("type"=>"=", "field"=>"user_id", "value"=>pz::getUser()->getId());
 		
 		$emails = pz::getUser()->getOutboxEmails($filter,$projects);
 
@@ -385,26 +440,28 @@ class pz_emails_controller_screen extends pz_emails_controller {
 		switch($mode) {
 		
 			case("emails_search"):
-				return $this->getEmailsSearchForm($p);
+				return pz_email_screen::getEmailsSearchForm($p);
 			default:
 				break;
 		}
 		
+		$p["linkvars"]["mode"] = "list";
+		
 		$return .= pz_email_screen::getOutboxListView(
-					$emails,
-					array_merge( $p, array("linkvars" => array( "mode" =>"list" ) ) )
-				);
+						$emails,
+						$p
+					);
 
 		if($mode == "list") {
 			return $return;
 		}
 
-		$s1_content .= $this->getEmailsSearchForm($p);
+		$s1_content .= pz_email_screen::getEmailsSearchForm($p);
 		$s2_content .= $return;
 
 		$f = new rex_fragment();
 		$f->setVar('header', pz_screen::getHeader($p), false);
-		$f->setVar('function', $this->getNavigation($p, pz_project_controller_screen::getProjectsFlyout($p)), false);
+		$f->setVar('function', $this->getNavigation($p), false);
 		$f->setVar('section_1', $s1_content, false);
 		$f->setVar('section_2', $s2_content, false);
 		
@@ -429,10 +486,22 @@ class pz_emails_controller_screen extends pz_emails_controller {
 		$project_ids = pz_project::getProjectIds($projects);
 
 		$filter = array();
-		if(rex_request("search_name","string") != "")
+		if(rex_request("search_name","string") != "") {
 			$filter[] = array("type"=>"orlike", "field"=>"subject,body,to,cc", "value"=>rex_request("search_name","string"));
-		if(rex_request("search_mymails","int") == 1)
+			$p["linkvars"]["search_name"] = rex_request("search_name","string");
+		}
+		if(rex_request("search_mymails","int") == 1) {
 			$filter[] = array("type"=>"=", "field"=>"user_id", "value"=>pz::getUser()->getId());
+			$p["linkvars"]["search_mymails"] = rex_request("search_mymails","int");
+		}
+		if(rex_request("search_account_id","int") != 0) {
+			$filter[] = array("type"=>"=", "field"=>"account_id", "value"=>rex_request("search_account_id","int"));
+			$p["linkvars"]["search_account_id"] = rex_request("search_account_id","int");
+		}
+		if(rex_request("search_noprojects","int") != 0) {
+			$filter[] = array("type"=>"=", "field"=>"project_id", "value"=>"0");
+			$p["linkvars"]["search_noprojects"] = 1;
+		}
 		
 		$emails = pz::getUser()->getSpamEmails($filter,$projects);
 
@@ -442,12 +511,12 @@ class pz_emails_controller_screen extends pz_emails_controller {
 		switch($mode) {
 		
 			case("emails_search"):
-				return $this->getEmailsSearchForm($p);
+				return pz_email_screen::getEmailsSearchForm($p);
 			default:
 				break;
 		}
 		
-		$return .= pz_email_screen::getOutboxListView(
+		$return .= pz_email_screen::getSpamListView(
 					$emails,
 					array_merge( $p, array("linkvars" => array( "mode" =>"list" ) ) )
 				);
@@ -456,12 +525,12 @@ class pz_emails_controller_screen extends pz_emails_controller {
 			return $return;
 		}
 
-		$s1_content .= $this->getEmailsSearchForm($p);
+		$s1_content .= pz_email_screen::getEmailsSearchForm($p);
 		$s2_content .= $return;
 
 		$f = new rex_fragment();
 		$f->setVar('header', pz_screen::getHeader($p), false);
-		$f->setVar('function', $this->getNavigation($p, pz_project_controller_screen::getProjectsFlyout($p)), false);
+		$f->setVar('function', $this->getNavigation($p), false);
 		$f->setVar('section_1', $s1_content, false);
 		$f->setVar('section_2', $s2_content, false);
 
@@ -486,10 +555,22 @@ class pz_emails_controller_screen extends pz_emails_controller {
 		$project_ids = pz_project::getProjectIds($projects);
 
 		$filter = array();
-		if(rex_request("search_name","string") != "")
+		if(rex_request("search_name","string") != "") {
 			$filter[] = array("type"=>"orlike", "field"=>"subject,body,to,cc", "value"=>rex_request("search_name","string"));
-		if(rex_request("search_mymails","int") == 1)
+			$p["linkvars"]["search_name"] = rex_request("search_name","string");
+		}
+		if(rex_request("search_mymails","int") == 1) {
 			$filter[] = array("type"=>"=", "field"=>"user_id", "value"=>pz::getUser()->getId());
+			$p["linkvars"]["search_mymails"] = rex_request("search_mymails","int");
+		}
+		if(rex_request("search_account_id","int") != 0) {
+			$filter[] = array("type"=>"=", "field"=>"account_id", "value"=>rex_request("search_account_id","int"));
+			$p["linkvars"]["search_account_id"] = rex_request("search_account_id","int");
+		}
+		if(rex_request("search_noprojects","int") != 0) {
+			$filter[] = array("type"=>"=", "field"=>"project_id", "value"=>"0");
+			$p["linkvars"]["search_noprojects"] = 1;
+		}
 		
 		$emails = pz::getUser()->getTrashEmails($filter,$projects);
 
@@ -499,26 +580,27 @@ class pz_emails_controller_screen extends pz_emails_controller {
 		switch($mode) {
 		
 			case("emails_search"):
-				return $this->getEmailsSearchForm($p);
+				return pz_email_screen::getEmailsSearchForm($p);
 			default:
 				break;
 		}
 		
-		$return .= pz_email_screen::getOutboxListView(
+		$p["linkvars"]["mode"] = "list";
+		$return .= pz_email_screen::getTrashListView(
 					$emails,
-					array_merge( $p, array("linkvars" => array( "mode" =>"list" ) ) )
+					$p
 				);
 
 		if($mode == "list") {
 			return $return;
 		}
 
-		$s1_content .= $this->getEmailsSearchForm($p);
+		$s1_content .= pz_email_screen::getEmailsSearchForm($p);
 		$s2_content .= $return;
 
 		$f = new rex_fragment();
 		$f->setVar('header', pz_screen::getHeader($p), false);
-		$f->setVar('function', $this->getNavigation($p, pz_project_controller_screen::getProjectsFlyout($p)), false);
+		$f->setVar('function', $this->getNavigation($p), false);
 		$f->setVar('section_1', $s1_content, false);
 		$f->setVar('section_2', $s2_content, false);
 
@@ -542,14 +624,25 @@ class pz_emails_controller_screen extends pz_emails_controller {
 		$filter = array();
 		$projects = array();
 		
-		if(rex_request("search_name","string") != "")
+		if(rex_request("search_name","string") != "") {
 			$filter[] = array("type"=>"orlike", "field"=>"subject,body,to,cc", "value"=>rex_request("search_name","string"));
-		if(rex_request("search_mymails","int") == 1)
+			$p["linkvars"]["search_name"] = rex_request("search_name","string");
+		}
+		if(rex_request("search_mymails","int") == 1) {
 			$filter[] = array("type"=>"=", "field"=>"user_id", "value"=>pz::getUser()->getId());
-		if(rex_request("search_account_id","int") != 0)
+			$p["linkvars"]["search_mymails"] = rex_request("search_mymails","int");
+		}
+		if(rex_request("search_account_id","int") != 0) {
 			$filter[] = array("type"=>"=", "field"=>"account_id", "value"=>rex_request("search_account_id","int"));
+			$p["linkvars"]["search_account_id"] = rex_request("search_account_id","int");
+		}
+		if(rex_request("search_noprojects","int") != 0) {
+			$filter[] = array("type"=>"=", "field"=>"project_id", "value"=>"0");
+			$p["linkvars"]["search_noprojects"] = 1;
+		}
 		
 		$filter[] = array("field"=>"trash", "value"=>0);
+		$filter[] = array("field"=>"draft", "value"=>0);
 		
 		$emails = pz::getUser()->getAllEmails($filter, $projects);
 
@@ -559,26 +652,27 @@ class pz_emails_controller_screen extends pz_emails_controller {
 		switch($mode) {
 		
 			case("emails_search"):
-				return $this->getEmailsSearchForm($p);
+				return pz_email_screen::getEmailsSearchForm($p);
 			default:
 				break;
 		}
 
-		$return .= pz_email_screen::getInboxListView(
+		$p["linkvars"]["mode"] = "list";
+		$return .= pz_email_screen::getSearchListView(
 					$emails,
-					array_merge( $p, array("linkvars" => array( "mode" =>"list"	) )	)
+					$p
 				);
 
 		if($mode == "list") {
 			return $return;
 		}
 
-		$s1_content .= $this->getEmailsSearchForm($p);
+		$s1_content .= pz_email_screen::getEmailsSearchForm($p);
 		$s2_content .= $return;
 
 		$f = new rex_fragment();
 		$f->setVar('header', pz_screen::getHeader($p), false);
-		$f->setVar('function', $this->getNavigation($p, pz_project_controller_screen::getProjectsFlyout($p)), false);
+		$f->setVar('function', $this->getNavigation($p), false);
 		$f->setVar('section_1', $s1_content, false);
 		$f->setVar('section_2', $s2_content, false);
 
@@ -647,7 +741,7 @@ class pz_emails_controller_screen extends pz_emails_controller {
 
 		$f = new rex_fragment();
 		$f->setVar('header', pz_screen::getHeader($p), false);
-		$f->setVar('function', $this->getNavigation($p, pz_project_controller_screen::getProjectsFlyout($p)), false);
+		$f->setVar('function', $this->getNavigation($p), false);
 		$f->setVar('section_1', $s1_content, false);
 		$f->setVar('section_2', $s2_content, false);
 
@@ -657,6 +751,7 @@ class pz_emails_controller_screen extends pz_emails_controller {
 
 	public function getEmailForm($p = array()) 
 	{
+		$return = "";
 		$p["title"] = rex_i18n::msg("email_create");
 		$p["mediaview"] = "screen";
 		$p["controll"] = "emails";
@@ -674,7 +769,7 @@ class pz_emails_controller_screen extends pz_emails_controller {
 		// prüfen ob man noch Rechte auf diese Email hat.
 
 		$reply_email_id = rex_request("reply_email_id","int");
-		if($reply_email_id > 0 && $email = pz_email::get($reply_email_id)) {
+		if($reply_email_id > 0 && $email = pz::getUser()->getEmailById($reply_email_id)) {
 		
 			$_REQUEST["to"] = $email->getFromEmail();
 
@@ -704,11 +799,51 @@ class pz_emails_controller_screen extends pz_emails_controller {
 
 			$_REQUEST["reply_id"] = $reply_email_id;
 			$_REQUEST["project_id"] = $email->getProjectId();
+
+			$body = ' '.rex_i18n::msg("email_original");
+			$body .= "\n".rex_i18n::msg("email_to").": ".$email->getFromEmail();
+			$body .= "\n".rex_i18n::msg("email_original_send").": ".$email->getDate();
+			$body .= "\n".rex_i18n::msg("email_to").": ".$email->getToEmails();
+			$body .= "\n".rex_i18n::msg("email_subject").": ".$email->getSubject();
+			$body .= "\n\n".$email->getBody();
 			
-			$_REQUEST["body"] = "\n\n>>".str_replace("\n","\n>> ",$email->getBody());
+			$_REQUEST["body"] = "\n\n>>".str_replace("\n","\n>> ",$body);
 			$_REQUEST["subject"] = "RE: ".$email->getSubject();
 
 		}
+
+		$forward_email_id = rex_request("forward_email_id","int");
+		if($forward_email_id > 0 && $email = pz::getUser()->getEmailById($forward_email_id)) {
+		
+			$_REQUEST["forward_id"] = $forward_email_id;
+			$_REQUEST["project_id"] = $email->getProjectId();
+			
+			$body = ' '.rex_i18n::msg("email_original");
+			$body .= "\n".rex_i18n::msg("email_to").": ".$email->getFromEmail();
+			$body .= "\n".rex_i18n::msg("email_original_send").": ".$email->getDate();
+			$body .= "\n".rex_i18n::msg("email_to").": ".$email->getToEmails();
+			$body .= "\n".rex_i18n::msg("email_subject").": ".$email->getSubject();
+			$body .= "\n\n".$email->getBody();
+			
+			$_REQUEST["body"] = "\n\n>>".str_replace("\n","\n>> ",$body);
+			$_REQUEST["subject"] = "FW: ".$email->getSubject();
+			
+			$pz_eml = new pz_eml($email->getEml());
+			$pz_eml->setMailFilename($email->getId());
+			if($element = $pz_eml->getElementByElementId("0-0"))
+			{
+				$cb = pz_clipboard::getByUserId(pz::getUser()->getid());
+				$clip = $cb->addClipAsSource($element->getBody(), $element->getFileName(), $element->getSize(), $element->getContentType(), true); // hidden clip
+				// $clip = array('id' => $id, 'path' => $path, 'filename' => $filename);
+				$_REQUEST["clip_ids"] = $clip["id"];
+
+			}
+
+		}
+
+
+
+
 
 		if(isset($_REQUEST["to"]))
 			$_REQUEST["to"] = trim($_REQUEST["to"], "\n\t\0\r\x0B, ");
@@ -717,7 +852,6 @@ class pz_emails_controller_screen extends pz_emails_controller {
 		if(isset($_REQUEST["bcc"]))
 			$_REQUEST["bcc"] = trim($_REQUEST["bcc"], "\n\t\0\r\x0B, ");
 
-		$return = "";
 		$mode = rex_request("mode","string");
 		switch($mode)
 		{
@@ -738,6 +872,7 @@ class pz_emails_controller_screen extends pz_emails_controller {
 				
 				$return = '<script language="Javascript">';
 				$return.= 'pz_hide(".email-'.$email->getId().'");';
+				$return.= 'pz_tracker();';
 				$return.= '</script>';
 				
 				return $return;
@@ -769,7 +904,7 @@ class pz_emails_controller_screen extends pz_emails_controller {
 				}
 			
 				$s1_content .= pz_email_screen::getAddForm($p);
-				$s2_content = pz_email_screen::getDraftsListView(
+				$s2_content .= pz_email_screen::getDraftsListView(
 						$emails,
 						array_merge( $p, array("linkvars" => array( "mode" =>"list"	) ) )
 					);
@@ -777,11 +912,12 @@ class pz_emails_controller_screen extends pz_emails_controller {
 
 		$f = new rex_fragment();
 		$f->setVar('header', pz_screen::getHeader($p), false);
-		$f->setVar('function', $this->getNavigation($p, pz_project_controller_screen::getProjectsFlyout($p)), false);
+		$f->setVar('function', $this->getNavigation($p), false);
 		$f->setVar('section_1', $s1_content, false);
 		$f->setVar('section_2', $s2_content, false);
 
-		return $f->parse('pz_screen_main');
+		$return .= $f->parse('pz_screen_main');
+		return $return;
 	}
 
 

@@ -24,6 +24,10 @@ class pz_email_screen{
 		return pz_email_screen::getEmailsBlockView($emails,$p);
 	}
 
+	static function getSearchListView($emails, $p = array())
+	{
+		return pz_email_screen::getEmailsBlockView($emails,$p);
+	}
 	static function getDraftsListView($emails, $p = array())
 	{
 		$p["title"] = rex_i18n::msg("email_drafts");
@@ -54,7 +58,7 @@ class pz_email_screen{
 				$p["linkvars"],
 				array(
 					"mode"=>"list",
-					"project_ids" => "___value_ids___"	
+					"email_project_ids" => "___value_ids___"	
 				)
 			)
 			);
@@ -92,7 +96,7 @@ class pz_email_screen{
 		}
 		
 		$content = $content.'<ul class="entries view-block clearfix">'.$list.'</ul>';
-	
+		
 		$f = new rex_fragment();
 		$f->setVar('title', $p["title"], false);
 		$f->setVar('content', $content , false);
@@ -102,17 +106,21 @@ class pz_email_screen{
 				$p["linkvars"],
 				array(
 					"mode"=>"list",
-					"project_ids" => "___value_ids___"	
+					"email_project_ids" => "___value_ids___"	
 				)
 			)
-			);
+		);
+		
+		if(isset($p["list_links"]))
+			$f->setVar('links', $p["list_links"], false);
 		
 		$return = $f->parse('pz_screen_list');
 		if(count($emails) == 0) {
 				$return .= '<div class="xform-warning">'.rex_i18n::msg("no_emails_found").'</div>';
 		}
 		
-		return '<div id="emails_list" class="design2col" data-url="'.$link_refresh.'">'.$return.'</div>';
+		return '<div id="emails_list" class="design2col" data-url="'.$link_refresh.'">'.$return.'</div>
+		<script>pz_screen_select_event("#emails_list li.selected");</script>';
 		
 	}
 
@@ -168,7 +176,6 @@ class pz_email_screen{
     	$p["linkvars"]["email_id"] = $this->email->getId();
     
     	$link_open = "javascript:pz_loadPage('email_form','".pz::url("screen","emails","create",array_merge($p["linkvars"],array("mode" => "edit_email", "email_id"=>$this->email->getId())))."')";
-    	
     	$link_delete = "javascript:pz_exec_javascript('".pz::url("screen","emails","create",array_merge($p["linkvars"],array("mode"=>"delete_email")))."')";
 
 		$image_from_address = pz_user::getDefaultImage();
@@ -185,7 +192,7 @@ class pz_email_screen{
                   <figure><img src="'.$image_from_address.'" width="40" height="40" alt="" /></figure>
                   <hgroup>
                     <h2 class="hl7"><span class="name">'.$this->email->getVar("from").'</span><span class="info">'.$this->email->getVar("created").'</span></h2>
-                    <h3 class="hl7"><a href="'.$link_open.'"><span class="title">'.$this->email->getSubject().'</span></a></h3>
+                    <h3 class="hl7"><a href="'.$link_open.'"><span class="title">'.htmlspecialchars($this->email->getSubject()).'</span></a></h3>
                   </hgroup>
                 </div>
                 
@@ -269,7 +276,7 @@ class pz_email_screen{
 					<div class="links">
   					<a href="'.$link_move.'"><span class="title">'.rex_i18n::msg("move").'</span></a><a href="'.$link_move_status.'"><span class="title">'.rex_i18n::msg("and_finished").'</span></a>
 	   		  </div>
-					<span class="name">'.$project->getName().'</span>
+					<span class="name">'.htmlspecialchars($project->getName()).'</span>
 				</div>
 				</li>';
 			// <li class="entry"><a class="email" href=""><span class="name">Christian Sittler</span><span class="title">Lorem ipsum dolor sit amet</span></a></li>
@@ -306,8 +313,8 @@ class pz_email_screen{
                 <div class="column first">
                   <figure><img src="'.$image_from_address.'" width="40" height="40" alt="" /></figure>
                   <hgroup>
-                    <h2 class="hl7"><span class="name">'.$this->email->getVar("from").'</span><span class="info">'.$this->email->getVar("created").'</span></h2>
-                    <h3 class="hl7"><a href="'.$link_open.'"><span class="title">'.$this->email->getSubject().'</span></a></h3>
+                    <h2 class="hl7"><span class="name">'.htmlspecialchars(pz::cutText($this->email->getVar("from"))).'</span><span class="info">'.$this->email->getVar("created").'</span></h2>
+                    <h3 class="hl7"><a href="'.$link_open.'"><span class="title">'.htmlspecialchars($this->email->getSubject()).'</span></a></h3>
                   </hgroup>
                   <a class="tooltip status status'.$this->email->getStatus().' email-status-'.$this->email->getId().'" href="'.$link_status.'"><span class="tooltip"><span class="inner">E-Mail wurde bearbeitet</span></span></a>
                  </div>
@@ -350,14 +357,13 @@ class pz_email_screen{
                           </ul>
                         </div>
                       </div>
-                    </li>
                   </ul>
                 </div>
               </div>
             </header>
             
             <section class="content preview" id="email-content-preview-'.$this->email->getId().'">
-              <p>'.pz::cutText($this->email->getBody(),"60").'&nbsp;</p>
+              <p>'.htmlspecialchars(pz::cutText($this->email->getBody(),"60")).'&nbsp;</p>
             </section>
             
             <section class="content detail" id="email-content-detail-'.$this->email->getId().'"></section>
@@ -381,7 +387,7 @@ class pz_email_screen{
               <figure><img src="'.pz_user::getDefaultImage().'" width="40" height="40" alt="" /></figure>
               <hgroup>
                 <h2 class="hl7"><span class="name">'.$this->email->getVar("from").'</span><span class="info">'.$this->email->getVar("date").'</span></h2>
-                <h3 class="hl7"><a href=""><span class="title">'.$this->email->getSubject().'</span></a></h3>
+                <h3 class="hl7"><a href=""><span class="title">'.htmlspecialchars($this->email->getSubject()).'</span></a></h3>
               </hgroup>
             </header>
             
@@ -422,7 +428,7 @@ class pz_email_screen{
                 <td><img src="'.pz_user::getDefaultImage().'" width="40" height="40" alt="" /></td>
                 <td><span class="name">'.$this->email->getVar("afrom","plain").'</span></td>
                 <td><span class="info">'.$this->email->getVar("stamp","datetime").'</span></td>
-                <td><a href=""><span class="title">'.$this->email->getSubject().'</span></a></td>
+                <td><a href=""><span class="title">'.htmlspecialchars($this->email->getSubject()).'</span></a></td>
                 
                 <td>
                   <ul class="sl2">
@@ -454,6 +460,7 @@ class pz_email_screen{
 	{
 
     	$pz_eml = new pz_eml($this->email->getEml());
+    	$pz_eml->setMailFilename($this->email->getId());
 		$body = $pz_eml->getFirstText();
 		$body = $this->prepareOutput($body);
 		$body = str_replace("\n","<br />",$body);
@@ -470,19 +477,30 @@ class pz_email_screen{
 		{
 		
 			$a_download_link = pz::url("screen","emails","email",array("email_id"=>$this->email->getId(),"mode"=>"download","element_id"=>$a->getElementId()));
+			$a_clipboard_link = pz::url("screen","emails","email",array("email_id"=>$this->email->getId(),"mode"=>"element2clipboard","element_id"=>$a->getElementId()));
 			$a_view_link = pz::url("screen","emails","email",array("email_id"=>$this->email->getId(),"mode"=>"view_element","element_id"=>$a->getElementId()));
 		
-			if(count($as) == ($k+1)) $last = "last";
-			$attachments[] = '<li class="'.$first.$last.' attachment entry">
-				<span class="preview"><img src="'.$a->getInlineImage().'" width="20" height="20" /></span>
-				<span class="name"><a onclick="window.open(this.href); return false;" href="'.$a_view_link.'">'.$a->getFileName().'</a></span>
-				<span class="type">'.$a->getContentType().'</span>
-				<span class="info">'.pz::readableFilesize($a->getSize()).'</span>
-                <ul class="functions">
-                  <li class="first function"><a class="download" target="_blank" href="'.$a_download_link.'">Download</a></li>
-                  <li class="last function"><a class="clipboard" href="">Clipboard</a></li>
-                </ul>
-              </li>';
+			if(count($as) == ($k+1)) $last = "last ";
+      
+			$extension = pz::getExtensionByMimeType($a->getContentType());
+      		$depth = "";
+			// $depth = str_pad('', $a->getDepth(), "_");
+			// $depth = str_replace('_','__ ',$depth);
+      
+			// Spaces vermeiden
+			$attachment = '';
+			$attachment .= '<li class="'.$first.$last.'attachment entry">';
+			//			$attachment .= '<span class="preview"><img src="'.$a->getInlineImage().'" width="20" height="20" /></span>';
+			$attachment .= '<span class="file25 '.$extension.'"></span>';
+			$attachment .= '<span class="link">'.$depth.'<a onclick="window.open(this.href); return false;" href="'.$a_view_link.'" title="'.htmlspecialchars($a->getFileName()).'">'.htmlspecialchars(pz::cutText($a->getFileName(),50)).'</a></span>';
+			$attachment .= '<span class="name" title="'.htmlspecialchars($a->getContentType()).'">'.htmlspecialchars(pz::cutText($a->getContentType())).'</span>';
+			$attachment .= '<span class="info">'.pz::readableFilesize($a->getSize()).'</span>';
+			$attachment .= '<ul class="functions">';
+			$attachment .= '<li class="first function"><a class="download" target="_blank" href="'.$a_download_link.'">'.rex_i18n::msg("download").'</a></li>';
+			$attachment .= '<li class="last function"><a class="clipboard" href="javascript:void(0);" onclick="pz_exec_javascript(\''.$a_clipboard_link.'\')">'.rex_i18n::msg("2clipboard").'</a></li>';
+			$attachment .= '</ul>';
+			$attachment .= '</li>';
+			$attachments[] = $attachment;
 			$first = "";
 		}
 		
@@ -546,16 +564,18 @@ class pz_email_screen{
           </section>
           
           <footer>
+          <!--
             <ul class="actions">
               <li class="first action"><a class="close" href="">Close</a></li>
               <li class="action"><a class="up" href="">Up</a></li>
               <li class="last action"><a class="down" href="">Down</a></li>
             </ul>
+          //-->
           </footer>
         </div>
 		';
 	
-		$return .= $this->getDebugView();
+		// $return .= $this->getDebugView();
 	
 		return '
 			<section class="content detail" id="email-content-detail-'.$this->email->getId().'">
@@ -573,6 +593,60 @@ class pz_email_screen{
 	}
 
 	// ------------------------------------------------------------------- FORMS
+
+
+	function getEmailsSearchForm ($p = array())
+	{
+
+		$link_refresh = pz::url("screen","emails",
+							$p["function"],
+							array_merge( $p["linkvars"], array( "mode" => "emails_search", "project_ids" => "___value_ids___" ) )
+						);
+		
+	    $return = '
+	        <header>
+	          <div class="header">
+	            <h1 class="hl1">'.rex_i18n::msg("search_for_emails").'</h1>
+	          </div>
+	        </header>';
+		
+		$xform = new rex_xform;
+		$xform->setObjectparams("real_field_names",TRUE);
+		$xform->setObjectparams("form_showformafterupdate", TRUE);
+		$xform->setObjectparams("form_action", "javascript:pz_loadFormPage('emails_list','emails_search_form','".pz::url('screen','emails',$p["function"], array("mode"=>'list'))."')");
+		$xform->setObjectparams("form_id", "emails_search_form");
+		
+		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform', 'runtime'));
+		$xform->setValueField("text",array("search_name",rex_i18n::msg("project_name")));
+		// $xform->setValueField('pz_select_screen',array('search_label', rex_i18n::msg('label'), pz_labels::getAsString(),"","",1,rex_i18n::msg("please_choose")));
+		// $xform->setValueField('pz_select_screen',array('search_customer', rex_i18n::msg('customer'), pz_customers::getAsString(),"","",1,rex_i18n::msg("please_choose")));
+		// $xform->setValueField('pz_date_screen',array('search_datetime', rex_i18n::msg('createdate')));
+		
+		$xform->setValueField('pz_select_screen',array('search_account_id', rex_i18n::msg('email_account'), pz::getUser()->getEmailaccountsAsString(),"","",1,rex_i18n::msg("please_choose")));
+		
+		$xform->setValueField("checkbox",array("search_mymails",rex_i18n::msg("only_my_emails")));
+		
+		$xform->setValueField("checkbox",array("search_noprojects",rex_i18n::msg("only_noproject_emails")));
+		
+		$xform->setValueField("submit",array('submit',rex_i18n::msg('search'), '', 'search'));
+
+		$return .= $xform->getForm();
+		
+		$return = '<div id="emails_search" class="design1col xform-search" data-url="'.$link_refresh.'">'.$return.'</div>';
+		return $return;
+
+	}
+
+
+
+
+
+
+
+
+
+
+
 
 	static function getAddForm($p = array()) {
 	
@@ -642,61 +716,11 @@ class pz_email_screen{
 			
 			$return = $xform->getForm();
 
-			// http://jqueryui.com/demos/autocomplete/#multiple-remote
-
 			$return .= '<script>
-
-	$(document).ready(function() {
-	
-		function split( val ) {
-			return val.split( /,\s*/ );
-		}
-		function extractLast( term ) {
-			return split( term ).pop();
-		}
-
-		$("#xform-xform-cc input, #xform-xform-to input, #xform-xform-bcc input")
-			// don t navigate away from the field on tab when selecting an item
-			.bind( "keydown", function( event ) {
-				if ( event.keyCode === $.ui.keyCode.TAB &&
-						$( this ).data( "autocomplete" ).menu.active ) {
-					event.preventDefault();
-				}
-			})
-			.autocomplete({
-				source: function( request, response ) {
-					$.getJSON( "/screen/addresses/addresses/", {
-						mode: "get_emails",
-						search_name: extractLast( request.term )
-					}, response );
-				},
-				search: function() {
-					// custom minLength
-					var term = extractLast( this.value );
-					if ( term.length < 3 ) {
-						return false;
-					}
-				},
-				focus: function() {
-					// prevent value inserted on focus
-					return false;
-				},
-				select: function( event, ui ) {
-					var terms = split( this.value );
-					// remove the current input
-					terms.pop();
-					// add the selected item
-					terms.push( ui.item.value );
-					// add placeholder to get the comma-and-space at the end
-					terms.push( "" );
-					this.value = terms.join( ", " );
-					return false;
-				}
-			});
-	});
-
-	</script>
-	';
+				$(document).ready(function() {
+					pz_setEmailAutocomplete("#xform-xform-cc input, #xform-xform-to input, #xform-xform-bcc input");
+				});
+				</script>';
 	
 			if($xform->getObjectparams("actions_executed")) {
 				if(rex_request("draft","string") != "1")
@@ -796,6 +820,13 @@ class pz_email_screen{
 			
 			$return = $xform->getForm();
 	
+			$return .= '<script>
+				$(document).ready(function() {
+					pz_setEmailAutocomplete("#xform-xform-cc input, #xform-xform-to input, #xform-xform-bcc input");
+				});
+				</script>';
+
+	
 			if($xform->getObjectparams("actions_executed")) {
 				if(rex_request("draft","string") != "1")
 				{
@@ -826,10 +857,6 @@ class pz_email_screen{
 
 
 	public function prepareOutput($text, $specialchars = TRUE) {
-
-		$text = preg_replace("#<style[^>]*>.*</style>#isU", "SSTTYYLLEE", $text);
-		$text = preg_replace("#<script[^>]*>.*</script>#isU", "SSCCRRIIPPTT", $text);
-		$text = preg_replace("#<!--.*-->#isU", "KKOOMMNNEENNTTAARR", $text);
 
 		$text = pz_email_screen::setLinks($text);
 		if($specialchars)

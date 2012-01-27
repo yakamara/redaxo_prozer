@@ -141,7 +141,7 @@ class pz_sabre_caldav_backend extends Sabre_CalDAV_Backend_Abstract
       pz::removeConfig('calendar_etag_add/'. $uri);
     }
     $this->objects[$calendarId][$uri] = array(
-    	'id' => $event->getId(),
+      'id' => $event->getId(),
       'uri' => $uri,
       'lastmodified' => $timestamp,
       'calendarid' => $calendarId,
@@ -552,33 +552,34 @@ class pz_sabre_caldav_backend extends Sabre_CalDAV_Backend_Abstract
     {
       $organizer = str_ireplace('mailto:', '', strtolower($event->organizer));
       $sql = rex_sql::factory();
-      $sql->prepareQuery('SELECT id FROM pz_user WHERE LOWER(email) = ? OR LOWER(login) = ? LIMIT 2');
+      $sql->prepareQuery('SELECT id, name, email FROM pz_user WHERE LOWER(email) = ? OR LOWER(login) = ? LIMIT 2');
       $userEmail = strtolower(pz::getUser()->getEmail());
       foreach($attendees as $attendee)
       {
         $email = str_ireplace('mailto:', '', $attendee);
-        if(strtolower($email) != $organizer && strtolower($email) != $userEmail)
+        if(strtolower($email) != $organizer /*&& strtolower($email) != $userEmail*/)
         {
           $name = (string) $attendee['cn'];
           if(strpos($email, '@') === false)
           {
-            $sql->execute(array(null, strtolower($name)));
+            $sql->execute(array('', strtolower($name)));
+            if($sql->getRows() != 1)
+              continue;
+            $name = $sql->getValue('name');
+            $email = $sql->getValue('email');
           }
           else
           {
-            $sql->execute(array(strtolower($email), null));
+            $sql->execute(array(strtolower($email), ''));
           }
 
           $pzAttendee = pz_calendar_attendee::create();
           $pzAttendee->setStatus((string) $attendee['partstat']);
+          $pzAttendee->setEmail($email);
+          $pzAttendee->setName($name);
           if($sql->getRows() == 1)
           {
             $pzAttendee->setUserId($sql->getValue('id'));
-          }
-          else
-          {
-            $pzAttendee->setEmail($email);
-            $pzAttendee->setName($name);
           }
           $pzAttendees[] = $pzAttendee;
         }

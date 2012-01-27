@@ -34,6 +34,9 @@ class rex_xform_value_pz_address_fields extends rex_xform_value_abstract
 		$phones = array();
 		$emails = array();
 		$urls = array();
+		$socialprofiles = array();
+		$impps = array();
+		
 		$phone_labels = array("WORK","HOME","CELL","WORK,FAX","HOME,FAX","iPhone","PAGER","MAIN");
 		$email_labels = array("WORK","HOME","iPhone","MobileMe");
 		$postaddress_labels = array("WORK","HOME");
@@ -48,6 +51,31 @@ class rex_xform_value_pz_address_fields extends rex_xform_value_abstract
 			);		
 		$url_labels = array("WORK","HOME",'_$!<HomePage>!$_',"MobileMe");
 		
+		// X-SOCIALPROFILE
+		$socialprofile_value_types = array("myspace","linkedin","flickr","facebook","twitter");
+
+		// IMPP
+		$impp_labels = array("WORK","HOME");
+		$impp_value_types = array(
+			"AIM" => 'aim',
+			"Facebook" => 'x-apple',
+			"GaduGadu" => 'x-apple',
+			"GoogleTalk" => 'xmpp',
+			"ICQ" => 'aim',
+			"Jabber" => 'xmpp',
+			"MSN" => 'msnim',
+			"QQ" => 'x-apple',
+			"Skype" => 'skype',
+			"Yahoo" => 'ymsgr'
+			);
+
+		
+
+		/*
+		type 				label 	preferred 	value_type 		value
+		X-SOCIALPROFILE 			0 			facebook 		http://facebook.com/test 	editieren 	- löschen
+		IMPP 				WORK 	0 			ICQ 			aim:163252327
+		*/
 		
 		if($this->params["send"] == 1)
 		{
@@ -117,6 +145,36 @@ class rex_xform_value_pz_address_fields extends rex_xform_value_abstract
 						"value_type" => ""
 						);
 			}
+			
+			// X-SOCIALPROFILE
+			$socialprofile_field_value_types = rex_request("address_field_socialprofile_value_type","array");
+			$socialprofile_field_values = rex_request("address_field_socialprofile_value","array");
+			foreach($socialprofile_field_values as $k => $v) {
+				if($socialprofile_field_values[$k] != "")
+					$socialprofiles[] = array(
+						"label" => "",
+						"preferred" => 0,
+						"value_type" => $socialprofile_field_value_types[$k], 
+						"value" => $socialprofile_field_values[$k]
+						);
+			}
+			
+			// IMPP
+			$impp_field_labels = rex_request("address_field_impp_label","array");
+			$impp_field_value_types = rex_request("address_field_impp_value_type","array");
+			$impp_field_values = rex_request("address_field_impp_value","array");
+			foreach($impp_field_values as $k => $v) {
+				if($impp_field_values[$k] != "") {
+					$v = $impp_value_types[$impp_field_value_types[$k]].":".$impp_field_values[$k];
+					$impps[] = array(
+						"label" => $impp_field_labels[$k], 
+						"preferred" => 0,
+						"value_type" => $impp_field_value_types[$k],
+						"value" => $v,
+						"exploded_value" => $impp_field_values[$k]
+						);
+				}
+			}
 
 		
 		}else
@@ -149,6 +207,23 @@ class rex_xform_value_pz_address_fields extends rex_xform_value_abstract
 										"preferred" => $field->getVar("preferred"),
 										"value_type" => $field->getVar("value_type")
 									  ); break;
+						case("X-SOCIALPROFILE"):  $socialprofiles[] = array(
+										"value"=>$field->getVar("value"),
+										"label" => $field->getVar("label"),
+										"preferred" => $field->getVar("preferred"),
+										"value_type" => $field->getVar("value_type")
+									  ); break;
+						case("IMPP"): {
+								$v = explode(":",$field->getVar("value"));
+								$impps[] = array(
+										"value" => $field->getVar("value"),
+										"exploded_value" => $v[1],
+										"label" => $field->getVar("label"),
+										"preferred" => $field->getVar("preferred"),
+										"value_type" => $field->getVar("value_type")
+									  ); break;
+						}
+
 						// default: 	  $other[] = array("value"=>$field->getVar("value"),"label" => $field->getVar("label")); break;
 					}
 				}
@@ -414,7 +489,132 @@ class rex_xform_value_pz_address_fields extends rex_xform_value_abstract
 		$output .= $urls_output.'<div class="split-h"></div>';
 		
 		
+		// X-SOCIALPROFILE $socialprofile_value_types
 		
+		$f = new rex_fragment();
+		$f->setVar('name', $name, false);
+		$f->setVar('class', "socialprofile_field", false);
+
+		$socialprofiles_output = '<h2 class="hl2">' . rex_i18n::msg("address_socialprofile") . '</h2>';
+		foreach($socialprofiles as $socialprofile) 
+		{
+			$select = new rex_select();
+			$select->setSize(1);
+			$select->setStyle("width:80px;");
+			$select->setName("address_field_socialprofile_value_type[]");
+			foreach($socialprofile_value_types as $value_type) $select->addOption($value_type,$value_type);
+			
+			if(!in_array($socialprofile["value_type"],$socialprofile_value_types))
+				$select->addOption($socialprofile["value_type"],$socialprofile["value_type"]);
+			$select->setSelected($socialprofile["value_type"]);
+
+			$label = '<label class="'.$this->getHTMLClass().'">' . $select->get() . '</label>';	
+			$field = '<input class="'.$this->getHTMLClass().'" type="text" name="address_field_socialprofile_value[]" value="'.htmlspecialchars($socialprofile["value"]).'" />';
+			$f->setVar('label', $label, false);
+			$f->setVar('field', $field, false);
+			$f->setVar('class', "socialprofile_field", false);
+			$socialprofiles_output .= $f->parse($fragment);
+		}
+		
+		$select = new rex_select();
+		$select->setSize(1);
+		$select->setStyle("width:80px;");
+		$select->setName("address_field_socialprofile_value_type[]");
+		foreach($socialprofile_value_types as $value_type) $select->addOption($value_type,$value_type);
+		$label = '<label class="'.$this->getHTMLClass().'" >' . $select->get() . '</label>';	
+		$field = '<input class="'.$this->getHTMLClass().'" type="text" name="address_field_socialprofile_value[]" value="" />';
+		$f->setVar('label', $label, false);
+		$f->setVar('field', $field, false);
+		$f->setVar('html_id', $this->getHTMLId("socialprofile_hidden"), false);
+		$socialprofiles_output .= '<div id="'.$this->getHTMLId("socialprofile_hidden_div").'" class="hidden">'.$f->parse($fragment).'</div>';
+
+		$field = '<a class="bt5" href="javascript:void(0);" onclick="
+						inp = $(\'#'.$this->getHTMLId("socialprofile_hidden").'\').clone();
+						inp.attr({ id: \'\' });
+						$(\'#'.$this->getHTMLId("socialprofile_hidden_div").'\').after(inp);		
+						">+ '.rex_i18n::msg("add_socialprofile").'</a>';
+		$f = new rex_fragment();
+		$f->setVar('label', '<label></label>', false);
+		$f->setVar('field', $field, false);
+		$socialprofiles_output .= $f->parse($fragment);
+
+		$socialprofiles_output = '<div id="pz_address_fields_socialprofile">'.$socialprofiles_output.'</div>';
+
+		$output .= $socialprofiles_output.'<div class="split-h"></div>';
+		
+		
+		
+		// IMPP $impp_value_types
+		
+		$f = new rex_fragment();
+		$f->setVar('name', $name, false);
+		$f->setVar('class', "xform1b impp_field", false);
+
+		$impps_output = '<h2 class="hl2">' . rex_i18n::msg("address_impp") . '</h2>';
+		foreach($impps as $impp) 
+		{
+			$lselect = new rex_select();
+			$lselect->setSize(1);
+			$lselect->setStyle("width:80px;");
+			$lselect->setName("address_field_impp_label[]");
+			foreach($impp_labels as $label) $lselect->addOption($label,$label);
+			
+			if(!in_array($impp["label"],$impp_labels))
+				$lselect->addOption($impp["label"],$impp["label"]);
+			$lselect->setSelected($impp["label"]);
+			
+			$select = new rex_select();
+			$select->setSize(1);
+			$select->setStyle("width:80px;");
+			$select->setName("address_field_impp_value_type[]");
+			foreach($impp_value_types as $value_type => $v) $select->addOption($value_type,$value_type);
+			
+			if(!array_key_exists($impp["value_type"],$impp_value_types))
+				$select->addOption($impp["value_type"],$impp["value_type"]);
+			$select->setSelected($impp["value_type"]);
+
+			$label = '<label class="'.$this->getHTMLClass('label').'">' . $lselect->get() . '</label>';	
+			$label .= '<label class="'.$this->getHTMLClass().'">' . $select->get() . '</label>';	
+			$field = '<input class="'.$this->getHTMLClass().'" type="text" name="address_field_impp_value[]" value="'.htmlspecialchars($impp["exploded_value"]).'" />';
+			$f->setVar('label', $label, false);
+			$f->setVar('field', $field, false);
+			$impps_output .= $f->parse($fragment);
+		}
+		
+		$lselect = new rex_select();
+		$lselect->setSize(1);
+		$lselect->setStyle("width:80px;");
+		$lselect->setName("address_field_impp_label[]");
+		foreach($impp_labels as $label) $lselect->addOption($label,$label);
+		
+		
+		$select = new rex_select();
+		$select->setSize(1);
+		$select->setStyle("width:80px;");
+		$select->setName("address_field_impp_value_type[]");
+		foreach($impp_value_types as $value_type => $v) $select->addOption($value_type,$value_type);
+		$label = '<label class="'.$this->getHTMLClass('label').'" >' . $lselect->get() . '</label>';
+		$label .= '<label class="'.$this->getHTMLClass().'" >' . $select->get() . '</label>';
+		$field = '<input class="'.$this->getHTMLClass().'" type="text" name="address_field_impp_value[]" value="" />';
+		$f->setVar('label', $label, false);
+		$f->setVar('field', $field, false);
+		$f->setVar('html_id', $this->getHTMLId("impp_hidden"), false);
+		$impps_output .= '<div id="'.$this->getHTMLId("impp_hidden_div").'" class="hidden">'.$f->parse($fragment).'</div>';
+
+		$field = '<a class="bt5" href="javascript:void(0);" onclick="
+						inp = $(\'#'.$this->getHTMLId("impp_hidden").'\').clone();
+						inp.attr({ id: \'\' });
+						$(\'#'.$this->getHTMLId("impp_hidden_div").'\').after(inp);		
+						">+ '.rex_i18n::msg("add_impp").'</a>';
+		$f = new rex_fragment();
+		$f->setVar('label', '<label></label>', false);
+		$f->setVar('field', $field, false);
+		$impps_output .= $f->parse($fragment);
+
+		$impps_output = '<div id="pz_address_fields_impp">'.$impps_output.'</div>';
+
+		$output .= $impps_output.'<div class="split-h"></div>';
+	
 		
 		$this->params["form_output"][$this->getId()] = $output;
 
@@ -422,6 +622,7 @@ class rex_xform_value_pz_address_fields extends rex_xform_value_abstract
 		$this->pz_address_fields["ADR"] = $postaddresses;
 		$this->pz_address_fields["EMAIL"] = $emails; 
 		$this->pz_address_fields["URL"] = $urls; 
+		$this->pz_address_fields["X-SOCIALPROFILE"] = $socialprofiles; 
 
 
 		return;

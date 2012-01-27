@@ -4,11 +4,22 @@ class pz_projects_controller_screen extends pz_projects_controller {
 
 	var $name = "projects";
 	var $function = "";
-	var $functions = array("my","all", "archive", "customers", "api", "labels");
+	var $functions = array("my", "all", "archive", "api");
 	var $function_default = "my";
-	var $navigation = array("my","all", "archive", "customers", "labels");
+	var $navigation = array("my", "all", "archive");
 
 	function controller($function) {
+
+
+		if(pz::getUser()->isAdmin() || pz::getUser()->hasPerm('projectsadmin')) { 
+			$this->functions[] = "customers";
+			$this->navigation[] = "customers";
+		}
+
+		if(pz::getUser()->isAdmin()) { 
+			$this->functions[] = "labels";
+			$this->navigation[] = "labels";
+		}
 
 		if(!in_array($function,$this->functions)) $function = $this->function_default;
 		$this->function = $function;
@@ -185,7 +196,12 @@ class pz_projects_controller_screen extends pz_projects_controller {
 
 	function getNavigation($p = array())
 	{
-		return pz_screen::getNavigation($p,$this->navigation, $this->function, $this->name, pz_project_controller_screen::getProjectsFlyout($p) );
+		return pz_screen::getNavigation(
+			$p,
+			$this->navigation, 
+			$this->function, 
+			$this->name
+			);
 	}
 
 
@@ -231,7 +247,11 @@ class pz_projects_controller_screen extends pz_projects_controller {
 		
 		$section_1 = $this->getProjectMatrixView(
 							$projects,
-							array_merge( $p, array("linkvars" => array( "mode" =>"list", "search_name" => rex_request("search_name"), "archived" => rex_request("archived") ) ) )
+							array_merge( $p, 
+								array("linkvars" => array( 
+									"mode" =>"list", 
+									"search_name" => rex_request("search_name"), 
+									"archived" => rex_request("archived") ) ) )
 						);
 
 		$mode = rex_request("mode","string");
@@ -289,8 +309,9 @@ class pz_projects_controller_screen extends pz_projects_controller {
 		switch($mode)
 		{
 			case("add_form"):
-				return pz_project_screen::getAddForm($p);
-				break;
+				if(pz::getUser()->isAdmin() || pz::getUser()->hasPerm('projectsadmin'))
+					return pz_project_screen::getAddForm($p);
+				return '';
 			case("list"):
 				$projects = pz::getUser()->getProjects($filter);
 				return $this->getProjectTableView(
@@ -300,8 +321,7 @@ class pz_projects_controller_screen extends pz_projects_controller {
 						array("linkvars" => array( "mode" =>"list", "search_name" => rex_request("search_name"), "archived" => rex_request("archived") ) )
 					)
 				);
-				break;
-			case(""):
+			default:
 				$s1_content .= $this->getProjectsSearchForm($p);
 				$projects = pz::getUser()->getProjects($filter);
 				$s2_content .= $this->getProjectTableView(
@@ -311,13 +331,9 @@ class pz_projects_controller_screen extends pz_projects_controller {
 						array("linkvars" => array( "mode" =>"list", "search_name" => rex_request("search_name"), "archived" => rex_request("archived") ) )
 					)
 				);
-				$form = pz_project_screen::getAddForm($p);
-				break;
-			default:
-				break;
+				if(pz::getUser()->isAdmin() || pz::getUser()->hasPerm('projectsadmin'))
+					$s1_content .= pz_project_screen::getAddForm($p);
 		}
-
-		$s1_content .= $form;
 
 		$f = new rex_fragment();
 		$f->setVar('header', pz_screen::getHeader($p), false);
@@ -352,9 +368,26 @@ class pz_projects_controller_screen extends pz_projects_controller {
 				);
 		
 		$mode = rex_request("mode","string");
+		
 		switch($mode)
 		{
+			case("delete_customer"):
+				if(!(pz::getUser()->isAdmin()))
+					return '';
+				$customer_id = rex_request("customer_id","int");
+				if(($customer = pz_customer::get($customer_id))) {
+					if($customer->hasProjects())
+						return '';
+					$r = new pz_customer_screen($customer);
+					$customer->delete();
+					$p["customer_name"] = $customer->getName();
+					return $r->getDeleteForm($p);
+				}
+				return '';
+		
 			case("add_customer"):
+				if(!(pz::getUser()->isAdmin()))
+					return '';
 				return pz_customer_screen::getAddForm($p);
 				break;
 			case("list"):
@@ -373,9 +406,14 @@ class pz_projects_controller_screen extends pz_projects_controller {
 				);
 				break;
 			case("edit_customer"):
+				if(!(pz::getUser()->isAdmin()))
+					return '';
 				$customer_id = rex_request("customer_id","int",0);
 				if($customer_id > 0 && $customer = pz_customer::get($customer_id)) {
 					$cs = new pz_customer_screen($customer);
+					$p["show_delete"] = false;
+					if(!$customer->hasProjects())
+						$p["show_delete"] = true;
 					return $cs->getEditForm($p);
 				}else {
 					return '<p class="xform-warning">'.rex_i18n::msg("customer_not_exists").'</p>';
@@ -396,7 +434,8 @@ class pz_projects_controller_screen extends pz_projects_controller {
 						)
 					)
 				);
-				$s1_content .= pz_customer_screen::getAddForm($p);
+				if(pz::getUser()->isAdmin())
+					$s1_content .= pz_customer_screen::getAddForm($p);
 				break;
 			default:
 				break;
@@ -425,18 +464,30 @@ class pz_projects_controller_screen extends pz_projects_controller {
 		$mode = rex_request("mode","string");
 		switch($mode)
 		{
+			case("delete_label"):
+				$label_id = rex_request("label_id","int");
+				if(($label = pz_label::get($label_id))) {
+					if($label->hasProjects())
+						return '';
+					$r = new pz_label_screen($label);
+					$label->delete();
+					$p["label_name"] = $label->getName();
+					return $r->getDeleteForm($p);
+				}
+				return '';
 			case("add_label"):
 				return pz_label_screen::getAddForm($p);
-				break;
 			case("list"):
 				$labels = pz_labels::get();
 				$cs = new pz_labels_screen($labels);
 				return $cs->getListView($p);
-				break;
 			case("edit_label"):
 				$label_id = rex_request("label_id","int",0);
 				if($label_id > 0 && $label = pz_label::get($label_id)) {
 						$cs = new pz_label_screen($label);
+						$p["show_delete"] = false;
+						if(!$label->hasProjects())
+							$p["show_delete"] = true;
 						return $cs->getEditForm($p);
 				}else {
 					return '<div id="label_form"><p class="xform-warning">'.rex_i18n::msg("label_not_found").'</p></div>';

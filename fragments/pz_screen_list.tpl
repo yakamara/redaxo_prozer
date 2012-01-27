@@ -11,6 +11,8 @@
       <div class="column last">
         <ul class="sl1 view-layout">
 
+		  <?php if(is_array(@$this->links) && count($this->links) > 0){ echo implode(" &nbsp; ",$this->links); }?>
+
 		  <?php if(is_array(@$this->orders) && count($this->orders) > 0){ ?>
 		  
           <li class="first selected"><span class="selected">Sortierung: <?php echo $this->order; ?></span>

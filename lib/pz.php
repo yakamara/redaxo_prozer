@@ -12,12 +12,16 @@ class pz {
 
 		// TODO UTF8 einstellen
 		// ini_set("mbstring.func_overload",7);
-		// mb_internal_encoding("UTF-8");
+		// echo ini_get("mbstring.func_overload");
+
+		mb_internal_encoding("UTF-8");
 
 		// error_reporting(E_ALL);
 		// ini_set("display_errors",1);
 
 		// ob_start();
+		
+		setlocale (LC_ALL, rex_i18n::msg("locale"));
 		
 		$func = rex_request('func');
 
@@ -38,6 +42,58 @@ class pz {
 
 	// -------------------------------------------------------------------------
 
+	static public function getFilter($filter = array(), $where = array(), $params = array()) {
+	
+	    foreach($filter as $f)
+	    {
+	    	if(!isset($f["type"]))
+	    		$f["type"] = "";
+	    	
+	    	switch(@$f["type"]) {
+	    		case("plain"):
+			    	$where[] = $f["value"];
+	    			break;
+	    		case("findinset"):
+	    			// TODO
+	    			break;
+	    		case("like"):
+	    			$w = $f["field"];
+	    			$w .= ' LIKE ? ';
+	    			$f["value"] = "%".$f["value"]."%";
+			    	$where[] = $w;
+			    	$params[] = $f["value"];
+	    			break;
+	    		case("orlike"):
+	    			$fields = explode(",",$f["field"]);
+	    			$w = array();
+	    			foreach($fields as $field)
+	    			{
+		    			$w[] = ' ( `'.$field.'` LIKE ? )';
+				    	$params[] = "%".$f["value"]."%";
+	    			}
+				    $where[] = '('.implode(" OR ",$w).')';
+	    			break;
+	    		case("="):
+				default:
+					$w = $f["field"];
+					$w .= ' = ? ';
+			    	$where[] = $w;
+			    	$params[] = $f["value"];
+	    	}
+	    }
+	
+		$return = array();
+		$return['where'] = $where;
+		$return['params'] = $params;
+		$return['where_sql'] = '';
+	    if(count($return['where']) > 0) {
+		  $return['where_sql'] = ' where ('.implode(" AND ",$return['where']).') ';
+	    }
+	
+		return $return;
+	
+	}
+
 	// ----------- user/s
 
 	static public function setUser(pz_user $user)
@@ -50,16 +106,21 @@ class pz {
 	  return self::$user;
 	}
 
-	static function getUsers()
+	static function getUsers($filter = array())
 	{
-		if(count(self::$users) >0)
+		if(count($filter) == 0 && count(self::$users) >0)
 			return self::$users;
 
 		$params = array();
-		$where = "";
+		$where = array();
+
+		$f = pz::getFilter($filter,$where,$params);
+		$where = $f["where"];
+		$params = $f["params"];
+		$where_sql = $f["where_sql"];
 
 		$sql = rex_sql::factory();
-	    $sql->setQuery('SELECT u.* FROM pz_user u '.$where.' ORDER BY u.name',$params);
+	    $sql->setQuery('SELECT u.* FROM pz_user u '.$where_sql.' ORDER BY u.name',$params);
 	    $users = array();
 	    foreach($sql->getArray() as $row)
 	    {
@@ -144,6 +205,12 @@ class pz {
 		return $return;
 	}
 
+	static function error($message)
+	{
+		echo '<pre>'.$message;
+		var_dump(debug_backtrace());
+		echo '</pre>';
+	}
 
 	static function debug($message, $p = '')
 	{
@@ -173,26 +240,6 @@ class pz {
 			rex_logger_debug::log('pz: '.$message);
 		}
 
-	}
-
-	/* reads the amount of bytes of a file */
-	function strBytes($str)
-	{
-		$strlen_var = strlen($str);
-		$d = 0;
-		for ($c = 0; $c < $strlen_var; ++$c) {
-			$ord_var_c = ord($str{$d});
-			switch (true) {
-				case (($ord_var_c >= 0x20) && ($ord_var_c <= 0x7F)): $d++; break;
-				case (($ord_var_c & 0xE0) == 0xC0): $d+=2; break;
-				case (($ord_var_c & 0xF0) == 0xE0): $d+=3; break;
-				case (($ord_var_c & 0xF8) == 0xF0): $d+=4; break;
-				case (($ord_var_c & 0xFC) == 0xF8): $d+=5; break;
-				case (($ord_var_c & 0xFE) == 0xFC): $d+=6; break;
-				default: $d++;
-			}
-		}
-		return $d;
 	}
 
 	static function makeInlineImage($image_path, $size = "m", $mimetype = "image/png")
@@ -352,6 +399,93 @@ class pz {
 		return "/assets/addons/prozer/themes/blue_grey/mimetypes/file.png";;
 	}
 
+	static function getDownloadHeader($file_name, $content) {
+		
+		$file_size = strlen($content); // 
+		
+		$file_info = new finfo(FILEINFO_MIME_TYPE);
+    	$file_type = $file_info->buffer($content);
+		
+		header("Pragma: public"); // required
+	    header("Expires: 0");
+	    header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+	    header("Cache-Control: private",false); // required for certain browsers
+	    header("Content-Type: ".$file_type);
+	    header("Content-Disposition: attachment; filename=\"".basename($file_name)."\";" );
+	    header("Content-Transfer-Encoding: binary");
+	    header("Content-Length: ".$file_size);
+	    
+		echo $content;
+		exit;
+	}
+
+
+	static function array2excel($as = array()) {
+
+		$return = "";
+		$return .= '<table>';
+
+		$f = 0;
+		foreach($as as $a) {
+			if($f == 0) {
+				$return .= '<tr>';
+				foreach($a as $k => $v) {
+					$return .= '<th>'.$k.'</th>';	
+				}
+				$return .= '</tr>';
+			}	
+			$return .= '<tr>';
+			foreach($a as $v) {
+				$return .= '<td>'.$v.'</td>';	
+			}
+			$return .= '</tr>';
+			$f++;	
+		}
+
+		$return .= '</table>';
+		
+		$file_size = strlen($return);
+		$file_name = 'excel_export'.date('Ymd').'.xls';
+		
+		header("Pragma: public"); // required
+	    header("Expires: 0");
+	    header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+	    header("Cache-Control: private",false); // required for certain browsers
+	    header("Content-Type: application/vnd.ms-excel");
+	    header("Content-Disposition: attachment; filename=\"".basename($file_name)."\";" );
+	    header("Content-Transfer-Encoding: binary");
+	    header("Content-Length: ".$file_size);
+		
+		echo $return;
+		exit;
+	}
+
+
+
+	
+
+	public static function dateTime2dateFormat($datetime, $dateFormat) {
+	
+		$caracs = array(
+		// Day - no strf eq : S
+			'd' => '%d', 'D' => '%a', 'j' => '%e', 'l' => '%A', 'N' => '%u', 'w' => '%w', 'z' => '%j',
+			// Week - no date eq : %U, %W
+			'W' => '%V', 
+			// Month - no strf eq : n, t
+			'F' => '%B', 'm' => '%m', 'M' => '%b',
+			// Year - no strf eq : L; no date eq : %C, %g
+			'o' => '%G', 'Y' => '%Y', 'y' => '%y',
+			// Time - no strf eq : B, G, u; no date eq : %r, %R, %T, %X
+			'a' => '%P', 'A' => '%p', 'g' => '%l', 'h' => '%I', 'H' => '%H', 'i' => '%M', 's' => '%S',
+			// Timezone - no strf eq : e, I, P, Z
+			'O' => '%z', 'T' => '%Z',
+			// Full Date / Time - no strf eq : c, r; no date eq : %c, %D, %F, %x 
+			'U' => '%s'
+		);
+		$strftimeformat = strtr( (string) $dateFormat, $caracs);
+		return strftime($strftimeformat,$datetime->getTimestamp());
+		
+	} 
 
 
 }

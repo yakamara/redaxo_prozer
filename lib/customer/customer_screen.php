@@ -46,6 +46,26 @@ class pz_customer_screen{
 
 	// --------------------------------------------------------------- Formviews
 
+
+	function getDeleteForm($p = array())
+	{
+		$header = '
+	        <header>
+	          <div class="header">
+	            <h1 class="hl1">'.rex_i18n::msg("delete_customer").'</h1>
+	          </div>
+	        </header>';
+		
+		$return = $header.'<p class="xform-info">'.rex_i18n::msg("customer_deleted", htmlspecialchars($p["customer_name"])).'</p>';
+		$return .= pz_screen::getJSLoadFormPage('customers_list','customers_search_form',pz::url('screen','projects','customers',array("mode"=>'list')));
+		$return = '<div id="customer_form"><div id="customer_delete" class="design1col xform-delete">'.$return.'</div></div>';
+
+		return $return;
+	}
+
+
+
+
 	public function getEditForm($p = array()) 
 	{
     	$header = '
@@ -73,7 +93,7 @@ class pz_customer_screen{
 		$xform->setValueField("text",array("name",rex_i18n::msg("customer_name"),"","0"));
 		$xform->setValueField("textarea",array("description",rex_i18n::msg("customer_description"),"","0"));
 		$xform->setValueField("stamp",array("created","created","mysql_datetime","0","1","","","",""));
-		$xform->setValueField("checkbox",array("archived",rex_i18n::msg("customer_archived"),"1","1","0"));
+		$xform->setValueField("checkbox",array("archived",rex_i18n::msg("customer_archived"),"1","0","0"));
 		$xform->setValidateField("empty",array("name",rex_i18n::msg("error_customer_name_empty")));
 		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0"));
 
@@ -90,6 +110,18 @@ class pz_customer_screen{
 		{
 			$return = $header.$return;	
 		}
+		
+		if($p["show_delete"])
+		{
+			$delete_link = pz::url("screen","projects","customers",array("customer_id"=>$this->customer->getId(),"mode"=>"delete_customer"));
+			$return .= '<div class="xform">
+				<p><a class="bt17" onclick="check = confirm(\''.
+				rex_i18n::msg("customer_confirm_delete",htmlspecialchars($this->customer->getName())).
+				'\'); if (check == true) pz_loadPage(\'customer_form\',\''.
+				$delete_link.'\')" href="javascript:void(0);">- '.rex_i18n::msg("delete_customer").'</a></p>
+				</div>';
+		}
+		
 		$return = '<div id="customer_form"><div id="customer_edit" class="design1col xform-edit">'.$return.'</div></div>';
 
 		return $return;	
@@ -119,7 +151,7 @@ class pz_customer_screen{
 		$xform->setValueField("text",array("name",rex_i18n::msg("customer_name"),"","0"));
 		$xform->setValueField("textarea",array("description",rex_i18n::msg("customer_description"),"","0"));
 		$xform->setValueField("stamp",array("created","created","mysql_datetime","0","1","","","",""));
-		$xform->setValueField("checkbox",array("archived",rex_i18n::msg("customer_archived"),"1","1","0"));
+		$xform->setValueField("checkbox",array("archived",rex_i18n::msg("customer_archived"),"1","0","0"));
 		$xform->setValidateField("empty",array("name",rex_i18n::msg("error_customer_name_empty")));
 		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0","","","",""));
 		$xform->setActionField("db",array());

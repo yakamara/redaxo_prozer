@@ -12,7 +12,7 @@ class pz_customers{
 		}
 		
 		$sql = rex_sql::factory();
-		$sql->setQuery('select * from pz_customer order by id');
+		$sql->setQuery('select * from pz_customer order by name');
 		
 		foreach($sql->getArray() as $l)
 		{

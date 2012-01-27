@@ -48,7 +48,6 @@ class pz_user_screen {
         
 		return $return;
 		
-		
 	}
 	
 	
@@ -94,10 +93,7 @@ class pz_user_screen {
 		$f->setVar('title', $p["title"], false);
 		$f->setVar('content', $content , false);
 		return '<div id="users_list" class="design2col">'.$f->parse('pz_screen_list').'</div>';
-		return $f->parse('pz_screen_list');
-		
-		
-		return "TableListeView";
+
 	}
 	
 	
@@ -126,7 +122,6 @@ class pz_user_screen {
 		$content .= '<th>'.rex_i18n::msg("calendar_caldav").'</th>';
 		$content .= '<th>'.rex_i18n::msg("calendar_jobs_caldav").'</th>';
 		$content .= '<th>'.rex_i18n::msg("files").'</th>';
-		$content .= '<th>'.rex_i18n::msg("webdav").'</th>';
 		$content .= '<th>'.rex_i18n::msg("wiki").'</th>';
 		
         $content .= '
@@ -144,10 +139,8 @@ class pz_user_screen {
 		$f->setVar('title', $p["title"], false);
 		$f->setVar('content', $content , false);
 		return '<div id="userperm_list" class="design2col">'.$f->parse('pz_screen_list').'</div>';
-		return $f->parse('pz_screen_list');
 	
 	}
-	
 	
 	
 	public function getProjectTableRowView($p = array(),$project)
@@ -174,66 +167,53 @@ class pz_user_screen {
 			if($projectuser->hasEmails())  
 				$return .= '<td><span class="status status1">'.rex_i18n::msg("yes").'</span></td>';
 			else 
-				$return .= '<td><span class="status status2">'.rex_i18n::msg("no").'</span></td>';
+				$return .= '<td><span class="status status0">'.rex_i18n::msg("no").'</span></td>';
 		}else {
-			$return .= '<td><span class="status status3">'.rex_i18n::msg("not_available").'</span></td>';
+			$return .= '<td><span class="status status2">'.rex_i18n::msg("not_available").'</span></td>';
 		}
 		
 		if($project->hasCalendar() == 1) {
 			if($projectuser->hasCalendar())
 				$return .= '<td><span class="status status1">'.rex_i18n::msg("yes").'</span></td>';
 			else 
-				$return .= '<td><span class="status status2">'.rex_i18n::msg("no").'</span></td>';
+				$return .= '<td><span class="status status0">'.rex_i18n::msg("no").'</span></td>';
 
 			if($projectuser->hasCalDAVEvents())  
-				$return .= '<td><a href="javascript:void(0);" onclick="'.$toggle_caldav_events_link.'"><span class="status status1 project-'.$project->getId().'-caldavevents">'.rex_i18n::msg("yes").'</span></a></td>';
+				$return .= '<td><a href="javascript:void(0);" onclick="'.$toggle_caldav_events_link.'"><span class="status status-changeable status1 project-'.$project->getId().'-caldavevents">'.rex_i18n::msg("yes").'</span></a></td>';
 			else 
-				$return .= '<td><a href="javascript:void(0);" onclick="'.$toggle_caldav_events_link.'"><span class="status status2 project-'.$project->getId().'-caldavevents">'.rex_i18n::msg("no").'</span></a></td>';
+				$return .= '<td><a href="javascript:void(0);" onclick="'.$toggle_caldav_events_link.'"><span class="status status-changeable status0 project-'.$project->getId().'-caldavevents">'.rex_i18n::msg("no").'</span></a></td>';
 			
 			if($projectuser->hasCalDAVJobs())  
-				$return .= '<td><a href="javascript:void(0);" onclick="'.$toggle_caldav_jobs_link.'"><span class="status status1 project-'.$project->getId().'-caldavjobs">'.rex_i18n::msg("yes").'</span></a></td>';
+				$return .= '<td><a href="javascript:void(0);" onclick="'.$toggle_caldav_jobs_link.'"><span class="status status-changeable status1 project-'.$project->getId().'-caldavjobs">'.rex_i18n::msg("yes").'</span></a></td>';
 			else 
-				$return .= '<td><a href="javascript:void(0);" onclick="'.$toggle_caldav_jobs_link.'"><span class="status status2 project-'.$project->getId().'-caldavjobs">'.rex_i18n::msg("no").'</span></a></td>';
+				$return .= '<td><a href="javascript:void(0);" onclick="'.$toggle_caldav_jobs_link.'"><span class="status status-changeable status0 project-'.$project->getId().'-caldavjobs">'.rex_i18n::msg("no").'</span></a></td>';
 
 		}else {
-			$return .= '<td><span class="status status3">'.rex_i18n::msg("not_available").'</span></td>';
-			$return .= '<td><span class="status status3">'.rex_i18n::msg("not_available").'</span></td>';
-			$return .= '<td><span class="status status3">'.rex_i18n::msg("not_available").'</span></td>';
+			$return .= '<td><span class="status status2">'.rex_i18n::msg("not_available").'</span></td>';
+			$return .= '<td><span class="status status2">'.rex_i18n::msg("not_available").'</span></td>';
+			$return .= '<td><span class="status status2">'.rex_i18n::msg("not_available").'</span></td>';
 		}
 		
 		if($project->hasFiles() == 1) {
 			if($projectuser->hasFiles())  
 				$return .= '<td><span class="status status1">'.rex_i18n::msg("yes").'</span></td>';
 			else 
-				$return .= '<td><span class="status status2">'.rex_i18n::msg("no").'</span></td>';
+				$return .= '<td><span class="status status0">'.rex_i18n::msg("no").'</span></td>';
 		}else {
-			$return .= '<td><span class="status status3">'.rex_i18n::msg("not_available").'</span></td>';
-		}
-		
-		if($project->hasFiles() == 1) {
-			if($projectuser->hasFiles())  
-				$return .= '<td><span class="status status1">'.rex_i18n::msg("yes").'</span></td>';
-			else 
-				$return .= '<td><span class="status status2">'.rex_i18n::msg("no").'</span></td>';
-		}else {
-			$return .= '<td><span class="status status3">'.rex_i18n::msg("not_available").'</span></td>';
+			$return .= '<td><span class="status status2">'.rex_i18n::msg("not_available").'</span></td>';
 		}
 		
 		if($project->hasWiki() == 1) {
 			if($projectuser->hasWiki())  
 				$return .= '<td><span class="status status1">'.rex_i18n::msg("yes").'</span></td>';
 			else 
-				$return .= '<td><span class="status status2">'.rex_i18n::msg("no").'</span></td>';
+				$return .= '<td><span class="status status0">'.rex_i18n::msg("no").'</span></td>';
 		}else {
-			$return .= '<td><span class="status status3">'.rex_i18n::msg("not_available").'</span></td>';
+			$return .= '<td><span class="status status2">'.rex_i18n::msg("not_available").'</span></td>';
 		}
         
 		return $return;
 	}
-	
-	
-	
-	
 	
 	static function getSearchForm($p = array())
 	{
@@ -264,10 +244,28 @@ class pz_user_screen {
 	
 	
 	
+		
+	public function getApiView($p) 
+	{
+		$header = '
+        <header>
+          <div class="header">
+            <h1 class="hl1">'.rex_i18n::msg("api_key").'</h1>
+          </div>
+        </header>';
+	
+		$return = $header;
+	
+		$return .= '<div class="xform">'.rex_i18n::msg('api_info',$this->user->getAPIKey()).'</div>';
+	
+		$return = '<div id="api_form"><div id="api_view" class="design1col xform-edit">'.$return.'</div></div>';
+
+		return $return;	
+	
+	}
 	
 	
-	
-	
+	// ---------------------------------------- FORM VIEWS
 	
 	static function getAddForm($p = array()) 
 	{
@@ -279,7 +277,7 @@ class pz_user_screen {
         </header>';
 
 		$xform = new rex_xform;
-		$xform->setDebug(TRUE);
+		// $xform->setDebug(TRUE);
 
 		$xform->setObjectparams("main_table",'pz_user');
 		$xform->setObjectparams("form_action", "javascript:pz_loadFormPage('user_form','user_add_form','".pz::url('screen','tools','users',array("mode"=>'add_user'))."')");
@@ -298,17 +296,40 @@ class pz_user_screen {
 			$xform->setValidateField("unique",array("email",rex_i18n::msg("error_email_unique")));
 
 		$xform->setValueField("checkbox",array("status",rex_i18n::msg("active"),"1","0","0"));
-		$xform->setValueField("checkbox",array("admin",rex_i18n::msg("admin"),"1","0","0"));
+		$xform->setValueField("checkbox",array("admin",rex_i18n::msg("admin").' ('.rex_i18n::msg("admin_info").')',"1","0","0"));
 		$xform->setValueField("stamp",array("created"," created","mysql_datetime","0","0","","","",""));
 		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0","","","",""));
+
+		$xform->setValueField("checkbox",array("webdav",rex_i18n::msg("webdav").' ('.rex_i18n::msg("webdav_info").')',"1","0","no_db"));
+		$xform->setValueField("checkbox",array("carddav",rex_i18n::msg("carddav").' ('.rex_i18n::msg("carddav_info").')',"1","0","no_db"));
+		$xform->setValueField("checkbox",array("projectsadmin",rex_i18n::msg("projectsadmin").' ('.rex_i18n::msg("projectsadmin_info").')',"1","0","no_db"));
+
+		$xform->setValueField("textarea",array("comment",rex_i18n::msg("user_comment")));
 
 		$xform->setActionField("db",array('pz_user'));
 
 		$return = $xform->getForm();
 
-		if($xform->getObjectparams("actions_executed")) {
+
+		if($xform->getObjectparams("actions_executed")) 
+		{
 			$user_id = $xform->getObjectparams("main_id");
 			if($user = pz_user::get($user_id)) {
+				
+				$webdav = $xform->objparams["value_pool"]["email"]["webdav"];
+				if($webdav == 1) $user->addPerm('webdav');
+				else $user->removePerm('webdav');
+
+				$carddav = $xform->objparams["value_pool"]["email"]["carddav"];
+				if($carddav == 1) $user->addPerm('carddav');
+				else $user->removePerm('carddav');
+
+				$projectsadmin = $xform->objparams["value_pool"]["email"]["projectsadmin"];
+				if($projectsadmin == 1) $user->addPerm('projectsadmin');
+				else $user->removePerm('projectsadmin');
+			
+				$user->savePerm();
+				
 				$user->create();
 			}
 			$return = $header.'<p class="xform-info">'.rex_i18n::msg("user_added").'</p>'.$return;
@@ -322,8 +343,6 @@ class pz_user_screen {
 		return $return;	
 		
 	}
-	
-	
 	
 	
 	public function getEditForm($p = array()) 
@@ -368,21 +387,45 @@ class pz_user_screen {
 
 		if($this->user->getId() != pz::getUser()->getId())
 		{
-			$xform->setValueField("checkbox",array("status",rex_i18n::msg("active"),"1","0","0"));
-			$xform->setValueField("checkbox",array("admin",rex_i18n::msg("admin"),"1","0","0"));
 		}
+		$xform->setValueField("checkbox",array("status",rex_i18n::msg("active"),"1","0","0"));
+		$xform->setValueField("checkbox",array("admin",rex_i18n::msg("admin").' ('.rex_i18n::msg("admin_info").')',"1","0","0"));
 		
 		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0"));
+
+		$xform->setValueField("checkbox",array("webdav",rex_i18n::msg("webdav").' ('.rex_i18n::msg("webdav_info").$this->user->hasPerm("webdav").')',"1",$this->user->hasPerm("webdav"),"no_db"));
+		$xform->setValueField("checkbox",array("carddav",rex_i18n::msg("carddav").' ('.rex_i18n::msg("carddav_info").')',"1",$this->user->hasPerm("carddav"),"no_db"));
+		$xform->setValueField("checkbox",array("projectsadmin",rex_i18n::msg("projectsadmin").' ('.rex_i18n::msg("projectsadmin_info").')',"1",$this->user->hasPerm("projectsadmin"),"no_db"));
+
+		$xform->setValueField("textarea",array("comment",rex_i18n::msg("user_comment")));
+
 
 		$xform->setActionField("db",array('pz_user','id='.$this->user->getId()));
 
 		$return = $xform->getForm();
 
-		if($xform->getObjectparams("actions_executed")) {
+		if($xform->getObjectparams("actions_executed")) 
+		{
+			
+			$webdav = $xform->objparams["value_pool"]["email"]["webdav"];
+			if($webdav == 1) $this->user->addPerm('webdav');
+			else $this->user->removePerm('webdav');
+
+			$carddav = $xform->objparams["value_pool"]["email"]["carddav"];
+			if($carddav == 1) $this->user->addPerm('carddav');
+			else $this->user->removePerm('carddav');
+
+			$projectsadmin = $xform->objparams["value_pool"]["email"]["projectsadmin"];
+			if($projectsadmin == 1) $this->user->addPerm('projectsadmin');
+			else $this->user->removePerm('projectsadmin');
 		
+			$this->user->savePerm();
+			
+			$this->user = pz_user::get($this->user->getId(),TRUE);
 			$this->user->update();
 			$return = $header.'<p class="xform-info">'.rex_i18n::msg("user_updated").'</p>'.$return;
 			$return .= pz_screen::getJSLoadFormPage('users_list','users_search_form',pz::url('screen','tools','users',array("mode"=>'list')));
+			
 		}else
 		{
 			$return = $header.$return;	
@@ -428,17 +471,25 @@ class pz_user_screen {
 			$xform->setValidateField("empty",array("email",rex_i18n::msg("error_email_empty")));
 			$xform->setValidateField("unique",array("email",rex_i18n::msg("error_email_unique")));
 
-		$xform->setValueField("pz_select_screen",array("account_id",rex_i18n::msg("default_email_account"),pz::getUser()->getEmailaccountsAsString(),"","",1,rex_i18n::msg("please_choose")));
+		$xform->setValueField("select",array("account_id",rex_i18n::msg("default_email_account"),pz::getUser()->getEmailaccountsAsString(),"","",0,rex_i18n::msg("please_choose")));
 		
+		$startpages = array();
+		$startpages[] = array('id'=>'projects','label'=>rex_i18n::msg("projects"));
+		$startpages[] = array('id'=>'emails','label'=>rex_i18n::msg("emails"));
+		$startpages[] = array('id'=>'calendars','label'=>rex_i18n::msg("calendars"));
+		
+		$xform->setValueField("select",array("startpage",rex_i18n::msg("default_startpage_account"),$startpages,"no_db",$this->user->getConfig('startpage'),0,rex_i18n::msg("please_choose")));
 		
 		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0"));
-
 		$xform->setActionField("db",array('pz_user','id='.$this->user->getId()));
 
 		$return = $xform->getForm();
 
-		if($xform->getObjectparams("actions_executed")) {
-		
+		if($xform->getObjectparams("actions_executed")) 
+		{
+			$this->user = pz_user::get($this->user->getId(),TRUE);
+			$this->user->setConfig('startpage',$xform->objparams["value_pool"]["email"]["startpage"]);
+			$this->user->saveConfig();
 			$this->user->update();
 			$return = $header.'<p class="xform-info">'.rex_i18n::msg("user_updated").'</p>'.$return;
 			// $return .= pz_screen::getJSLoadFormPage('users_list','users_search_form',pz::url('screen','tools','users',array("mode"=>'list')));
@@ -490,8 +541,8 @@ class pz_user_screen {
 
 		$return = $xform->getForm();
 
-		if($xform->getObjectparams("actions_executed")) {
-		
+		if($xform->getObjectparams("actions_executed")) 
+		{
 			$this->user = pz_user::get($this->user->getId(),TRUE); // refresh data
 			$this->user->update();
 			$return = $header.'<p class="xform-info">'.rex_i18n::msg("user_password_updated").'</p>'.$return;

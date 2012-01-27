@@ -18,7 +18,7 @@ ul.sl1 li.selected {
   position: relative;
   display: block;
   float: left;
-  padding: 0 16px;
+  padding: 0 12px;
 }
 #navi-main li.lev1.first {
   padding-left: 0;
@@ -71,7 +71,7 @@ ul.sl1 li.selected {
   text-align: right;
 }
 #navi-meta li.logout {
-  float: right;
+/*  float: right; */
   margin-right: 15px;
 }
 
@@ -317,5 +317,32 @@ ul.sl4 {
 }
 ul.sl4 li:hover {
   cursor: pointer;
+}
+
+
+
+
+/* Folder Path  ****************************************************************
+*******************************************************************************/
+.project-folder-path {
+  margin-bottom: 18px;
+  padding: 8px 0;
+}
+.project-folder-path dl {
+  padding: 0 8px;
+}
+.project-folder-path dt, 
+.project-folder-path dd {
+  float: left;
+}
+.project-folder-path dt {
+  width: 50px;
+}
+.project-folder-path dd li {
+  display: inline-block;
+  padding-right: 5px;
+}
+.project-folder-path dd li a {
+  margin-right: 5px;
 }
 

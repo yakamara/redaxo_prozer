@@ -36,7 +36,7 @@ class pz_projectuser extends pz_model{
 		$s = rex_sql::factory();
 		// $s->debugsql = 1;
 		$s->setTable('pz_project_user');
-		$s->setWhere('id='.$this->getId());
+		$s->setWhere(array('id'=>$this->getId()));
 		$s->setValue('caldav',$status);
 		$s->update();
 		
@@ -50,8 +50,22 @@ class pz_projectuser extends pz_model{
 		$s = rex_sql::factory();
 		// $s->debugsql = 1;
 		$s->setTable('pz_project_user');
-		$s->setWhere('id='.$this->getId());
+		$s->setWhere(array('id'=>$this->getId()));
 		$s->setValue('caldav_jobs',$status);
+		$s->update();
+		
+		$this->update();
+
+		return $status;
+	}
+
+	public function setWebDav($status = 1) {
+	
+		$s = rex_sql::factory();
+		// $s->debugsql = 1;
+		$s->setTable('pz_project_user');
+		$s->setWhere(array('id'=>$this->getId()));
+		$s->setValue('webdav',$status);
 		$s->update();
 		
 		$this->update();
@@ -92,6 +106,21 @@ class pz_projectuser extends pz_model{
 		}
 		return FALSE;
 	}
+
+	public function hasWebDav()
+	{
+		// TODO;
+		// - WebDav ist nicht mehr Projektbezogen
+		
+		if($this->user->hasPerm('webdav'))
+			return TRUE;
+		if($this->user->isAdmin())
+			return TRUE;
+		
+		return FALSE;
+	}
+
+
 
 	public function hasJobs()
 	{

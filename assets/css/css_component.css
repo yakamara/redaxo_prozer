@@ -13,13 +13,14 @@
   -webkit-box-shadow: 1px 1px 3px #b4b4b4;
   box-shadow: 1px 1px 3px #b4b4b4;
 }
-li:hover .flyout {
+
+li.hover .flyout {
   display: block;
 }
-li:hover ul li .flyout {
+li.hover ul li .flyout {
   display: none;
 }
-li:hover ul li:hover .flyout {
+li.hover ul li:hover .flyout {
   display: block;
 }
 
@@ -39,6 +40,9 @@ li:hover ul li:hover .flyout {
   margin-bottom: 0;
 }
 
+#function .sl1b .flyout {
+  width: 600px;
+}
 
 .sl1b .flyout {
   width: 500px;
@@ -125,7 +129,7 @@ li:hover ul li:hover .flyout {
 *******************************************************************************/
 .header {
   margin-bottom: 18px;
-  padding-top: 36px;
+  padding-top: 16px;
 }
 
 
@@ -206,6 +210,12 @@ footer .setting .last > ul,
 .entries.view-list .entry article header figure ~ hgroup, 
 .entries.view-list .entry article section.content {
   margin: 0 50px;
+}
+.entries.view-list .entry.project-file article header figure ~ hgroup, 
+.entries.view-list .entry.project-file article section.content, 
+.entries.view-list .entry.project-folder article header figure ~ hgroup, 
+.entries.view-list .entry.project-folder article section.content {
+  margin-right: 150px;
 }
 .entries.view-list .entry article footer {
   right: 30px;
@@ -320,6 +330,10 @@ footer .setting .last > ul,
   padding-right: 6px;
   border-right-style: solid;
   border-right-width: 1px;
+  margin-left: 6px;
+  padding-left: 6px;
+  border-left-style: solid;
+  border-left-width: 1px;
 }
 
 .entry-email header ul.functions li.function, 
@@ -342,6 +356,7 @@ footer .setting .last > ul,
 
 .entry-email section.attachments ul.functions {
   float: right;
+  margin-right: 5px;
 }
 .entry-email section.attachments ul.functions li.function {
   display: inline-block;
@@ -356,7 +371,7 @@ footer .setting .last > ul,
   position: fixed;
   right: 0;
   top: 0;
-  width: 200px;
+  width: 300px;
   height: 100%;
   border-left-width: 3px;
   border-left-style: solid;
@@ -364,16 +379,18 @@ footer .setting .last > ul,
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
+  z-index: 10000;
 }
 .sidebar2 {
-  right: 200px;
+  right: 300px;
 }
 .sidebar3 {
-  right: 400px;
+  right: 600px;
 }
 
 
 .sidebar .navi {
+  position: relative;
   display: block;
   float: left;
   width: 100%;
@@ -387,24 +404,44 @@ footer .setting .last > ul,
 .sidebar .navi li.last {
   float: right;
 }
-.sidebar .navi li a {
+.sidebar .navi li.lev1 a {
   display: block;
   height: 30px;
   text-indent: -1000em;
 }
+.sidebar .navi li a.close {
+  position: absolute;
+  right: 10px;
+  top: 12px;
+}
 
-.sidebar .list {
+.sidebar .hl3 {
   padding: 9px 8px;
+}
+.sidebar .list {
+  padding: 9px 0;
 }
 .sidebar .list .item {
   display: block;
-  margin: 2px 0;
+  margin-bottom: 5px;
 }
 .sidebar .list .item a {
   display: block;
   padding: 0 8px;
 }
 
+
+
+#clipboard_list li.item {
+}
+
+#clipboard_list  li.item ul li{
+border-bottom:0;
+}
+
+#clipboard_list li.item.active {
+background-color:#26C9F6;
+}
 
 
 /* Aktionen  *******************************************************************
@@ -444,6 +481,7 @@ ul.actions li.action a.down {
   padding-top: 0;
 }
 .email section.attachments {
+  padding: 0 10px;
   border-top-width: 1px;
   border-top-style: solid;
 }
@@ -488,6 +526,7 @@ ul.actions li.action a.down {
 
 .calendar header.header {
   padding: 8px 15px;
+  margin-bottom:0px;
 }
 .calendar header.header .info {
   font-style: italic;
@@ -504,6 +543,7 @@ ul.actions li.action a.down {
 
 /******************************************************************** Day */
 .calendar.view-day .allday .entry {
+  margin-bottom: 1px;
   padding-left: 8%;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -511,7 +551,10 @@ ul.actions li.action a.down {
 }
 .calendar.view-day .allday .label {
   display: block;
-  padding: 0 5px;
+  padding: 2px 5px;
+}
+.calendar.view-day .allday a:hover {
+  text-decoration: underline;
 }
 
 
@@ -557,7 +600,7 @@ ul.actions li.action a.down {
   position: absolute;
   left: 0;
   width: 200px;
-  overflow: auto;
+  overflow: hidden;
 }
 .calendar.view-day .events .event .event-info {
   padding: 5px;
@@ -568,6 +611,10 @@ ul.actions li.action a.down {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
 }
+.calendar.view-day .events .event .event-info a:hover {
+  text-decoration: underline;
+}
+
 
 .calendar.view-day .timeline {
   position: absolute;

@@ -3,7 +3,7 @@
 class pz_webdav_controller extends pz_controller
 {
   function controller($function)
-	{
+  {
   	$tree = new pz_sabre_project_tree();
 
     /* Initializing server */

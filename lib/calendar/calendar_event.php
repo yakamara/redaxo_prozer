@@ -96,6 +96,11 @@ class pz_calendar_event extends pz_calendar_element
     return $this->getValue('project_id');
   }
 
+  public function getProject()
+  {
+    return pz_project::get($this->getValue('project_id'));
+  }
+
   public function getTitle()
   {
     return $this->getValue('title');
@@ -152,6 +157,10 @@ class pz_calendar_event extends pz_calendar_element
 
   public function hasRule()
   {
+    if($this instanceof pz_calendar_rule_event)
+    	return TRUE;
+    return FALSE;
+  
     return (boolean) $this->rule_id;
   }
 
@@ -180,6 +189,12 @@ class pz_calendar_event extends pz_calendar_element
   {
     return $this->getValue('user_id');
   }
+
+  public function getUser()
+  {
+    return pz_user::get($this->getValue('user_id'));
+  }
+
 
   public function getAttendees()
   {
@@ -470,17 +485,23 @@ class pz_calendar_event extends pz_calendar_element
   }
 
   static public function getAll(
-  	array $projects, 
-  	DateTime $from = null, 
-  	DateTime $to = null, 
-  	$onlyJobs = false, 
-  	$user_id = null, 
-  	$order = array(),
-  	$fulltext = ''
+	  	array $projects, 
+	  	DateTime $from = null, 
+	  	DateTime $to = null, 
+	  	$onlyJobs = false, 
+	  	$users = null, 
+	  	$order = array(),
+	  	$fulltext = ''
   	)
   {
     if(empty($projects))
       return array();
+      
+	if(!$users)
+		$users = array();
+
+	if(!is_array($users))
+		$users = array($users);
 
 	if(count($order) == 0) {
 		$order["from"] = 'asc';
@@ -488,8 +509,7 @@ class pz_calendar_event extends pz_calendar_element
 	}
 
 	$orderby = array();
-	foreach($order as $o => $s)
-	{
+	foreach($order as $o => $s) {
 		$orderby[] = '`'.$o.'` '.$s;
 	}
 
@@ -509,6 +529,7 @@ class pz_calendar_event extends pz_calendar_element
       $wFromTo = ' AND `to` >= ? AND `from` <= ?';
     }
 
+	/*
     $wJobs = '';
     if(!$onlyJobs || $user_id)
     {
@@ -516,7 +537,21 @@ class pz_calendar_event extends pz_calendar_element
       $wJobs = $onlyJobs ? 'booked = 1 AND user_id = ?' : 'booked <> 1 OR user_id = ?';
       $wJobs = ' AND ('. $wJobs .')';
     }
+	*/
 
+	$wUsers = "";
+	if(count($users) > 0) {
+		$wUsers = ' AND ( user_id IN ('.implode(",",$users).') )';
+	}
+
+	// alle termine
+	$wJobs = '';
+	if($onlyJobs) {
+		$wJobs = ' AND ( booked = 1)';
+	}else {
+		$wJobs = ' AND ( booked <> 1)';
+	}
+	
 	$wFulltext = '';
 	if($fulltext != "")
 	{
@@ -529,7 +564,7 @@ class pz_calendar_event extends pz_calendar_element
     $sql->setQuery('
     	SELECT *
     	FROM '. self::TABLE .' e
-    	WHERE rule_id = 0 AND project_id IN ('. $wInClause .')'. $wFromTo . $wJobs . $wFulltext .'
+    	WHERE rule_id = 0 AND project_id IN ('. $wInClause .')'. $wFromTo . $wUsers . $wJobs . $wFulltext .'
     	ORDER BY '.implode(",",$orderby).'
     ', $params);
     foreach($sql as $row)

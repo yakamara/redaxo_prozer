@@ -682,3 +682,50 @@ INSERT INTO `rex_xform_table` (`id`, `status`, `table_name`, `name`, `descriptio
 (20, 1, 'pz_clipboard', 'pz_clipboard', '', 50, 200, 1, 0, 1, 0),
 (21, 1, 'pz_project_file', 'pz_project_file', '', 100, 1200, 1, 0, 1, 1);
 
+
+--
+-- alpha5
+--
+
+ALTER TABLE `pz_user` ADD `config` TEXT NOT NULL;
+INSERT INTO `rex_xform_field` (`id`, `table_name`, `prio`, `type_id`, `type_name`, `f1`, `f2`, `f3`, `f4`, `f5`, `f6`, `f7`, `f8`, `f9`, `list_hidden`, `search`) VALUES(203, "pz_user", 170, "value", "textarea", "config", "config", "", "0", "", "", "", "", "", 1, 1);
+
+ALTER TABLE `pz_user` ADD `perms` TEXT NOT NULL;
+INSERT INTO `rex_xform_field` (`id`, `table_name`, `prio`, `type_id`, `type_name`, `f1`, `f2`, `f3`, `f4`, `f5`, `f6`, `f7`, `f8`, `f9`, `list_hidden`, `search`) VALUES(204, "pz_user", 180, "value", "textarea", "perms", "perms", "", "0", "", "", "", "", "", 1, 1);
+
+
+--
+-- alpha6
+--
+
+ALTER TABLE `pz_clipboard` CHANGE `hidden` `hidden` TINYINT( 1 ) NOT NULL;
+ALTER TABLE `pz_clipboard` ADD `open` TINYINT( 1 ) NOT NULL , ADD `online_date` DATETIME NOT NULL , ADD `offline_date` DATETIME NOT NULL , ADD `uri` TEXT NOT NULL;
+
+
+
+--
+-- alpha8
+--
+
+ALTER TABLE `pz_user` ADD `comment` TEXT NOT NULL;
+
+
+
+--
+-- alpha10
+--
+
+ALTER TABLE `pz_project_file` ADD `filename` VARCHAR(255) NOT NULL;
+
+CREATE TABLE `pz_project_file_history` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `file_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `data` text NOT NULL,
+  `stamp` datetime NOT NULL,
+  `mode` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
+
+

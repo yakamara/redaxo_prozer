@@ -3,6 +3,7 @@
 class pz_email_account extends pz_model{
 
 	var $vars = array();
+	var $emails = array();
 
 	public function __construct($vars) {
 		parent::__construct($vars);
@@ -45,6 +46,13 @@ class pz_email_account extends pz_model{
 	{
 		return $this->getVar("email");
 	}
+	
+	public function getEmails()
+	{
+		// saved emails after download
+		return $this->emails;
+	}
+	
 	
 	public function getDeleteEmails()
 	{
@@ -196,6 +204,8 @@ class pz_email_account extends pz_model{
 		# $authhost="{localhost:993/imap/ssl/novalidate-cert}";
 		# $authhost="{localhost:143/imap/notls}";
 
+		$emails = 0;
+
 		$authhost = $this->getHost();
 		if($this->getMailboxtype() == "pop3" && $this->getSSL()) {
 			$authhost .= ':995/pop3/ssl/novalidate-cert';
@@ -263,9 +273,10 @@ class pz_email_account extends pz_model{
 
 					if(!$email->save())
 					{
-					
+						
 					}else
 					{
+						$this->emails[] = $email;
 						if($this->getDeleteEmails()) {
 							imap_delete($mbox,$email_id);
 						}
@@ -297,7 +308,7 @@ class pz_email_account extends pz_model{
 		$u = rex_sql::factory();
 		// $u->debugsql = 1;
 		$u->setTable('pz_email_account');
-		$u->setWhere('id = '.$this->getId());
+		$u->setWhere(array('id'=>$this->getId()));
 		$u->setValue("last_login",date("Y-m-d H:i:s"));
 		$u->setValue("login_failed",$login_failed);
 		$u->update();

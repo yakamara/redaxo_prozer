@@ -1,26 +1,2 @@
 /* Fonts  **********************************************************************
 *******************************************************************************/
-@font-face {
-  font-family: 'Aller';
-  font-style: normal;
-  font-weight: normal;
-  src: url('/assets/addons/prozer/fonts/Aller_Rg.ttf') format('truetype');
-}
-@font-face {
-  font-family: 'Aller';
-  font-style: italic;
-  font-weight: normal;
-  src: url('/assets/addons/prozer/fonts/Aller_It.ttf') format('truetype');
-}
-@font-face {
-  font-family: 'Aller';
-  font-style: normal;
-  font-weight: bold;
-  src: url('/assets/addons/prozer/fonts/Aller_Bd.ttf') format('truetype');
-}
-@font-face {
-  font-family: 'Aller';
-  font-style: italic;
-  font-weight: bold;
-  src: url('/assets/addons/prozer/fonts/Aller_BdIt.ttf') format('truetype');
-}

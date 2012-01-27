@@ -101,12 +101,33 @@ class rex_xform_value_pz_datetime_screen extends rex_xform_value_abstract
                 </ul>
                 <script language="Javascript">
                 $(document).ready(function(){
-					$(\'#'.$this->getHtmlId('date').'\').datepicker({ showWeek: true, dateFormat: \'yy-mm-dd\' });
+					   
+					$.datepicker.regional["'.rex_i18n::msg("locale").'"] = { 
+						closeText: "'.rex_i18n::msg("close").'", // Display text for close link
+						prevText: "'.rex_i18n::msg("previous").'", // Display text for previous month link
+						nextText: "'.rex_i18n::msg("next").'", // Display text for next month link
+						currentText: "'.rex_i18n::msg("today").'", // Display text for current month link
+						monthNames: ["'.rex_i18n::msg("january").'","'.rex_i18n::msg("february").'","'.rex_i18n::msg("march").'","'.rex_i18n::msg("april").'","'.rex_i18n::msg("may").'","'.rex_i18n::msg("june").'", "'.rex_i18n::msg("july").'", "'.rex_i18n::msg("august").'", "'.rex_i18n::msg("september").'", "'.rex_i18n::msg("october").'", "'.rex_i18n::msg("november").'", "'.rex_i18n::msg("december").'"], 
+						monthNamesShort: ["'.rex_i18n::msg("january_short").'","'.rex_i18n::msg("february_short").'","'.rex_i18n::msg("march_short").'","'.rex_i18n::msg("april_short").'","'.rex_i18n::msg("may_short").'","'.rex_i18n::msg("june_short").'", "'.rex_i18n::msg("july_short").'", "'.rex_i18n::msg("august_short").'", "'.rex_i18n::msg("september_short").'", "'.rex_i18n::msg("october_short").'", "'.rex_i18n::msg("november_short").'", "'.rex_i18n::msg("december_short").'"],
+						dayNames: ["'.rex_i18n::msg("sunday").'", "'.rex_i18n::msg("monday").'", "'.rex_i18n::msg("tuesday").'", "'.rex_i18n::msg("wednesday").'", "'.rex_i18n::msg("thursday").'", "'.rex_i18n::msg("friday").'", "'.rex_i18n::msg("saturday").'"],
+						dayNamesShort: ["'.rex_i18n::msg("sunday_short").'", "'.rex_i18n::msg("monday_short").'", "'.rex_i18n::msg("tuesday_short").'", "'.rex_i18n::msg("wednesday_short").'", "'.rex_i18n::msg("thursday_short").'", "'.rex_i18n::msg("friday_short").'", "'.rex_i18n::msg("saturday_short").'"], // For formatting
+						dayNamesMin: ["'.rex_i18n::msg("sunday_short").'", "'.rex_i18n::msg("monday_short").'", "'.rex_i18n::msg("tuesday_short").'", "'.rex_i18n::msg("wednesday_short").'", "'.rex_i18n::msg("thursday_short").'", "'.rex_i18n::msg("friday_short").'", "'.rex_i18n::msg("saturday_short").'"], // Column headings for days starting at Sunday
+						weekHeader: "'.rex_i18n::msg("calendarweek_short").'", // Column header for week of the year
+						dateFormat: "yy-mm-dd", 
+						firstDay: 1, // The first day of the week, Sun = 0, Mon = 1, ...
+						isRTL: false, // True if right-to-left language, false if left-to-right
+						showMonthAfterYear: false, // True if the year select precedes month, false for month then year
+						yearSuffix: "", // Additional text to append to the year in the month headers
+						showWeek: true
+					};
+					   
+                	$.datepicker.setDefaults( $.datepicker.regional["'.rex_i18n::msg("locale").'"] );
+					$(\'#'.$this->getHtmlId('date').'\').datepicker();
+
 				});
 				</script>
                 ';
-		// altField: \'input#'.$this->getHtmlId('date').'\',
-		// \'div#'.$this->getHtmlId('picker').'\'
+
 		
 		// ---------------------------------------------------------------- Stunden Butler
 		$tpl_entries = array();

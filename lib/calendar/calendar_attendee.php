@@ -9,11 +9,11 @@ class pz_calendar_attendee extends pz_calendar_element
     TENTATIVE = 'TENTATIVE',
     DECLINED = 'DECLINED';
 
-  protected $user_id;
+  protected $user_id = '';
 
-  protected $email;
+  protected $email = '';
 
-  protected $name;
+  protected $name = '';
 
   protected $status;
 
@@ -24,7 +24,7 @@ class pz_calendar_attendee extends pz_calendar_element
     if(isset($params['a.user_id']))
       $this->user_id = $params['a.user_id'];
     if(isset($params['a.email']))
-      $this->email = $params['a.email'];
+      $this->email = strtolower($params['a.email']);
     if(isset($params['a.name']))
       $this->name = $params['a.name'];
     if(isset($params['a.status']))
@@ -46,15 +46,17 @@ class pz_calendar_attendee extends pz_calendar_element
 
   public function getEmail()
   {
-    return $this->getUserValue('email');
+    return $this->email;
+    //return $this->getUserValue('email');
   }
 
   public function getName()
   {
-    return $this->getUserValue('name');
+    return $this->name;
+    //return $this->getUserValue('name');
   }
 
-  private function getUserValue($key)
+  /*private function getUserValue($key)
   {
     if($this->user_id)
     {
@@ -62,7 +64,7 @@ class pz_calendar_attendee extends pz_calendar_element
     }
 
     return $this->$key;
-  }
+  }*/
 
   public function getStatus()
   {
@@ -71,7 +73,7 @@ class pz_calendar_attendee extends pz_calendar_element
 
   public function setUserId($user_id)
   {
-    return $this->setValue('user_id', $user_id);
+    return $this->setValue('user_id', (int) $user_id);
   }
 
   public function setEmail($email)
@@ -108,8 +110,20 @@ class pz_calendar_attendee extends pz_calendar_element
       $time = time();
       foreach($attendees as $attendee)
       {
-        $values .= '(?,?,?,?,?,?),';
-        array_push($params, $id, $attendee->user_id, $attendee->email, $attendee->name, $attendee->status, $time);
+      	if($attendee->user_id > 0)
+      	{
+      		if(($user = pz_user::get($attendee->user_id)))
+      		{
+		        $values .= '(?,?,?,?,?,?),';
+		        array_push($params, $id, $user->getId(), $user->getEmail(), $user->getName(), $attendee->status, $time);
+      		}
+      	}else
+      	{
+    		$values .= '(?,?,?,?,?,?),';
+	        array_push($params, $id, $attendee->user_id, $attendee->email, $attendee->name, $attendee->status, $time);
+
+      	}
+      
       }
       rex_sql::factory()->setQuery('
         INSERT INTO '. self::TABLE .' (event_id, user_id, email, name, status, timestamp)
@@ -167,5 +181,46 @@ class pz_calendar_attendee extends pz_calendar_element
       $attendees[] = new self($row->getRow());
     }
     return $attendees;
+  }
+
+  static public function getEventsByEmail($emails = array())
+  {
+  	if(count($emails) == 0)
+  		return array();
+  
+	$query = 'SELECT *
+	      	FROM '. self::TABLE .' a
+	      	WHERE status = ? ';
+	$params = array(self::NEEDSACTION);
+
+	$email_query = array();
+	foreach($emails as $email) {
+		$email_query[] = 'email = ?';
+		$params[] = $email;
+	}
+	
+	$query .= 'and ('.implode(' or ',$email_query).')';
+
+    $events = array();
+  	$sql = rex_sql::factory();
+  	// $sql->debugsql = 1;
+	$es = $sql->getArray($query,$params);
+
+    if(count($es) > 0)
+    {
+    	foreach($es as $e)
+    	if(!isset($events[$e["event_id"]]) && ($event = pz_calendar_event::get($e["event_id"])))
+			$events[$e["event_id"]] = $event;
+	}
+
+    return $events;
+  
+  }
+
+
+
+  static public function getStatusArray()
+  {
+    return array(self::NEEDSACTION, self::ACCEPTED, self::TENTATIVE, self::DECLINED);
   }
 }
