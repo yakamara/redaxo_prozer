@@ -11,7 +11,7 @@ ul.sl1 li.selected {
 #navi-main {
   display: block;
   float: left;
-  width: 44%;
+  width: 54%;
   padding: 24px 0 0 0;
 }
 #navi-main li.lev1 {
@@ -95,6 +95,10 @@ ul.sl1 li.selected {
   float: left;
   margin: 0 6px 0 0;
   padding-bottom: 13px;
+}
+/* Neue E-Mail */
+#navi-lev2 li.lev2.create {
+  margin-left: 30px;
 }
 
 
@@ -181,6 +185,45 @@ ul.sl1 li.selected {
 }
 
 
+/* Mail Tab Navi  **************************************************************
+*******************************************************************************/
+.content-navigation {
+  padding-top: 4px;
+  overflow: hidden;
+}
+.content-navigation li {
+  position: relative;
+  display: block;
+  float: left;
+}
+.content-navigation li a {
+  display: block;
+  padding: 6px 47px 6px 15px;
+  border-top-width: 1px;
+  border-top-style: solid;
+  border-right-width: 1px;
+  border-right-style: solid;
+}
+.content-navigation li a:last-child {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  padding: 0;
+  border: 0;
+}
+.content-navigation li.active {
+}
+.content-navigation li a:hover, 
+.content-navigation li a.active {
+  margin-top: -4px;
+  padding-top: 10px;
+}
+.content-navigation li a:last-child:hover, 
+.content-navigation li a:last-child.active {
+  top: 14px;
+}
+
+
 
 
 
@@ -248,6 +291,9 @@ ul.view-layout {}
 ul.view-layout li {
   display: inline-block;
 }
+ul.view-layout li.first {
+  display: block;
+}
 
 
 
@@ -268,6 +314,9 @@ ul.sl1 li.selected:hover {
 ul.sl1 li.selected span.selected {
   display: block;
   padding: 0 40px 0 10px;
+}
+.clips ul.sl1 li.selected span.selected {
+  padding-right: 30px;
 }
 
 .entry-email header ul.sl1 {
@@ -295,6 +344,10 @@ ul.sl2 li.selected span.selected {
   bottom: auto;
   top: 60px;
   z-index: 1000;
+}
+.email-drafts .entry-email header ul.sl2 {
+  right: 25px;
+  top: 0;
 }
 
 
@@ -337,6 +390,7 @@ ul.sl4 li:hover {
 .project-folder-path dt, 
 .project-folder-path dd {
   float: left;
+  line-height: 23px;
 }
 .project-folder-path dt {
   width: 50px;

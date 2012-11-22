@@ -1,12 +1,12 @@
 <?php
 
-class pz_labels_screen {
+class pz_labels_screen 
+{
 
 	public $labels;
 
 	function __construct($labels)
 	{
-	
 		$this->labels = $labels;
 	}
 
@@ -14,14 +14,13 @@ class pz_labels_screen {
 
 	function getListView($p = array()) 
 	{
-	
 		$content = "";
 		$design = "";
 		
-		$first = " first";
-		foreach($this->labels as $label) {
+		foreach($this->labels as $label) 
+		{
 			$ls = new pz_label_screen($label);
-			$content .= '<li class="lev1 entry'.$first.'">'.$ls->getListView($p).'</li>';
+			$content .= '<li class="lev1 entry">'.$ls->getListView($p).'</li>';
 			$first = "";
 		}
 		
@@ -36,9 +35,7 @@ class pz_labels_screen {
 		$f->setVar('content', $content , false);
 		$f->setVar('paginate', '', false);
 	
-		return '<div id="labels_list" class="design2col">'.$f->parse('pz_screen_list').'</div>';	
-
-
-
+		return '<div id="labels_list" class="design2col">'.$f->parse('pz_screen_list.tpl').'</div>';	
 	}
+
 }

@@ -1,0 +1,199 @@
+
+____________ 2.0 beta2
+
+* Bugs
+** Kalender: Es werden nun auch Kalender angezeigt, wenn im Projekt nur "Jobs" angegeben ist
+** Emails: Anzeige von Dateien und Bilder beim direkten öffnen ging nicht
+** Adressenexport (API): Wenn ein Adressdatensatz mehrere identische Postadressen hat, z.B. 2 "WORK" Adressen, wurde die 2. Adresse nicht exportiert
+** Beim Adressenexport werden nun die Loginnamen des erstellers, updaters und verantwortlichen mit ausgegeben.
+** Kalender: CalDav Rechte konnten nicht gesetzt werden.
+
+____________ 2.0 beta1
+
+* Anpassungen an die aktuelle REDAXO5 Version
+** ".tpl" bei den Templates angepasst
+
+
+____________ 2.0 alpha17
+
+* Eigener Adminbereich eingeführt
+** API umgebaut und ergänzt, Export in verschiedenen Formaten möglich. JSON, CSV, EXCEL
+** Rechte jedes einzelnen Users sicht- und änderbar
+** Jobs jedes Users sicht- und exportierbar
+** Logansicht. Welche Aktionen wurde wie gemacht.
+
+* Kalender
+** Ansicht umgebaut und optimiert
+** Fehlerhafte Infomeldungen angepasst
+** Termine werden immer im 15Minuten Raster eingesetzt. D.h. ein Termin z.B. 10:08h, steht dann auf 10:00h
+
+* Rechte
+** CalenderEvent Recht bei Projekten und Projektusern ergänzt
+** Rechte direkt in der Übersicht geändert
+** Projektrecht CalendarEvent und CalendarJobs eingeführt - wie auch bei Projektusern. Damit sind nun User möglich die ausschliesslich auf ein Projekt buchen dürfen
+
+* E-Mail
+** Emails können nun nur noch verschoben (und damit nun auch als bearbeitet markiert) werden
+
+* Allgemein
+** Harvest/Chosen für Selektboxen verwendet. Eigene Selektboxenvariante entfernt
+
+* Bugs
+** Events mit Einladungen wurden doppelt angezeigt.
+** Sortierung bei Dateien konnte nicht verwendet werden, nun als flyouthover
+** Manchmal wurden einzelne Projekttermine in CalDAV nicht angezeigt
+** Serientermine funktionierten nicht korrekt
+** Formatierung Dateiedit, Dateiname zu lang etc. 
+** Es werden nur noch "wartende" Einladung unter dem Reiter "unbeantwortete Einladungen" angezeigt
+
+____________ 2.0 alpha16
+
+* Clipboard
+** Hier kann man nun direkt auf die Projektdateien zugreifen und diese in Meine Ablage schieben
+
+____________ 2.0 alpha15
+
+* Clipboardumbau
+** Auflistbar nach verschiedenen Kriterien
+** Clips können freigegeben werden, also Downloadlink, für einen bestimmten Zeitraum
+** Upload über das Clipboard
+
+* API Umbaue
+** Cronjobprinzip entfällt, alles läuft über APIs mit dentsprechendem Adminaccount
+** Export von Adressen möglich, linieares Excel
+** Cleanup: Emails die älter als 6 Monate sind werden gelöscht
+
+* Projektdateilisten
+** Ordner immer oben, immer nach Namen sortiert
+** Sortierung bezieht sich nur auf Dateien
+** Datumsausgabe korrigiert.
+** Dateisortierung nach Namen und Typ nun möglich
+** Order in den Formularen passen sich nun direkt an
+
+* Projekt
+** 
+
+* Emails
+** Namen der Anhänge werden nicht mehr angepasst - vorher war immer kleingeschrieben
+** Emails können nun entgültig gelöscht werden
+
+* Darstellung
+** Es wird nun deutlicher in welchem Projekt man sich befindet
+
+* Admin
+** Last Login und Erstelldatum bei Userliste einsehbar
+
+* Adressen
+** Anzeige last update user + create user inkl. Datum
+
+* Bugs
+* Archivierte User werden nicht mehr verwendet
+* Einladungen bei Terminen werden auch angezeigt, wenn man nicht im Projekt ist
+
+
+____________ 2.0 alpha14
+
+___ Features
+
+* Kalender
+** Komplettumbau: Flyoutansichten sind nun direkt am Termin und Funktionen können dort direkt ausgeführt werden
+** Customerview eingebaut. Übersicht über 2 Wochen oder einen Monat
+*** Drag n drop von Terminen möglich, Anzeige von Teilprojekten sichtbar
+** Einbaun der Teilprojekte in die Eventverwaltung
+
+* Projekte
+** Teilprojekte eingeführt - im Moment nur für Customerview relevant
+
+* ToDos
+** in die CalDav schnittstelle eingebaut. Ist live verwendbar
+
+* Emails
+** multiparts werden nun auch verschachtelt erkannt und interpretiert
+** Downloadheader wurden angepasst. z.B. Wurden Exceldateien zum Teil falsch vom Betriebssystem interpretiert.
+
+* Clipboard
+** Clipboard hat nun Freigaben. Man kann Dateien als Link freigeben und damit über Termine und Emails weitergeben.
+** Blättern und Autoblättern eingebaut
+** Wenn Clip in einem Event ausgewählt wurde und man im gleichen Projekt ist - ist der Clip downloadbar
+
+___ Anpassungen
+* Projects
+** Autoblättern bei my/all/archive und customer listen eingebaut
+** Meine Projekteseite entfernt und mit "Alle"-Projekteseite zusammengefasst
+
+* Adresse
+** Autoblättern eingebaut
+
+* Email
+** Antworten innerhalb von E-Mails werden nun erkannt gestylt dargestellt. Quotestyling
+
+___ Bugs
+* Mails die ausschliesslich einen HTML Teil haben, werden nun richtig dargestellt und nicht mehr als download .eml interpretiert
+* Email - Projektzuordnung entfernen, korrigiert nun auch den bearbeitet status. Mails wären sonst immer bearbeitet
+* Email - Clips die bei einer neuen Mail eingefügt worde sind, konntent nicht heruntergeladen werden.
+* Email - Versandfehler wurden falsch angezeigt wenn inkorrekte Mailadresse eingegeben wurden. Wird nun abgefangen
+* Email - Absendersortierung ging nicht.
+
+____________ 2.0 alpha13
+
+* Jobs / Projektjobs
+** Suche ergänzt um Zeitraum, Projekt ..
+* Autoload bei E-Mails wenn man am Ende der Seite ist
+* Memory limit/Email download optimiert. Bricht ab wenn Nahe am memory_limit, Emails werden dann beim nächsten Abruf geladen
+* Memory Optimierung beim E-Mail öffnen. 
+* Email: Volltext Suche (subject,body,to,cc) wieder eingebaut
+* Sprachtexte ergänzt
+* Die Paginierung hat manchmal Einträge "verschluckt", array_values
+* Korrektur Eventformular, Ganztagestermineanzeige korrigiert
+* Email Accounts ergänzt. Mehr Informationen, Doppelte Downloads sollten nicht mehr auftauchen.
+* Bei Serientermine, konnte ein daraus erstellter Einzeltermin nicht mehr verschoben weden.
+* Sortierung bei Dateien eingeführt. Default nach Erscheinungszeitraum.
+* Projektdirektauswahl optimiert. Wenn mehr als 20 Projekte dann werden zunächst die Kunden angezeigt.
+* Bei Alle Mails: Auch E-Mails aus Müll Option
+
+
+____________ 2.0 alpha12
+
+* Kalender
+** Jobs sind im Kalender nun rechts ausgerichtet
+** bei der Erstellung von Job/Termine werden unnötige Felder weggeblendet
+** Einladungen zu denen man nicht eingeladen ist, werden nun ausgeblendet, obwohl man im Projekt ist
+** Projekt/Job und Projekt/Terminansichten ergänzt
+
+* Email 
+** Suche erweitern nach Zeitraumetc.
+** Darstellung der Emails verbessern, von - an Images, Anhang wird angezeigt
+** Labels ändern sich nun wenn Email in Projekt verschoben wird
+** Sortierung eingebaut
+** (Un)Bearbeiten herausgenommen
+** Headerauflösung, Mimetypeerkennung angepasst
+** Überschriften angepasst
+** HTML E-Mails anzeigen, html/text Parts werden nicht gesondert als Download angeboten
+** Volltextsuche bei Email - autocompleter beschraenkt sich nun auf firma, namen, emails
+** Email Navipunkt präsenter gemacht
+** Email setup in Tools verschoben
+
+* Allgemein
+** Loaderoverlay übergreifend eingesetzt
+
+* Projekt
+** Aktuelle Termine in der Übersicht
+** Buttongrößen angepasst, CSS vereinheitlicht.
+
+
+____________ 2.0 alpha11
+
+* Excel-Datei speichern unter Problem geloest
+* Sich selbst kann man nun keine Userrechte mehr vergeben
+* Header ein E-Mail für Admins nun sichtbar
+* Anhänge sind nun auch nachträglich downloadbar
+* Tooltip un/bearbeitet
+
+
+____________ 2.0 alpha10
+
+* Userrechte vergebbar
+* Diverse kleinere Korrekturen
+
+
+

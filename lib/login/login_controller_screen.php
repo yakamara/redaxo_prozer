@@ -28,7 +28,7 @@ class pz_login_controller_screen extends pz_login_controller{
 		$xform->setObjectparams("form_id", "login_form");
 		$xform->setValueField('objparams',array('form_action', 'javascript:pz_logIn()'));
 		
-		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform'));
+		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
 		$xform->setValueField("text",array("login",rex_i18n::msg("login")));
 		$xform->setValueField("password",array("password",rex_i18n::msg("password")));
 		$xform->setValueField("checkbox",array("stay",rex_i18n::msg("stay")));
@@ -38,7 +38,8 @@ class pz_login_controller_screen extends pz_login_controller{
 		if($xform->getObjectparams("actions_executed")) {
 			return 1;
 		}
-		$return = '<div id="loginbox">'.$return.'</div>';	
+		$return = '<div id="loginbox" class="popbox">'.$return.'</div>';
+		$return .= '<script>pz_centerPopbox("",180);</script>';
 		return $return;	
 	}
 
@@ -93,9 +94,9 @@ class pz_login_controller_screen extends pz_login_controller{
 //		$f->setVar('section_2', $section2 , false); // $this->getLoginForm($p)
 		$f->setVar('footer', $footer , false);
 		$f->setVar('page_id', 'login');
-		$f->setVar('javascript', "pz_getLoginForm();");
+		$f->setVar('javascript', "pz_getLogin();");
 		
-		return $f->parse('pz_screen_main');
+		return $f->parse('pz_screen_main.tpl');
 	}
 
 

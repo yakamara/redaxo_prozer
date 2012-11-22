@@ -118,7 +118,7 @@ class pz_project_wiki_screen
 		
 		$xform->setObjectparams("real_field_names",TRUE);
 
-		$xform->setValueField('objparams', array('fragment', 'pz_screen_xform'));
+		$xform->setValueField('objparams', array('fragment', 'pz_screen_xform.tpl'));
 		$xform->setValueField('text', array('name', rex_i18n::msg('article_name')));
 		$return .= $xform->getForm();
 
@@ -131,7 +131,7 @@ class pz_project_wiki_screen
 		
 		$xform->setHiddenField("project_id",$project->getId());
 
-		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform'));
+		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
 		
 		
 		$xform->setValidateField("pz_projectuser",array("pu",$project));

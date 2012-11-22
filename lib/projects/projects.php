@@ -38,5 +38,4 @@ class pz_projects extends pz_search {
 		
 	}
 
-
 }

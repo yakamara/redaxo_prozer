@@ -165,6 +165,13 @@ body#login #footer .wrapper {
   width: 29%;
 }
 
+.section2 .grid2col.header .column.first {
+  width: auto;
+}
+.section2 .grid2col.header .column.last {
+  width: auto;
+}
+
 /*  Area ***********************************************************************
 *******************************************************************************/
 .area {
@@ -218,7 +225,7 @@ body.grid-a-bc .grid2area .area.last {
 }
 .area .design1col, 
 .area .design2col {
-  margin-left: 20px;
+  margin-left: 25px;
 }
 .section1 .design1col, 
 .section1 .design2col {

@@ -7,7 +7,7 @@ class pz_calendar_event_screen{
 	function __construct($event) 
 	{
 		$this->calendar_event = $event;
-		$this->user_name = rex_i18n::msg("username_not_avaiable");
+		$this->user_name = rex_i18n::msg("username_not_available");
 		
 		if(!is_object($this->calendar_event)) {
 			echo pz::error('CALEVENT_MISSING');
@@ -29,16 +29,29 @@ class pz_calendar_event_screen{
 
 	static function getAttendeeListView($p,$events)
 	{
+	
 		$return = '';
+		$e = array();
 		if(count($events) > 0) 
 		{
 			foreach($events as $event) {
 				$a = new pz_calendar_event_screen($event);
-				$return .= '<div class="calendar_event_view">'.$a->getEventView($p).'</div>';
+				$e[] = $a->getFlyoutEventView($p, true);
 			}
 		}
-	
-		$return = '<div id="calendar_event_attendee_view" class="design1col">'.$return.'</div>';
+		
+		$info = "";
+		if(count($e)>0)
+		  $info = '<span class="info1"><span class="inner">'.count($e).'</span></span>';
+
+	  $header = '
+	        <header>
+	          <div class="header">
+	            <h1 class="hl1"><a href="javascript:void(0);" onclick="$(\'#calendar_event_attendee_list_view\').toggleClass(\'hidden\')"><span class="info-relative">'.rex_i18n::msg("calendar_event_attendees_unanswered").$info.'</span></a></h1>
+	          </div>
+	        </header>';
+		
+		$return = '<div id="calendar_event_attendee_view" class="design1col">'.$header.'<div id="calendar_event_attendee_list_view" class="hidden">'.implode("",$e).'</div></div>';
 		return $return;
 	}
 
@@ -48,6 +61,7 @@ class pz_calendar_event_screen{
 
 	// --------------------------------------------------------------- views
 
+  /*
 	public function getFlyoutView($p = array()) 
 	{
 	
@@ -129,7 +143,7 @@ class pz_calendar_event_screen{
 					<div class="flyout event-'.$this->calendar_event->getId().'">
                       <div class="content">
                         <div class="output">
-                          <a class="tooltip close bt5" href="javascript:void(0);" onclick="$(this).parent().parent().parent().css(\'display\',\'none\');"><span class="icon"></span><span class="tooltip"><span class="inner">'.rex_i18n::msg("close").'</span></span></a>
+                          <a class="tooltip close bt5" href="javascript:void(0);" onclick="$(this).parent().parent().parent().css(\'display\',\'none\');">'.pz_screen::getTooltipView('<span class="icon"></span>',rex_i18n::msg("close")).'</a>
                           <h2 class="hl2">'.$this->calendar_event->getTitle().' | '.$this->user_name.'</h2>
                           <div class="split-h split-h1"></div>
                           <h2 class="hl2">'.$date_info.'</h2>
@@ -150,7 +164,7 @@ class pz_calendar_event_screen{
 		return $return;
 	
 	}
-	
+	*/
 	
 
 
@@ -159,7 +173,31 @@ class pz_calendar_event_screen{
 
 	// --------------------------------------------------------------- views
 
-	public function getEventView($p = array()) 
+  public function getTooltipEventView($p = array())
+  {
+    $from = $this->calendar_event->getFrom();
+    $to = $this->calendar_event->getTo();
+    $duration = $this->calendar_event->getDuration();
+  
+    $info = array();
+    if($this->calendar_event->isAllDay())
+    {
+      $info[] = rex_i18n::msg("allday");
+    }else {
+      $info[] = rex_i18n::msg('time').': '.$from->format(rex_i18n::msg("format_time")).'h';
+    }
+
+    $info[] = rex_i18n::msg('calendar_event_title').': '.htmlspecialchars($this->calendar_event->getTitle());
+    $info[] = rex_i18n::msg("user").': '.htmlspecialchars($this->user_name);
+    
+    if($this->calendar_event->getLocation() != "")
+      $info[] = rex_i18n::msg("location").': '.htmlspecialchars($this->calendar_event->getLocation());
+
+    return implode("<br />",$info);
+    
+  }
+
+	public function getFlyoutEventView($p = array(), $disable_functions = false) 
 	{
 	
 		$from = $this->calendar_event->getFrom();
@@ -169,13 +207,28 @@ class pz_calendar_event_screen{
 		$info = "";
 		$resize = '';
 		$edit_classes = "";
-		$edit = "";
+		$edit = array();
 		
 		if(pz::getUser()->getEventEditPerm($this->calendar_event))
 		{
-			$edit = '<div class="split-h split-h1"></div><ul class="buttons"><li><a class="bt5" href="javascript:pz_loadPage(\'calendar_event_form\',\''.pz::url("screen","calendars","day",array_merge($p["linkvars"],array("mode"=>"edit_calendar_event","calendar_event_id"=>$this->calendar_event->getId()))).'\')">'.rex_i18n::msg("edit").'</a></li></ul>';
+			$edit[] = '<li><a class="bt5" href="javascript:pz_loadPage(\'calendar_event_form\',\''.pz::url("screen","calendars","event",array_merge($p["linkvars"],array("mode"=>"edit_calendar_event","calendar_event_id"=>$this->calendar_event->getId()))).'\');pz_tooltipbox_close();">'.rex_i18n::msg("edit").'</a></li>';
+
+			$edit[] = '<li><a class="bt17" href="javascript:void(0);" onclick="check = confirm(\''.
+			str_replace(array("'","\n","\r"),array("","",""),rex_i18n::msg("calendar_event_confirm_delete",htmlspecialchars($this->calendar_event->getTitle()))).'\'); if (check == true) pz_loadPage(\'.event-flyout-view.event-'.$this->calendar_event->getId().'\',\''.pz::url("screen","calendars","event",array_merge($p["linkvars"],array("mode"=>"delete_calendar_event","calendar_event_id"=>$this->calendar_event->getId()))).'\')">'.rex_i18n::msg("delete").'</a></li>';
 		}
 
+    if(!$this->calendar_event->isBooked() && !$this->calendar_event->isAllDay())
+    {
+      $edit[] = '<li><a class="bt5" href="javascript:pz_loadPage(\'.event-flyout-view.event-'.$this->calendar_event->getId().'\',\''.pz::url("screen","calendars","event",array_merge($p["linkvars"],array("mode"=>"copy2job_calendar_event","calendar_event_id"=>$this->calendar_event->getId()))).'\')">'.rex_i18n::msg("calendar_event_copy2job").'</a></li>';
+    }
+
+    if(count($edit) > 0 && !$disable_functions)
+    {
+      $edit = '<div class="split-h split-h1"></div><ul class="buttons">'.implode($edit).'</ul>';
+    }else {
+      $edit = "";
+    }
+    
 		$date_info = '';
 		if($this->calendar_event->isAllday())
 			if($from->format("Ymd") == $to->format("Ymd"))
@@ -191,35 +244,67 @@ class pz_calendar_event_screen{
     $date_info = $date_info != '' ? '<h2>'.$date_info.'</h2>' : '';
     
     if ($this->calendar_event->getDescription() != '')
-      $date_info .= '<p>'.$this->calendar_event->getDescription().'</p>';
+      $date_info .= '<p>'.nl2br(pz_screen::prepareOutput($this->calendar_event->getDescription())).'</p>';
     
-    
-    $event_infos = '';
+    $event_infos = array();
 		if($this->calendar_event->getLocation() != "")
-			$event_infos .= '<dt>'.rex_i18n::msg('location').':</dt><dd>'.htmlspecialchars($this->calendar_event->getLocation()).'</dd>';
+			$event_infos[] = '<dt>'.rex_i18n::msg('location').':</dt><dd>'.htmlspecialchars($this->calendar_event->getLocation()).'</dd>';
 
 		if($this->calendar_event->getUrl() != "")
 		{
 		  $url = $this->calendar_event->getUrl();
-		  if (substr($url, 0, 7) != 'http://')
+		  if (substr($url, 0, 7) != 'http://' && substr($url, 0, 8) != 'https://')
 		    $url = 'http://'.$url;
 		    
-			$event_infos .= '<dt>'.rex_i18n::msg("calendar_event_url").':</dt><dd><a href="'.$url.'" target="_blank">'.htmlspecialchars(pz::cutText($url)).'</a></dd>';
+			$event_infos[] = '<dt>'.rex_i18n::msg("calendar_event_url").':</dt><dd><a href="'.$url.'" target="_blank">'.htmlspecialchars(pz::cutText($url)).'</a></dd>';
 		}
     
-		if($this->calendar_event->isBooked() != "")
-			$event_infos .= '<dt>'.rex_i18n::msg('job').':</dt><dd>'.rex_i18n::msg('is_job').'</dd>';
+		if($this->calendar_event->isBooked())
+		{
+			$event_infos[] = '<dt>'.rex_i18n::msg('job').':</dt><dd>'.rex_i18n::msg('is_job').'</dd>';
+
+    }
+    
+    $project_name = $this->calendar_event->getProject()->getName();
+    if( $this->calendar_event->getProjectSubId() != 0 && ( $project_sub = pz_project_sub::get($this->calendar_event->getProjectSubId()) )  )
+      $project_name .= ' / '.$project_sub->getName();
+    
+		$event_infos[] = '<dt>'.rex_i18n::msg('project').':</dt><dd><span class="label-color-block '.pz_label_screen::getColorClass($this->calendar_event->getProject()->getLabelId()).'"></span>'.htmlspecialchars($project_name).'</dd>';
+
+		$event_infos[] = '<dt>'.rex_i18n::msg('user').':</dt><dd>'.htmlspecialchars($this->user_name).'</dd>';
 
 
 		if($this->calendar_event->hasRule())
 		{
-			$event_infos .= '<dt>'.rex_i18n::msg('calendar_event_rule').':</dt><dd>'.rex_i18n::msg('calendar_event_has_rule').'</dd>';
-			$event_infos .= '<dt>'.rex_i18n::msg('calendar_event_frequence').':</dt><dd>'.$this->calendar_event->getRule()->getFrequence().'</dd>';
-			$event_infos .= '<dt>'.rex_i18n::msg('calendar_event_interval').':</dt><dd>'.$this->calendar_event->getRule()->getInterval().'</dd>';
+			$event_infos[] = '<dt>'.rex_i18n::msg('calendar_event_rule').':</dt><dd>'.rex_i18n::msg('calendar_event_has_rule').'</dd>';
+			$event_infos[] = '<dt>'.rex_i18n::msg('calendar_event_frequence').':</dt><dd>'.$this->calendar_event->getRule()->getFrequence().'</dd>';
+			$event_infos[] = '<dt>'.rex_i18n::msg('calendar_event_interval').':</dt><dd>'.$this->calendar_event->getRule()->getInterval().'</dd>';
 
 		}
+    
+    $clips = "";
+    $clips_array = $this->calendar_event->getClips();
+    if(count($clips_array)>0)
+    {
+      $show_clips = array();
+			foreach($clips_array as $clip)
+			{
+			  $clip_name = $clip->getFilename();
+			  if($clip->isReleased())
+			  {
+			    $show_clips[] = '<li><a href="'.$clip->getUri().'">'.htmlspecialchars($clip_name).'</a></li>';
+			  }else
+			  {
+			    if(pz::getUser()->getClipDownloadPerm($clip))
+  			    $show_clips[] = '<li><a href="'.$clip->getDownloadLink().'">'.htmlspecialchars($clip_name).'</a> ['.rex_i18n::msg('clip_is_not_released').']</li>';
+          else			    
+	  		    $show_clips[] = '<li>'.htmlspecialchars($clip_name).' ['.rex_i18n::msg('clip_is_not_released').']</li>';
+			  } 
+			}
+			$clips = '<div class="split-h split-h1"></div><h2>'.rex_i18n::msg('attachments').'</h2><ul>'.implode("",$show_clips).'</ul>';
+    }
+    
 
-		$event_infos = $event_infos != '' ? '<div class="split-h split-h1"></div><dl>'.$event_infos.'</dl>' : '';
 
 		$attandees = '';
 		$actions = '';
@@ -249,38 +334,50 @@ class pz_calendar_event_screen{
 
 			if($me)
 			{
-        $actions .= '<div class="split-h split-h1"></div><ul class="buttons">';
+				$actions .= '<div class="split-h split-h1"></div><ul class="buttons">';
 				foreach(pz_calendar_attendee::getStatusArray() as $k => $v)
 				{
-					$link = 'pz_loadPage(\'.event-'.$this->calendar_event->getId().'\',\''.pz::url("screen","calendars",$p["function"],array_merge($p["linkvars"],array("mode"=>"set_attandee_status","calendar_event_id"=>$this->calendar_event->getId(),"attandee_status" => $v))).'\')';
+					$link = 'pz_loadPage(\'.event-flyout-view.event-'.$this->calendar_event->getId().'\',\''.pz::url("screen","calendars","event",array_merge($p["linkvars"],array("mode"=>"set_attandee_status","calendar_event_id"=>$this->calendar_event->getId(),"attandee_status" => $v))).'\')';
 					
 					if($me->getStatus() == $v)
 						$actions .= '<li><a class="bt3" href="javascript:void(0);">'.rex_i18n::msg('calendar_event_attendee_'.strtolower($v)).'</a></li>';	
 					else
 						$actions .= '<li><a class="bt5" href="javascript:void(0);" onclick="'.$link.'">'.rex_i18n::msg('calendar_event_attendee_'.strtolower($v)).'</a></li>';	
 				}
-        $actions .= '</ul>';
+				$actions .= '</ul>';
 			}
 			
 		}
 		
+		$info_message = '';
+		if(isset($p["info_message"]))
+		{
+		  $info_message = '<p class="xform-info">'.$p["info_message"].'</p>';
+		}
+		
+		$warning_message = '';
+		if(isset($p["warning_message"]))
+		{
+		  $warning_message = '<p class="xform-warning">'.$p["warning_message"].'</p>';
+		}
+		
+		
 		$return = 	'
-					<div class="bucket event-'.$this->calendar_event->getId().'">
-            <div class="content">
+					<div class="bucket event-flyout-view event-'.$this->calendar_event->getId().'">
+            <div class="condtent">
               <div class="output">
-                <a class="tooltip close bt5" href="javascript:void(0);" onclick="$(this).parent().parent().parent().css(\'display\',\'none\');"><span class="icon"></span><span class="tooltip"><span class="inner">'.rex_i18n::msg("close").'</span></span></a>
-                
                 <header>
-                  <h1 class="hl2">'.$this->calendar_event->getTitle().' | '.$this->user_name.'</h1>
+                  <h1 class="hl2">'.$this->calendar_event->getTitle().'</h1>
                 </header>
                 
                 <div class="formatted">
+                  '.$info_message.'
+                  '.$warning_message.'
                   '.$date_info.'
-                  '.$event_infos.'
+                  <div class="split-h split-h1"></div><dl>'.implode("",$event_infos).'</dl>
+                  '.$clips.'
                   '.$attandees.'
                 </div>
-                
-                
                 
                 '.$actions.'
                 '.$edit.'
@@ -292,6 +389,337 @@ class pz_calendar_event_screen{
 		return $return;
 	
 	}
+
+
+	// --------------------------------------------------------------- List
+
+
+  public function getBlockListView($p = array()) 
+	{    
+		$from = $this->calendar_event->getFrom();
+		$to = $this->calendar_event->getTo();
+		$duration = $this->calendar_event->getDuration();
+
+		$info = "";
+		$resize = '';
+
+    /*
+		$edit_classes = "";
+		$edit = array();
+		
+		if(pz::getUser()->getEventEditPerm($this->calendar_event))
+		{
+			$edit[] = '<li><a class="bt5" href="javascript:pz_loadPage(\'calendar_event_form\',\''.pz::url("screen","calendars","day",array_merge($p["linkvars"],array("mode"=>"edit_calendar_event","calendar_event_id"=>$this->calendar_event->getId()))).'\')">'.rex_i18n::msg("edit").'</a></li>';
+
+			$edit[] = '<li><a class="bt17" href="javascript:void(0);" onclick="check = confirm(\''.
+			str_replace(array("'","\n","\r"),array("","",""),rex_i18n::msg("calendar_event_confirm_delete",htmlspecialchars($this->calendar_event->getTitle()))).'\'); if (check == true) pz_loadPage(\'calendar_event_form\',\''.pz::url("screen","calendars",$p["function"],array_merge($p["linkvars"],array("mode"=>"delete_calendar_event","calendar_event_id"=>$this->calendar_event->getId()))).'\')">'.rex_i18n::msg("delete").'</a></li>';
+
+		}
+
+    if(!$this->calendar_event->isBooked() && !$this->calendar_event->isAllDay())
+    {
+      $edit[] = '<li><a class="bt5" href="javascript:pz_loadPage(\'calendar_event_form\',\''.pz::url("screen","calendars","day",array_merge($p["linkvars"],array("mode"=>"copy2job_calendar_event","calendar_event_id"=>$this->calendar_event->getId()))).'\')">'.rex_i18n::msg("calendar_event_copy2job").'</a></li>';
+    }
+
+    if(count($edit) > 0)
+    {
+    }
+    $edit = '<div class="split-h split-h1"></div><ul class="buttons">'.implode($edit).'</ul>';
+    $edit = "";
+    */
+    
+		$date_info = '';
+		if($this->calendar_event->isAllday())
+			if($from->format("Ymd") == $to->format("Ymd"))
+				$date_info = $from->format("d.m.Y");
+			else
+				$date_info = $from->format("d.m.Y").' - '.$to->format("d.m.Y");
+		else
+			if($from->format("Ymd") == $to->format("Ymd"))
+				$date_info = $from->format("H:i").' - '.$to->format("H:i");
+			else
+				$date_info = $from->format("d.m.Y H:i").' - '.$to->format("d.m.Y H:i");
+
+    
+    
+//    $date_info = $date_info != '' ? '<h2>'.$date_info.'</h2>' : '';
+    
+    $text = '';
+    
+    if ($this->calendar_event->getDescription() != '')
+      $text .= '<p>'.nl2br(htmlspecialchars($this->calendar_event->getDescription())).'</p>';
+/*    
+    $event_infos = '';
+		if($this->calendar_event->getLocation() != "")
+			$event_infos .= '<dt>'.rex_i18n::msg('location').':</dt><dd>'.htmlspecialchars($this->calendar_event->getLocation()).'</dd>';
+
+		if($this->calendar_event->getUrl() != "")
+		{
+		  $url = $this->calendar_event->getUrl();
+		  if (substr($url, 0, 7) != 'http://' && substr($url, 0, 8) != 'https://')
+		    $url = 'http://'.$url;
+		    
+			$event_infos .= '<dt>'.rex_i18n::msg("calendar_event_url").':</dt><dd><a href="'.$url.'" target="_blank">'.htmlspecialchars($url).'</a></dd>';
+		}
+    
+		if($this->calendar_event->isBooked() != "")
+			$event_infos .= '<dt>'.rex_i18n::msg('job').':</dt><dd>'.rex_i18n::msg('is_job').'</dd>';
+
+		$event_infos .= '<dt>'.rex_i18n::msg('project').':</dt><dd>'.$this->calendar_event->getProject()->getName().'</dd>';
+
+		if($this->calendar_event->hasRule())
+		{
+			$event_infos .= '<dt>'.rex_i18n::msg('calendar_event_rule').':</dt><dd>'.rex_i18n::msg('calendar_event_has_rule').'</dd>';
+			$event_infos .= '<dt>'.rex_i18n::msg('calendar_event_frequence').':</dt><dd>'.$this->calendar_event->getRule()->getFrequence().'</dd>';
+			$event_infos .= '<dt>'.rex_i18n::msg('calendar_event_interval').':</dt><dd>'.$this->calendar_event->getRule()->getInterval().'</dd>';
+
+		}
+
+		$formatted .= $event_infos != '' ? '<div class="split-h split-h1"></div><dl>'.$event_infos.'</dl>' : '';
+
+		$attandees = '';
+		
+		$user_emails = pz::getUser()->getEmails();
+		
+		$as = pz_calendar_attendee::getAll($this->calendar_event);
+		if(is_array($as) && count($as)>0)
+		{
+			
+			$attandees .= '<div class="split-h split-h1"></div><h2>'.rex_i18n::msg('calendar_event_attendees').'</h2>';
+			
+			$me = null;
+			$attandees_list = '';
+			foreach($as as $a)
+			{
+				$attandees_list .= '<li class="status-'.strtolower($a->getStatus()).'">'.$a->getName().' / '.$a->getEmail().' ['.rex_i18n::msg('calendar_event_attendee_'.strtolower($a->getStatus())).']</li>';
+				
+				if(in_array($a->getEmail(),$user_emails))
+				{
+					$me = $a;
+				}
+			}
+			
+			if ($attandees_list != '')
+  			$attandees .= '<ul>'.$attandees_list.'</ul>';
+
+
+		  $actions = '';
+			if($me)
+			{
+				$actions .= '<div class="split-h split-h1"></div><ul class="buttons">';
+				foreach(pz_calendar_attendee::getStatusArray() as $k => $v)
+				{
+					$link = 'pz_loadPage(\'.event-'.$this->calendar_event->getId().'\',\''.pz::url("screen","calendars",$p["function"],array_merge($p["linkvars"],array("mode"=>"set_attandee_status","calendar_event_id"=>$this->calendar_event->getId(),"attandee_status" => $v))).'\')';
+					
+					
+					if($me->getStatus() == $v)
+						$actions .= '<li><a class="bt3" href="javascript:void(0);">'.rex_i18n::msg('calendar_event_attendee_'.strtolower($v)).'</a></li>';	
+					else
+						$actions .= '<li><a class="bt5" href="javascript:void(0);" onclick="'.$link.'">'.rex_i18n::msg('calendar_event_attendee_'.strtolower($v)).'</a></li>';	
+				}
+				$actions .= '</ul>';
+			}
+			
+		}
+		$formatted .= $attandees;
+*/		
+		$image_from_address = $this->calendar_event->getUser()->getInlineImage();
+		$image_from_adresse_title = $this->calendar_event->getUser()->getName();
+
+
+
+		$classes = array();
+		$classes[] = 'event';
+		$classes[] = 'label';
+		$classes[] = pz_label_screen::getBorderColorClass($this->label_id); // background color
+		$classes[] = pz_label_screen::getColorClass($this->label_id); // border color
+
+      		
+		$return = '
+		    <article class="'.implode(" ",$classes).'" id="event-'.$this->calendar_event->getId().'">
+		      <div class="event-info labelb'.$this->label_id.'">
+           <header>
+             <figure class="figure-from">'.pz_screen::getTooltipView('<img src="'.$image_from_address.'" width="40" height="40" />', htmlspecialchars($image_from_adresse_title)).'</figure>
+             <hgroup class="scope one">
+               <h1 class="hl7">'.$date_info.'<span class="title">'.$this->calendar_event->getTitle().'</span><br /><span class="name">'.$this->user_name.'</span></h1>
+             </hgroup>
+           </header>
+           <section class="content scope one">
+            '.$text.'
+           </section>
+          </div>
+	     </article>';
+
+/*           
+           <footer>
+              <a class="bt5" href="#">editieren</a>
+            </footer>
+*/
+		return $return;
+	
+	}
+
+
+  public function getBlockView($p = array()) 
+	{
+    if ($this->calendar_event->isBooked()) {
+      $event_screen = new pz_calendar_event_screen($this->calendar_event);
+			return $event_screen->getJobBlockView($p);
+    }
+      
+	
+		$from = $this->calendar_event->getFrom();
+		$to = $this->calendar_event->getTo();
+		$duration = $this->calendar_event->getDuration();
+
+		$info = "";
+		$resize = '';
+    
+		$date_info = '';
+		if($this->calendar_event->isAllday())
+			if($from->format("Ymd") == $to->format("Ymd"))
+				$date_info = $from->format("d.m.Y");
+			else
+				$date_info = $from->format("d.m.Y").' - '.$to->format("d.m.Y");
+		else
+			if($from->format("Ymd") == $to->format("Ymd"))
+				$date_info = $from->format("H:i").' - '.$to->format("H:i");
+			else
+				$date_info = $from->format("d.m.Y H:i").' - '.$to->format("d.m.Y H:i");
+
+    
+    
+    $text = '';
+    
+    if ($this->calendar_event->getDescription() != '')
+      $text .= '<p>'.nl2br(htmlspecialchars($this->calendar_event->getDescription())).'</p>';
+		
+		$image_from_address = $this->calendar_event->getUser()->getInlineImage();
+		$image_from_adresse_title = $this->calendar_event->getUser()->getName();
+
+
+
+		$classes = array();
+		$classes[] = 'event';
+		$classes[] = 'block';
+		$classes[] = 'image';
+		$classes[] = 'label';
+		$classes[] = pz_label_screen::getBorderColorClass($this->label_id); // background color
+		$classes[] = pz_label_screen::getColorClass($this->label_id); // border color
+
+      		
+		$return = '
+      <article class="'.implode(" ",$classes).'" id="event-'.$this->calendar_event->getId().'">
+        <div class="event-info labelb'.$this->label_id.'">
+          <header>
+            <figure>
+              '.pz_screen::getTooltipView('<img src="'.$image_from_address.'" width="40" height="40" />', htmlspecialchars($image_from_adresse_title)).'
+            </figure>
+            <hgroup class="data">
+              <h2 class="hl7">
+                <span class="piped">
+                  <span>'.$date_info.'</span>
+                  <span class="title">'.$this->calendar_event->getTitle().'</span>
+                </span>
+                <span class="name">'.$this->user_name.'</span>
+             </h2>
+            </hgroup>
+          </header>
+          <section class="content">
+          '.$text.'
+          </section>
+        </div>
+      </article>';
+
+
+		return $return;
+	
+	}
+	
+	
+	
+
+	public function getJobBlockView($p = array())
+	{
+			
+			$user = $this->calendar_event->getUser();
+			$project = pz_project::get($this->calendar_event->getProjectId());
+			$duration = (($this->calendar_event->getDuration()->format("%d")*24*60)+$this->calendar_event->getDuration()->format("%h")).'h ';
+			if($this->calendar_event->getDuration()->format("%I") != 0) $duration .= $this->calendar_event->getDuration()->format("%I").'m';
+			
+			$dur = $this->calendar_event->getFrom()->format(rex_i18n::msg("format_d_m_y"))."<br /><nobr>".$this->calendar_event->getFrom()->format(rex_i18n::msg("format_h_i")).'h - '.$this->calendar_event->getTo()->format(rex_i18n::msg("format_h_i")).'</nobr>';
+
+			$dur2 = $this->calendar_event->getCreated()->format(rex_i18n::msg("format_d_m_y"));
+
+    /*
+              <th colspan="2">'.rex_i18n::msg("project").'</th>
+              <th>'.rex_i18n::msg("title").'</th>
+              <th>'.rex_i18n::msg("description").'</th>
+              <th>'.rex_i18n::msg("hours").'</th>
+              <th>'.rex_i18n::msg("duration").'</th>
+              <th>'.rex_i18n::msg("createdate").'</th>
+    */
+    
+    $description = $this->calendar_event->getDescription();
+    // $description = 'Kohle die Wasser reinigt, aufwendige japanische Lederkunst, außergewöhnliche Wohn-Accessoires und die Verbindung aus Holz und Glas';
+    $description = $description != '' ? '<br /><br /><h4 class="hl4">'.rex_i18n::msg("description").'</h4>'.$description : '';
+		
+		$return = '
+      		<article class="job block image label">
+            <header>
+            
+              <figure>
+                <img src="'.$this->calendar_event->getProject()->getInlineImage().'" />
+              </figure>
+              <figure>
+                <img src="'.$this->calendar_event->getUser()->getInlineImage().'" />
+              </figure>
+              
+              <section class="data">
+                <div class="grid2col">
+                  <div class="column first">
+                    <span class="name">'.$this->calendar_event->getProject()->getName().'</span><br />
+                    <span class="title">'.$this->calendar_event->getTitle().'</span>
+                    '.$description.'
+                  </div>
+                  <div class="column last">
+                    <dl class="facts">
+                      <dt>'.rex_i18n::msg("hours").'</dt>
+                      <dd>'.$duration.'</dd>
+                      <dt>'.rex_i18n::msg("duration").'</dt>
+                      <dd>'.$dur.'</dd>
+                      <dt>'.rex_i18n::msg("createdate").'</dt>
+                      <dd>'.$dur2.'</dd>
+                    </dl>
+                  </div>
+                </div>
+              </section>
+                
+            </header>
+            
+            <section class="content scope one">
+               
+            </section>
+            
+            <footer>
+              <span class="label labelc'.$this->calendar_event->getProject()->getLabelId('label_id').'">Label</span>
+            </footer>
+          </article>';
+      return $return;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 	// --------------------------------------------------------------- Day
@@ -306,15 +734,13 @@ class pz_calendar_event_screen{
 		
 		if(count($events) > 0)
 		{
-			$position = 0;
 			foreach($events as $event)
 			{
 				$e = new pz_calendar_event_screen($event);
-				if($e->calendar_event->isAllDay()) {
-					$content_allday .= $e->getDayAlldayView($p);
+				if ($e->calendar_event->isAllDay()) {
+					$content_allday .= $e->getDayEventAlldayView($p);
 				}else {
-					$content .= $e->getDayView($day, $p, $position);
-					$position++;
+					$content .= $e->getDayEventView($day, $p);
 				}
 			}
 		}
@@ -364,7 +790,8 @@ class pz_calendar_event_screen{
 			)
 		);
 
-		$link_add = "javascript:pz_loadPage('calendar_event_form','".pz::url("screen","calendars",$p["function"],array_merge($p["linkvars"],array("mode"=>"add_calendar_event","day"=>$day->format("Ymd"))))."')";
+		$link_event_add = "javascript:pz_loadPage('calendar_event_form','".pz::url("screen","calendars","event",array_merge($p["linkvars"],array("mode"=>"add_calendar_event","day"=>$day->format("Ymd"),"booked"=>0)))."')";
+		$link_job_add = "javascript:pz_loadPage('calendar_event_form','".pz::url("screen","calendars","event",array_merge($p["linkvars"],array("mode"=>"add_calendar_event","day"=>$day->format("Ymd"),"booked"=>1)))."')";
 
 		$day->modify('-1 day');
 		$link_previous = "javascript:pz_loadPage('calendar_events_day_list','".pz::url("screen","calendars","day",array_merge($p["linkvars"],array("mode"=>"list","day"=>$day->format("Ymd"))))."')";
@@ -379,9 +806,7 @@ class pz_calendar_event_screen{
 	        <header>
 	          <div class="header">
 	            <h1 class="hl1">'.
-	            
-	            pz::dateTime2dateFormat($day,rex_i18n::msg("format_ddmy")).
-	            
+	            strftime(rex_i18n::msg("show_date_long"), $day->getTimestamp()).
 	            ' <span class="info">('.rex_i18n::msg("calendarweek").' '.pz::dateTime2dateFormat($day,"W").')</span></h1>
 	          </div>
 	        </header>';
@@ -391,7 +816,8 @@ class pz_calendar_event_screen{
 		    <header class="header">
 		      <div class="grid3col">
 				      <div class="column first">
-				        <a class="bt2" href="'.$link_add.'">'.rex_i18n::msg("new_event").'</a>
+				        <a class="bt2" href="'.$link_event_add.'">'.rex_i18n::msg("new_event").'</a>
+				        <a class="bt2" href="'.$link_job_add.'">'.rex_i18n::msg("new_job").'</a>
 				      </div>
 				      
 				      <div class="column last">
@@ -426,97 +852,62 @@ class pz_calendar_event_screen{
 		  ';
 		
 		$return .= '<script language="Javascript"><!--	
-		pz_set_calendarday_offset();
-		pz_set_calendarday_dragresize_init();
+		pz_set_calendarday_init();
 		--></script>';
 		
-		return '<div class="design2col" id="calendar_events_day_list" data-url="'.$link_refresh.'">'.$return.'</div>';
+		return '<div class="design2col" id="calendar_events_day_list" data-list-type="calendar" data-url="'.$link_refresh.'">'.$return.'</div>';
 	}
 
-
-	static function getDayViewPositions($day, $event, $position = 0)
-	{
-		
-		$from = $event->getFrom();
-		$to = $event->getTo();
-		$duration = $event->getDuration();
-		
-		if($from->format("Ymd") == $day->format("Ymd")) {
-			$top = ($from->format("H")*60)+$from->format("i");
-			$height = ($to->format("H")*60)+$to->format("i")-$top;
-			if($to->format("Ymd") > $day->format("Ymd")) {
-				$height = (24*60) - $top;
-			}
-
-		}else {
-			$top = 0;
-			$height = ($to->format("H")*60)+$to->format("i");
-			if($to->format("Ymd") > $day->format("Ymd")) {
-				// whole day
-				$height = (24*60);
-			}
-		}
-		
-		$left = ($position*50);
-		$width = 188;
-		
-		return array(
-			"top" => $top,
-			"left" => $left,
-			"height" => $height,
-			"width" => $width
-			);
-
-	}
-
-	static function getDayViewPixel2Time($pixel)
-	{
-		$hours = (int) ($pixel/60);
-		$minutes = (int) ($pixel-($hours*60));
-		return array("h"=>$hours,"m"=>$minutes);
-	}
-
-	static function getDayViewPixel2Position($pixel)
-	{
-		$position = (int) ($pixel/40);
-		return $position;
-	}
-
-	public function getDayView($day, $p = array(), $position = 0) 
+	public function getDayEventView($day, $p = array()) 
 	{
 
-		$from = $this->calendar_event->getFrom();
-		$to = $this->calendar_event->getTo();
+		$from = pz::getUser()->getDateTime($this->calendar_event->getFrom());
+		$to = pz::getUser()->getDateTime($this->calendar_event->getTo());
 		$duration = $this->calendar_event->getDuration();
+    $duration_in_minutes = ($duration->format("%h")*60)+$duration->format("%i");
 		$attandees = $this->calendar_event->getAttendees();
 
-		$style = pz_calendar_event_screen::getDayViewPositions($day, $this->calendar_event, $position);
-		
+    $job = 0;
+    if($this->calendar_event->isJob()) {
+      $job = 1;
+    }
+
 		$classes = array();
 		$classes[] = 'event';
+		$classes[] = 'event-'.$this->calendar_event->getId();
 		$classes[] = 'label';
-		$classes[] = 'labelc'.$this->label_id; // background color
-		$classes[] = 'labelb'.$this->label_id; // border color
+		$classes[] = pz_label_screen::getBorderColorClass($this->label_id); // background color
+		$classes[] = pz_label_screen::getColorClass($this->label_id); // border color
 		
-		$info = "";
-		$resize = '';
+		$me = false;
 		if(pz::getUser()->getId() == $this->calendar_event->getUserId())
-		{
-			$info = '<span class="editable">[editable]</span>';	
-			if($from->format("Ymd") == $to->format("Ymd")) {
-				$resize = '<span class="resize">resize</span>';
+			$me = true;
+
+    if($this->calendar_event->isRuleEvent()) {
+			$editable = '<span class="not-editable">'.rex_i18n::msg("not_editable").'</span>';
+			$classes[] = "event-rule";
+
+		} else if($me) {
+			$editable = '<span class="editable">'.rex_i18n::msg("editable").'</span>';	
+			if ($from->format("Ymd") == $to->format("Ymd")) {
 				$classes[] = "dragable";
 				$classes[] = "resizeable";
 			}
-		}else
-		{
-			$info = '<span class="noeditable">no edit</span>';
+
+		}else {
+			$editable = '<span class="not-editable">'.rex_i18n::msg("not_editable").'</span>';
+
 		}
 		
-		// - Termin ohne Einladungen
-		// - Termin mit Einladungen, auch für mich
-		// - Termin mit Einladungen, nicht für mich
-		// - Termin mit Einladungen, auch für mich, von mir bestaetigt
+		$attachments = '<span class="has-not-attachments">'.rex_i18n::msg("has_not_attachments").'</span>';
+		if($this->calendar_event->hasClips()) {
+			$attachments = '<span class="has-attachments">'.rex_i18n::msg("has_attachments").'</span>';
+		}
+		
+		// - Termin ohne Einladungen -> für mich sichbar
+		// - Termin mit Einladungen, auch für mich -> sichtbar und markiert
+		// - Termin mit Einladungen, nicht für mich -> nicht sichtbar
+		// - Termin mit Einladungen, auch für mich, von mir bestaetigt -> 
 		
 		// - Wiederholungstermine markieren
 		// - Alarmtermine markieren
@@ -526,34 +917,90 @@ class pz_calendar_event_screen{
 		if(count($attandees) > 0)
 			$classes[] = 'event_attandees';
 		
-		$flyout_link = 'pz_setZIndex(\'#event-'.$this->calendar_event->getId().'\');pz_loadPage(\'calendar_event_view\',\''.
-		pz::url("screen","calendars","day",array_merge($p["linkvars"],array("mode"=>"get_flyout_calendar_event","calendar_event_id"=>$this->calendar_event->getId()))).
-		'\')';
+		if(!$me && count($attandees) > 0) {
+			$for_me = false;
+			$user_emails = pz::getUser()->getEmails();
+			foreach($attandees as $a)
+			{
+				if(in_array($a->getEmail(),$user_emails)) {
+					$for_me = true;
+					$classes[] = 'event_attandees_for_me';
+				}
+			}
+			if(!$for_me)
+				return '';
+		}
+		
+		$info = array();
+    $info[] = '<span class="name">'.$from->format("H:i").' - '.$to->format("H:i").'</span>';
+    $info[] = $this->calendar_event->getTitle();
+    $info[] = $this->user_name;
+		
+    $minute_start = $from->format("i");
+    if($minute_start > 44) $minute_start = 45;
+    else if($minute_start > 29) $minute_start = 30;
+    else if($minute_start > 14) $minute_start = 15;
+    else if($minute_start >= 0) $minute_start = 0;
+
+    $data_attr = array();
+    $data_attr[] = 'data-event-id="'.$this->calendar_event->getId().'"';
+    $data_attr[] = 'data-event-day-start="'.$from->format("d").'"';
+    $data_attr[] = 'data-event-hour-start="'.$from->format("G").'"';
+    $data_attr[] = 'data-event-minute-start="'.$from->format("i").'"';
+    $data_attr[] = 'data-event-minute-duration="'.$duration_in_minutes.'"';
+    $data_attr[] = 'data-event-job="'.$job.'"';
+    $data_attr[] = 'data-event-project_id="'.$this->calendar_event->getProject()->getId().'"';
+    $data_attr[] = 'data-event-user_id="'.$this->calendar_event->getUserId().'"';
+    $data_attr[] = 'data-event-attandees="'.count($attandees).'"';
+		
+		$url = pz::url("screen","calendars","event",array_merge($p["linkvars"],array("mode"=>"get_flyout_calendar_event","calendar_event_id"=>$this->calendar_event->getId())));
+		$flyout_link = "pz_tooltipbox(this, '".$url."')";
 		
 		$return = '
-		    <article class="'.implode(" ",$classes).'" style="top: '.$style["top"].'px; left:'.$style["left"].'px; height: '.$style["height"].'px; width:'.$style["width"].'px" id="event-'.$this->calendar_event->getId().'">
+		    <article class="'.implode(" ",$classes).'" '.implode(" ",$data_attr).' id="event-'.$this->calendar_event->getId().'">
 		      <div class="event-info labelb'.$this->label_id.'">
            <header>
              <hgroup>
-               <h2 class="hl7"><a href="javascript:void(0);" onclick="'.$flyout_link.'">'.$info.'<span class="name">'.$from->format("H:i").' - '.$to->format("H:i").'</span><span class="info"> | '.$this->calendar_event->getTitle().' | '.$this->user_name.'</span></a></h2>
+               <h2 class="hl7"><a href="javascript:void(0);" onclick="'.$flyout_link.'">'.$editable.$attachments.implode(" | ",$info).'</span></a></h2>
              </hgroup>
            </header>
            <section class="content">
              <p>'.$this->calendar_event->getDescription().'</p>
            </section>
-           '.$resize.'
           </div>
 	     </article>';
 	     return $return;
 	}
 	
-	public function getDayAlldayView($p = array()) 
+	public function getDayEventAlldayView($p = array()) 
 	{
+	  /*
 		$flyout_link = 'pz_loadPage(\'calendar_event_view\',\''.
 		pz::url("screen","calendars",$p["function"],array_merge($p["linkvars"],array("mode"=>"get_flyout_calendar_event","calendar_event_id"=>$this->calendar_event->getId()))).
 		'\')';
+		*/
 		
-		$return = '<li class="entry"><a href="javascript:void(0);" onclick="'.$flyout_link.'"><span class="label labelc'.$this->label_id.'"><span class="name">'.$this->calendar_event->getTitle().'</span> - <span class="title">'.$this->user_name.'</span></span></a></li>';
+		$url = pz::url("screen","calendars","event",array_merge($p["linkvars"],array("mode"=>"get_flyout_calendar_event","calendar_event_id"=>$this->calendar_event->getId())));
+		$flyout_link = "pz_tooltipbox(this, '".$url."')";
+		
+		$me = false;
+		if(pz::getUser()->getId() == $this->calendar_event->getUserId())
+			$me = true;
+
+		$editable = '<span class="not-editable">'.rex_i18n::msg("not_editable").'</span>';
+		if($me)
+			$editable = '<span class="editable">'.rex_i18n::msg("editable").'</span>';	
+
+    $attachments = '<span class="has-not-attachments">'.rex_i18n::msg("has_not_attachments").'</span>';
+		if($this->calendar_event->hasClips())
+			$attachments = '<span class="has-attachments">'.rex_i18n::msg("has_attachments").'</span>';		
+		
+		
+		$info = array();
+		$info[] = $this->calendar_event->getTitle();
+		$info[] = $this->user_name;
+	
+		$return = '<li class="entry"><a href="javascript:void(0);" onclick="'.$flyout_link.'"><span class="label '.pz_label_screen::getColorClass($this->label_id).'">'.$editable.$attachments.implode(" | ",$info).'</span></a></li>';
 	    return $return;
 	}
 
@@ -564,29 +1011,23 @@ class pz_calendar_event_screen{
 
 	// --------------------------------------------------------------- Week
 
+
 	public function getWeekAlldayView($p = array()) 
 	{
-		$return = '<li class="box"><span class="label labelc'.$this->label_id.'"><span class="name">'.$this->calendar_event->getTitle().'</span> - <span class="title">'.$this->user_name.'</span></span></li>';
+		$return = '<li class="box"><span class="label '.pz_label_screen::getBorderColorClass($this->label_id).'"><span class="name">'.$this->calendar_event->getTitle().'</span> - <span class="title">'.$this->user_name.'</span></span></li>';
 	    return $return;
 	}
+
 	public function getWeekView($p = array(), $position = 0) 
 	{
-/*
-		
+
 		$from = $this->calendar_event->getFrom();
 		$to = $this->calendar_event->getTo();
 		$duration = $this->calendar_event->getDuration();
-
-		$style = pz_calendar_event_screen::getDayViewPositions($day, $this->calendar_event, $position);
-		
-		// $height = 
-		
-		// 9:30 - 10:30
-		// labelc7 labelb7
 		
 		$return = '
-		    <article class="event label labelc'.$this->label_id.' labelb'.$this->label_id.' dragable resizeable" style="top: '.$style["top"].'px; left:'.$style["left"].'px; height: '.$style["height"].'px; width:'.$style["width"].'px" id="event-'.$this->calendar_event->getId().'">
-		      <div class="event-info labelb'.$this->label_id.'">
+		    <article class="event label '.pz_label_screen::getColorClass($this->label_id).' '.pz_label_screen::getBorderColorClass($this->label_id).' dragable resizeable" id="event-'.$this->calendar_event->getId().'">
+		      <div class="event-info '.pz_label_screen::getBorderColorClass($this->label_id).'">
            <header>
              <hgroup>
                <h2 class="hl7"><span class="name">'.$this->calendar_event->getTitle().'</span></h2>
@@ -711,7 +1152,7 @@ class pz_calendar_event_screen{
 			}
 			
 		}
-		*/
+
 		/*
 		Berechnung Terminposition
 		1 Minute = 1px
@@ -862,7 +1303,7 @@ class pz_calendar_event_screen{
 		$f->setVar('content', $return , false);
 		$f->setVar('paginate', '', false);
 
-		return $f->parse('pz_screen_list');
+		return $f->parse('pz_screen_list.tpl');
 
 	}
 
@@ -889,7 +1330,7 @@ class pz_calendar_event_screen{
                     <div class="flyout">
                       <div class="content">
                         <div class="output">
-                          <a class="tooltip close bt5" href=""><span class="icon"></span><span class="tooltip"><span class="inner">Schließen</span></span></a>
+                          <a class="tooltip close bt5" href="">'.pz_screen::getTooltipView('<span class="icon"></span>',rex_i18n::msg("close")).'</a>
                           Info
                         </div>
                       </div>
@@ -915,7 +1356,7 @@ class pz_calendar_event_screen{
       $return .= '
             <div class="day box'.$class.' day-big">
               <span class="calendar-week">DATE</span>
-              <a class="tooltip close bt2" href=""><span class="icon"></span><span class="tooltip"><span class="inner">Schließen</span></span></a>
+              <a class="tooltip close bt2" href="">'.pz_screen::getTooltipView('<span class="icon"></span>',rex_i18n::msg("close")).'</a>
               <dl class="day-list">
                 <dt class="date">DATE</dt>
                 <dd class="list">
@@ -941,7 +1382,7 @@ class pz_calendar_event_screen{
                       <div class="flyout">
                         <div class="content">
                           <div class="output">
-                            <a class="tooltip close bt5" href=""><span class="icon"></span><span class="tooltip"><span class="inner">Schließen</span></span></a>
+                            <a class="tooltip close bt5" href="">'.pz_screen::getTooltipView('<span class="icon"></span>',rex_i18n::msg("close")).'</a>
 
                             <h2 class="hl2">Besprechnung Webseite in Langen</h2>
                             <p>Fr, 13. Juli, 9:30-10:30 in Frankfurt</p>
@@ -972,6 +1413,112 @@ class pz_calendar_event_screen{
 
 		return $return;
 	}
+
+
+
+
+	// ---------------------------------------------------------- project events
+
+  static function getOrderedListView($events, $p)
+  {
+  		
+		// $paginate_screen = new pz_paginate_screen($events);
+		// $paginate = $paginate_screen->getPlainView($p);
+		// foreach($paginate_screen->getCurrentElements() as $event) {
+		
+		if (count($events) > 0)	{
+  		$events_per_day = array();
+  		foreach ($events as $event) {
+  		  $event_view = new pz_calendar_event_screen($event);
+  		  $day = $event->getFrom()->format("Ymd");
+  		  if (!isset($events_per_day[$day])) {
+  		    $events_per_day[$day] = array();
+  		  }
+  		  $events_per_day[$day][] = $event_view->getBlockListView($p);
+  		}
+  
+      ksort($events_per_day);
+      
+      end($events_per_day);
+      $end = key($events_per_day);
+      $end = DateTime::createFromFormat("Ymd",key($events_per_day));
+
+      $today = new DateTime();
+      $days = $today->diff($end)->format("%a");
+
+      $content = '<div class="calendar view-project-stream clearfix">
+                    <div class="wrapper">
+                      <div class="grid clearfix">
+                        <dl class="days">';
+      for($day=0;$day<=$days;$day++) {
+        $weekend = '';
+        if ($today->format("N") > 5) {          
+          $weekend = ' weekend';
+        }
+        $content .= '<dt class="day title'.$weekend.'">'.strftime(rex_i18n::msg("show_day_short2"),$today->format("U")).'</dt><dd class="day box'.$weekend.'">';
+
+        if(isset($events_per_day[$today->format("Ymd")])) {
+          foreach($events_per_day[$today->format("Ymd")] as $event) {
+            $content .= $event;
+          }
+        }
+
+        $content .= '</dd>';
+        $today->modify('+1 day');
+      
+      }
+      
+      $content .= '
+      </dl>
+      </div>
+      </div>
+      </div>';
+
+      // calculates height ob day
+      $content .= '
+      <script type="text/javascript">
+        $(document).ready(function()
+        {
+          $(".days dd.weekend").each(function(index) {
+            var $height = $(this).outerHeight();
+            $(this).prev().height($height);
+          });
+        });
+      </script>';
+      
+    } else {
+      $content = "";
+    }
+
+		// $paginate.
+		
+		$f = new rex_fragment();
+		$f->setVar('title', $p["title"], false);
+		$f->setVar('content', $content , false);
+		
+		$link_refresh = "";
+		
+		return '<div class="design2col" id="calendar_events_ordered_list" data-list-type="calendar" data-url="'.$link_refresh.'">'.$f->parse('pz_screen_list.tpl').'</div>';
+
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1021,8 +1568,7 @@ class pz_calendar_event_screen{
 		if(isset($p["list_links"]))
 			$f->setVar('links', $p["list_links"], false);
 		$f->setVar('content', $content , false);
-		return '<div id="'.$p["layer_list"].'" class="design2col">'.$f->parse('pz_screen_list').'</div>';
-		return $f->parse('pz_screen_list');
+		return '<div id="'.$p["layer_list"].'" class="design2col">'.$f->parse('pz_screen_list.tpl').'</div>';
 	}
 
 	static function getUserJobsTableView($jobs,$p = array())
@@ -1033,7 +1579,7 @@ class pz_calendar_event_screen{
 		
 		$content = "";
 		foreach($paginate_screen->getCurrentElements() as $job) {
-			
+
 			$project = pz_project::get($job->getProjectId());
 			$duration = (($job->getDuration()->format("%d")*24*60)+$job->getDuration()->format("%h")).'h ';
 			if($job->getDuration()->format("%I") != 0) $duration .= $job->getDuration()->format("%I").'m';
@@ -1069,8 +1615,7 @@ class pz_calendar_event_screen{
 		if(isset($p["list_links"]))
 			$f->setVar('links', $p["list_links"], false);
 		$f->setVar('content', $content , false);
-		return '<div id="'.$p["layer_list"].'" class="design2col">'.$f->parse('pz_screen_list').'</div>';
-		return $f->parse('pz_screen_list');
+		return '<div id="'.$p["layer_list"].'" class="design2col">'.$f->parse('pz_screen_list.tpl').'</div>';
 	}
 
 
@@ -1132,6 +1677,8 @@ class pz_calendar_event_screen{
 		$month_1 = clone $day;
 		$month_2 = clone $day;
 
+		$month_2->modify("first day of this month");
+
 		$link_refresh = pz::url("screen","calendars",$p["function"],
 			array_merge(
 				$p["linkvars"],
@@ -1169,7 +1716,7 @@ class pz_calendar_event_screen{
       <div class="grid2col full">
         <div class="column first">
           <header>
-            <h2 class="hl3">'.pz::dateTime2dateFormat($month_1,rex_i18n::msg("format_month")).'</h2>
+            <h2 class="hl3">'.rex_i18n::msg(strtolower($month_1->format("F")))." ".$month_1->format("Y").'</h2>
             <ul class="pagination">
               <li class="first prev"><a class="page prev bt5" href="'.$link_previous.'"><span class="inner">'.rex_i18n::msg("previous").'</span></a></li>
             </ul>
@@ -1181,7 +1728,7 @@ class pz_calendar_event_screen{
         </div>
         <div class="column last">
           <header>
-            <h2 class="hl3">'.pz::dateTime2dateFormat($month_2,rex_i18n::msg("format_month")).'</h2>
+            <h2 class="hl3">'.rex_i18n::msg(strtolower($month_2->format("F")))." ".$month_2->format("Y").'</h2>
             <ul class="pagination">
               <li class="last next"><a class="page next bt5" href="'.$link_next.'"><span class="inner">'.rex_i18n::msg("next").'</span></a></li>
             </ul>
@@ -1305,102 +1852,672 @@ class pz_calendar_event_screen{
 	  }
 
 
+  // ------------------ Customerplan
 
-	// --------------------------------------------------------------- Projectjob
+  public function getCustomerplanEventView($p, $view_start, $view_end, $view_current)
+  {
+    // echo 'drin';
+  
+    $url = pz::url("screen","calendars","event",array_merge($p["linkvars"],array("mode"=>"get_flyout_calendar_event","calendar_event_id"=>$this->calendar_event->getId())));
+    $flyout_link = 'pz_tooltipbox(this,\''.$url.'\');';
+
+	  $classes = array();
+	  $classes[] = "event-info";
+	  $classes[] = "label";
+	  $classes[] = 'event-'.$this->calendar_event->getId();
+    $classes[] = pz_label_screen::getColorClass($this->calendar_event->getProject()->getLabelId());
+    $classes[] = pz_label_screen::getBorderColorClass($this->calendar_event->getProject()->getLabelId());
+
+    $event_diff = $view_start->diff($this->calendar_event->getFrom());
+    $event_diff_days = $event_diff->format("%r%a");
+    $position_width = $this->calendar_event->getDuration()->format("%d") + 1; // $event_diff->format("%a");
+    
+    if($event_diff_days < 0)
+    {
+      $position_width = $position_width + $event_diff_days;
+      // longing events which started earlier than grid, no drag
+      $event_diff_days = 0;
+      $classes[] = 'not-draggable';
+      
+    }else 
+    {
+      if(pz::getUser()->getEventEditPerm($this->calendar_event))
+        $classes[] = 'draggable';
+      else
+        $classes[] = 'not-draggable';
+    }
+    
+    $attachments = '<span class="has-not-attachments">'.rex_i18n::msg("has_not_attachments").'</span>';
+		if($this->calendar_event->hasClips())
+			$attachments = '<span class="has-attachments">'.rex_i18n::msg("has_attachments").'</span>';
+    
+    $event_content = htmlspecialchars($this->calendar_event->getTitle());
+    $event_content = '<a href="javascript:void(0);" onclick="'.$flyout_link.'">'.$attachments.$event_content.'</a>';
+    
+    // $event_view = new pz_calendar_event_screen($event);
+    // $event_content = pz_screen::getTooltipView($event_content,$event_view->getTooltipEventView($p));
+    $return = '<div id="customer-event-id-'.$this->calendar_event->getId().'" class="'.implode(" ",$classes).'" data-event-position-top="0" data-event-position-left="'.$event_diff_days.'" data-event-day="'.$view_current->format("d").'" data-event-position-width="'.$position_width.'" data-event-days="'.($this->calendar_event->getDuration()->format("%d")+1).'" data-event-id="'.$this->calendar_event->getId().'">'.$event_content.'</div>';
+
+    return $return;
+  }
+
+  
 
 
-	public function getProjectjobListView($projects, $events, $p, $month)
+	public function getCustomerplanListView($customer, $customers, $projects, $events, $p, $start, $end)
 	{
+
+    $diff = $start->diff($end);
+    $diff_days = $diff->format("%a");
+
+    // ----- customer select box
+
+    $customers_out = array();
+
+    $customer_out = rex_i18n::msg("no_customer");
+    $customer_id = 0;
+    if(is_a($customer,"pz_customer") && array_key_exists($customer->getId(),$customers))
+    {
+      $customer_out = htmlspecialchars($customers[$customer->getId()]->getName());
+      $customer_link = pz::url($p["mediaview"], $p["controll"], $p["function"], array_merge($p["linkvars"],array("mode" => "", "customer_id" => 0)));
+      $customers_out[0] = '<li class="entry"><a href="'.$customer_link.'"><span class="title">'.rex_i18n::msg("no_customer").'</span></a></li>';
+      $customer_id = $customer->getId();
+    }
+    
+    foreach($customers as $c)
+    {
+      $customer_link = pz::url($p["mediaview"], $p["controll"], $p["function"], array_merge($p["linkvars"],array("mode" => "", "customer_id" => $c->getid())));
+      $customers_out[$c->getid()] = '<li class="entry"><a href="'.$customer_link.'"><span class="title">'.htmlspecialchars($c->getName()).'</span></a></li>';
+    }
+
+    // ----- project list table
+
+		$return = '
+	        <header>
+	          <div class="grid2col header">
+	            <div class="column first">
+	              <h1 class="hl1"><a href="javascript:void(0);" onclick="pz_toggleSection();" class="page prev bt5"><span class="inner">'.rex_i18n::msg("calendar_resize").'</span></a>'.rex_i18n::msg("calendar_customerplan_list").'</h1>
+	            </div>
+	            <div class="column last">
+                <ul class="sl1 view-layout">
+                <li class="first selected"><span class="selected">'.rex_i18n::msg("customer").': '.$customer_out.'</span>
+                  <div class="flyout">
+                    <div class="content">
+                      <ul class="entries sort">
+      					  	    '.implode("",$customers_out).'
+                      </ul>
+                    </div>
+                  </div>
+                </li>
+                </ul>
+              </div>
+	          </div>
+	        </header>';
+	  
+    $return .= pz_calendar_event_screen::getCustomerplanAllviewslistView($customer, $customers, $projects, $events, $p, $start, $end);
+
+    $return .= '<script>
+		$(document).ready(function() {
+		  pz_screen_select_event("#calendar_customerplan_list li.selected");
+		});
+		</script>';
+  
+    $link_refresh = pz::url("screen","calendars","customerplan",
+			array_merge(
+				$p["linkvars"],
+				array(
+					"mode"=>"list",
+					"day"=>$start->format("Ymd"),
+					"customer_id" => $customer_id,
+				)
+			)
+		);
+
+		return '<div class="design3col" id="calendar_customerplan_list" data-list-type="calendar" data-url="'.$link_refresh.'">'.$return.'</div>';
+
+	}
+
+
+
+  public function getCustomerplanAllviewslistView($customer, $customers, $projects, $events, $p, $start, $end)
+  {
+  
+    $diff = $start->diff($end);
+    $diff_days = $diff->format("%a");
+  
+    $return = '';
+
+    // ----- show days
+    $months = array();
+    $today = new DateTime();
+    $current = clone $start;
+    $current_month = clone $current;
+    $mkey = $current_month->format("m");
+    $months[$mkey] = array("month"=>$current_month);
+    for ($i = 1; $i <= $diff_days; $i++)
+    {
+      if($current_month->format("m") != $current->format("m"))
+      {
+        $current_month = clone $current;
+        $mkey = $current_month->format("m");
+        $months[$mkey] = array("month"=>$current_month);
+      }
+      if(!isset($months[$mkey]["days"]))
+        $months[$mkey]["days"] = array();
+    
+      $class = array("customerplan-day");
+      if($current->format("N")>5) $class[] = "weekend"; else $class[] = "weekday";
+      if($current->format("Ymd") == $today->format("Ymd")) $class[] = "today";
+
+      if($diff_days > 14)
+          $d = utf8_encode(strftime(rex_i18n::msg("show_day_short"),$current->format("U")));
+      else
+          $d = utf8_encode(strftime(rex_i18n::msg("show_day_short_weekday"),$current->format("U")));
+      
+      $months[$mkey]["days"][] = '<li class="'.implode(" ",$class).'">'.$d.'</li>';
+      $current->modify("+1 day");
+    }
+
+    $calendar = '';
+    
+    foreach($months as $month)
+    {
+        $calendar .= '<li class="customerplan-month">
+                <span class="label">'.utf8_encode(strftime('%B',$month["month"]->format("U"))).'</span>
+                <ul class="customerplan-days">'.implode("",$month["days"]).'</ul>'.
+                '</li>';    
+    }
+    $calendar = '<ul class="customerplan-months">'.$calendar.'</ul>';
+
+	  
+    // ----- load and show project events
+	  $event_days = array();
+	  foreach($events as $event)
+	  {
+	    $project_id = $event->getProjectId();
+	    if(!isset($project_events[$project_id]))
+	      $project_events[$project_id] = array();
+
+ 	    $project_events[$project_id][] = $event;
+	  }
+
+    
+
+    // ----- events
+    $spr_hasevents = false;
+    $pr = array();
+    foreach($projects as $project)
+    {
+
+      // project
+
+      $project_screen = new pz_project_screen($project);
+      $pkey = 'project-'.$project->getId();
+    	$pr[$pkey] = array();
+
+  		$pe = array();
+
+      // ------------------------- project events
+      
+      $current = clone $start;
+      
+      $init = true;
+      
+			for ($i = 1; $i <= $diff_days; $i++)
+			{
+        if(isset($project_events[$project->getId()]))
+        {
+          foreach($project_events[$project->getId()] as $event)
+          {
+  			    if(  
+  			         $event->getProjectSubId() == 0 &&
+  			         ( 
+  			           (  $event->getFrom()->format("Ymd") == $current->format("Ymd")  ) // event start in viewport
+  			           || 
+  			           (  $event->getFrom()->format("Ymd") < $current->format("Ymd")  ) // events before viewport
+  			         )
+  			        
+  			      )
+            {
+              $event_screen = new pz_calendar_event_screen($event);
+              $pe[$event->getId()] = $event_screen->getCustomerplanEventView($p, $start, $end, $current);               
+            }
+          } // / foreach
+        }
+        $current->modify("+1 day");
+			}
+
+      // ------------------------- subproject events
+
+      $sp = array();
+      foreach($project->getProjectSubs() as $subproject_id => $subproject)
+      {
+        $spe = array();
+        $current = clone $start;
+  			for ($i = 1; $i <= $diff_days; $i++)
+  			{
+          if(isset($project_events[$project->getId()]))
+          {
+            foreach($project_events[$project->getId()] as $event)
+            {
+    			    if(  
+                 $event->getProjectSubId() == $subproject_id && 
+  			         $event->getProjectSubId() != 0 &&
+  			         ( 
+  			           (  $event->getFrom()->format("Ymd") == $current->format("Ymd")  ) // event start in viewport
+  			           || 
+  			           (  $event->getFrom()->format("Ymd") < $current->format("Ymd")  ) // events before viewport
+  			         )
+  			      )
+  			      {
+                $event_screen = new pz_calendar_event_screen($event);
+                $spe[$event->getId()] = $event_screen->getCustomerplanEventView($p, $start, $end, $current);
+              }
+            } // / foreach
+          }
+          $current->modify("+1 day");
+  			}
+  		  
+  		  if(count($spe)>0)
+  		  {
+  		    $spr_hasevents = true;
+  		  }
+  		
+  		  $sp[] = '
+        <dl class="customerplan-subproject-event" data-project-sub-id="'.$subproject_id.'">
+          <dt>'.htmlspecialchars($subproject->getName()).'</dt>
+          <dd>'.implode("",$spe).'</dd>
+        </dl>';
+
+  		}
+
+      $pr_classes = array();
+      $pr_classes[] = 'customerplan-project';
+      $pr_classes[] = $pkey;
+      if(count($sp)>0)
+      {
+        $pr_classes[] = 'has-subprojects';
+      }
+
+      $spr_classes = array();
+      $spr_classes[] = 'customerplan-subproject-events';
+      if(!$spr_hasevents)
+      {
+        $spr_classes[] = 'hidden';
+      }
+
+      $pr[$pkey] = '
+        <dl class="'.implode(" ",$pr_classes).'" data-project-id="'.$project->getId().'">
+          <dt class="customerplan-project-name">'.$project_screen->getLabelView().'</dt>
+          <dd class="customerplan-project-events"><div class="customerplan-project-events-wrapper">'.implode("",$pe).'</div></dd>
+          <dd class="'.implode(" ",$spr_classes).'">'.implode("",$sp).'</dd>
+        </dl>
+      ';
+
+    }
+    
+    $script = '<script>pz_set_customerplan_init();</script>';
+    
+    
+    
+    // ----- output
+    
+    $link_today = "javascript:pz_loadPage('calendar_customerplan_list','".pz::url("screen","calendars","customerplan",array_merge($p["linkvars"],array("mode"=>"list","day"=>$today->format("Ymd"))))."')";
+	  
+	  $linkdate = clone $start;
+    $link_to_2weeksview = "pz_loadPage('calendar_customerplan_list','".
+      pz::url("screen","calendars","customerplan",array_merge($p["linkvars"],array("mode"=>"list","customerplan_view"=>"2weeks","day"=>$linkdate->format("Ymd")))).
+      "')";
+    $link_to_monthview = "pz_loadPage('calendar_customerplan_list','".
+      pz::url("screen","calendars","customerplan",array_merge($p["linkvars"],array("mode"=>"list","customerplan_view"=>"month","day"=>$linkdate->format("Ymd")))).
+      "')";
+
+    if($diff_days<15)
+  	  $linkdate->modify("+7 days");
+    else
+  	  $linkdate->modify("first day of next month");
+  	  
+	  $link_next = "javascript:pz_loadPage('calendar_customerplan_list','".pz::url("screen","calendars","customerplan",array_merge($p["linkvars"],array("mode"=>"list","day"=>$linkdate->format("Ymd"))))."')";
+
+    if($diff_days<15)
+  	  $linkdate->modify("-14 days");
+    else
+  	  $linkdate->modify("-2 months")->modify("first day of this month");
+
+	  $link_previous = "javascript:pz_loadPage('calendar_customerplan_list','".pz::url("screen","calendars","customerplan",array_merge($p["linkvars"],array("mode"=>"list","day"=>$linkdate->format("Ymd"))))."')";
+    
+    $link_event_add = "pz_loadPage('calendar_event_form','".pz::url("screen","calendars","event",array_merge($p["linkvars"],array("mode"=>"add_calendar_event","day"=>$start->format("Ymd"),"booked"=>0)))."')";
+    
+    if($diff_days<15)
+    {
+      $info = strftime(rex_i18n::msg("show_date_normal"), $start->format("U")).' - '.strftime(rex_i18n::msg("show_date_normal"), $end->format("U"));
+    }else {
+      $info = strftime(rex_i18n::msg("show_month_long"), $start->format("U"));
+    }
+    
+    if($diff_days<15)
+    {
+      $link_to_view = $link_to_monthview;
+      $link_to_view_text = rex_i18n::msg("calendar_month_view");
+    }else {
+      $link_to_view = $link_to_2weeksview;
+      $link_to_view_text = rex_i18n::msg("calendar_2weeks_view");
+    }
+    
+    $return = '<div class="calendar customerplan customerplan-view-'.$p["linkvars"]["customerplan_view"].' clearfix" data-customerplan-view-days="'.$diff_days.'" data-customerplan-day-start="'.$start->format("N").'">
+		  <header class="header">
+		    <div class="grid3col">
+		      <div class="column first">
+  		      <a class="bt2" href="javascript:void(0);" onclick="'.$link_event_add.'">'.rex_i18n::msg("new_event").'</a>
+		      </div>
+		      <div class="column">
+            <p class="info">'.$info.'</p>
+		      </div>
+		      <div class="column last">
+		        <ul class="pagination">
+              <li class="next"><a class="bt2" href="javascript:void(0);" onclick="'.$link_to_view.'">'.$link_to_view_text.'</a></li>
+              <li class=" prev"><a class="page prev bt5" href="'.$link_previous.'"><span class="inner">'.rex_i18n::msg("previous").'</span></a></li>
+              <li class="next"><a class="page next bt5" href="'.$link_next.'"><span class="inner">'.rex_i18n::msg("next").'</span></a></li>
+              <li class="last"><a class="bt5" href="'.$link_today.'"><span class="inner">'.rex_i18n::msg("today").'</span></a></li>
+            </ul>
+		      </div>
+		    </div>
+		  </header>
+		  
+		  '.pz_calendar_event_screen::getCustomerplanStyle().'
+      '.$calendar.'
+      '.implode("",$pr).'
+      '.$script.'
+		      
+		</div>';
+    
+    return $return;
+  
+  }
+
+
+
+  public function getCustomerplanStyle()
+  {
+    
+    $day_starts = array( 
+//                        7 => array('design2col' => 80, 'design3col' => 128), 
+                        14 => array('design2col' => 40, 'design3col' => 64), 
+//                        4 => array('design2col' => 125, 'design3col' => 225), 
+//                        10 => array('design2col' => 50, 'design3col' => 90), 
+                        31 => array('design2col' => 18, 'design3col' => 28), 
+                      );
+                      
+    $widths = array('design2col' => 760,
+                    'design3col' => 1150,
+                    );
+    
+    $css = array();
+    foreach ($widths as $design_col => $width)
+    {
+      foreach ($day_starts as $day => $array)
+      {
+        $css_width_full = $width;
+        $css_width_name = $width - ($array[$design_col] * $day)-1;
+        $css_width_day  = $array[$design_col];
+        $css_width_days = $width - $css_width_name;
+        
+        $note = '
+    .'.$design_col.' [data-customerplan-view-days="'.$day.'"] ul.customerplan-months {
+      margin-left: '.$css_width_name.'px;
+    }
+    .'.$design_col.' [data-customerplan-view-days="'.$day.'"] li.customerplan-day {
+      width: '.$css_width_day.'px;
+    }
+/*
+    .'.$design_col.' [data-customerplan-view-days="'.$day.'"] li.customerplan-day:first-child {
+      width: '.($css_width_day - 1).'px;
+    }
+*/
+    .'.$design_col.' [data-customerplan-view-days="'.$day.'"] dl.customerplan-project dt, 
+    .'.$design_col.' [data-customerplan-view-days="'.$day.'"] dl.customerplan-subproject-event dt {
+      width: '.$css_width_name.'px !important;
+    }
+    .'.$design_col.' [data-customerplan-view-days="'.$day.'"] dl.customerplan-project dd.customerplan-project-events, 
+    .'.$design_col.' [data-customerplan-view-days="'.$day.'"] dl.customerplan-subproject-event dd {
+      margin-left: '.$css_width_name.'px;
+    }
+    .'.$design_col.' [data-customerplan-view-days="'.$day.'"] dl.customerplan-project dd.customerplan-project-events {
+      width: '.$css_width_days.'px;
+    } 
+    .'.$design_col.' [data-customerplan-view-days="'.$day.'"] div.event-info {
+      width: '.$css_width_full.'px;
+    }
+    ';
+        $css[$design_col]['css'][] = $note;
+        
+        for ($i = 0; $i <= $day; $i++)
+        {
+          $n = $i * $array[$design_col];
+          $css[$design_col]['data_event_position'][]  = '.'.$design_col.' [data-customerplan-view-days="'.$day.'"] div.event-info[data-event-position-left="'.$i.'"] { left: '.$n.'px; }';
+          $css[$design_col]['data_event_days'][]      = '.'.$design_col.' [data-customerplan-view-days="'.$day.'"] div.event-info[data-event-position-width="'.$i.'"] { width: '.$n.'px; }';
+        }
+      }
+    }
+    
+    $return = '';
+    
+    foreach ($css as $design)
+    {
+      $return .= implode("\n", $design['css'])."\n\n";
+      $return .= implode("\n", $design['data_event_position'])."\n\n";
+      $return .= implode("\n", $design['data_event_days'])."\n\n";
+    }
+
+    // Top Position
+    $top = 25;
+    $design['data_event_position_top'] = array();
+    for ($i = 0; $i <= 20; $i++)
+    {
+      $design['data_event_position_top'][] = 'div.event-info[data-event-position-top="'.$i.'"] { top: '.$i*$top.'px; }';
+    }
+    $return .= implode("\n", $design['data_event_position_top'])."\n\n";
+
+    return '<style>'.$return.'</style>';
+  }
+
+
+
+
+
+
+  // --------------------------------------------------------------- Projectevent
+  
+
+  public function getProjecteventListView($projects, $events, $p, $start, $end)
+	{
+
+    $diff = $start->diff($end);
+    $diff_days = $diff->format("%a");
 
 		$return = '
 	        <header>
 	          <div class="header">
-	            <h1 class="hl1">'.rex_i18n::msg("calendar_day_list").'</h1>
+	            <h1 class="hl1">'.rex_i18n::msg("calendar_projectevent_list").'</h1>
 	          </div>
 	        </header>';
-  
-  		$flyout = "";
-  
-	    $th = '<tr>';
-	    $th .= '<th>'.rex_i18n::msg("project").'</th>';
-	    for ($i = 1; $i <= $month->format("t"); $i++)
-	    {
-	      $j = ($i <= 9) ? '0'.$i : $i;
-	      $th .= '<th>'.$j.'.</th>';
-	    }
-	    $th .= '</tr>';
-	    
-	    
-	    $tr = array();
-	    foreach($projects as $project_id)
-	    {
-	    	$tr[$project_id] = '<tr>';
-	    	$tr[$project_id] = '<th>project</th>';
-	    	
-			for ($i = 1; $i <= $month->format("t"); $i++)
-			{
-				$tr[$project_id] .= '<td>'.$j.'</td>';
-			}
-	    	$tr[$project_id] .= '</tr>';
-	    	
-	    }
-	    
-	    
-	    // for($d = 1;$d < $month->format("t");$d++) { }
-	    
-	    
-	    
-	    /*
-	    
-	    $tr = '';
-	    for ($i = 1; $i <= 10; $i++)
-	    {
-	      $td = '';
-         $z = rand(1, 11);
-         for ($j = 1; $j <= 31; $j++)
-         { 
-           $c = '';
-           if ($j == $z)
-           {
-             $c = str_replace('###placeholder###', '<span class="bloat">&nbsp;</span>', $flyout);
-             $td .= '<td class="label labelc'.$z.'">'.$c.'</td>';
-           }
-           else
-           {
-             $td .= '<td></td>';
-           }
-         }
-         
-          $tr .= '
-			      <tr>
- 				      <th>'.$project[array_rand($project)].'</th>
-			        '.$td.'
-			      </tr>';
-	    }
-	    */
 
+    $th = '';
+
+    // ----- show months
+    $th .= '<tr>';
+    $current = clone $start;
+    $current_month = clone $current;
+    $colspan = 0;
+    for ($i = 1; $i <= $diff_days; $i++)
+    {
+      if($current_month->format("m") != $current->format("m"))
+      {
+        $th .= '<td class="highlighted" colspan="'.$colspan.'">'.utf8_encode(strftime('%B',$current_month->format("U"))).'</td>';
+        $current_month = clone $current;
+        $colspan = 0;
+      }
+      $current->modify("+1 day");
+      $colspan++;
+    }
+    if($colspan>1)
+      $th .= '<td class="highlighted" colspan="'.$colspan.'">'.utf8_encode(strftime('%B',$current_month->format("U"))).'</td>';
+    
+    $th .= '</tr>';
+
+    // ----- show days
+    $th .= '<tr>';
+    $current = clone $start;
+    for ($i = 1; $i <= $diff_days; $i++)
+    {
+      if($current->format("N")>5) $class = " weekend"; else $class = " weekday";
+      $th .= '<th class="highlighted'.$class.'">'.$current->format("d.").'</th>';
+      $current->modify("+1 day");
+    }
+    $th .= '</tr>';
+	  
+    // ----- load and show project events
+	  $event_days = array();
+	  foreach($events as $event)
+	  {
+	    $event_day = $event->getFrom()->format("Ymd");
+	    $project_id = $event->getProjectId();
+	    if(!isset($event_days[$project_id][$event_day]))
+	      $event_days[$project_id][$event_day] = array();
+
+      if($event->getTo()->format("Ymd") > $event->getFrom()->format("Ymd"))
+      {
+        $current_diff = $event->getFrom()->diff($event->getTo());
+        $current_diff_day = clone $event->getFrom();
+        for($i=0;$i<=$current_diff->format("%a");$i++)
+        {
+  	      $event_days[$project_id][$current_diff_day->format("Ymd")][] = $event;
+          $current_diff_day->modify("+1 day");
+        }
+      }else
+      {
+  	    $event_days[$project_id][$event_day][] = $event;
+      }
+
+	  }
+	  
+	  // sort projekts by customer
+	  $customers = array();
+	  
+	  foreach($projects as $project)
+	  {
+	    $customer_id = $project->getCustomerId();
+	    if(!isset($customers[$customer_id]))
+	    {
+	      if($customer_id > 0) 
+	      {
+	        $name = $project->getCustomer()->getName();
+	      }else {
+	        $name = rex_i18n::msg("customer_notexists");
+	      }
+	      $customers[$customer_id] = array('projects' => array(), 'name' => $name);
+	    }
+	    $customers[$customer_id]['projects'][] = $project;
+	  
+	  }
+	  
+	 // TODO CUSTOMERSORT By Name
+	  
+	  $tr_projects = array();
+	  $tr_projects['-'] = '<tr><th>&nbsp;</th></tr>';
+	  
+	  $tr = array();
+	  foreach($customers as $customer_id => $customer)
+	  {
+	    $customer_layer = 'calendar_event-customer-'.$customer_id;
+	    $customer_link = "$('.".$customer_layer."').toggle();";
+	    
+	    $tr[$customer_id] = '<tr><th class="lighter" colspan="'.($diff_days+1).'"><!--'.$customer["name"].'--></th></tr>';
+	    $tr_projects[$customer_id] = '<tr><th class="lighter" colspan="'.($diff_days+1).'"><a href="javascript:void(0);" onclick="'.$customer_link.'">'.$customer["name"].'</a></th></tr>';
+	    
+      foreach($customer["projects"] as $project)
+      {
+        $trkey = $customer_id.'-'.$project->getId();
+        // <a href="'.pz::url('screen','project','view',array('project_id'=>$project->getId())).'">
+      	$tr_projects[$trkey] = '<tr class='.$customer_layer.' style="display:none;"><th class="highlighted"><span class="label-color-block '.pz_label_screen::getColorClass($project->getLabelId()).'"></span>'.htmlspecialchars(pz::cutText($project->getName(),35)).'</th></tr>';
+
+      	$tr[$trkey] = '<tr class='.$customer_layer.' style="display:none;">';
+        $current = clone $start;
+  			for ($i = 1; $i <= $diff_days; $i++)
+  			{
+  			  // TODO - check if event and set content
+  			  $content = '';
+  			  $classes = array();
+  			  $classes[] = "label";
+          if(isset($event_days[$project->getId()][$current->format("Ymd")]))
+          {
+            $classes[] = "label";
+            $classes[] = pz_label_screen::getColorClass($project->getLabelId());
+            if($current->format("Ymd") == date("Ymd"))
+              $classes[] = "today";
+            $day_events = array();
+            foreach($event_days[$project->getId()][$current->format("Ymd")] as $event)
+            {
+              $event_view = new pz_calendar_event_screen($event);
+              $day_events[] = $event_view->getTooltipEventView($p); // Location // Description
+
+            }
+            $content = pz_screen::getTooltipView("&nbsp;&nbsp;",implode("<br /><hr />",$day_events));
+          }
+  			
+          if($current->format("N")>5) $classes[] = "weekend"; else $classes[] = "weekday";
+  				$tr[$trkey] .= '<td class="'.implode(" ",$classes).'">'.$content.'</td>';
+          $current->modify("+1 day");
+  			}
+      	$tr[$trkey] .= '</tr>';
+      	
+      }
+	  
+	  }
+	  
+	  $link_today = "javascript:pz_loadPage('calendar_projectevent_list','".pz::url("screen","calendars","projectevent",array_merge($p["linkvars"],array("mode"=>"list","day"=>date("Ymd"))))."')";
+	  
+	  $linkdate = clone $start;
+	  $linkdate->modify("+".$diff_days." days");
+	  $link_next = "javascript:pz_loadPage('calendar_projectevent_list','".pz::url("screen","calendars","projectevent",array_merge($p["linkvars"],array("mode"=>"list","day"=>$linkdate->format("Ymd"))))."')";
+
+	  $linkdate->modify("-".((2*$diff_days)+1)." days");
+	  $link_previous = "javascript:pz_loadPage('calendar_projectevent_list','".pz::url("screen","calendars","projectevent",array_merge($p["linkvars"],array("mode"=>"list","day"=>$linkdate->format("Ymd"))))."')";
+	  
 		$return .= '
-		<div class="calendar projectjob clearfix">
+		<div class="calendar projectevent clearfix">
 		  <header class="header">
 		    <div class="grid3col">
 		      <div class="column first">
-		        <a class="bt5" href="#">Excel Export</a>
-		        <a class="bt5" href="#">Monat</a>
+            &nbsp;		        
 		      </div>
 		      <div class="column">
-		        <p class="info">Juni. 2011 (KW 22-27)</p>
+            <p class="info">'.utf8_encode(strftime(rex_i18n::msg("show_date_long"),$start->format("U"))).' - '.utf8_encode(strftime(rex_i18n::msg("show_date_long"),$end->format("U"))).'</p>
 		      </div>
 		      <div class="column last">
 		            <ul class="pagination">
-		              <li class="first prev"><a class="page prev bt5" href=""><span class="inner">zurück</span></a></li>
-		              <li class="next"><a class="page next bt5" href=""><span class="inner">vorwärts</span></a></li>
-		              <li class="last"><a class="bt5" href=""><span class="inner">Heute</span></a></li>
+		              <li class="first prev"><a class="page prev bt5" href="'.$link_previous.'"><span class="inner">'.rex_i18n::msg("previous").'</span></a></li>
+		              <li class="next"><a class="page next bt5" href="'.$link_next.'"><span class="inner">'.rex_i18n::msg("next").'</span></a></li>
+		              <li class="last"><a class="bt5" href="'.$link_today.'"><span class="inner">'.rex_i18n::msg("today").'</span></a></li>
 		            </ul>
 		      </div>
 		    </div>
 		  </header>
 		  
-		  <table class="tbl2">
+		  
+		  <table class="tbl3" style="width:280px; float:left;">
+		    <thead>
+		          <tr>
+		            <th>&nbsp;</th>
+		          </tr>
+		        </thead>
+		    <tbody>
+		      '.implode("",$tr_projects).'
+		        </tbody>
+		  </table>
+		  
+		  
+		  <table class="tbl3" style="float:left;clear:none; overflow:auto;width:870px;display:block;">
 		    <thead>
 		          <tr>
 		            '.$th.'
@@ -1414,9 +2531,213 @@ class pz_calendar_event_screen{
 		</div>
 		';
  
-		return '<div class="design2col" id="calendar_projectjob_list">'.$return.'</div>';
+		return '<div class="design3col" id="calendar_projectevent_list">'.$return.'</div>';
 
 	}
+
+
+
+public function getProjectjobListView($projects, $events, $p, $start, $end)
+	{
+
+    $diff = $start->diff($end);
+    $diff_days = $diff->format("%a");
+
+		$return = '
+	        <header>
+	          <div class="header">
+	            <h1 class="hl1">'.rex_i18n::msg("calendar_projectjob_list").'</h1>
+	          </div>
+	        </header>';
+  
+
+    // ----- show days
+    $th = '<tr>';
+    $th .= '<th>&nbsp;</th>';
+    $current = clone $start;
+    for ($i = 1; $i <= $diff_days; $i++)
+    {
+      if($current->format("N")>5) $class = "weekend"; else $class = "weekday";
+      $th .= '<th class="'.$class.'">'.$current->format("d.").'</th>';
+      $current->modify("+1 day");
+    }
+    $th .= '<th>'.rex_i18n::msg('time_allofmonth').'</th></tr>';
+
+  
+    // ----- load and show project events
+	  $event_days = array();
+	  foreach($events as $event)
+	  {
+	    $event_day = $event->getFrom()->format("Ymd");
+	    $project_id = $event->getProjectId();
+	    if(!isset($event_days[$project_id][$event_day]))
+	      $event_days[$project_id][$event_day] = array();
+
+      if($event->getTo()->format("Ymd") > $event->getFrom()->format("Ymd"))
+      {
+        $current_diff = $event->getFrom()->diff($event->getTo());
+        $current_diff_day = clone $event->getFrom();
+        for($i=0;$i<=$current_diff->format("%a");$i++)
+        {
+  	      $event_days[$project_id][$current_diff_day->format("Ymd")][] = $event;
+          $current_diff_day->modify("+1 day");
+        }
+      }else
+      {
+  	    $event_days[$project_id][$event_day][] = $event;
+      }
+
+	  }
+	  
+	  // sort projekts by customer
+	  $customers = array();
+	  
+	  foreach($projects as $project)
+	  {
+	    $customer_id = $project->getCustomerId();
+	    if(!isset($customers[$customer_id]))
+	    {
+	      if($customer_id > 0) 
+	      {
+	        $name = $project->getCustomer()->getName();
+	      }else {
+	        $name = rex_i18n::msg("customer_notexists");
+	      }
+	      $customers[$customer_id] = array('projects' => array(), 'name' => $name);
+	    }
+	    $customers[$customer_id]['projects'][] = $project;
+	  
+	  }
+	  
+	 // TODO CUSTOMERSORT By Name
+	  
+	  $tr = array();
+	  foreach($customers as $customer_id => $customer)
+	  {
+	    $tr[$customer_id] = '<tr><th class="lighter" colspan="'.($diff_days+2).'">'.$customer["name"].'</th></tr>';
+      foreach($customer["projects"] as $project)
+      {
+        $trkey = $customer_id.'-'.$project->getId();
+      	$tr[$trkey] = '<tr>';
+      	$tr[$trkey] .= '<th class="highlighted"><a href="'.pz::url('screen','project','view',array('project_id'=>$project->getId())).'">'.htmlspecialchars(pz::cutText($project->getName(),60)).'</th>';
+      	
+      	$all_hours = 0;
+      	$all_minutes = 0;
+      	
+        $current = clone $start;
+  			for ($i = 1; $i <= $diff_days; $i++)
+  			{
+  			  $content = '';
+  			  $classes = array();
+  			  $classes[] = "label";
+          if(isset($event_days[$project->getId()][$current->format("Ymd")]))
+          {
+            $classes[] = "label";
+            $classes[] = pz_label_screen::getColorClass($project->getLabelId());
+            if($current->format("Ymd") == date("Ymd"))
+              $classes[] = "today";
+            $day_events = array();
+            $hours = 0;
+            $minutes = 0;
+            foreach($event_days[$project->getId()][$current->format("Ymd")] as $event)
+            {
+            			$hours += $event->getDuration()->format("%h"); 
+            			$minutes += $event->getDuration()->format("%i");
+                  $event_view = new pz_calendar_event_screen($event);
+                  $day_events[] = $event_view->getTooltipEventView($p); // Location // Description
+            }
+            
+            $all_hours += $hours; 
+            $all_minutes += $minutes;
+            $hfm = (int) ($minutes/60);
+            $hours += $hfm;
+            $minutes = $minutes - ($hfm*60);
+            if($hours == 0)
+              $content = $minutes."m";
+            else
+              $content = $hours.'h';
+
+            $content = pz_screen::getTooltipView('<span>'.$content.'</span>',implode("<br />",$day_events));
+          }
+  			
+          if($current->format("N")>5) $classes[] = "weekend"; else $classes[] = "weekday";
+  				$tr[$trkey] .= '<td class="'.implode(" ",$classes).'">'.$content.'</td>';
+          $current->modify("+1 day");
+  			}
+
+        $all_hfm = (int) ($all_minutes/60);
+        $all_hours += $all_hfm;
+        $all_minutes = $all_minutes - ($all_hfm*60);
+
+        $all_info = 0;
+        if($all_hours == 0)
+          $all_info = $all_minutes."m";
+        else
+          $all_info = $all_hours.'h';
+
+        $tr[$trkey] .= '<td class="highlighted projectmonth-time">'.$all_info.'</td>';
+
+
+      	$tr[$trkey] .= '</tr>';
+      	
+      }
+	  
+	  }
+	  
+	  $link_today = "javascript:pz_loadPage('".$p["layer_list"]."','".pz::url("screen","calendars",$p["function"],array_merge($p["linkvars"],array("mode"=>"list","day"=>date("Ymd"))))."')";
+	  
+	  $linkdate = clone $end;
+	  $linkdate->modify("+1 day");
+	  $link_next = "javascript:pz_loadPage('".$p["layer_list"]."','".pz::url("screen","calendars",$p["function"],array_merge($p["linkvars"],array("mode"=>"list","day"=>$linkdate->format("Ymd"))))."')";
+
+	  $linkdate->modify("-1 month");
+	  $linkdate->modify("-1 day");
+	  $link_previous = "javascript:pz_loadPage('".$p["layer_list"]."','".pz::url("screen","calendars",$p["function"],array_merge($p["linkvars"],array("mode"=>"list","day"=>$linkdate->format("Ymd"))))."')";
+	  
+		$return .= '
+		<div class="calendar projectevent clearfix">
+		  <header class="header">
+		    <div class="grid3col">
+		      <div class="column first">
+          &nbsp;		        
+		      </div>
+		      <div class="column">
+            <p class="info">'.utf8_encode(strftime(rex_i18n::msg("show_month_long"),$start->format("U"))).'</p>
+		      </div>
+		      <div class="column last">
+		            <ul class="pagination">
+		              <li class="first prev"><a class="page prev bt5" href="'.$link_previous.'"><span class="inner">'.rex_i18n::msg("previous").'</span></a></li>
+		              <li class="next"><a class="page next bt5" href="'.$link_next.'"><span class="inner">'.rex_i18n::msg("next").'</span></a></li>
+		              <li class="last"><a class="bt5" href="'.$link_today.'"><span class="inner">'.rex_i18n::msg("today").'</span></a></li>
+		            </ul>
+		      </div>
+		    </div>
+		  </header>
+		  
+		  <table class="tbl3">
+		    <thead>
+		          <tr>
+		            '.$th.'
+		          </tr>
+		        </thead>
+		    <tbody>
+		      '.implode("",$tr).'
+		        </tbody>
+		  </table>
+		  
+		</div>
+		';
+ 
+		return '<div class="design3col" id="'.$p["layer_list"].'">'.$return.'</div>';
+
+	}
+
+
+
+	// --------------------------------------------------------------- Projectjob
+
+
+	
 
 
 
@@ -1437,35 +2758,24 @@ class pz_calendar_event_screen{
 
 	// --------------------------------------------------------------- Formviews
 
-	public function getDeleteEventLink($p) {
-		$p["linkvars"]["mode"] = "delete_calendar_event";
-		$p["linkvars"]["calendar_event_id"] = $this->calendar_event->getId();
-		$delete_link = pz::url("screen","calendars",$p["function"],$p["linkvars"]);
-		$return = '<div class="xform">
-				<p><a class="bt17" onclick="check = confirm(\''.rex_i18n::msg("calendar_event_confirm_delete",htmlspecialchars($this->calendar_event->getTitle())).'\'); if (check == true) pz_loadPage(\'calendar_event_form\',\''.$delete_link.'\')" href="javascript:void(0);">- '.rex_i18n::msg("delete_calendar_event").'</a></p>
-				</div>';
-		return $return;
+	function getCopyForm($p = array())
+	{
+	  /*
+		$title = $this->calendar_event->getTitle();
+		$p["info_message"] = rex_i18n::msg("calendar_event_copied", htmlspecialchars($title));
+ 	  $return = $this->getFlyoutEventView($p);
+    */
+    $return = '<script>pz_refresh_calendar_lists();pz_tooltipbox_close();</script>';
+    return $return;
+
 	}
 
 	function getDeleteForm($p = array())
 	{
-		$header = '
-	        <header>
-	          <div class="header">
-	            <h1 class="hl1">'.rex_i18n::msg("delete_calendar_event").'</h1>
-	          </div>
-	        </header>';
+		// $return = $header.'<p class="xform-info">'.rex_i18n::msg("calendar_event_deleted", htmlspecialchars($title)).'</p>';
+    $return = '<script>pz_refresh_calendar_lists();pz_remove_calendar_events_by_id('.$this->calendar_event->getId().');pz_tooltipbox_close()</script>';
+    return $return;
 
-		$title = $this->calendar_event->getTitle();
-		
-		$return = $header.'<p class="xform-info">'.rex_i18n::msg("delete_calendar_deleted", htmlspecialchars($title)).'</p>';
-		$return .= pz_screen::getJSLoadFormPage($p["layer_list"],$p["layer_search"],pz::url('screen','calendars',$p["function"],array("mode"=>'list',"day"=>$this->calendar_event->getFrom()->format("Ymd"))));
-
-		// pz::url("screen","calendars",$p["function"],array_merge($p["linkvars"],array("mode"=>"list","day"=>$from->format("Ymd"))) ).
-
-		$return = '<div id="calendar_event_form"><div id="calendar_event_delete" class="design1col xform-delete">'.$return.'</div></div>';
-
-		return $return;
 	}
 
 	static function getAddForm($p = array()) 
@@ -1480,16 +2790,25 @@ class pz_calendar_event_screen{
 		$xform = new rex_xform;
 		// $xform->setDebug(TRUE);
 		$xform->setObjectparams("form_id", "calendar_event_add_form");
-		$xform->setObjectparams("form_action", "javascript:pz_loadFormPage('calendar_event_form','calendar_event_add_form','".pz::url('screen','calendars','day',array("mode"=>'add_calendar_event'))."')");
+		$xform->setObjectparams("form_action", "javascript:pz_loadFormPage('calendar_event_form','calendar_event_add_form','".pz::url('screen','calendars','event',array("mode"=>'add_calendar_event'))."')");
 		$xform->setObjectparams("real_field_names",TRUE);
-		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform'));
+		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
 		$xform->setObjectparams('form_showformafterupdate',1);
 
+		$xform->setValueField("checkbox",array("booked",rex_i18n::msg("calendar_event_booked"),1,1));
 		$xform->setValueField("textarea",array("title",rex_i18n::msg("calendar_event_title")));
+
 		$projects = pz::getUser()->getCalendarProjects();
-		$xform->setValueField("pz_select_screen",array("project_id",rex_i18n::msg("project"),pz_project::getProjectsAsString($projects),"","",1,rex_i18n::msg("please_choose")));
-		$xform->setValueField("text",array("location",rex_i18n::msg("calendar_event_location")));
-		$xform->setValueField("checkbox",array("booked",rex_i18n::msg("calendar_event_booked")));
+		$xform->setValueField("pz_select_screen",array("project_id",rex_i18n::msg("project"),pz_project::getProjectsAsString($projects),"","",0,rex_i18n::msg("please_choose")));
+
+		$subprojects = array();
+		$filter = array("field" => "project_id", "value" => rex_request("project_id","int"));
+		if( rex_request("project_id","int") > 0 && ($project = pz::getUser()->getAllProjects($filter)) ) {
+		  $subprojects = $project;
+		}
+		$xform->setValueField("pz_select_screen",array("project_sub_id",rex_i18n::msg("project_sub"),pz_project::getProjectSubsAsString($subprojects),"","",0,rex_i18n::msg("please_choose")));
+
+		// $xform->setValueField("html",array("timesplit",'<div class="split-h"></div>'));
 		$xform->setValueField("checkbox",array("allday",rex_i18n::msg("calendar_event_allday")));
 		$xform->setValueField("stamp",array("created","created","mysql_datetime","0","1"));
 		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0"));
@@ -1504,17 +2823,21 @@ class pz_calendar_event_screen{
 		
 		$xform->setValueField("pz_datetime_screen",array("from",rex_i18n::msg("calendar_event_from")));
 		$xform->setValueField("pz_datetime_screen",array("to",rex_i18n::msg("calendar_event_to")));
-
 		$xform->setValueField("pz_calendar_event_attendees",array("attendees",rex_i18n::msg("calendar_event_attendees")));
-
+    $xform->setValueField("pz_attachment_screen",array("clip_ids",rex_i18n::msg("calendar_event_attachments")));
+		$xform->setValueField("text",array("location",rex_i18n::msg("calendar_event_location")));
 		$xform->setValueField("text",array("url",rex_i18n::msg("calendar_event_url")));
+		
 		$xform->setValueField("textarea",array("description",rex_i18n::msg("calendar_event_description")));
+ 		$xform->setValidateField("mysql_datetime",array("from",rex_i18n::msg("error_calendar_from_datetime")));
+		$xform->setValidateField("mysql_datetime",array("to",rex_i18n::msg("error_calendar_to_datetime")));
+
+		$xform->setValidateField("pz_project_jobevent_id",array("project_id",rex_request("booked","int"),rex_i18n::msg("error_calendar_job_project_id"),rex_i18n::msg("error_calendar_event_project_id")));
+		$xform->setValidateField("pz_project_id",array("project_id",rex_i18n::msg("error_calendar_event_project_id")));
+		$xform->setValidateField("empty",array("title",rex_i18n::msg("error_calendar_event_title_empty")));
+		$xform->setValidateField("compare_fields",array("from","to",">=",rex_i18n::msg("error_calendar_event_fromto_compare")));
 
 		/*
-			TODO
-			jquery
-				wenn ganztag angeklickt, dann time ausblenden
-					+ uhrzeit from auf 0, to auf 23
 			TODO
 				wiederholung
 				erinnerung
@@ -1525,19 +2848,101 @@ class pz_calendar_event_screen{
 				vt
 				
 		*/
-	
-		$xform->setValidateField("mysql_datetime",array("from",rex_i18n::msg("error_calendar_from_datetime")));
-		$xform->setValidateField("mysql_datetime",array("to",rex_i18n::msg("error_calendar_to_datetime")));
-		$xform->setValidateField("pz_project_id",array("project_id",rex_i18n::msg("error_calendar_event_project_id")));
-		$xform->setValidateField("empty",array("title",rex_i18n::msg("error_calendar_event_title_empty")));
+
+		$jquery ='
+		<script>
+
+		$("#calendar_event_add_form #xform-xform-booked input, #calendar_event_add_form #xform-xform-allday input, #calendar_event_add_form #xform-xform-project-id select").bind("change",function() {
+			calendar_event_add_form_updater();
+		});
 		
-		$xform->setValidateField("compare_fields",array("from","to",">=",rex_i18n::msg("error_calendar_event_fromto_compare")));
+		function calendar_event_add_form_updater() 
+		{
+			booked = $("#calendar_event_add_form #xform-xform-booked input:checkbox:checked").val();
+			allday = $("#calendar_event_add_form #xform-xform-allday input:checkbox:checked").val();
+			project_id = $("#calendar_event_add_form #xform-xform-project-id select").val();
+			project_sub_id = $("#calendar_event_add_form #xform-xform-project-sub-id select").val();
+
+			if(allday == 1)
+			{
+				$("#calendar_event_add_form #xform-xform-from .fafter, #calendar_event_add_form #xform-xform-from .xform-time").hide();
+				$("#calendar_event_add_form #xform-xform-to .fafter, #calendar_event_add_form #xform-xform-to .xform-time").hide();
+				
+			}else
+			{
+				$("#calendar_event_add_form #xform-xform-from .fafter, #calendar_event_add_form #xform-xform-from .xform-time").show();
+				$("#calendar_event_add_form #xform-xform-to .fafter, #calendar_event_add_form #xform-xform-to .xform-time").show();
+			}
+			
+			if(booked == 1)
+			{
+				$("#calendar_event_add_form #xform-xform-allday input").removeAttr("checked");
+				$("#calendar_event_add_form #xform-xform-allday").hide();
+				$("#calendar_event_add_form .pz_address_fields_attandees").hide();
+				$("#calendar_event_add_form #xform-xform-from").show();
+				$("#calendar_event_add_form #xform-xform-to").show();
+				$("#calendar_event_add_form #xform-xform-label-id").hide();
+				$("#calendar_event_add_form #xform-xform-clip-ids").hide();
+
+			}else
+			{
+				$("#calendar_event_add_form #xform-xform-allday").show();
+				$("#calendar_event_add_form .pz_address_fields_attandees").show();
+				$("#calendar_event_add_form #xform-xform-label-id").show();
+				$("#calendar_event_add_form #xform-xform-clip-ids").show();
+
+			}
+			
+      // Teilprojekte
+      
+      project_sub_ids = [];
+      project_sub_name = [];
+';
+
+      foreach($projects as $project) {
+        $sids = array();
+  		  foreach($project->getProjectSubs() as $project_sub) {
+  			  $sids[] = '"'.$project_sub->getId().'"';
+          $jquery .= "\n".'project_sub_name['.$project_sub->getId().'] = "'.str_replace('"',"'",$project_sub->getName()).'";';
+  		  }
+        $jquery .= "\n".'project_sub_ids['.$project->getId().'] = ['.implode(",",$sids).'];';
+      }
+      
+$jquery .= '
+
+      // project_sub_id;
+      $("#calendar_event_add_form #xform-xform-project-sub-id select option").remove();
+
+      if(project_id == "" || typeof(project_sub_ids[project_id]) == "undefined" ) {
+        $("#calendar_event_add_form #xform-xform-project-sub-id").hide();
+
+      }else {
+        if(project_sub_ids[project_id].length == 0) {
+          $("#calendar_event_add_form #xform-xform-project-sub-id").hide();
+        }else {
+          $("<option/>").val(0).text("'.rex_i18n::msg("please_choose").'").appendTo("#calendar_event_add_form #xform-xform-project-sub-id select");
+          $.each(project_sub_ids[project_id], function(t, v) {
+          
+            $("<option/>").val(v).text(project_sub_name[v]).appendTo("#calendar_event_add_form #xform-xform-project-sub-id select");
+            if(v == project_sub_id) {
+              $("#calendar_event_add_form #xform-xform-project-sub-id select option[value=\'"+v+"\']").attr("selected", true);
+            }
+          });
+          $("#calendar_event_add_form #xform-xform-project-sub-id select").trigger("liszt:updated");
+          $("#calendar_event_add_form #xform-xform-project-sub-id").show();
+        }
+      }
+
+		}
+
+		calendar_event_add_form_updater();
+		</script>
+		';
 		
-		$form = $xform->getForm();
+		$form = $xform->getForm().$jquery;
 
-
-
-		if($xform->getObjectparams("actions_executed")) {
+		if($xform->getObjectparams("actions_executed")) 
+		{
 		
 			$value_pool = $xform->getObjectparams("value_pool");
 			$data = $value_pool["sql"];
@@ -1552,6 +2957,7 @@ class pz_calendar_event_screen{
 			$event = pz_calendar_event::create();
 			$event->setTitle($data["title"]);
 			$event->setProjectId($data["project_id"]);
+			$event->setProjectSubId($data["project_sub_id"]);
 			$event->setLocation($data["location"]);
 			$event->setBooked($data["booked"]);
 			$event->setAllDay($data["allday"]);
@@ -1562,6 +2968,7 @@ class pz_calendar_event_screen{
 			$event->setCreated($created);
 			$event->setUpdated($updated);
 			$event->setUserId(pz::getUser()->getId());
+			$event->setClipIds($data["clip_ids"]);
 
 			// setSequence($sequence)
 			// $alarm = pz_calendar_alarm::create();
@@ -1588,33 +2995,20 @@ class pz_calendar_event_screen{
 					pz_calendar_attendee::saveAll($event);
 				}
 			
-				$return = "";
 				$return = $header.'<p class="xform-info">'.rex_i18n::msg("calendar_event_added").'</p>';
-				// $return .= pz_screen::getJSUpdateLayer($p["layer_list"],pz::url('screen','calendars',$p["function"],array("mode"=>'list')));
-				// $return .= pz_screen::getJSLoadFormPage('calendar_events_day_list','calendar_event_add_form',pz::url('screen','calendars','day',array("mode"=>'list')));
+				$return .= '<script>pz_refresh_calendar_lists();</script>';
 
-				// $cs = new pz_calendar_event_screen($event);
-				// $return .= $cs->getEditForm($p);
-
-				// Add Form geht nicht, da sonst wieder datensaetz erstellt werden
-				// $return .= pz_calendar_event_screen::getAddForm($p);
-
-				$return .= '<script>pz_loadPage("'.$p["layer_list"].'","'.
-					pz::url("screen","calendars",$p["function"],array_merge($p["linkvars"],array("mode"=>"list","day"=>$from->format("Ymd"))) ).
-					'");</script>';
-
-				// return $return;
 			}else
 			{
 				$return = $header.'<p class="xform-warning">'.rex_i18n::msg("error_calendar_event_not_added").'</p>'.$form;
 			}
 
-		}else {
+		}else 
+		{
 			$return = $header.$form;	
 		}
 
-		$return = '<div id="calendar_event_form"><div id="calendar_event_add" class="design1col xform-add">'.$return.'</div></div>';
-
+		$return = '<div id="calendar_event_form" class="design1col"><div id="calendar_event_add" class="design1col xform-add">'.$return.'</div></div>';
 		return $return;	
 		
 	}
@@ -1645,20 +3039,36 @@ class pz_calendar_event_screen{
 		$xform->setObjectparams("main_id",$this->calendar_event->getId());
 		$xform->setObjectparams("main_where",'id='.$this->calendar_event->getId());
 		$xform->setObjectparams('getdata',true);
-		$xform->setObjectparams("form_action", "javascript:pz_loadFormPage('calendar_event_edit','calendar_event_edit_form','".pz::url('screen','calendars',$p["function"],array("mode"=>'edit_calendar_event'))."')");
+		$xform->setObjectparams("form_action", "javascript:pz_loadFormPage('calendar_event_edit','calendar_event_edit_form','".pz::url('screen','calendars',"event",array("mode"=>'edit_calendar_event'))."')");
 
 		$xform->setObjectparams("real_field_names",TRUE);
 		$xform->setObjectparams('form_showformafterupdate',1);
-
 		$xform->setHiddenField("calendar_event_id",$this->calendar_event->getId());
-		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform'));
-
+		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
+		if($this->calendar_event->isBooked())
+		{
+			$xform->setValueField("html",array("booked",'<div class="xform1 data xform-checkbox"><div class="flabel"><label>'.rex_i18n::msg("job").'</label></div><div class="felement">'.rex_i18n::msg("is_job").'</div></div>'));
+		}
 		$xform->setValueField("textarea",array("title",rex_i18n::msg("calendar_event_title")));
-		$projects = pz::getUser()->getCalendarProjects();
-		$xform->setValueField("pz_select_screen",array("project_id",rex_i18n::msg("project"),pz_project::getProjectsAsString($projects),"","",1,rex_i18n::msg("please_choose")));
-		$xform->setValueField("text",array("location",rex_i18n::msg("calendar_event_location")));
-		$xform->setValueField("checkbox",array("booked",rex_i18n::msg("calendar_event_booked")));
-		$xform->setValueField("checkbox",array("allday",rex_i18n::msg("calendar_event_allday")));
+
+    $projects = pz::getUser()->getCalendarProjects();
+		$xform->setValueField("pz_select_screen",array("project_id",rex_i18n::msg("project"),pz_project::getProjectsAsString($projects),"","",0,rex_i18n::msg("please_choose")));
+
+		$subprojects = array($this->calendar_event->getProject()); // array();
+		$filter = array("field" => "project_id", "value" => rex_request("project_id","int"));
+		if( rex_request("project_id","int") > 0 && ($project = pz::getUser()->getAllProjects($filter)) ) {
+		  $subprojects = $project;
+		}
+		$xform->setValueField("pz_select_screen",array("project_sub_id",rex_i18n::msg("project_sub"),pz_project::getProjectSubsAsString($subprojects),"","",0,rex_i18n::msg("please_choose")));
+
+
+
+
+
+		if(!$this->calendar_event->isBooked())
+		{
+			$xform->setValueField("checkbox",array("allday",rex_i18n::msg("calendar_event_allday")));
+		}
 		$xform->setValueField("stamp",array("created","created","mysql_datetime","0","1"));
 		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0"));
 		
@@ -1673,21 +3083,112 @@ class pz_calendar_event_screen{
 		$xform->setValueField("pz_datetime_screen",array("from",rex_i18n::msg("calendar_event_from")));
 		$xform->setValueField("pz_datetime_screen",array("to",rex_i18n::msg("calendar_event_to")));
 		
-		$xform->setValueField("pz_calendar_event_attendees",array("attendees",rex_i18n::msg("calendar_event_attendees")));
+		if(!$this->calendar_event->isBooked())
+		{
+			$xform->setValueField("pz_calendar_event_attendees",array("attendees",rex_i18n::msg("calendar_event_attendees"),1));
+		  $xform->setValueField("pz_attachment_screen",array("clip_ids",rex_i18n::msg("calendar_event_attachments")));
+		}
 		
+		$xform->setValueField("text",array("location",rex_i18n::msg("calendar_event_location")));
 		$xform->setValueField("text",array("url",rex_i18n::msg("calendar_event_url")));
 		$xform->setValueField("textarea",array("description",rex_i18n::msg("calendar_event_description")));
-
+		
 		$xform->setValidateField("mysql_datetime",array("from",rex_i18n::msg("error_calendar_from_datetime")));
 		$xform->setValidateField("mysql_datetime",array("to",rex_i18n::msg("error_calendar_to_datetime_wrong")));
-		
+
+    $xform->setValidateField("pz_project_jobevent_id",array("project_id",$this->calendar_event->isBooked(),rex_i18n::msg("error_calendar_job_project_id"),rex_i18n::msg("error_calendar_event_project_id")));
 		$xform->setValidateField("pz_project_id",array("project_id",rex_i18n::msg("error_calendar_event_project_id")));
 		$xform->setValidateField("empty",array("title",rex_i18n::msg("error_calendar_event_title_empty")));
-		
-		
 		$xform->setValidateField("compare_fields",array("from","to",">=",rex_i18n::msg("error_calendar_event_fromto_compare")));
 
-		$return = $xform->getForm();
+$jquery ='
+		<script>
+		
+		$("#calendar_event_edit_form #xform-xform-booked input, #calendar_event_edit_form #xform-xform-allday input, #calendar_event_edit_form #xform-xform-project-id select").bind("change",function() {
+			calendar_event_edit_form_updater();
+		});
+		
+		function calendar_event_edit_form_updater() 
+		{
+			booked = $("#calendar_event_edit_form #xform-xform-booked input:checkbox:checked").val();
+			allday = $("#calendar_event_edit_form #xform-xform-allday input:checkbox:checked").val();
+			project_id = $("#calendar_event_edit_form #xform-xform-project-id select").val();
+			project_sub_id = $("#calendar_event_edit_form #xform-xform-project-sub-id select").val();
+			
+			if(allday == 1)
+			{
+				$("#calendar_event_edit_form #xform-xform-from .fafter, #calendar_event_edit_form #xform-xform-from .xform-time").hide();
+				$("#calendar_event_edit_form #xform-xform-to .fafter, #calendar_event_edit_form #xform-xform-to .xform-time").hide();
+				
+			}else
+			{
+				$("#calendar_event_edit_form #xform-xform-from .fafter, #calendar_event_edit_form #xform-xform-from .xform-time").show();
+				$("#calendar_event_edit_form #xform-xform-to .fafter, #calendar_event_edit_form #xform-xform-to .xform-time").show();
+			}
+			
+			if(booked == 1)
+			{
+				$("#calendar_event_edit_form #xform-xform-allday input").removeAttr("checked");
+				$("#calendar_event_edit_form #xform-xform-allday").hide();
+				$("#calendar_event_edit_form .pz_address_fields_attandees").hide();
+				$("#calendar_event_edit_form #xform-xform-from").show();
+				$("#calendar_event_edit_form #xform-xform-to").show();
+				$("#calendar_event_edit_form #xform-xform-clip-ids").hide();
+
+			}else
+			{
+				$("#calendar_event_edit_form #xform-xform-allday").show();
+				$("#calendar_event_edit_form .pz_address_fields_attandees").show();
+				$("#calendar_event_edit_form #xform-xform-clip-ids").show();
+
+			}
+			
+			// Teilprojekte
+      
+      project_sub_ids = [];
+      project_sub_name = [];
+';
+
+      foreach($projects as $project) {
+        $sids = array();
+  		  foreach($project->getProjectSubs() as $project_sub) {
+  			  $sids[] = '"'.$project_sub->getId().'"';
+          $jquery .= "\n".'project_sub_name['.$project_sub->getId().'] = "'.str_replace('"',"'",$project_sub->getName()).'";';
+  		  }
+        $jquery .= "\n".'project_sub_ids['.$project->getId().'] = ['.implode(",",$sids).'];';
+      }
+      
+$jquery .= '
+
+      // project_sub_id;
+      $("#calendar_event_edit_form #xform-xform-project-sub-id select option").remove();
+
+      if(project_id == "" || typeof(project_sub_ids[project_id]) == "undefined" ) {
+        $("#calendar_event_edit_form #xform-xform-project-sub-id").hide();
+
+      }else {
+        if(project_sub_ids[project_id].length == 0) {
+          $("#calendar_event_edit_form #xform-xform-project-sub-id").hide();
+        }else {
+          $("<option/>").val(0).text("'.rex_i18n::msg("please_choose").'").appendTo("#calendar_event_edit_form #xform-xform-project-sub-id select");
+          $.each(project_sub_ids[project_id], function(t, v) {
+          
+            $("<option/>").val(v).text(project_sub_name[v]).appendTo("#calendar_event_edit_form #xform-xform-project-sub-id select");
+            if(v == project_sub_id) {
+              $("#calendar_event_edit_form #xform-xform-project-sub-id select option[value=\'"+v+"\']").attr("selected", true);
+            }
+          });
+          $("#calendar_event_edit_form #xform-xform-project-sub-id select").trigger("liszt:updated");
+          $("#calendar_event_edit_form #xform-xform-project-sub-id").show();
+        }
+      }
+			
+		}
+		calendar_event_edit_form_updater();
+		</script>
+		';
+
+		$return = $xform->getForm().$jquery;
 
 		if($xform->getObjectparams("actions_executed")) {
 		
@@ -1704,9 +3205,11 @@ class pz_calendar_event_screen{
 			$event = pz_calendar_event::get($this->calendar_event->getId());
 			$event->setTitle($data["title"]);
 			$event->setProjectId($data["project_id"]);
+			$event->setProjectSubId($data["project_sub_id"]);
 			$event->setLocation($data["location"]);
-			$event->setBooked($data["booked"]);
-			$event->setAllDay($data["allday"]);
+			// $event->setBooked($data["booked"]);
+			if(isset($data["allday"]))
+				$event->setAllDay($data["allday"]);
 			$event->setFrom($from);
 			$event->setTo($to);
 			$event->setDescription($data["description"]);
@@ -1714,6 +3217,8 @@ class pz_calendar_event_screen{
 			$event->setCreated($created);
 			$event->setUpdated($updated);
 			$event->setUserId(pz::getUser()->getId());
+			if(!$this->calendar_event->isBooked())
+        $event->setClipIds($data["clip_ids"]);
 
 			// setSequence($sequence)
 			// $alarm = pz_calendar_alarm::create();
@@ -1723,49 +3228,39 @@ class pz_calendar_event_screen{
 			
 			$event->save();
 		
-			if(isset($data["attendees"]) && is_array($data["attendees"]))
+			if(!$this->calendar_event->isBooked())
 			{
-				$attendees = array();
-				foreach($data["attendees"] as $a) {
-					$at = pz_calendar_attendee::create();
-					$at->setUserId($a["user_id"]);
-					$at->setEmail($a["email"]);
-					$at->setName($a["name"]);
-					$at->setStatus($a["status"]); // pz_calendar_attendee::ACCEPTED
-					$attendees[] = $at;
+				if(isset($data["attendees"]) && is_array($data["attendees"]))
+				{
+					$attendees = array();
+					foreach($data["attendees"] as $a) {
+						$at = pz_calendar_attendee::create();
+						$at->setUserId($a["user_id"]);
+						$at->setEmail($a["email"]);
+						$at->setName($a["name"]);
+						$at->setStatus($a["status"]); // pz_calendar_attendee::ACCEPTED
+						$attendees[] = $at;
+					}
+					$event->setAttendees($attendees);
+					pz_calendar_attendee::saveAll($event);
 				}
-				$event->setAttendees($attendees);
-				pz_calendar_attendee::saveAll($event);
+			  $event->setUserId(pz::getUser()->getId());
+				
 			}
 		
-			// array_merge($p["linkvars"],array("mode"=>"edit_calendar_event","calendar_event_id"=>$this->calendar_event->getId())))
-		
 			$return = $header.'<p class="xform-info">'.rex_i18n::msg("calendar_event_updated").'</p>'.$return;
-		
-			$return .= '<script>pz_loadPage("'.$p["layer_list"].'","'.
-				pz::url("screen","calendars",$p["function"],array_merge($p["linkvars"],array("mode"=>"list","day"=>$from->format("Ymd"))) ).
-				'");</script>';
+			$return .= '<script>pz_refresh_calendar_lists();</script>';
 			
 		}else
 		{
 			$return = $header.$return;	
 		}
 		
-		$return .= $this->getDeleteEventLink($p);		
-		
-		$return = '<div id="calendar_event_form"><div id="calendar_event_edit" class="design1col xform-edit">'.$return.'</div></div>';
-
+		$return = '<div id="calendar_event_form" class="design1col"><div id="calendar_event_edit" class="design1col xform-edit">'.$return.'</div></div>';
+    $return .= '<script>pz_toggleSection(1);</script>';
 		return $return;	
 		
 	}
-
-
-
-
-
-
-
-
 
 
 }

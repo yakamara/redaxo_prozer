@@ -1,12 +1,14 @@
 <?php
 
 
-class pz_login_controller_api extends pz_login_controller{
+class pz_login_controller_api extends pz_login_controller
+{
 
-
-	function controller($function) {
+	function controller($function) 
+	{
 	
-		switch($function) {
+		switch($function) 
+		{
 
 			case("send"):
 				$user = rex_request("login_name","string","");
@@ -15,7 +17,8 @@ class pz_login_controller_api extends pz_login_controller{
 				
 				$login = new pz_login();
 				$login->setLogin($user, $psw);
-				if($stay == 1) { 
+				if($stay == 1) 
+				{ 
 					$login->setStayLoggedIn(true);
 				}
 				

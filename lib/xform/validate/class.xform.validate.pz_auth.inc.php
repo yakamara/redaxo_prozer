@@ -21,23 +21,28 @@ class rex_xform_validate_pz_auth extends rex_xform_validate_abstract
 		{
 			foreach($this->params["value_pool"]["sql"] as $k => $v)
 			{
-				if($k == $this->getElement(2)) {
+				if($k == $this->getElement(2)) 
+				{
 					$login = $v;
-				}elseif($k == $this->getElement(3)) {
+				}elseif($k == $this->getElement(3)) 
+				{
 					$psw = $v;
-				}elseif($k == $this->getElement(4)) {
+				}elseif($k == $this->getElement(4)) 
+				{
 					$stay = $v;
 				}
 			}
 
-			if($login == "" OR $psw == "") {
+			if($login == "" OR $psw == "") 
+			{
 				$msg = $this->getElement(6);
 			
 			}else {
 			
 				$pz_login = new pz_login();
 				$pz_login->setLogin($login, $psw);
-				if($stay == 1) { 
+				if($stay == 1) 
+				{ 
 					$pz_login->setStayLoggedIn(true);
 				}
 				if(!$pz_login->checkLogin())
@@ -47,6 +52,10 @@ class rex_xform_validate_pz_auth extends rex_xform_validate_abstract
 				{
 					// header("Location:/".pz::$mediaview."/"); exit;
 					$msg = "";
+          if(pz::getUser())
+          {
+            pz::getUser()->saveToHistory('login');
+          }
 				}
 			}
 

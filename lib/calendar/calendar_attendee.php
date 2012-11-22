@@ -183,42 +183,6 @@ class pz_calendar_attendee extends pz_calendar_element
     return $attendees;
   }
 
-  static public function getEventsByEmail($emails = array())
-  {
-  	if(count($emails) == 0)
-  		return array();
-  
-	$query = 'SELECT *
-	      	FROM '. self::TABLE .' a
-	      	WHERE status = ? ';
-	$params = array(self::NEEDSACTION);
-
-	$email_query = array();
-	foreach($emails as $email) {
-		$email_query[] = 'email = ?';
-		$params[] = $email;
-	}
-	
-	$query .= 'and ('.implode(' or ',$email_query).')';
-
-    $events = array();
-  	$sql = rex_sql::factory();
-  	// $sql->debugsql = 1;
-	$es = $sql->getArray($query,$params);
-
-    if(count($es) > 0)
-    {
-    	foreach($es as $e)
-    	if(!isset($events[$e["event_id"]]) && ($event = pz_calendar_event::get($e["event_id"])))
-			$events[$e["event_id"]] = $event;
-	}
-
-    return $events;
-  
-  }
-
-
-
   static public function getStatusArray()
   {
     return array(self::NEEDSACTION, self::ACCEPTED, self::TENTATIVE, self::DECLINED);

@@ -1,6 +1,7 @@
 <?php
 
-class pz_controller {
+class pz_controller 
+{
 
 	var $visible = TRUE;
 	var $name = "undefined";
@@ -8,28 +9,29 @@ class pz_controller {
 	var $navigation = array();
 	var $function = "";
 
-	function getUrl() {
+	function getUrl() 
+	{
 		return pz::url('',$this->name);
 	}
 
-	function isVisible() {
+	function isVisible() 
+	{
 		return $this->visible;
 	}
 
-	function getName() {
-
+	function getName() 
+	{
 		return rex_i18n::translate($this->name);
 	}
 
 	function checkPerm() 
 	{
-		if(pz::getUser()) {
-			return TRUE;
-		}
-		return FALSE;
+		if(pz::getUser() && pz::getUser()->isMe()) return TRUE;
+		else return FALSE;
 	}
 
-	public function controller($func) {
+	public function controller($func) 
+	{
 		return "Controller";
 	}
 

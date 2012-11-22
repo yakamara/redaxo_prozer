@@ -1,6 +1,7 @@
 <?php
 
-class pz_project extends pz_model{
+class pz_project extends pz_model
+{
 
 	public $vars = array();
 	private $isProject = FALSE;
@@ -8,6 +9,10 @@ class pz_project extends pz_model{
 	public $customer = NULL;
 	public $users = array();
 	private $directory = null;
+  private $subprojects = null;
+
+  static private $projects = array();
+  
 
 	function __construct($vars = array())
 	{
@@ -20,16 +25,29 @@ class pz_project extends pz_model{
 		return FALSE;
 	}
 
-	static public function get($id = "")
-	{
-		if($id == "") return FALSE;
-		$id = (int) $id;
-		$project_sql = rex_sql::factory();
-		$project_sql->setQuery('select * from pz_project where id='.$id.' LIMIT 2');
-		$projects = $project_sql->getArray();
-		if(count($projects) != 1) return FALSE;
-		return new self($projects[0]);
-	}
+
+  /**
+   * @return pz_user
+   */
+  static public function get($id, $refresh = FALSE)
+  {
+    if(isset($projects[$id]) && !$refresh)
+    {
+      return $projects[$id];
+    }
+
+    $sql = rex_sql::factory();
+    $sql->setQuery('SELECT * FROM pz_project WHERE id = ? LIMIT 2', array($id));
+    $project = null;
+    if($sql->getRows() == 1)
+    {
+      $projects = $sql->getArray();
+      $project = new self($projects[0]);
+    }
+    return $projects[$id] = $project;
+  }
+
+
 
 	// -------------------------------------------------------------------------
 
@@ -67,17 +85,48 @@ class pz_project extends pz_model{
 		return "/assets/addons/prozer/themes/blue_grey/ic_project.png";
 	}
 
-	
+	// -----------------------------
 
 	public function hasCustomer()
 	{
-    	if($this->customer) {
-    		return TRUE;
-    	}
+  	if($this->customer) {
+  		return TRUE;
+  	}
+	  return FALSE;
+	}
+
+  public function getCustomer()
+  {
+    if($this->hasCustomer())
+      return $this->customer;
+    else
+      return false;
+  }
+
+  public function getCustomerId()
+  {
+    if($this->hasCustomer())
+      return $this->customer->getId();
+    else
+      return 0;
+  }
+
+	// -----------------------------
+
+	public function hasEmails()
+	{
+		if($this->vars["has_emails"] == 1) {
+			return TRUE;
+		}
 		return FALSE;
 	}
 
 	public function hasCalendar()
+	{
+		 return $this->hasCalendarEvents();
+	}
+
+	public function hasCalendarEvents()
 	{
 		if($this->vars["has_calendar"] == 1) {
 			return TRUE;
@@ -85,9 +134,9 @@ class pz_project extends pz_model{
 		return FALSE;
 	}
 
-	public function hasJobs()
+	public function hasCalendarJobs()
 	{
-		if($this->vars["has_calendar"] == 1) {
+		if($this->vars["has_calendar_jobs"] == 1) {
 			return TRUE;
 		}
 		return FALSE;
@@ -101,14 +150,6 @@ class pz_project extends pz_model{
 		return FALSE;
 	}
 
-	public function hasEmails()
-	{
-		if($this->vars["has_emails"] == 1) {
-			return TRUE;
-		}
-		return FALSE;
-	}
-
 	public function hasWiki()
 	{
 		if($this->vars["has_wiki"] == 1) {
@@ -117,9 +158,11 @@ class pz_project extends pz_model{
 		return FALSE;
 	}
 
-	public function getJobs(DateTime $from = null, DateTime $to = null, $fulltext = '')
+  // -----------------------------
+
+	public function getJobs(DateTime $from = null, DateTime $to = null, $fulltext = '', $users = null)
 	{
-		$jobs = pz_calendar_event::getAll(array($this->getId()), $from, $to, true, null, array('from'=>'desc'), $fulltext);
+		$jobs = pz_calendar_event::getAll(array($this->getId()), $from, $to, true, $users, array('from'=>'desc'), $fulltext);
 		return $jobs;
 	}
 
@@ -131,17 +174,50 @@ class pz_project extends pz_model{
 	}
 	*/
 
-	public function getInfoStream()
+	public function getCalendarEvents(DateTime $from = null, DateTime $to = null)
 	{
-		$stream = array();
+		$stream = pz_calendar_event::getAll(array($this->getId()), $from, $to, false, null, array('from'=>'desc'));
 		return $stream;
 	}
 
-	public function getHistoryStream()
+	public function getHistoryEntries($filter = array())
 	{
-		$stream = array();
-		return $stream;
+		$filter[] = array('type'=>'=', 'field' => 'project_id', 'value' => $this->getId());
+		$return = pz_history::get($filter);
+		return $return;
 	}
+  
+  // -----------------------------
+
+  public function getProjectSubs()
+  {
+    if(isset($this->subprojects) && is_array($this->subprojects))
+      return $this->subprojects;
+
+    $s = rex_sql::factory();
+		$subprojects = $s->getArray('select * from pz_project_sub where project_id = ? ', array($this->getId()));
+
+    $this->subprojects = array();
+    foreach($subprojects as $s)
+    {
+      $this->subprojects[$s["id"]] = new pz_project_sub($s);
+    }
+    return $this->subprojects;
+  }
+
+  public function hasProjectSubId($id)
+  {
+    if($id == 0)
+      return true;
+  
+    if (array_key_exists($id,$this->getProjectSubs()))
+      return true;
+    
+    return false;
+  }
+
+
+  // -----------------------------
 
 	public function getUsers() {
 
@@ -197,19 +273,6 @@ class pz_project extends pz_model{
 		return $admins;
 	}
 
-	public function getFolder() {
-		return rex_path::addonData('prozer', 'projects/'.$this->getId());
-	}
-
-	public function getFilesFolder() {
-		return rex_path::addonData('prozer', 'projects/'.$this->getId().'/files');
-	}
-
-	public function getDirectory()
-	{
-	  return $this->directory ?: $this->directory = new pz_project_root_directory($this);
-	}
-
 	public function addUser($user_id,$admin = 0, $perm = array()) {
 
 		$a = rex_sql::factory();
@@ -256,6 +319,23 @@ class pz_project extends pz_model{
 	}
 
 
+  // -----------------------------
+
+	public function getFolder() {
+		return rex_path::addonData('prozer', 'projects/'.$this->getId());
+	}
+
+	public function getFilesFolder() {
+		return rex_path::addonData('prozer', 'projects/'.$this->getId().'/files');
+	}
+
+	public function getDirectory()
+	{
+	  return $this->directory ?: $this->directory = new pz_project_root_directory($this);
+	}
+
+  // -----------------------------
+
 	public function getEmails()
 	{
 		$projects = array();
@@ -264,41 +344,57 @@ class pz_project extends pz_model{
 		return pz_email::getAll($projects, $filter);
 	}
 
+  // -----------------------------
 
-	public function update() {
+  public function saveToHistory($mode = 'update')
+	{
+	  $sql = rex_sql::factory();
+	  $sql->setTable('pz_history')
+	    ->setValue('control', 'project')
+	    ->setValue('data_id', $this->getId())
+	    ->setValue('project_id', $this->getId())
+	    ->setValue('user_id', pz::getUser()->getId())
+	    ->setRawValue('stamp', 'NOW()')
+	    ->setValue('mode', $mode);
+	    
+	  // if($mode != 'delete') {
+	    $data = $this->getVars();
+	    $data["users"] = array();
+      foreach($this->getUsers() as $u)
+      {
+        $data["users"][$u->getId()] = $u->getVars();  
+      }
+	    $sql->setValue('data', json_encode($data));
+	  // }
+	  
+	  $sql->insert();
+	}
 
-		// Dinge die durchgeführt werden, nach einem Update
-		// prüfen ob Ordner erstellt sind und nachgenerieren
-
+	public function update() 
+	{
+    $this->saveToHistory('update');
 	  pz_sabre_caldav_backend::incrementCtag($this->vars['id']);
 	}
 
-	public function create() {
-
-		// project folder
+	public function create() 
+	{
 		rex_dir::create($this->getFilesFolder());
-
-		// User anlegen
 		$this->addUser(pz::getUser()->getId(),1);
-
+    $this->saveToHistory('create');
 		pz_sabre_caldav_backend::incrementCtag($this->vars['id']);
-
 		return $this->getFilesFolder();
-
 	}
 
-	public function delete() {
+	public function delete() 
+	{
+    $this->saveToHistory('delete');
 
-		// Ordner löschen
-
+		// TODO: Ordner löschen
 		// Projektuser löschen
-
 		// Projektdatensatz löschen
-
 		// ...
 
 	  pz_sabre_caldav_backend::incrementCtag($this->vars['id']);
-
 	}
 
 	// -------------------------------------------------------------------
@@ -306,8 +402,7 @@ class pz_project extends pz_model{
 	static function getProjectIds($projects)
 	{
 		$ids = array();
-		foreach($projects as $project)
-		{
+		foreach($projects as $project) {
 			$ids[] = $project->getId();
 		}
 		return $ids;
@@ -316,8 +411,7 @@ class pz_project extends pz_model{
 	static function getProjectsAsString($projects, $cutText = 100)
 	{
 		$return = array();
-		foreach($projects as $project)
-		{
+		foreach($projects as $project) {
 			$name = pz::cutText($project->getName(), $cutText).' ['.$project->getId().']';
 			$name = str_replace(array('=',','),'',$name);
 			$return[] = $name.'='.$project->getId();
@@ -325,7 +419,18 @@ class pz_project extends pz_model{
 		return implode(",",$return);
 	}
 
-
+  static function getProjectSubsAsString($projects, $cutText = 100)
+	{
+		$return = array();
+		foreach($projects as $project) {
+		  foreach($project->getProjectSubs() as $project_sub) {
+		    $name = pz::cutText($project_sub->getName(), $cutText).' ['.$project_sub->getId().']';
+			  $name = str_replace(array('=',','),'',$name);
+			  $return[] = $name.'='.$project_sub->getId();
+		  }
+		}
+		return implode(",",$return);
+	}
 
 
 

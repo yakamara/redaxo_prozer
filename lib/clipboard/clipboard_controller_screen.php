@@ -1,6 +1,7 @@
 <?php
 
-class pz_clipboard_controller_screen extends pz_clipboard_controller {
+class pz_clipboard_controller_screen extends pz_clipboard_controller 
+{
 
 	var $name = "clipboard";
 	var $function = "";
@@ -8,9 +9,29 @@ class pz_clipboard_controller_screen extends pz_clipboard_controller {
 	var $function_default = "my";
 	var $visible = FALSE;
 
-	function controller($function) {
+	function controller($function) 
+	{
 
-		if(!in_array($function,$this->functions)) $function = $this->function_default;
+    // ---- direct download
+    if(isset($_REQUEST["clip_key"]))
+    {
+      // /clip/clipkyy/optional-filename
+    
+      $clip_key = explode("/",rex_request("clip_key","string"));
+      if( isset($clip_key[1]) && ($clip = pz_clip::getByUri($clip_key[1]) ) && $clip->isReleased() )
+      {
+        $clip->saveToHistory('download');
+        return $clip->download();
+      }
+      header('HTTP/1.0 404 Not Found'); 
+      return '';
+    }
+
+    if(!pz::getUser())
+      return "";
+
+		if(!in_array($function,$this->functions)) 
+		  $function = $this->function_default;
 		$this->function = $function;
 
 		$p = array();
@@ -30,57 +51,104 @@ class pz_clipboard_controller_screen extends pz_clipboard_controller {
 		return "";
 	}
 
-	public function getClip($p) {
+  // -----------------
+
+	public function getClip($p) 
+	{
 		
 		$clip_id = rex_request("clip_id","int");
-		if($clip = pz_clipboard::getClipById($clip_id))
+		if( ($clip = pz_clip::get($clip_id)) )
 		{
+		
 			$mode = rex_request("mode","string");
-			switch($mode) {
+		  switch($mode) { 
+		    case("download_clip"):
+		      if(pz::getUser()->getClipDownloadPerm($clip)) {
+		        $clip->saveToHistory('download');
+  		    	return $clip->download();
+		      }
+  		    return "";
+		  }
+		  
+		  if( $clip->getUser()->getId() != pz::getUser()->getId() ) {
+		    return "";
+		  }
+		  
+			switch($mode) 
+			{
+
+        case("refreshview"):
+          $clip_screen = new pz_clip_screen($clip);
+          return $clip_screen->getListView($p, true).'<script>pz_clipboard_init();</script>';
+
+        case("release_clip"):
+          $return = '';
+          $duration = rex_request("clip_release_duration","string");
+          $offline_date = new DateTime();
+          switch($duration)
+          {
+            case("today"):
+              $offline_date->setTime(23,59);
+              break;
+            case("week"):
+              $offline_date->modify("+7 days");
+              $offline_date->setTime(23,59);
+              break;
+            case("month"):
+              $offline_date->modify("+1 month");
+              $offline_date->setTime(23,59);
+              break;
+            default:
+              $offline_date->modify("+3 months");
+          }
+
+          $clip = $clip->release(null, $offline_date);
+          $link = pz::url("screen","clipboard","get",array_merge($p["linkvars"],array("mode"=>"refreshview","clip_id"=>$clip->getId())));
+          $return = '<script>pz_loadPage("#clipboard .clip-'.$clip->getId().'", "'.$link.'");</script>';
+          return $return;
+
+        case("unrelease_clip"):
+          $return = '';
+          $clip = $clip->unrelease();
+          $link = pz::url("screen","clipboard","get",array_merge($p["linkvars"],array("mode"=>"refreshview","clip_id"=>$clip->getId())));
+          $return = '<script>pz_loadPage("#clipboard .clip-'.$clip->getId().'", "'.$link.'");</script>';
+          return $return;
+          
 				case("delete_clip"):
 					$return = "";
-					if(pz::getUser()->getId() == $clip["user_id"])
+					if(pz::getLoginUser()->getId() == $clip->getUserId())
 					{
-						pz_clipboard::deleteClipById($clip_id);
 						$return .= '<script>
-						$(".clip-'.$clip["id"].'").css("display","none");
-						// $(".clip-ids").val($(".clip-ids").val().replace("'.$clip["id"].',",""));
+						$(".clip-'.$clip->getId().'").remove();
+						// $(".clip-ids").val($(".clip-ids").val().replace("'.$clip->getId().',",""));
 						</script>';
+						$clip->delete();
 					}
 					return $return;
-				case("download_clip"):
-					$clip_path = pz_clipboard::getPath($clip_id);
-					$data = file_get_contents($clip_path);
-					header('Content-Disposition: attachment; filename="'.$clip["filename"].'";'); // 
-					header('Content-type: '.$clip["content_type"]);
-					return $data;
+
 				case("image_src_raw"):
-					$image_size = rex_request("image_size","string","m");
-					$image_type = rex_request("image_type","string","image/jpg");
-					$clip_path = pz_clipboard::getPath($clip_id);
-					$data = file_get_contents($clip_path);
-					$image = pz::makeInlineImageFromSource($data, $image_size, $image_type, FALSE); // raw image
-					return $image;
+		      $image_size = rex_request("image_size","string","m");
+		      $image_type = rex_request("image_type","string","image/jpg");
+					return $clip->getInlineImage(false, $image_size, $image_type);
+
 				case("image_inline"):
 				case("image_src"):
-					$image_size = rex_request("image_size","string","m");
-					$image_type = rex_request("image_type","string","image/jpg");
-					$clip_path = pz_clipboard::getPath($clip_id);
-					$data = file_get_contents($clip_path);
-					$image = pz::makeInlineImageFromSource($data, $image_size, $image_type); // image for inline
-					return $image;
+		      $image_size = rex_request("image_size","string","m");
+		      $image_type = rex_request("image_type","string","image/jpg");
+					return $clip->getInlineImage(true, $image_size, $image_type);
+
 			}	
 			
 		}
 		
 	}
 
-	public function setUpload($p) {
+  // -----------------
 
-		$clipboard = pz_clipboard::getByUserId( pz::getUser()->getId() );
+	public function setUpload($p) 
+	{
 
-		// Size Limit checken
-		// File Extensions checken
+		$clipboard = pz_clipboard::get( pz::getLoginUser()->getId() );
 
 		$return = array();
 		$return["clipdata"] = array();
@@ -96,133 +164,157 @@ class pz_clipboard_controller_screen extends pz_clipboard_controller {
 			if (isset($_SERVER["CONTENT_LENGTH"]) && isset($_SERVER["CONTENT_TYPE"])) {
 				$content_length = (int) $_SERVER["CONTENT_LENGTH"];
 				$content_type = $_SERVER["CONTENT_TYPE"];
-				if ($real_size == $content_length) {
-					$return["clipdata"] = $clipboard->addClipAsStream($temp,$filename,$content_length,$content_type);
+				if ($real_size == $content_length) 
+				{
+					$clip = pz_clip::createAsStream($temp,$filename,$content_length,$content_type);
+					$return["clipdata"] = array("id" => $clip->getId(), "filename" => $clip->getFilename());
 					$return["success"] = true;
 				}
 			
 			}
-        }
-        
-		// $_FILES auch beachten..
-		// move_uploaded_file($_FILES['qqfile']['tmp_name'], $path)){
-		// return $_FILES['qqfile']['name'];
-		// return $_FILES['qqfile']['size'];
+    }
 
 		return htmlspecialchars(json_encode($return), ENT_NOQUOTES);
 	}
 
 
+  // -----------------
+
+	public function getClipboard($p) 
+	{
+
+    $navigation = array(
+      "my" => rex_i18n::msg("clipboard_my"), 
+      "released" => rex_i18n::msg("clipboard_releasedlist"), 
+      "upload" => rex_i18n::msg("clipboard_upload"), 
+      "upload_project" => rex_i18n::msg("clipboard_project_files")
+    );
+    
+    // ----- navi
+    
+    $n = rex_request("n","string");
+    if(!array_key_exists($n,$navigation))
+      $n = "my";
+
+	  $return_navi = '<nav><ul>';
+	  foreach($navigation as $k => $v)
+	  {
+	    $link = pz::url($p["mediaview"],$p["controll"], $p["function"], array_merge($p["linkvars"],array("n"=>$k)));
+	    if($k == $n)
+	    {
+	      $return_navi .= '<li><a class="active" href="javascript:void(0);" onclick="pz_loadPage(\'#clipboard\', \''.$link.'\')">'.$v.'</a></li>';
+	    }else 
+	    {
+	      $return_navi .= '<li><a href="javascript:void(0);" onclick="pz_loadPage(\'#clipboard\', \''.$link.'\')">'.$v.'</a></li>';
+	    }
+    }
+	  $return_navi .= '</ul></nav>';
+
+    $p["linkvars"]["n"] = $n;
 
 
-	public function getClipboard($p) {
+    // ----- output
 
-		$search_name = rex_request("search_name","string");
-		$mode = rex_request("mode","string");
-		
+    $cb = pz_clipboard::get(pz::getLoginUser()->getId());
+ 		$cb_screen = new pz_clipboard_screen($cb);
+
 		$filter = array();
+		$search_name = rex_request("search_name","string");
 		if($search_name != "")
-			$filter[] = array('field'=>'filename','type'=>'like','value'=>$search_name);
+			$filter[] = array('field'=>'filename', 'type'=>'like', 'value' => $search_name);
 		
-		switch($mode) {
-			case("list"):
-				// TODO:
-				$cb = pz_clipboard::getByUserId(pz::getUser()->getId());
-				$return = pz_clipboard_screen::getClipboardSideView($cb->getClips($filter),$p);
-				return $return;
-				break;
-			case("add"):
-				// TODO:
-				break;
-			case("delete"):
-				// TODO:
-				break;
+		$p["linkvars"]["search_name"] = $search_name;
 		
-		}
-		
-		// id user_id filename created updated content_length content_type hidden
-		
-		// clip kann
-		// - unsichtbar sein, wenn bei email oder ähnlichem hochgeladen. wird nach einer gewissen zeit geloest
-		// - sichtbar, wenn aus mail rausgezogen, aus files folders rausgezogen
-		// - veröffentlichabr, wenn on und offlinedatum vergeben, eigene url erstellt sich
-		
-		// pz_clipboard:
-		// open				tinyint(1)
-		// online_date		datetime
-		// offline_date		datetime
-		// uri				varchar(255)
-		// hidden			tinyint(1)
-		
-		// - suche einbauen
-		// - link generieren
-		// - aufklappen der clips anzeigen
-		// - löschen
-		
-		$return = '		
-		<ul class="navi">
-			<!-- <li class="lev1 first"><a class="addresses" href="#">'.rex_i18n::msg("addressbook").'</a></li> -->
-			<li class="lev1"><a class="clipboard active" href="#">'.rex_i18n::msg("clipboard").'</a></li>
-			<li class="last"><a class="close bt5" href="javascript:void(0);" onclick="$(\'#sidebar\').hide();" title="'.rex_i18n::msg("close").'"><span class="icon"></span></a></li>
-		</ul>';
-		
-		$return .= pz_clipboard_screen::getSearchForm($p);
+		$mode = rex_request("mode","string");	
+		$p["linkvars"]["mode"] = "list";
 
-		$cb = pz_clipboard::getByUserId(pz::getUser()->getId());
-		$return .= pz_clipboard_screen::getClipboardSideView($cb->getClips($filter),$p);
-		
-		$return = '<div id="sidebar" class="sidebar sidebar1" >'.$return.'</div>';
+		$return_content = '';
+    switch($n)
+    {
+      case("upload_project"):
+        
+        unset($p["linkvars"]["search_name"]);
+        $project_id = rex_request("project_id","int");
+
+        if( !($project = pz::getLoginUser()->getProjectById($project_id)) )
+        {
+          $p["layer_list"] = "clipboard_project_list";
+          $return_content = pz_project_screen::getProjectsClipboardListView($p);
+        
+        }else 
+        {
+          $p["layer_list"] = "clipboard_project_files";
+          $project_screen = new pz_project_screen($project);
+        
+          $p["linkvars"]["project_id"] = $project->getId();
+        
+          $file_id = rex_request('file_id','string','');
+				  if($file_id == "")
+            $return_content .= $project_screen->getClipboardLabelView($p);
+  				
+  				if(($category = pz_project_node::get($file_id)) && ($category->isDirectory()) )
+  				{
+  					$category = $category;
+  				}else
+  				{
+    				$category = $project->getDirectory();
+  				}
+  				
+  				$return_content .= pz_project_file_screen::getClipboardFilesListView(
+  				    $category, $category->getChildren(array()), $p, array()
+  				  );
+        }
+
+				if($mode == "list")
+				  return $return_content;
+				
+        break;
+
+      case("upload"):
+        // $return_content .= '<h3 class="hl3">'.rex_i18n::msg('clip_upload').'</h2>';
+        $return_content .= $cb_screen->getMultiuploadView($p);
+				if($mode == "list")
+				  return $return_content;
+        break;
+
+      case("released"):
+    		$return_content = $cb_screen->getListView($cb->getReleasedClips($filter),$p);
+				if($mode == "list")
+				  return $return_content;
+        $return_content = $cb_screen->getSearchForm($p).$return_content;
+        break;
+      
+      case("my"):
+    		$return_content .= $cb_screen->getListView($cb->getMyClips($filter),$p);
+				if($mode == "list")
+				  return $return_content;
+        $return_content = $cb_screen->getSearchForm($p).$return_content;
+        break;
+
+    }
+    
+		$return = '<div id="clipboard" class="popbox">
+		            <h1 class="hl1">'.rex_i18n::msg("clipboard").': '.$navigation[$n].'</h1>
+		            <div class="popbox-frame">
+		              '.$return_navi.'
+		              <div class="popbox-content">
+		                '.$return_content.'
+		                <!-- <ul class="actions">
+                      <li><a href="#" class="bt2">Auswahl übernehmen</a></li>
+                      <li><a href="#" class="bt2">Abbrechen</a></li>
+                    </ul>
+                    -->
+		              </div>
+		            </div>
+		          </div>';
+
+    $return .= '<script>
+    pz_centerPopbox();
+	  pz_setZIndex("#clipboard");
+    </script>';
 
 		return $return;	
 
 	}
 
-
-
 }
-
-
-
-/*
-< ? p hp
-    
-		$xform = new rex_xform;
-		$xform->setDebug(true);
-
-		$xform->setValueField('objparams',array('form_wrap', '<div class="xform xform-search-small">#</div>'));
-		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform'));
-		$xform->setValueField('text',array('title',rex_i18n::msg('label_title'), 'Kontakt'));
-		$xform->setValueField('submit',array('submit',rex_i18n::msg('ok')));
-//		$xform->setValueField('html',array('', '<a class="bt1 search" href=""><span>Suche</span></a>'));
-		$xform_search = $xform->getForm();
-  ? >
-  
- 
-<div class="sidebar sidebar1" >
-  <ul class="navi">
-    <li class="lev1 first"><a class="addresses" href="#">Adressbuch</a></li>
-    <li class="lev1"><a class="clipboard active" href="#">Clipboard</a></li>
-    <li class="lev1 last"><a class="close" href="#">Schließen</a></li>
-  </ul>
-			
-  <?php echo $xform_search; ?>
-  <ul class="list">
-    <?php
-    for ($i = 1; $i <= 40; $i++)
-      echo '<li class="item"><a href="#">Clip '.$i.'</a></li>';
-    ?>
-  </ul>
-</div>
-
-<!--
-<div class="sidebar sidebar2">
-  <?php echo $xform_search; ?>
-  <ul>
-    <?php
-    for ($i = 1; $i <= 30; $i++)
-      echo '<li><a href="#">Adresse '.$i.'</a></li>';
-    ?>
-  </ul>
-</div>
-//-->
-*/

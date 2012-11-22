@@ -9,26 +9,23 @@ class pz_email_screen{
 		$this->email = $email;
 	}
 
-
-
-
 	// ------------------ LIST VIEWS
 
-	static function getInboxListView($emails, $p = array())
+	static function getInboxListView($emails, $p = array(), $orders = array())
 	{
-		return pz_email_screen::getEmailsBlockView($emails,$p);
+		return pz_email_screen::getEmailsBlockView($emails, $p, $orders);
 	}
 
-	static function getOutboxListView($emails, $p = array())
+	static function getOutboxListView($emails, $p = array(), $orders = array())
 	{
-		return pz_email_screen::getEmailsBlockView($emails,$p);
+		return pz_email_screen::getEmailsBlockView($emails, $p, $orders);
 	}
 
-	static function getSearchListView($emails, $p = array())
+	static function getSearchListView($emails, $p = array(), $orders = array())
 	{
-		return pz_email_screen::getEmailsBlockView($emails,$p);
+		return pz_email_screen::getEmailsBlockView($emails, $p, $orders);
 	}
-	static function getDraftsListView($emails, $p = array())
+	static function getDraftsListView($emails, $p = array(), $orders = array())
 	{
 		$p["title"] = rex_i18n::msg("email_drafts");
 		$p["layer"] = "emails_list";
@@ -39,15 +36,19 @@ class pz_email_screen{
 		$first = ' first';
 		foreach($paginate_screen->getCurrentElements() as $email) {		
 			if($e = new pz_email_screen($email)) {
+//			 $list .= $e->getDraftView($p);
+
 				$list .= '<li class="lev1 entry entry-email'.$first.'">'.$e->getDraftView($p).'</li>';
 				if($first == '')
 					$first = ' first';
 				else
 					$first = '';
+
 			}
 		}
 		
 		$content = $content.'<ul class="entries view-block clearfix">'.$list.'</ul>';
+//		$content = $content.$list;
 	
 		$f = new rex_fragment();
 		$f->setVar('title', $p["title"], false);
@@ -63,39 +64,48 @@ class pz_email_screen{
 			)
 			);
 		
-		return '<div id="emails_list" class="design1col" data-url="'.$link_refresh.'">'.$f->parse('pz_screen_list').'</div>';
+		return '<div id="emails_list" class="design1col email-drafts" data-url="'.$link_refresh.'">'.$f->parse('pz_screen_list.tpl').'</div>';
 		
 	}
 	
-	static function getSpamListView($emails, $p = array())
+	static function getSpamListView($emails, $p = array(), $orders = array())
 	{
 		return pz_email_screen::getEmailsBlockView($emails,$p);
 	}
 
-	static function getTrashListView($emails, $p = array())
+	static function getTrashListView($emails, $p = array(), $orders = array())
 	{
-		return pz_email_screen::getEmailsBlockView($emails,$p);
+		return pz_email_screen::getEmailsBlockView($emails, $p, $orders);
 	}
 
-	static function getEmailsBlockView($emails, $p = array())
+	static function getEmailsBlockView($emails, $p = array(), $orders = array())
 	{
 		$p["layer"] = "emails_list";
 		$paginate_screen = new pz_paginate_screen($emails);
 		$content = $paginate_screen->getPlainView($p);
 		
 		$list = '';
-		$first = ' first';
-		foreach($paginate_screen->getCurrentElements() as $email) {		
-			if($e = new pz_email_screen($email)) {
-				$list .= '<li class="lev1 entry entry-email'.$first.'">'.$e->getBlockView($p).'</li>';
-				if($first == '')
-					$first = ' first';
-				else
-					$first = '';
+		foreach($paginate_screen->getCurrentElements() as $email) 
+		{		
+			if($e = new pz_email_screen($email)) 
+			{
+				$list .= $e->getBlockView($p);
 			}
 		}
 		
-		$content = $content.'<ul class="entries view-block clearfix">'.$list.'</ul>';
+		$list .= '<script>
+		$(document).ready(function() {
+		  pz_screen_select_event("#emails_list li.selected");
+		});
+		</script>';
+		
+		$content = $content.$list;
+		$content .= $paginate_screen->setPaginateLoader($p, '#emails_list');
+
+		if($paginate_screen->isScrollPage())
+		{
+		  return $content;
+		}
 		
 		$f = new rex_fragment();
 		$f->setVar('title', $p["title"], false);
@@ -114,13 +124,13 @@ class pz_email_screen{
 		if(isset($p["list_links"]))
 			$f->setVar('links', $p["list_links"], false);
 		
-		$return = $f->parse('pz_screen_list');
+		$f->setVar("orders",$orders);
+		$return = $f->parse('pz_screen_list.tpl');
 		if(count($emails) == 0) {
 				$return .= '<div class="xform-warning">'.rex_i18n::msg("no_emails_found").'</div>';
 		}
 		
-		return '<div id="emails_list" class="design2col" data-url="'.$link_refresh.'">'.$return.'</div>
-		<script>pz_screen_select_event("#emails_list li.selected");</script>';
+		return '<div id="emails_list" class="design2col" data-url="'.$link_refresh.'">'.$return.'</div>';
 		
 	}
 
@@ -147,7 +157,7 @@ class pz_email_screen{
 		$f->setVar('title', $p["title"], false);
 		$f->setVar('content', $content , false);
 		
-		$return = $f->parse('pz_screen_list');
+		$return = $f->parse('pz_screen_list.tpl');
 		if(count($emails) == 0) {
 				$return .= '<div class="xform-warning">'.rex_i18n::msg("no_emails_found").'</div>';
 		}
@@ -158,11 +168,54 @@ class pz_email_screen{
 
 
 
+  
+
+  /*  
+	private function getEmailsTableView($emails,$p = array())
+	{
+		
+		$paginate_screen = new pz_paginate_screen($emails);
+		$paginate = $paginate_screen->getPlainView($p);
+		
+		$content = "";
+		foreach($paginate_screen->getCurrentElements() as $email) {
+			$content .= '<tr>';
+			$content .= '<td>'.$email.'</td>';
+			$content .= '</tr>';
+		}
+		$content = $paginate.'
+          <table class="projectemail tbl1">
+          <thead><tr>
+              <th></th>
+              <th>'.rex_i18n::msg("customer").'</th>
+              <th>'.rex_i18n::msg("project_name").'</th>
+              <th>'.rex_i18n::msg("project_createdate").'</th>
+              <th>'.rex_i18n::msg("project_admins").'</th>
+              <th class="label"></th>
+          </tr></thead>
+          <tbody>
+            '.$content.'
+          </tbody>
+          </table>';
+		
+		$f = new rex_fragment();
+		$f->setVar('title', $p["title"], false);
+		$f->setVar('content', $content , false);
+		return '<div id="projectemail_list" class="design2col">'.$f->parse('pz_screen_list.tpl').'</div>';
+	}
+  */
+
 
 
 
 
 	// ------------------ VIEWS
+
+	public function getHeaderView($p = array())
+	{
+		$header = $this->email->getHeader();
+		return '<div class="email-header"><pre>'.htmlspecialchars($header).'</pre></div>';
+	}
 
 	public function getDebugView($p = array())
 	{
@@ -173,35 +226,49 @@ class pz_email_screen{
 	public function getDraftView($p = array())
 	{
     
-    	$p["linkvars"]["email_id"] = $this->email->getId();
-    
-    	$link_open = "javascript:pz_loadPage('email_form','".pz::url("screen","emails","create",array_merge($p["linkvars"],array("mode" => "edit_email", "email_id"=>$this->email->getId())))."')";
-    	$link_delete = "javascript:pz_exec_javascript('".pz::url("screen","emails","create",array_merge($p["linkvars"],array("mode"=>"delete_email")))."')";
+  	$p["linkvars"]["email_id"] = $this->email->getId();
+  
+  	$link_open = "javascript:pz_loadPage('email_form','".pz::url("screen","emails","create",array_merge($p["linkvars"],array("mode" => "edit_email", "email_id"=>$this->email->getId())))."')";
+  	$link_delete = "javascript:pz_exec_javascript('".pz::url("screen","emails","create",array_merge($p["linkvars"],array("mode"=>"delete_email")))."')";
 
-		$image_from_address = pz_user::getDefaultImage();
-		if($address = $this->email->getFromAddress())
+	  $image_to_address = "";
+		$image_to_adresse_title = array();
+	
+		$to_emails = array();
+		$to_emails = explode(",",$this->email->getTo());
+	
+		if(count($to_emails)>0)
 		{
-			$image_from_address = $address->getInlineImage();
-		}
+			foreach($to_emails as $to_email)
+			{
+				if($to_address = pz_address::getByEmail($to_email))
+				{
+					if($image_to_address == "") {
+						$image_to_address = $to_address->getInlineImage();
+					}
+					$image_to_adresse_title[] = htmlspecialchars($to_address->getFullName());
+				}else
+				{
+					$image_to_adresse_title[] = htmlspecialchars($to_email);
+				}
+			}
+    }		
+
+		if($image_to_address == "")
+			$image_to_address = pz_user::getDefaultImage();
+		$image_to_adresse_title = implode(", ",$image_to_adresse_title);
 
 		$return = '
-		  <article id="email-'.$this->email->getId().'" class="email-'.$this->email->getId().'">
+		  <article id="email-'.$this->email->getId().'" class="email draft block images label email-'.$this->email->getId().'">
             <header>
-              <div class="grid2col">
-                <div class="column first">
-                  <figure><img src="'.$image_from_address.'" width="40" height="40" alt="" /></figure>
-                  <hgroup>
-                    <h2 class="hl7"><span class="name">'.$this->email->getVar("from").'</span><span class="info">'.$this->email->getVar("created").'</span></h2>
-                    <h3 class="hl7"><a href="'.$link_open.'"><span class="title">'.htmlspecialchars($this->email->getSubject()).'</span></a></h3>
-                  </hgroup>
-                </div>
-                
-                <div class="column last">
-                  <ul class="sl2 functions">
-                    <li class="function"><a class="tooltip trash" href="'.$link_delete.'"><span class="tooltip"><span class="inner">'.rex_i18n::msg("delete").'</span></span></a></li>
-                  </ul>
-                </div>
-              </div>
+              <figure>'.pz_screen::getTooltipView('<img src="'.$image_to_address.'" width="40" height="40" />',$image_to_adresse_title).'</figure>
+              <hgroup>
+                <h2 class="hl7"><span class="name">'.$this->email->getVar("from").'</span><span class="info">'.$this->email->getVar("created").'</span></h2>
+                <h3 class="hl7"><a href="'.$link_open.'"><span class="title">'.htmlspecialchars($this->email->getSubject()).'</span></a></h3>
+              </hgroup>
+              <ul class="sl2 functions">
+                <li class="function">'.pz_screen::getTooltipView('<a class="tooltip trash" href="'.$link_delete.'"></a>',htmlspecialchars(rex_i18n::msg("delete"))).'</li>
+              </ul>
             </header>
             
             <section class="content preview" id="email-content-preview-'.$this->email->getId().'">
@@ -222,44 +289,80 @@ class pz_email_screen{
 
 	public function getBlockView($p = array())
 	{
-    
-	    /*
+    /*
 	      project-status kann 
 	      - status0 -> nicht bearbeitet
 	      - status1 -> wurde bearbeitet
-	    */
+	  */
     
-    	$p["linkvars"]["email_id"] = $this->email->getId();
+    $p["linkvars"]["email_id"] = $this->email->getId();
     
-    	$link_open = "javascript:pz_open_email('".$this->email->getId()."','".pz::url("screen","emails","email",array_merge($p["linkvars"],array("mode"=>"view")))."')";
+    $link_open = "javascript:pz_open_email('".$this->email->getId()."','".pz::url("screen","emails","email",array_merge($p["linkvars"],array("mode"=>"view")))."')";
     	// $link_move_to_project_id = "javascript:pz_open_email('".$this->email->getId()."','".pz::url("screen","emails","email",array_merge($p["linkvars"],array("mode"=>"move_to_project_id")))."')";
     	
-    	$status = 1;
-    	if($this->email->getStatus() == 1)
-    		$status = 0;
-		$link_status = "javascript:pz_exec_javascript('".pz::url("screen","emails","email",array_merge($p["linkvars"],array("mode"=>"update_status","email_status"=>$status)))."')";
+		$link_status_0 = "javascript:pz_exec_javascript('".pz::url("screen","emails","email",array_merge($p["linkvars"],array("mode"=>"update_status","email_status"=>0)))."')";
+		$link_status_1 = "javascript:pz_exec_javascript('".pz::url("screen","emails","email",array_merge($p["linkvars"],array("mode"=>"update_status","email_status"=>1)))."')";
 		
 		$link_unread = "javascript:pz_exec_javascript('".pz::url("screen","emails","email",array_merge($p["linkvars"],array("mode"=>"unread")))."')";
 		$link_unproject = "javascript:pz_exec_javascript('".pz::url("screen","emails","email",array_merge($p["linkvars"],array("mode"=>"unproject")))."')";
 		
-		if($this->email->isTrash()) {
-			$link_trash = "javascript:pz_exec_javascript('".pz::url("screen","emails","email",array_merge($p["linkvars"],array("mode"=>"untrash")))."')";
-			$text_trash = rex_i18n::msg("untrash");
-	    }else {
-			$link_trash = "javascript:pz_exec_javascript('".pz::url("screen","emails","email",array_merge($p["linkvars"],array("mode"=>"trash")))."')";
-			$text_trash = rex_i18n::msg("trash");
-	    }
+		$link_untrash = "javascript:pz_exec_javascript('".pz::url("screen","emails","email",array_merge($p["linkvars"],array("mode"=>"untrash")))."')";
+		$text_untrash = rex_i18n::msg("untrash");
+		$link_trash = "javascript:pz_exec_javascript('".pz::url("screen","emails","email",array_merge($p["linkvars"],array("mode"=>"trash")))."')";
+		$text_trash = rex_i18n::msg("trash");
+
+		$link_delete = "javascript:pz_exec_javascript('".pz::url("screen","emails","email",array_merge($p["linkvars"],array("mode"=>"delete")))."')";
+		$text_delete = rex_i18n::msg("delete");
 	    
 		$link_forward = static::getAddLink(array("forward_email_id"=>$this->email->getId()));
 		$link_reply = static::getAddLink(array("reply_email_id"=>$this->email->getId()));
 		$link_replyall = static::getAddLink(array("reply_email_id"=>$this->email->getId(),"reply_all" => 1));
-		$link_print = pz::url();
+		$link_print = pz::url('screen','emails','email',array('mode'=>'view_firstbody','email_id'=>$this->email->getId()));
 
 		$image_from_address = pz_user::getDefaultImage();
+		$image_from_adresse_title = htmlspecialchars($this->email->getFromEmail());
 		if($address = $this->email->getFromAddress())
 		{
 			$image_from_address = $address->getInlineImage();
+			$image_from_adresse_title = htmlspecialchars($address->getFullName());
 		}
+
+
+		$image_to_address = "";
+		$image_to_adresse_title = array();
+
+		$to_emails = array();
+		if($this->email->getSend() == 0)
+		{
+			if(($to_user = pz_user::get($this->email->getUserId()))) 
+			{
+				$to_emails[] = 	$to_user->getEmail();
+			}
+		}
+
+		if(count($to_emails) == 0)
+			$to_emails = explode(",",$this->email->getToEmails());
+
+		if(count($to_emails)>0)
+		{
+			foreach($to_emails as $to_email)
+			{
+				if($to_address = pz_address::getByEmail($to_email))
+				{
+					if($image_to_address == "") {
+						$image_to_address = $to_address->getInlineImage();
+					}
+					$image_to_adresse_title[] = htmlspecialchars($to_address->getFullName());
+				}else
+				{
+					$image_to_adresse_title[] = htmlspecialchars($to_email);
+				}
+			}
+		}
+
+		if($image_to_address == "")
+			$image_to_address = pz_user::getDefaultImage();
+		$image_to_adresse_title = implode(", ",$image_to_adresse_title);
 
 		$project_name = rex_i18n::msg('please_select_project_for_email');
 
@@ -270,14 +373,20 @@ class pz_email_screen{
 				$project_name = $project->getName();
 				
 			$link_move_status = "javascript:pz_exec_javascript('".pz::url("screen","emails","email",array_merge($p["linkvars"],array("mode"=>"move_to_project_id_update_status","email_project_id"=>$project->getId())))."')";
+
+      /*
 			$link_move = "javascript:pz_exec_javascript('".pz::url("screen","emails","email",array_merge($p["linkvars"],array("mode"=>"move_to_project_id","email_project_id"=>$project->getId())))."')";
+			<a href="'.$link_move.'"><span class="title">'.rex_i18n::msg("move").'</span></a>
+			rex_i18n::msg("and_finished")
+      */
+
 			$projects[] = '<li class="entry first">
-			   <div class="wrapper">
+			   <a href="'.$link_move_status.'" class="wrapper">
 					<div class="links">
-  					<a href="'.$link_move.'"><span class="title">'.rex_i18n::msg("move").'</span></a><a href="'.$link_move_status.'"><span class="title">'.rex_i18n::msg("and_finished").'</span></a>
+  					<span class="title">'.rex_i18n::msg("move").'</span>
 	   		  </div>
 					<span class="name">'.htmlspecialchars($project->getName()).'</span>
-				</div>
+				</a>
 				</li>';
 			// <li class="entry"><a class="email" href=""><span class="name">Christian Sittler</span><span class="title">Lorem ipsum dolor sit amet</span></a></li>
 		}
@@ -290,9 +399,9 @@ class pz_email_screen{
 		if($this->email->getReaded() == 1)
 			$readed_class = ' email-readed';
 
-		$trash_class = "trash";
-		if($this->email->isTrash())
-			$trash_class = "untrash";
+		$attachment_class = " email-hasnoattachments";
+		if($this->email->hasAttachments())
+				$attachment_class = ' email-hasattachments';
 
 		$reply_class = "";
 		if($this->email->getRepliedId() > 0)
@@ -306,17 +415,55 @@ class pz_email_screen{
 		if($this->email->getForwardedId() > 0)
 			$forward_class = " active";
 
+		$status_class = ' email-status-0';
+    	if($this->email->getStatus() == 1)
+			$status_class = ' email-status-1';
+
+    $label_class = ' labelc';
+    if($this->email->getProject())
+      $label_class = ' '.pz_label_screen::getColorClass($this->email->getProject()->getLabelId());
+
+		/*
+		<a class="tooltip status status-0" href="'.$link_status_1.'"><span class="tooltip"><span class="inner">'.rex_i18n::msg("mark_as_status_1").'</span></span></a>
+        <a class="tooltip status status-1" href="'.$link_status_0.'"><span class="tooltip"><span class="inner">'.rex_i18n::msg("mark_as_status_0").'</span></span></a>
+        */
+
+    $function_links = array();
+    
+    $function_links["unproject"] = '<li class="function unproject">'.pz_screen::getTooltipView('<a class="unproject" href="'.$link_unproject.'"></a>',rex_i18n::msg("mark_as_unproject")).'</li>';
+    $function_links["unread"] = '<li class="function unread">'.pz_screen::getTooltipView('<a class="unread" href="'.$link_unread.'"></a>',rex_i18n::msg("mark_as_unread")).'</li>';
+    $function_links["reply"] = '<li class="function reply">'.pz_screen::getTooltipView('<a class="reply'.$reply_class.'" href="'.$link_reply.'"></a>',rex_i18n::msg("reply")).'</li>';
+    $function_links["replyall"] = '<li class="function replyall">'.pz_screen::getTooltipView('<a class="replyall'.$replyall_class.'" href="'.$link_replyall.'"></a>',rex_i18n::msg("replyall")).'</li>';
+    $function_links["forward"] = '<li class="function forward">'.pz_screen::getTooltipView('<a class="forward'.$forward_class.'" href="'.$link_forward.'"></a>',rex_i18n::msg("forward")).'</li>';
+    $function_links["print"] = '<li class="function print">'.pz_screen::getTooltipView('<a class="print" href="javascript:void(0)" onclick="window.open(\''.$link_print.'\'); return false;"></a>',rex_i18n::msg("print")).'</li>';
+
+    $function_links["trash"] = '<li class="function trash">'.pz_screen::getTooltipView('<a class="trash" href="'.$link_trash.'"></a>',$text_trash).'</li>';
+
+    $function_links["untrash"] = '<li class="function untrash">'.pz_screen::getTooltipView('<a class="untrash" href="'.$link_untrash.'"></a>',$text_untrash).'</li>';
+
+    $function_links["delete"] = '<li class="function delete">'.pz_screen::getTooltipView('<a class="delete" href="'.$link_delete.'"></a>',$text_delete).'</li>';
+    
+    if($this->email->isTrash())
+    {
+      unset($function_links["trash"]);
+    }else 
+    {
+      unset($function_links["untrash"]);
+      unset($function_links["delete"]);
+    }
+
 		$return = '
-		  <article id="email-'.$this->email->getId().'" class="email-'.$this->email->getId().$readed_class.$project_class.'">
+          <article id="email-'.$this->email->getId().'" class="email block images label email-'.$this->email->getId().$readed_class.$project_class.$status_class.$attachment_class.'">
             <header>
               <div class="grid2col">
                 <div class="column first">
-                  <figure><img src="'.$image_from_address.'" width="40" height="40" alt="" /></figure>
-                  <hgroup>
+                  <figure class="figure-from">'.pz_screen::getTooltipView('<img src="'.$image_from_address.'" width="40" height="40" />',htmlspecialchars($image_from_adresse_title)).'</figure>
+                  <figure class="figure-to">'.pz_screen::getTooltipView('<img src="'.$image_to_address.'" width="40" height="40" />',$image_to_adresse_title).'</figure>
+                  <hgroup class="data">
                     <h2 class="hl7"><span class="name">'.htmlspecialchars(pz::cutText($this->email->getVar("from"))).'</span><span class="info">'.$this->email->getVar("created").'</span></h2>
                     <h3 class="hl7"><a href="'.$link_open.'"><span class="title">'.htmlspecialchars($this->email->getSubject()).'</span></a></h3>
                   </hgroup>
-                  <a class="tooltip status status'.$this->email->getStatus().' email-status-'.$this->email->getId().'" href="'.$link_status.'"><span class="tooltip"><span class="inner">E-Mail wurde bearbeitet</span></span></a>
+                  
                  </div>
                 
                 <div class="column last">
@@ -334,20 +481,7 @@ class pz_email_screen{
                   </ul>
                 
                   <ul class="sl2 functions">
-                    <li class="function unproject"><a class="tooltip unproject" href="'.
-                    	$link_unproject.'"><span class="tooltip"><span class="inner">'.rex_i18n::msg("mark_as_unproject").'</span></span></a></li>
-                    <li class="function unread"><a class="tooltip unread" href="'.
-                    	$link_unread.'"><span class="tooltip"><span class="inner">'.rex_i18n::msg("mark_as_unread").'</span></span></a></li>
-                    <li class="function reply"><a class="tooltip reply'.$reply_class.'" href="'.$link_reply.'">'.
-						'<span class="tooltip"><span class="inner">'.rex_i18n::msg("reply").'</span></span></a></li>
-                    <li class="function replyall"><a class="tooltip replyall'.$replyall_class.'" href="'.$link_replyall.'">'.
-						'<span class="tooltip"><span class="inner">'.rex_i18n::msg("replyall").'</span></span></a></li>
-                    <li class="function forward"><a class="tooltip forward'.$forward_class.'" href="'.$link_forward.'">'.
-						'<span class="tooltip"><span class="inner">'.rex_i18n::msg("forward").'</span></span></a></li>
-                    <li class="function print"><a class="tooltip print" href="'.$link_print.'"><span class="tooltip">'.
-						'<span class="inner">'.rex_i18n::msg("print").'</span></span></a></li>
-                    <li class="function '.$trash_class.'"><a class="tooltip '.$trash_class.'" href="'.$link_trash.'"><span class="tooltip">'.
-						'<span class="inner">'.$text_trash.'</span></span></a></li>
+                    '.implode("",$function_links).'
                     <li class="last selected option split-v"><span class="selected option">'.rex_i18n::msg("options").'</span>
                       <div class="flyout">
                         <div class="content">
@@ -357,19 +491,20 @@ class pz_email_screen{
                           </ul>
                         </div>
                       </div>
+                    </li>
                   </ul>
                 </div>
               </div>
             </header>
             
             <section class="content preview" id="email-content-preview-'.$this->email->getId().'">
-              <p>'.htmlspecialchars(pz::cutText($this->email->getBody(),"60")).'&nbsp;</p>
+              <p>'.htmlspecialchars(pz::cutText($this->email->getBody(),"50")).'&nbsp;</p>
             </section>
             
             <section class="content detail" id="email-content-detail-'.$this->email->getId().'"></section>
             
             <footer>
-              <a class="label labelc'.$this->email->getVar('label_id').'" href="#">Label</a>
+              <span class="label '.$label_class.'">Label</span>
             </footer>
           </article>
         ';
@@ -459,49 +594,97 @@ class pz_email_screen{
 	public function getDetailView($p = array())
 	{
 
-    	$pz_eml = new pz_eml($this->email->getEml());
-    	$pz_eml->setMailFilename($this->email->getId());
-		$body = $pz_eml->getFirstText();
-		$body = $this->prepareOutput($body);
-		$body = str_replace("\n","<br />",$body);
+    $pz_eml = $this->email->getProzerEml();
+    $pz_eml->setMailFilename($this->email->getId());
 		
-		$attachments = array();
+		$ignore_attachment_elements = array();
+		
+		$body = '';
+		if($this->email->hasBodyHTML())
+		{
+			// html und text
+			// $body .= 'text and html:';
 
-		$as = $pz_eml->getAttachmentElements();
-		$first = "first ";
-		$last = "";
-		
-		// $as[] = $pz_eml;
-		
+			// nur html
+			// -> html2text
+			// $body .= 'only html:';
+
+			$body_text = $pz_eml->getFirstText();
+			$body_text = $this->prepareOutput($body_text);
+			$body_text = str_replace("\n","<br />",$body_text);
+			
+			$a_view_text_link = pz::url("screen","emails","email",
+					array("email_id"=>$this->email->getId(),"mode"=>"view_firstbody")
+				);
+			
+			$a_view_html_link = pz::url("screen","emails","email",
+					array("email_id"=>$this->email->getId(),"mode"=>"view_ashtml","element_id"=>$this->email->getBodyHTMLElement()->getElementId())
+				);
+			
+			// iframe = $(\'#email-'.$this->email->getId().' .content-body-html iframe\');iframe.attr(\'src\',\''.$a_view_html_link.'\');iframe.load(function(){ this.style.height = this.contentWindow.document.body.offsetHeight + \'px\'; });
+			
+			$body .= '<section class="content-body-navigation">';
+			$body .= '<ul class="content-navigation">';
+			$body .= '<li class="navigation-text"><a class="active" href="javascript:void(0);" onclick="$(\'#email-'.$this->email->getId().' .content-body-html\').hide();$(\'#email-'.$this->email->getId().' .content-body-text\').show();$(\'#email-'.$this->email->getId().' .content-body-navigation li.navigation-text a\').addClass(\'active\');$(\'#email-'.$this->email->getId().' .content-body-navigation li.navigation-html a\').removeClass(\'active\')">'.rex_i18n::msg("email_textversion").'</a><a href="'.$a_view_text_link.'" target="_blank">'.rex_i18n::msg("email_textversion_popup").'</a></li>';
+			$body .= '<li class="navigation-html"><a href="javascript:void(0);" onclick="$(\'#email-'.$this->email->getId().' .content-body-html\').show();$(\'#email-'.$this->email->getId().' .content-body-text\').hide();$(\'#email-'.$this->email->getId().' .content-body-navigation li.navigation-text a\').removeClass(\'active\');$(\'#email-'.$this->email->getId().' .content-body-navigation li.navigation-html a\').addClass(\'active\');$(\'#email-'.$this->email->getId().' .content-body-html iframe\').attr(\'src\',\''.$a_view_html_link.'\').load(function(){this.style.height = (this.contentWindow.document.body.offsetHeight+50) +\'px\';})">'.rex_i18n::msg("email_htmlversion").'</a><a href="'.$a_view_html_link.'" target="_blank">'.rex_i18n::msg("email_htmlversion_popup").'</a></li>';
+			$body .= '</ul>';
+			$body .= '</section>';
+			
+			$body .= '<section class="content">';
+			$body .= '<div class="content-body-text" style="display:visible;">'.$body_text.'</div>';
+			$body .= '<div class="content-body-html" style="display:none;"><iframe width="100%" height="600"></iframe></div>';
+			$body .= '</section>';
+			
+		}else
+		{
+			// nur text
+			// $body .= 'only text:';
+
+			$body_text = $pz_eml->getFirstText();
+      $body_text = $this->prepareOutput($body_text);
+      $body_text = $this->prepareQuotes($body_text, "&gt;");
+			$body_text = str_replace("\n","<br />",$body_text);
+
+			$body .= '<section class="content">'.$body_text.'</section>';
+		}
+
+		$attachments = array();
+		$as = array_merge(array($this->email->getProzerEml()),$this->email->getAttachments());
 		foreach($as as $k => $a)
 		{
 		
-			$a_download_link = pz::url("screen","emails","email",array("email_id"=>$this->email->getId(),"mode"=>"download","element_id"=>$a->getElementId()));
-			$a_clipboard_link = pz::url("screen","emails","email",array("email_id"=>$this->email->getId(),"mode"=>"element2clipboard","element_id"=>$a->getElementId()));
-			$a_view_link = pz::url("screen","emails","email",array("email_id"=>$this->email->getId(),"mode"=>"view_element","element_id"=>$a->getElementId()));
-		
-			if(count($as) == ($k+1)) $last = "last ";
-      
-			$extension = pz::getExtensionByMimeType($a->getContentType());
-      		$depth = "";
-			// $depth = str_pad('', $a->getDepth(), "_");
-			// $depth = str_replace('_','__ ',$depth);
-      
-			// Spaces vermeiden
-			$attachment = '';
-			$attachment .= '<li class="'.$first.$last.'attachment entry">';
-			//			$attachment .= '<span class="preview"><img src="'.$a->getInlineImage().'" width="20" height="20" /></span>';
-			$attachment .= '<span class="file25 '.$extension.'"></span>';
-			$attachment .= '<span class="link">'.$depth.'<a onclick="window.open(this.href); return false;" href="'.$a_view_link.'" title="'.htmlspecialchars($a->getFileName()).'">'.htmlspecialchars(pz::cutText($a->getFileName(),50)).'</a></span>';
-			$attachment .= '<span class="name" title="'.htmlspecialchars($a->getContentType()).'">'.htmlspecialchars(pz::cutText($a->getContentType())).'</span>';
-			$attachment .= '<span class="info">'.pz::readableFilesize($a->getSize()).'</span>';
-			$attachment .= '<ul class="functions">';
-			$attachment .= '<li class="first function"><a class="download" target="_blank" href="'.$a_download_link.'">'.rex_i18n::msg("download").'</a></li>';
-			$attachment .= '<li class="last function"><a class="clipboard" href="javascript:void(0);" onclick="pz_exec_javascript(\''.$a_clipboard_link.'\')">'.rex_i18n::msg("2clipboard").'</a></li>';
-			$attachment .= '</ul>';
-			$attachment .= '</li>';
-			$attachments[] = $attachment;
-			$first = "";
+				$a_download_link = pz::url("screen","emails","email",array("email_id"=>$this->email->getId(),"mode"=>"download","element_id"=>$a->getElementId()));
+				$a_clipboard_link = pz::url("screen","emails","email",array("email_id"=>$this->email->getId(),"mode"=>"element2clipboard","element_id"=>$a->getElementId()));
+				$a_view_link = pz::url("screen","emails","email",array("email_id"=>$this->email->getId(),"mode"=>"view_element","element_id"=>$a->getElementId()));
+
+				if(!$a->hasParent())
+				{
+					$a_download_link = pz::url("screen","emails","email",array("email_id"=>$this->email->getId(),"mode"=>"download_source","element_id"=>$a->getElementId()));
+					$a_clipboard_link = pz::url("screen","emails","email",array("email_id"=>$this->email->getId(),"mode"=>"element_source2clipboard","element_id"=>$a->getElementId()));
+					$a_view_link = $a_download_link;
+				}
+	      
+				$extension = pz::getExtensionByMimeType($a->getContentType());
+	      $depth = "";
+				$depth = str_pad('', $a->getDepth(), "_");
+				$depth = str_replace('_','__ ',$depth);
+	      
+				// Spaces vermeiden
+				$attachment = '';
+				$attachment .= '<li class="attachment">';
+							// $attachment .= '<span class="preview"><img src="'.$a->getInlineImage().'" width="20" height="20" /></span>';
+				$attachment .= '<span class="piped">
+				                  <span class="link"><span class="file25 '.$extension.'"></span>'.$depth.'<a onclick="window.open(this.href); return false;" href="'.$a_view_link.'" title="'.htmlspecialchars($a->getFileName()).'">'.htmlspecialchars(pz::cutText($a->getFileName(),40)).'</a></span>
+				                  <span class="name" title="'.htmlspecialchars($a->getContentType()).'">'.htmlspecialchars(pz::cutText($a->getContentType())).'</span>
+				                  <span class="info">'.pz::readableFilesize($a->getSize()).'</span>
+				                </span>';
+				$attachment .= '<ul class="functions">';
+				$attachment .= '<li class="first function"><a class="download" target="_blank" href="'.$a_download_link.'">'.rex_i18n::msg("download").'</a></li>';
+				$attachment .= '<li class="last function">'.pz_screen::getTooltipView('<a class="clipboard" href="javascript:void(0);" onclick="pz_exec_javascript(\''.$a_clipboard_link.'\')">'.rex_i18n::msg("copy_to_clipboard").'</a>',rex_i18n::msg("copy_to_clipboard")).'</li>';
+				$attachment .= '</ul>';
+				$attachment .= '</li>';
+				$attachments[] = $attachment;
+				
 		}
 		
 		
@@ -509,7 +692,7 @@ class pz_email_screen{
 		{
 			$attachments = '
 							<section class="attachments">
-							<ul class="attachments entries">'.implode("",$attachments).'</ul>
+							<ul class="attachments">'.implode("",$attachments).'</ul>
 							</section>';
 		}else
 		{
@@ -531,37 +714,45 @@ class pz_email_screen{
                   <dd class="to">'.$this->prepareOutput(implode(", ",$cc)).'</dd>';
 		}
 
+		$email_header = "";
+		$header_show_link = pz::url("screen","emails","email",array("email_id"=>$this->email->getId(),"mode"=>"view_header"));
+		$email_header = '
+			<div class="email-header-link">
+			<a class="email-show_header" href="javascript:void(0);" onclick="
+				$(this).parent().find(\'.email-show_header\').hide();
+				$(this).parent().find(\'.email-hide_header\').show();
+				pz_loadPage(\'#email-'.$this->email->getId().' .email-header\',\''.$header_show_link.'\');">'.rex_i18n::msg("email_show_header").'</a>
+			<a class="email-hide_header" href="javascript:void(0);" onclick="
+				$(this).parent().find(\'.email-show_header\').show();
+				$(this).parent().find(\'.email-hide_header\').hide();
+				$(\'#email-'.$this->email->getId().' .email-header\').hide();" style="display:none;">'.rex_i18n::msg("email_hide_header").'</a>
+			</div>
+			<div class="email-header"></div>
+		';
+
 		$return = '
 	
 	<! --------------------------------------------------------------------- E-Mail lesen //-->
 	    
-        <div class="email email-read">
+        <div class="email-read">
           <header>
-            <div class="grid2col">
-              <div class="column first">
-              
-                <dl class="data">
-                  <dt class="from">From:</dt>
-                  <dd class="from">'.$this->prepareOutput($from).'</dd>
-                  <dt class="to">To:</dt>
-                  <dd class="to">'.$this->prepareOutput(implode(", ",$to)).'</dd>
-                  '.$cc.'
-                  <dt class="date">Date</dt>
-                  <dd class="date">'.$this->email->getDate().'</dd>
-                </dl>
+
+				'.$email_header.'
+				
+            <dl class="data">
+              <dt class="from">From:</dt>
+              <dd class="from">'.$this->prepareOutput($from).'</dd>
+              <dt class="to">To:</dt>
+              <dd class="to">'.$this->prepareOutput(implode(", ",$to)).'</dd>
+              '.$cc.'
+              <dt class="date">Date</dt>
+              <dd class="date">'.$this->email->getDate().'</dd>
+            </dl>
 			
-              </div>
-              
-              <div class="column last">
-              </div>
-            </div>
           </header>
           
           '.$attachments.'
-          
-          <section class="content">
-            '.$body.'
-          </section>
+          '.$body.'
           
           <footer>
           <!--
@@ -595,39 +786,68 @@ class pz_email_screen{
 	// ------------------------------------------------------------------- FORMS
 
 
-	function getEmailsSearchForm ($p = array())
+	static public function getEmailsSearchForm ($p = array(), $ignore_fields = array())
 	{
 
-		$link_refresh = pz::url("screen","emails",
+		$link_refresh = pz::url(
+							'screen',
+							$p["controll"],
 							$p["function"],
 							array_merge( $p["linkvars"], array( "mode" => "emails_search", "project_ids" => "___value_ids___" ) )
 						);
 		
+		if(!isset($p["title_search"]))
+		  $p["title_search"] = rex_i18n::msg("search_for_emails");
+		
 	    $return = '
 	        <header>
 	          <div class="header">
-	            <h1 class="hl1">'.rex_i18n::msg("search_for_emails").'</h1>
+	            <h1 class="hl1">'.$p["title_search"].'</h1>
 	          </div>
 	        </header>';
 		
 		$xform = new rex_xform;
 		$xform->setObjectparams("real_field_names",TRUE);
 		$xform->setObjectparams("form_showformafterupdate", TRUE);
-		$xform->setObjectparams("form_action", "javascript:pz_loadFormPage('emails_list','emails_search_form','".pz::url('screen','emails',$p["function"], array("mode"=>'list'))."')");
+		$xform->setObjectparams("form_action", "javascript:pz_loadFormPage('".$p["layer_list"]."','emails_search_form','".pz::url('screen',$p["controll"],$p["function"], $p["linkvars"])."')");
 		$xform->setObjectparams("form_id", "emails_search_form");
 		
-		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform', 'runtime'));
-		$xform->setValueField("text",array("search_name",rex_i18n::msg("project_name")));
+		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl', 'runtime'));
+		// $xform->setValueField("text",array("search_name",rex_i18n::msg("search_email_fulltext")));
+
+		if(!in_array("fulltext",$ignore_fields))
+			$xform->setValueField("text",array("search_fulltext",rex_i18n::msg("search_email_fulltext")));
+		if(!in_array("subject",$ignore_fields))
+			$xform->setValueField("text",array("search_subject",rex_i18n::msg("search_email_subject")));
+		if(!in_array("from",$ignore_fields))
+			$xform->setValueField("text",array("search_from",rex_i18n::msg("search_email_from")));
+		if(!in_array("to",$ignore_fields))
+			$xform->setValueField("text",array("search_to",rex_i18n::msg("search_email_to")));
+		
 		// $xform->setValueField('pz_select_screen',array('search_label', rex_i18n::msg('label'), pz_labels::getAsString(),"","",1,rex_i18n::msg("please_choose")));
 		// $xform->setValueField('pz_select_screen',array('search_customer', rex_i18n::msg('customer'), pz_customers::getAsString(),"","",1,rex_i18n::msg("please_choose")));
-		// $xform->setValueField('pz_date_screen',array('search_datetime', rex_i18n::msg('createdate')));
+		// $xform->setValueField('pz_select_screen',array('search_account_id', rex_i18n::msg('email_account'), pz::getUser()->getEmailaccountsAsString(),"","",1,rex_i18n::msg("please_choose")));
+
+		if(!in_array("date_from",$ignore_fields))
+			$xform->setValueField("pz_date_screen",array("search_date_from",rex_i18n::msg("search_date_from")));
+		if(!in_array("date_to",$ignore_fields))
+			$xform->setValueField("pz_date_screen",array("search_date_to",rex_i18n::msg("search_date_to")));
 		
-		$xform->setValueField('pz_select_screen',array('search_account_id', rex_i18n::msg('email_account'), pz::getUser()->getEmailaccountsAsString(),"","",1,rex_i18n::msg("please_choose")));
+		if(!in_array("project_id",$ignore_fields))
+		{
+			$projects = pz::getUser()->getEmailProjects();
+			$xform->setValueField("pz_select_screen",array("search_project_id",rex_i18n::msg("project"),pz_project::getProjectsAsString($projects),"","",0,rex_i18n::msg("please_choose")));
+		}
 		
-		$xform->setValueField("checkbox",array("search_mymails",rex_i18n::msg("only_my_emails")));
-		
-		$xform->setValueField("checkbox",array("search_noprojects",rex_i18n::msg("only_noproject_emails")));
-		
+		if(!in_array("unread",$ignore_fields))
+			$xform->setValueField("checkbox",array("search_unread",rex_i18n::msg("search_email_unread")));
+		if(!in_array("my",$ignore_fields))
+			$xform->setValueField("checkbox",array("search_my",rex_i18n::msg("search_email_my")));
+		if(!in_array("noprojects",$ignore_fields))
+			$xform->setValueField("checkbox",array("search_noprojects",rex_i18n::msg("search_email_noprojects")));
+    if(!in_array("intrash",$ignore_fields))
+    	$xform->setValueField("checkbox",array("search_intrash",rex_i18n::msg("search_email_intrash")));
+
 		$xform->setValueField("submit",array('submit',rex_i18n::msg('search'), '', 'search'));
 
 		$return .= $xform->getForm();
@@ -660,9 +880,9 @@ class pz_email_screen{
 		$xform = new rex_xform;
 		// $xform->setDebug(TRUE);
 
-		$accounts = pz_email_account::getAsString(pz::getUser()->getId());
+		$accounts = pz_email_account::getAsArray(pz::getUser()->getId());
 		
-		if($accounts == "")
+		if(count($accounts) == 0)
 		{
 			$return = $header.'<p class="xform-warning">'.rex_i18n::msg("email_account_not_exists").'</p>';
 	
@@ -676,9 +896,9 @@ class pz_email_screen{
 			$xform->setObjectparams('form_showformafterupdate',1);
 			$xform->setObjectparams("real_field_names",TRUE);
 
-			$xform->setValueField('objparams',array('fragment', 'pz_screen_xform'));
+			$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
 	
-			$xform->setValueField("pz_select_screen",array("account_id",rex_i18n::msg("email_account"),pz_email_account::getAsString(pz::getUser()->getId()),"",$account_id_default,0));
+			$xform->setValueField("pz_select_screen",array("account_id",rex_i18n::msg("email_account"),$accounts,"",$account_id_default,0));
 			$xform->setValueField("pz_email_screen",array("to",rex_i18n::msg("email_to")));
 			$xform->setValueField("pz_email_screen",array("cc",rex_i18n::msg("email_cc")));
 			$xform->setValueField("pz_email_screen",array("bcc",rex_i18n::msg("email_bcc")));
@@ -689,7 +909,7 @@ class pz_email_screen{
 			// $xform->setValueField("textarea",array("html",rex_i18n::msg("email_html"),"","0"));
 
 			$projects = pz::getUser()->getEmailProjects();
-			$xform->setValueField("pz_select_screen",array("project_id",rex_i18n::msg("project"),pz_project::getProjectsAsString($projects),"","",1,rex_i18n::msg("please_choose")));
+			$xform->setValueField("pz_select_screen",array("project_id",rex_i18n::msg("project"),pz_project::getProjectsAsString($projects),"","",0,rex_i18n::msg("please_choose")));
 
 			$xform->setValueField("stamp",array("created","created","mysql_datetime","0","1"));
 			$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0"));
@@ -715,22 +935,22 @@ class pz_email_screen{
 			$xform->setActionField("db",array("pz_email"));
 			
 			$return = $xform->getForm();
-
-			$return .= '<script>
-				$(document).ready(function() {
-					pz_setEmailAutocomplete("#xform-xform-cc input, #xform-xform-to input, #xform-xform-bcc input");
-				});
-				</script>';
 	
-			if($xform->getObjectparams("actions_executed")) {
+			if($xform->getObjectparams("actions_executed")) 
+			{
 				if(rex_request("draft","string") != "1")
 				{
 					$email_id = $xform->getObjectparams("main_id");
 
-					if($email = pz_email::get($email_id)) {
-						if(!$email->sendDraft()) {
-							$return = $header.'<p class="xform-warning">'.rex_i18n::msg("email_send_failed_saved_in_drafts").'</p>'.$return;
-						}else {
+					if($email = pz_email::get($email_id)) 
+					{
+						if(!$email->sendDraft()) 
+						{
+							$return = $header.'<p class="xform-warning">'.rex_i18n::msg("email_send_failed").'</p>'.$return;
+							$email->delete();
+							
+						}else 
+						{
 						
 							// TODO .. 
 							// move_replymail_to_project
@@ -738,7 +958,8 @@ class pz_email_screen{
 							$return = $header.'<p class="xform-info">'.rex_i18n::msg("email_send").'</p>';
 						}
 					}
-				}else {
+				}else 
+				{
 					$return = $header.'<p class="xform-info">'.rex_i18n::msg("email_saved_in_drafts").'</p>';
 				}
 				
@@ -751,7 +972,7 @@ class pz_email_screen{
 
 		}
 
-		$return = '<div id="email_form"><div id="email_add" class="design2col xform-add">'.$return.'</div></div>';
+		$return = '<div id="email_form" class="design2col"><div id="email_add" class="design2col xform-add">'.$return.'</div></div>';
 
 		return $return;	
 
@@ -769,9 +990,9 @@ class pz_email_screen{
 		$xform = new rex_xform;
 		// $xform->setDebug(TRUE);
 
-		$accounts = pz_email_account::getAsString(pz::getUser()->getId());
+		$accounts = pz_email_account::getAsArray(pz::getUser()->getId());
 		
-		if($accounts == "")
+		if(count($accounts) == 0)
 		{
 			$return = $header.'<p class="xform-warning">'.rex_i18n::msg("email_account_not_exists").'</p>';
 	
@@ -788,9 +1009,9 @@ class pz_email_screen{
 			$xform->setObjectparams('getdata',true);
 			$xform->setHiddenField("email_id",$this->email->getId());
 			
-			$xform->setValueField('objparams',array('fragment', 'pz_screen_xform'));
+			$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
 	
-			$xform->setValueField("pz_select_screen",array("account_id",rex_i18n::msg("email_account"),pz_email_account::getAsString(pz::getUser()->getId()),"","",0));
+			$xform->setValueField("pz_select_screen",array("account_id",rex_i18n::msg("email_account"),$accounts,"","",0));
 			$xform->setValueField("pz_email_screen",array("to",rex_i18n::msg("email_to")));
 			$xform->setValueField("pz_email_screen",array("cc",rex_i18n::msg("email_cc")));
 			$xform->setValueField("pz_email_screen",array("bcc",rex_i18n::msg("email_bcc")));
@@ -800,9 +1021,9 @@ class pz_email_screen{
 			$xform->setValueField("pz_email_textarea",array("body",rex_i18n::msg("email_body")));
 			// $xform->setValueField("textarea",array("html",rex_i18n::msg("email_html"),"","0"));
 			$projects = pz::getUser()->getEmailProjects();
-			$xform->setValueField("pz_select_screen",array("project_id",rex_i18n::msg("project"),pz_project::getProjectsAsString($projects),"","",1,rex_i18n::msg("please_choose")));
+			$xform->setValueField("pz_select_screen",array("project_id",rex_i18n::msg("project"),pz::getProjectsAsArray($projects),"","",0,rex_i18n::msg("please_choose")));
 
-			$xform->setValueField("stamp",array("created","created","mysql_datetime","0","1"));
+			$xform->setValueField("stamp",array("created","created","mysql_datetime","0","0")); // allways new
 			$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0"));
 			$xform->setValueField("hidden",array("create_user_id",pz::getUser()->getId()));
 			$xform->setValueField("hidden",array("update_user_id",pz::getUser()->getId()));
@@ -819,13 +1040,6 @@ class pz_email_screen{
 			$xform->setActionField("db",array('pz_email','id='.$this->email->getId()));
 			
 			$return = $xform->getForm();
-	
-			$return .= '<script>
-				$(document).ready(function() {
-					pz_setEmailAutocomplete("#xform-xform-cc input, #xform-xform-to input, #xform-xform-bcc input");
-				});
-				</script>';
-
 	
 			if($xform->getObjectparams("actions_executed")) {
 				if(rex_request("draft","string") != "1")
@@ -849,54 +1063,40 @@ class pz_email_screen{
 		}
 
 		$return .= pz_screen::getJSUpdateLayer('emails_list',pz::url('screen','emails','create',array("mode"=>'list')));
-		$return = '<div id="email_form"><div id="email_edit" class="design2col xform-add">'.$return.'</div></div>';
+		$return = '<div id="email_form" class="design2col"><div id="email_edit" class="design2col xform-add">'.$return.'</div></div>';
 
 		return $return;	
 
 	}
 
+  
+  public function prepareQuotes($text, $quote = ">")
+  {
+    preg_match_all("/^((?:\h*[".$quote."]+\h*)*)(.*)$/m", $text, $matches, PREG_SET_ORDER);
+    $indent = 0;
+    $text = '';
+    foreach ($matches as $match) {
+      $newIndent = substr_count($match[1], $quote);
+      $diff = $newIndent - $indent;
+      if($diff>0){
+        $text .= str_repeat('<div class="email-quote">', $diff);
+      } elseif ($diff < 0) {
+        $text .= str_repeat('</div>', -$diff);
+      }
+      $text .= $match[2] . "\n";
+      $indent = $newIndent;
+    }
+    $text .= str_repeat('</div>', $indent);
+    return $text;
+  }
 
-	public function prepareOutput($text, $specialchars = TRUE) {
-
-		$text = pz_email_screen::setLinks($text);
-		if($specialchars)
-			$text = htmlspecialchars($text);
-		$text = pz_email_screen::replaceLinks($text);
-		return $text;
-	}
 
 
-
-	public function setLinks($text) {
-	
-		$urlsuch[]="/([^]_a-z0-9-=\"'\/])((https?|ftp):\/\/|www\.)([^ \r\n\(\)\^\$!`\"'\|\[\]\{\}<>]*)/si";
-		$urlsuch[]="/^((https?|ftp):\/\/|www\.)([^ \r\n\(\)\^\$!`\"'\|\[\]\{\}<>]*)/si";
-		
-		$urlreplace[]="\\1[URL]\\2\\4[/URL]";
-		$urlreplace[]="[URL]\\1\\3[/URL]";
-
-		$text = preg_replace($urlsuch, $urlreplace, $text);
-
-		$emailsuch[]="/([\s])([_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,}))/si";
-		$emailsuch[]="/^([_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,}))/si";
-		$emailreplace[]="\\1[EMAIL]\\2[/EMAIL]";
-		$emailreplace[]="[EMAIL]\\0[/EMAIL]";
-		if (strpos($text, "@")) {
-			$text = preg_replace($emailsuch, $emailreplace, $text);
-		}
-
-		return $text;
+	public function prepareOutput($text, $specialchars = TRUE) 
+	{
+	  return pz_screen::prepareOutput($text, $specialchars);
 
 	}
-
-	public function replaceLinks($text) {
-	
-		$text = preg_replace("/\[URL\]www.(.*?)\[\/URL\]/si", "<a target=\"_blank\" href=\"http://www.\\1\">www.\\1</a>", $text);
-		$text = preg_replace("/\[URL\](.*?)\[\/URL\]/si", "<a target=\"_blank\" href=\"\\1\">\\1</a>", $text);
-		$text = preg_replace("/\[EMAIL\](.*?)\[\/EMAIL\]/si", "<a href=\"/screen/emails/create/?to=\\1\">\\1</a>", $text); 
-		return $text;
-	}
-
 	
 }
 

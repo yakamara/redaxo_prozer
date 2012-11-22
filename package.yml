@@ -1,11 +1,9 @@
-version: '2.0 alpha10'
+version: '2.0 beta1'
 author: Yakamara Media GmbH & Co. KG
 supportpage: www.prozer.org
 
 requires:
   addons:
-    media_manager:
-      min-version: '1.0'
     xform:
       min-version: '3.0'
       plugins:

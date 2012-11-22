@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-	<title>PROZER 2.0 </title>
+	<title><?php echo pz_screen::getPageTitle(); ?></title>
 	<meta charset="utf-8">
-	<base href="http://<?php echo rex::getProperty('server'); ?>/" />
+	<base href="<?php echo pz::getServerUrl(); ?>/" />
 	<link rel="stylesheet" type="text/css" href="/assets/addons/prozer/fonts/css_fonts.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="/assets/addons/prozer/css/css_import.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="/assets/addons/prozer/themes/blue_grey/css_theme.css" media="screen" />
-	<link rel="stylesheet" type="text/css" href="/assets/addons/prozer/css/facebox.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="/assets/addons/prozer/css/fileuploader.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="/assets/addons/prozer/labels_screen.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="/assets/addons/prozer/css/jquery_ui.css" media="screen" />
@@ -17,15 +16,20 @@
     <link rel="stylesheet" type="text/css" href="/assets/addons/prozer/themes/blue_grey/css_ie.css" media="screen" />
 	<![endif]-->
 	
-	
 	<script type="text/javascript" src="/assets/addons/prozer/js/jquery.min.js"></script>
 	<script type="text/javascript" src="/assets/addons/prozer/js/jquery-ui.min.js"></script>
-	<script type="text/javascript" src="/assets/addons/prozer/js/facebox.js"></script>
 	<script type="text/javascript" src="/assets/addons/prozer/js/prozer.js"></script>
 	<script type="text/javascript" src="/assets/addons/prozer/js/fileuploader.js"></script>
-  
+	<script type="text/javascript" src="/assets/addons/prozer/js/jquery.bullseye-1.0.js"></script>
+	<script type="text/javascript" src="/assets/addons/prozer/js/chosen.jquery.js"></script>
+	
 </head>
-<body class="grid-a-bc"<?php echo (isset($this->page_id) && $this->page_id != '') ? ' id="'.$this->page_id.'"' : ''; ?>>
+<body class="grid-a-bc<?php
+
+if(pz::getUser() && pz::getUser()->getId() != pz::getLoginUser()->getId())
+	echo ' notme';
+
+?>"<?php echo (isset($this->page_id) && $this->page_id != '') ? ' id="'.$this->page_id.'"' : ''; ?>>
 
   <header id="header">
     <div class="wrapper clearfix">
@@ -84,9 +88,6 @@ if(pz::getUser())
 echo '</script>';
 
 ?>
-
-<div id="sidebar" class="sidebar sidebar1" style="display:none"></div>
-<div id="pz_tracker"></div>
 
 </body>
 </html>

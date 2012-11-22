@@ -15,18 +15,26 @@ class pz_calendar_alarm extends pz_calendar_element
    */
   protected $trigger;
 
-  protected $description;
+  protected $description = '';
 
-  protected $summary;
+  protected $summary = '';
 
-  protected $emails;
+  protected $emails = '';
 
-  protected $attachment;
+  protected $attachment = '';
+
+  protected $location;
+
+  protected $structured_location;
+
+  protected $proximity;
 
   /**
-   * @var DateInterval
+   * @var DateTime
    */
-  protected $before;
+  protected $acknowledged;
+
+  protected $related_id;
 
   protected function __construct(array $params = array())
   {
@@ -53,9 +61,19 @@ class pz_calendar_alarm extends pz_calendar_element
     if(isset($params['a.summary']))
       $this->summary = $params['a.summary'];
     if(isset($params['a.emails']))
-      $this->emails = explode(',', $params['a.emails']);
+      $this->emails = array_filter(explode(',', $params['a.emails']));
     if(isset($params['a.attachment']))
       $this->attachment = $params['a.attachment'];
+    if(isset($params['a.location']))
+      $this->location = $params['a.location'];
+    if(isset($params['a.structured_location']))
+      $this->structured_location = $params['a.structured_location'];
+    if(isset($params['a.proximity']))
+      $this->proximity = $params['a.proximity'];
+    if(isset($params['a.acknowledged']))
+      $this->acknowledged = new DateTime($params['a.acknowledged']);
+    if(isset($params['a.related_id']))
+      $this->related_id = $params['a.related_id'];
   }
 
   public function getUid()
@@ -87,6 +105,8 @@ class pz_calendar_alarm extends pz_calendar_element
         . ($this->trigger->h ? '%hH' : '')
         . ($this->trigger->i ? '%iM' : '')
         . ($this->trigger->s ? '%sS' : '');
+      if(substr($format, -2) == 'PT')
+        $format .= '0S';
       return $this->trigger->format(rtrim($format, 'T'));
     }
     else
@@ -118,6 +138,44 @@ class pz_calendar_alarm extends pz_calendar_element
   public function getAttachment()
   {
     return $this->attachment;
+  }
+
+  public function getLocation()
+  {
+    return $this->location;
+  }
+
+  public function getStructuredLocation()
+  {
+    return $this->structured_location;
+  }
+
+  public function getProximity()
+  {
+    return $this->proximity;
+  }
+
+  /**
+   * @return DateTime
+   */
+  public function getAckknowledged()
+  {
+    if ($this->acknowledged)
+      return clone $this->acknowledged;
+    return null;
+  }
+
+  public function getRelatedId()
+  {
+    return $this->related_id;
+  }
+
+  /**
+   * @return pz_calendar_alarm
+   */
+  public function getRelated()
+  {
+    return self::get($this->related_id);
   }
 
   public function setUid($uid)
@@ -155,6 +213,31 @@ class pz_calendar_alarm extends pz_calendar_element
     return $this->setValue('attachment', $attachment);
   }
 
+  public function setLocation($location)
+  {
+    return $this->setValue('location', $location);
+  }
+
+  public function setStructuredLocation($structured_location)
+  {
+    return $this->setValue('structured_location', $structured_location);
+  }
+
+  public function setProximity($proximity)
+  {
+    return $this->setValue('proximity', $proximity);
+  }
+
+  public function setAcknowledged(DateTime $acknowledged = null)
+  {
+    return $this->setValue('acknowledged', $acknowledged);
+  }
+
+  public function setRelatedId($related_id)
+  {
+    return $this->setValue('related_id', $related_id);
+  }
+
   static public function create()
   {
     $alarm = new self;
@@ -162,10 +245,11 @@ class pz_calendar_alarm extends pz_calendar_element
     return $alarm;
   }
 
-  static public function saveAll(pz_calendar_event $event)
+  static public function saveAll(pz_calendar_item $item)
   {
-    $alarms = $event->getAlarms();
-    $id = $event->getId(true);
+    $column = $item instanceof pz_calendar_todo ? 'todo_id' : 'event_id';
+    $alarms = $item->getAlarms();
+    $id = $item->getId(true);
     $and = '';
     if(count($alarms) > 0)
     {
@@ -177,26 +261,26 @@ class pz_calendar_alarm extends pz_calendar_element
       {
         if($alarm->uid)
         {
-          $values .= '(?,?,?,?,?,?,?,?,?,?),';
+          $values .= '(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?),';
           $params[] = $alarm->uid;
         }
         else
         {
-          $values .= '(CONCAT(UPPER(UUID()),"'. $i++ .'"),?,?,?,?,?,?,?,?,?),';
+          $values .= '(CONCAT(UPPER(UUID()),"'. $i++ .'"),?,?,?,?,?,?,?,?,?,?,?,?,?,?),';
         }
-        $emails = is_array($alarm->emails) && count($alarm->emails) > 0 ? implode(',', $alarm->emails) : null;
-        array_push($params, $id, pz::getUser()->getId(), $alarm->action, $alarm->getTriggerString(), $alarm->description, $alarm->summary, $emails, $alarm->attachment, $time);
+        $emails = is_array($alarm->emails) && count($alarm->emails) > 0 ? implode(',', $alarm->emails) : '';
+        array_push($params, $id, pz::getUser()->getId(), $alarm->action, $alarm->getTriggerString(), $alarm->description, $alarm->summary, $emails, $alarm->attachment, $alarm->location, $alarm->structured_location, $alarm->proximity, self::sqlValue($alarm->acknowledged), $alarm->related_id, $time);
       }
       rex_sql::factory()->setQuery('
-        INSERT INTO '. self::TABLE .' (uid, event_id, user_id, `action`, `trigger`, description, summary, emails, attachment, timestamp)
+        INSERT INTO '. self::TABLE .' (uid, `'. $column .'`, user_id, `action`, `trigger`, description, summary, emails, attachment, location, structured_location, proximity, acknowledged, related_id, timestamp)
         VALUES '. rtrim($values, ',') .'
-        ON DUPLICATE KEY UPDATE event_id = VALUES(event_id), user_id = VALUES(user_id), `action` = VALUES(`action`), `trigger` = VALUES(`trigger`), description = VALUES(description), summary = VALUES(summary), emails = VALUES(emails), attachment = VALUES(attachment), timestamp = VALUES(timestamp)
+        ON DUPLICATE KEY UPDATE `'. $column .'` = VALUES(`'. $column .'`), user_id = VALUES(user_id), `action` = VALUES(`action`), `trigger` = VALUES(`trigger`), description = VALUES(description), summary = VALUES(summary), emails = VALUES(emails), attachment = VALUES(attachment), location = VALUES(location), structured_location = VALUES(structured_location), proximity = VALUES(proximity), acknowledged = VALUES(acknowledged), related_id = VALUES(related_id), timestamp = VALUES(timestamp)
       ', $params);
       $and = ' AND timestamp < '. $time;
     }
     rex_sql::factory()->setQuery('
       DELETE FROM '. self::TABLE .'
-      WHERE event_id = ? AND user_id = ?'. $and .'
+      WHERE `'. $column .'` = ? AND user_id = ?'. $and .'
     ', array($id, pz::getUser()->getId()));
   }
 
@@ -216,7 +300,7 @@ class pz_calendar_alarm extends pz_calendar_element
     return new self($sql->getRow());
   }
 
-  static public function getAll(pz_calendar_event $event)
+  static public function getByUid($uid)
   {
     static $sql = null;
     if(!$sql)
@@ -225,10 +309,23 @@ class pz_calendar_alarm extends pz_calendar_element
       $sql->prepareQuery('
       	SELECT *
       	FROM '. self::TABLE .' a
-      	WHERE event_id = ? AND user_id = ?
+      	WHERE uid = ?
       ');
     }
-    $sql->execute(array($event->getId(true), pz::getUser()->getId()));
+    $sql->execute(array($uid));
+    return new self($sql->getRow());
+  }
+
+  static public function getAll(pz_calendar_item $item)
+  {
+    $column = $item instanceof pz_calendar_todo ? 'todo_id' : 'event_id';
+    $sql = rex_sql::factory();
+    $sql->prepareQuery('
+      SELECT *
+      FROM '. self::TABLE .' a
+      WHERE `'. $column .'` = ? AND user_id = ?
+    ');
+    $sql->execute(array($item->getId(true), pz::getUser()->getId()));
     $alarms = array();
     foreach($sql as $row)
     {

@@ -24,12 +24,14 @@ class rex_xform_value_pz_calendar_event_attendees extends rex_xform_value_abstra
 			foreach($calendar_event_attendees_field_user_ids as $k => $v) {
 				if($calendar_event_attendees_field_user_ids[$k] != "")
 					if($my_user_id != $calendar_event_attendees_field_user_ids[$k])
+					{
 						$attendees[] = array(
 							"status" => @$calendar_event_attendees_field_status[$k],
 							"email" => @$calendar_event_attendees_field_emails[$k],
 							"name" => @$calendar_event_attendees_field_names[$k],
 							"user_id" => @$calendar_event_attendees_field_user_ids[$k]
 						);
+					}
 			}
 		}else
 		{
@@ -38,8 +40,15 @@ class rex_xform_value_pz_calendar_event_attendees extends rex_xform_value_abstra
 				$as = pz_calendar_attendee::getAll($event);
 				if(is_array($as)) {
 					foreach($as as $a) {
+						
+						$a_status = $a->getStatus();
+						// $pz_attandee_init = $this->getElement(3);
+						
+						if($this->getElement(3) == 1)
+							$a_status = 'NEEDS-ACTION';						
+						
 						$attendees[] = array(
-							"status" => $a->getStatus(),
+							"status" => $a_status,
 							"email" => $a->getEmail(),
 							"name" => $a->getName(),
 							"user_id" => $a->getUserId()
@@ -49,7 +58,7 @@ class rex_xform_value_pz_calendar_event_attendees extends rex_xform_value_abstra
 			}		
 		}
 
-		$output = '<div class="split-h"></div>';
+		$output = '';
 
 		// Attendees
 
@@ -58,7 +67,8 @@ class rex_xform_value_pz_calendar_event_attendees extends rex_xform_value_abstra
 		$user_select->setStyle("width:250px;");
 		$user_select->setName("calendar_event_attendees_field_user_id[]");
 		$user_select->addOption(rex_i18n::msg('please_choose'),'');
-		foreach(pz::getUser()->getUsers() as $user) $user_select->addOption($user->getName(),$user->getId());
+		foreach(pz::getUser()->getUsers() as $user) 
+			$user_select->addOption($user->getName(),$user->getId());
 
 		$f = new rex_fragment();
 		$f->setVar('before', "", false);
@@ -67,17 +77,16 @@ class rex_xform_value_pz_calendar_event_attendees extends rex_xform_value_abstra
 		$f->setVar('name', $name, false);
 		$f->setVar('class', "attendee_field", false);
 
-		$attendees_output = '<h2 class="hl2">' . rex_i18n::msg("calendar_event_attendees") . '</h2>';
+		$attendees_output = ''; // '<h2 class="hl2">' . rex_i18n::msg("calendar_event_attendees") . '</h2>';
 		foreach($attendees as $attendee) 
 		{
-		
-		
-		
+
 			$select = new rex_select();
 			$select->setSize(1);
 			$select->setStyle("width:80px;");
 			$select->setName("calendar_event_attendees_field_status[]");
-			foreach($attendee_labels as $label) $select->addOption(rex_i18n::msg('calendar_event_attendee_'.strtolower($label)),$label);
+			foreach($attendee_labels as $label) 
+				$select->addOption(rex_i18n::msg('calendar_event_attendee_'.strtolower($label)),$label);
 			
 			if(!in_array($attendee["status"],$attendee_labels))
 				$select->addOption($attendee["status"],$attendee["status"]);
@@ -102,7 +111,8 @@ class rex_xform_value_pz_calendar_event_attendees extends rex_xform_value_abstra
 		$select->setSize(1);
 		$select->setStyle("width:80px;");
 		$select->setName("calendar_event_attendees_field_status[]");
-		foreach($attendee_labels as $label) $select->addOption(rex_i18n::msg('calendar_event_attendee_'.strtolower($label)),$label);
+		foreach($attendee_labels as $label) 
+			$select->addOption(rex_i18n::msg('calendar_event_attendee_'.strtolower($label)),$label);
 		$select->setSelected("NEEDS-ACTION");
 		$label = '<label class="'.$this->getHTMLClass().'" >' . $select->get() . '</label>';	
 		// $field = '<input style="width:140px;" class="'.$this->getHTMLClass().'" type="text" placeholder="'.rex_i18n::msg("email").'" name="calendar_event_attendees_field_email[]" value="" />';
@@ -124,10 +134,7 @@ class rex_xform_value_pz_calendar_event_attendees extends rex_xform_value_abstra
 		$f->setVar('field', $field, false);
 		$attendees_output .= $f->parse($fragment);
 
-		$attendees_output = '<div id="pz_address_fields_phone">'.$attendees_output.'</div>';
-
-
-		$output .= $attendees_output.'<div class="split-h"></div>';
+		$output = '<div class="pz_address_fields_attandees">'.$attendees_output.'</div>';
 		
 		$this->params["form_output"][$this->getId()] = $output;
 		

@@ -153,7 +153,7 @@ class rex_xform_value_pz_datetime_screen extends rex_xform_value_abstract
 				$tpl_entries[$hh]['attributes']['class'] .= ' active ';
 		}
 		
-		for($i = 0;$i<5;$i++)
+		for($i = 0;$i<4;$i++)
 		{    
 			$tpl_entries["n".$i]['name'] = "&nbsp;";
 			$tpl_entries["n".$i]['attributes']['class'] = "bt11";
@@ -178,12 +178,13 @@ class rex_xform_value_pz_datetime_screen extends rex_xform_value_abstract
 		<input id="' . $this->getFieldId('hours') .'" type="hidden" name="'.$this->getFieldName('hours').'" value="'.$hours.'" />
 		<input id="' . $this->getFieldId('minutes') .'" type="hidden" name="'.$this->getFieldName('minutes').'" value="'.$minutes.'" />
 		<input id="' . $this->getFieldId('time') .'" class="xform-time" type="text" name="'.$this->getFieldName('time').'" value="'.$hours.':'.$minutes.'" disabled="disabled" />';
-		$butler .= $f->parse('pz_screen_navi_butler');
+
+		$butler2 = $f->parse('pz_screen_navi_butler.tpl');
 			
 		
 	    // ---------------------------------------------------------------- Form Element
 		$before = '';
-		$after = '';
+		$after = $butler2;
 		$label = ($this->getElement(2) != '') ? '<label'.$classes.' for="' . $this->getFieldId() . '">' . rex_i18n::translate($this->getElement(2)) . '</label>' : '';
 		$field = $calendar.$butler;
 		$extra = '';
@@ -205,10 +206,6 @@ class rex_xform_value_pz_datetime_screen extends rex_xform_value_abstract
 		
 		$fragment = $this->params['fragment'];
 		$this->params["form_output"][$this->getId()] = $f->parse($fragment);
-		
-		
-
-
 
 		$this->params["value_pool"]["email"][$this->getElement(1)] = $this->getValue();
 		if ($this->getElement(4) != "no_db") $this->params["value_pool"]["sql"][$this->getElement(1)] = $this->getValue();

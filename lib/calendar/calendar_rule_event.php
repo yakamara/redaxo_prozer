@@ -213,7 +213,7 @@ class pz_calendar_rule_event extends pz_calendar_event
           $this->changed['from'] = isset($this->changed['from']) ? $this->changed['from'] : $this->from;
           $this->changed['to'] = isset($this->changed['to']) ? $this->changed['to'] : $this->to;
           $this->new = true;
-          $this->setValue('base_from', $this->baseFrom);
+          $this->setValue('base_from', $this->base_from);
           $this->setValue('uri', null);
           $this->setValue('user_id', null);
           $this->setValue('booked', null);
@@ -570,7 +570,8 @@ class pz_calendar_rule_event extends pz_calendar_event
           );
           $exceptionFlag = false;
         }
-        $events[] = new self($rule, $params, $exceptionFlag);
+        $tmp_e = new self($rule, $params, $exceptionFlag);
+        $events[$tmp_e->getId()] = $tmp_e;
       }
       $iFrom = $callbackBefore ? $callbackBefore($iFrom) : $iFrom;
       if($addQueueCount > 0)
@@ -619,7 +620,8 @@ class pz_calendar_rule_event extends pz_calendar_event
     $events = array();
     foreach($sql as $row)
     {
-      $events[] = new self($rule, $row->getRow(), true);
+      $tmp_e = new self($rule, $row->getRow(), true);
+      $events[$tmp_e->getId()] = $tmp_e;
     }
     return $events;
   }

@@ -3,37 +3,58 @@
 	
 	<header>
 	
-    <div class="grid2col header setting-layout">
+    <div class="grid2col header">
+      <?php 
+        if(isset($this->title) && $this->title != "") echo '
+        
       <div class="column first">
-        <h1 class="hl1"><?php echo $this->title; ?></h1>
+          <h1 class="hl1">'.$this->title.'</h1>
       </div>
+
+        '; 
+      ?>
     
       <div class="column last">
+		    <?php if(isset($this->links) && is_array($this->links) && count($this->links) > 0){ echo implode(" &nbsp; ",$this->links); }?>
+
         <ul class="sl1 view-layout">
 
-		  <?php if(is_array(@$this->links) && count($this->links) > 0){ echo implode(" &nbsp; ",$this->links); }?>
-
-		  <?php if(is_array(@$this->orders) && count($this->orders) > 0){ ?>
+		  <?php 
+		  if(isset($this->orders) && is_array($this->orders) && count($this->orders) > 0){ 
 		  
-          <li class="first selected"><span class="selected">Sortierung: <?php echo $this->order; ?></span>
+		  $active = 0;
+		  foreach($this->orders as $k => $order)
+		  {
+		  	if($active == "" || isset($order["active"]))
+		  		$active = $k;
+		  }
+
+		  ?>
+          <li class="first selected <?php 
+          
+          if(isset($this->orders_flyout) && $this->orders_flyout) echo ' flyouthover'; 
+          
+          ?>"><span class="selected"><?php echo rex_i18n::msg("order_name").': '.$this->orders[$active]["name"]; ?></span>
             <div class="flyout">
               <div class="content">
                 <ul class="entries sort">
 				  <?php
 				  $first = " first";
-				  foreach($this->orders as $sk => $sv) {
-				    $active = "";
-				    if($this->order == $sk) $active = "active";
-				  	echo '<li class="entry'.$first.'"><a class="'.$active.'" href="'.$sv["link"].'">'.$sv["name"].'</a></li>';
+				  foreach($this->orders as $k => $v) {
+				    if($active != $k)
+				    {
+					  	echo '<li class="entry'.$first.'"><a href="'.$v["link"].'"><span class="title">'.$v["name"].'</span></a></li>';
+				    }
 				  	$first = "";
-				 	// last fehlt
 				  }
 				  ?>
                 </ul>
               </div>
             </div>
           </li>
-          <?php } ?>
+          <?php 
+          } 
+          ?>
 
 		  <?php if(is_array(@$this->listviews) && count($this->listviews) > 0){ 
 			  $first = " split-v";

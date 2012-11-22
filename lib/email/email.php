@@ -19,7 +19,13 @@ class pz_email extends pz_model{
 		$isEmail = FALSE,
 		$header_raw,
 		$body_raw,
-		$from_address = NULL;
+		$from_address = NULL,
+		$eml,
+		$eml_element,
+		$pz_eml,
+		$body_html_element,
+		$body_text_element,
+		$attachments;
 
 
 	function __construct($vars = array())
@@ -69,7 +75,7 @@ class pz_email extends pz_model{
 		return $emails;
 	}
 
-	static function getAll( array $filter = array(), array $projects = array(), array $users = array())
+	static function getAll( array $filter = array(), array $projects = array(), array $users = array(), array $orders = array())
 	{
 		$where = array();
 		$params = array(); 
@@ -105,18 +111,25 @@ class pz_email extends pz_model{
 		$params = $f["params"];
 		$where_sql = $f["where_sql"];
 	
-	    $sql = rex_sql::factory();
-	    // $sql->debugsql = 1;
-	    // $sql->setQuery('SELECT * FROM pz_email '.$where_sql .' order by id desc LIMIT 5000', $params); // ORDER BY p.name
-	    // $emails_array = $sql->getArray();
-	    $emails_array = $sql->getArray('SELECT * FROM pz_email '.$where_sql .' order by id desc LIMIT 5000', $params);
-	    
-	    $emails = array();
-	    foreach($emails_array as $email)
-	    {
-	      $emails[] = new pz_email($email);
-	    }
-	    return $emails;
+		// ----- Orders
+		$orders[] = array("orderby" => "id", "sort" => "desc");
+		$order_sql = array();
+		foreach($orders as $order) {
+			$order_sql[] = '`'.$order["orderby"].'` '.$order["sort"];
+		}
+		
+    $sql = rex_sql::factory();
+    // $sql->debugsql = 1;
+    // $sql->setQuery('SELECT * FROM pz_email '.$where_sql .' order by id desc LIMIT 5000', $params); // ORDER BY p.name
+    // $emails_array = $sql->getArray();
+    $emails_array = $sql->getArray('SELECT * FROM pz_email '.$where_sql .' order by '.implode(',',$order_sql).' LIMIT 5000', $params);
+    
+    $emails = array();
+    foreach($emails_array as $email)
+    {
+      $emails[] = new pz_email($email);
+    }
+    return $emails;
 	}
 
 
@@ -127,12 +140,22 @@ class pz_email extends pz_model{
 	}
 
 	public function getId() {
-		return $this->vars["id"];
+		return intval($this->vars["id"]);
 	}
 
 	public function getProjectId() {
 		return $this->vars["project_id"];
 	}
+
+	public function setProjectId($project_id) {
+		$this->vars["project_id"] = $project_id;
+	}
+
+  public function getProject() {
+    if($this->vars["project_id"] == 0)
+      return false;
+    return pz_project::get($this->vars["project_id"]);
+  }
 
 	public function getTo() {
 		return $this->vars["to"];
@@ -180,6 +203,11 @@ class pz_email extends pz_model{
 		return $date;
 	}
 
+  public function getDateTime()
+  {
+    return DateTime::createFromFormat("Y-m-d H:i:s", $this->getCreateDate(), pz::getDateTimeZone());
+  }
+
 	public function getSubject() {
 		$subject = $this->vars["subject"];
 		if($subject != "") {
@@ -189,38 +217,71 @@ class pz_email extends pz_model{
 	}
 
 	public function getEml() {
-		return file_get_contents($this->getFilePath());
+		if($this->eml == "")
+		{
+		  if($this->getId() != "")
+			  $this->eml = file_get_contents($this->getFilePath());
+		  else
+			  $this->eml = $this->header_raw.$this->body_raw;
+		}
+		return $this->eml;
 	}
+  
+  public function getProzerEml() 
+  {
+    if(!isset($this->pz_eml))
+      $this->pz_eml = new pz_eml($this->getEml());
+    return $this->pz_eml;
+  }
 
-	public function getBody() {
+	public function getBody() 
+	{
 		return $this->vars["body"];
 	}
 
-	public function getBodyHTML() {
+	public function getMessageHTML() 
+	{
 		return $this->vars["body_html"];
 	}
 
-	public function getMessageId() {
+	public function getMessageId() 
+	{
 		return $this->vars["message_id"];
 	}
 
-	public function getAccountId() {
+	public function getAccountId() 
+	{
 		return $this->vars["account_id"];
 	}
 
-	public function getReplyId() {
+	public function getReplyId() 
+	{
 		return $this->vars["reply_id"];
 	}
 
-	public function getForwardId() {
+	public function getForwardId() 
+	{
 		return $this->vars["forward_id"];
 	}
 
+	public function getCreateUserId() 
+	{
+		return $this->vars["create_user_id"];
+	}
+
+	public function getUserId() 
+	{
+		return $this->vars["user_id"];
+	}
+	
 	// only send mail
 	public function getClipIds() {
 		return $this->vars["clip_ids"];
 	}
 	
+	public function getSend() {
+		return $this->vars["send"];
+	}
 
 	// original mail
 	public function getRepliedId() {
@@ -249,25 +310,84 @@ class pz_email extends pz_model{
 		return $this->vars["header"];
 	}
 
-	public function isDraft() {
+  public function getLabelId() {
+  
+    // TODO
+    
+    
+    
+  
+    return 3;
+  
+  }
+
+	public function isDraft() 
+	{
 		if($this->vars["draft"] == 1) 
 			return TRUE;
 		return FALSE;
 	}
 
-	public function isTrash() {
+	public function isTrash() 
+	{
 		if($this->vars["trash"] == 1) 
 			return TRUE;
 		return FALSE;
 	}
 
-	public function hasProject() {
+	public function hasProject() 
+	{
 		if($this->vars["project_id"] > 0) 
 			return TRUE;
 		return FALSE;
 	
 	}
 
+	public function hasAttachments() 
+	{
+		if($this->vars["has_attachments"] == 1)
+			return TRUE;
+		return FALSE;
+		
+		// here: too much performance
+		// $pz_eml = new pz_eml($this->getEml());
+		// return $pz_eml->hasRealAttachments();
+	}
+
+  public function getAttachments()
+  {
+    $ignore_attachment_elements = array();
+    if($this->hasBodyHTML() && $this->getBodyHTMLElement()->hasParent())
+		{
+		  $ignore_attachment_elements[] = $this->getBodyHTMLElement()->getElementId();
+		}
+		if($this->getBodyTextElement() && $this->getBodyTextElement()->hasParent())
+		{
+			$ignore_attachment_elements[] = $this->getBodyTextElement()->getElementId();
+    }
+  
+    $this->attachments = array();
+    $attachment_elements = $this->getProzerEml()->getAttachmentElements();
+		foreach($attachment_elements as $e)
+		{
+			if(!in_array($e->getElementId(),$ignore_attachment_elements))
+			{
+			  $this->attachments[] = $e;
+      }
+    }
+    return $this->attachments;
+  }
+
+
+  public function getRawHeader()
+  {
+    return $this->header_raw;
+  }
+
+  public function getRawBody()
+  {
+    return $this->body_raw;
+  }
 
 	// ---------------- setter
 
@@ -350,6 +470,36 @@ class pz_email extends pz_model{
 
 
 
+   	// TODO: only because text/plain exists doesnt mean it is text part of mail
+   	// TODO: only because text/html exists doesnt mean it is HTML part of mail
+
+	public function hasBodyText()
+	{
+		$pz_eml = new pz_eml($this->getEml());
+    	$this->body_text_element = $pz_eml->getFirstContentTypeElement("text/plain",false);
+    	if($this->body_text_element)
+    		return true;
+    	return false;
+	}
+
+	public function hasBodyHTML()
+	{
+    $this->body_html_element = $this->getProzerEml()->getFirstContentTypeElement("text/html",false);
+    if($this->body_html_element)
+      return true;
+    return false;
+	}
+
+	public function getBodyTextElement()
+	{
+    return $this->getProzerEml()->getFirstContentTypeElement("text/plain",false);
+	}
+
+	public function getBodyHTMLElement()
+	{
+    return $this->getProzerEml()->getFirstContentTypeElement("text/html",false);
+	}
+
 
 	// ---- func
 
@@ -375,7 +525,7 @@ class pz_email extends pz_model{
 		return rex_path::addonData('prozer', 'emails/'.$email_dir.'/'.$id.'/'.$id.'.eml');
 	}
 
-	public function save()
+	public function save($pz_eml = NULL)
 	{
 		
 		if($this->getMessageId() == "")
@@ -402,6 +552,16 @@ class pz_email extends pz_model{
 				$add_email->setValue($k,$v);
 			}
 			
+      		if(!isset($pz_eml))
+			{
+			  $pz_eml = new pz_eml($this->header_raw.$this->body_raw);
+			}
+
+			if($pz_eml->hasRealAttachments())
+			{
+				$add_email->setValue("has_attachments",1);
+			}
+			
 			$add_email->insert();
 			$this->vars["id"] = $get_email->getLastId();
 
@@ -422,133 +582,156 @@ class pz_email extends pz_model{
 	}
 
 
-	public function sendDraft() {
+	public function sendDraft() 
+	{
 
 		if($email_account = pz_email_account::get($this->getAccountId()))
 		{
-		
+
+		  ob_start();
+		  try 
+		  {
+
+  			$mail = new pz_mailer();
+  
+  			$mail->From             = $email_account->getEmail();
+  	    $mail->FromName         = $email_account->getName();
+  	    $mail->ConfirmReadingTo = "";
+  	    $mail->Mailer           = "smtp";
+  
+   	    $mail->Host             = $email_account->getSMTPHost();
+   	    $mail->SMTP_PORT        = $email_account->getSMTPPort();
+  		    
+  	    $mail->CharSet          = "utf-8";
+  	    $mail->WordWrap         = "1000";
+  	    // $mail->Encoding         = "base64";
+  	    $mail->Priority         = "normal";
+  	    $mail->SMTPAuth         = TRUE;
+  	    $mail->Username         = $email_account->getSMTPLogin();
+  	    $mail->Password         = $email_account->getSMTPPassword();
+  
+  			$mail->SetFrom($email_account->getEmail(), $email_account->getName());
+  			$mail->Subject = $this->getSubject();
+  
+  			// TODO
+  			// - richtig splitten, Cc, Bcc nach email und name..
+  			$tos = explode(",",$this->getTo());
+  			foreach($tos as $to) {
+  				$mail->AddAddress($to, $to);
+  			}
+  
+  			if($this->getCc() != "") {
+  				$ccs = explode(",",$this->getCc());
+  				foreach($ccs as $cc) {
+  					$mail->AddCC($cc, $cc);
+  				}
+  			}
+  
+  			if($this->getBcc() != "") {
+  				$bccs = explode(",",$this->getBcc());
+  				foreach($bccs as $bcc) {
+  					$mail->AddBCC($bcc, $bcc);
+  				}
+  			}
+  			
+  			if($this->getMessageHTML() != "") {
+  				$mail->AltBody = $this->getBody();
+  				$mail->MsgHTML($this->getMessageHTML());
+  			}else {
+  				$mail->Body = $this->getBody();
+  			}
+  		
+  			$clip_ids = explode(",",$this->getClipIds());
+  			$clips = array();
+  			foreach($clip_ids as $clip_id) 
+  			{
+  				$clip_id = (int) $clip_id;
+  				if(($clip = pz_clip::get($clip_id))) 
+  				{
+  					if(file_exists($clip->getPath()))
+  					{
+  						$mail->AddAttachment($clip->getPath(), $clip->getFilename());
+  						$clips[] = $clip->getId();
+  					}
+  				}
+  			}
+
+    		if ($mail->Send() != 1)
+    		{
+		      ob_end_clean();
+    			return false;
+    		}
+    		
+      } catch (phpmailerException $e) {
+        // $e->getMessage()
+		    ob_end_clean();
+        return false;
+      }
+		  ob_end_clean();
+
+	
+			$u = rex_sql::factory();
+			// $u->debugsql = 1;
+			$u->setTable("pz_email");
+			$u->setWhere(array('id'=>$this->getId()));
+			$u->setValue("status",1);
+			$u->setValue("date",date("Y-m-d H:i:s"));
+			$u->setValue("send",1);
+			$u->setValue("readed",1);
+			$u->setValue("draft",0);
 			
-		
-		
-			$mail = new pz_mailer();
-
-			$mail->From             = $email_account->getEmail();
-		    $mail->FromName         = $email_account->getName();
-		    $mail->ConfirmReadingTo = "";
-		    $mail->Mailer           = "smtp";
-		    $mail->Host             = $email_account->getSMTPHost();
-		    $mail->CharSet          = "utf-8";
-		    $mail->WordWrap         = "1000";
-		    // $mail->Encoding         = "base64";
-		    $mail->Priority         = "normal";
-		    $mail->SMTPAuth         = TRUE;
-		    $mail->Username         = $email_account->getSMTPLogin();
-		    $mail->Password         = $email_account->getSMTPPassword();
-
-			$mail->SetFrom($email_account->getEmail(), $email_account->getName());
-			$mail->Subject = $this->getSubject();
-
-			// TODO
-			// - richtig splitten, Cc, Bcc nach email und name..
-			$tos = explode(",",$this->getTo());
-			foreach($tos as $to) {
-				$mail->AddAddress($to, $to);
-			}
-
-			if($this->getCc() != "") {
-				$ccs = explode(",",$this->getCc());
-				foreach($ccs as $cc) {
-					$mail->AddCC($cc, $cc);
-				}
-			}
-
-			if($this->getBcc() != "") {
-				$bccs = explode(",",$this->getBcc());
-				foreach($bccs as $bcc) {
-					$mail->AddBCC($bcc, $bcc);
-				}
-			}
+			if(count($clips)>0)
+				$u->setValue("has_attachments",1);
 			
-			if($this->getBodyHTML() != "") {
-				$mail->AltBody = $this->getBody();
-				$mail->MsgHTML($this->getBodyHTML());
-			}else {
-				$mail->Body = $this->getBody();
-			}
-		
-			$clip_ids = explode(",",$this->getClipIds());
-			$clips = array();
-			foreach($clip_ids as $clip_id) {
-				$clip_id = (int) $clip_id;
-				if($clip_id > 0 && $clip = pz_clipboard::getClipById($clip_id)) {
-					// content_type / content_length
-					$clip["path"] = pz_clipboard::getPath($clip["id"],$clip["user_id"]);
-					if(file_exists($clip["path"]))
-						$mail->AddAttachment($clip["path"], $clip["filename"]);
-				}
-			}
-		
-			if ($mail->Send() == 1)
+			$u->update();
+
+			$filepath = $this->getFilePath();
+			rex_file::put($filepath,$mail->getMIMEHeader().$mail->getMIMEBody());
+
+			$this->setRawHeader($mail->getMIMEHeader());
+			$this->refreshHeaderInfo();
+
+			$reply_id = (int) $this->getReplyId();
+			
+			if($reply_id > 0)
 			{
 				$u = rex_sql::factory();
-				// $u->debugsql = 1;
 				$u->setTable("pz_email");
-				$u->setWhere(array('id'=>$this->getId()));
-				$u->setValue("status",1);
-				$u->setValue("date",date("Y-m-d H:i:s"));
-				$u->setValue("send",1);
-				$u->setValue("readed",1);
-				$u->setValue("draft",0);
+				$u->setWhere(array('id'=>$reply_id));
+				$u->setValue("replied_id",$this->getId());
 				$u->update();
-
-				$filepath = $this->getFilePath();
-				rex_file::put($filepath,$mail->getMIMEHeader().$mail->getMIMEBody());
-
-				$this->setRawHeader($mail->getMIMEHeader());
-				$this->refreshHeaderInfo();
-
-				$reply_id = (int) $this->getReplyId();
-				
-				if($reply_id > 0)
-				{
-					$u = rex_sql::factory();
-					$u->setTable("pz_email");
-					$u->setWhere(array('id'=>$reply_id));
-					$u->setValue("replied_id",$this->getId());
-					$u->update();
-				}
-
-				$forward_id = (int) $this->getForwardId();
-				if($forward_id > 0)
-				{
-					$u = rex_sql::factory();
-					$u->setTable("pz_email");
-					$u->setWhere(array('id'=>$forward_id));
-					$u->setValue("forwarded_id",$this->getId());
-					$u->update();
-				}
-
-				return TRUE;			
 			}
+
+			$forward_id = (int) $this->getForwardId();
+			if($forward_id > 0)
+			{
+				$u = rex_sql::factory();
+				$u->setTable("pz_email");
+				$u->setWhere(array('id'=>$forward_id));
+				$u->setValue("forwarded_id",$this->getId());
+				$u->update();
+			}
+
+			return TRUE;			
 		
 		}
 		
 		return FALSE;
 	
 	}
-
-
 	
 	public function trash() {
 		$u = rex_sql::factory();
-		$u->setQuery('update pz_email set trash=1 where id = ?', array($this->getId()));
+		$u->setQuery('update pz_email set trash=1, project_id = 0 where id = ?', array($this->getId()));
 		$this->update();
+		$this->saveToHistory('update','trash');
 	}
 
 	public function untrash() {
 		$u = rex_sql::factory();
 		$u->setQuery('update pz_email set trash=0 where id = ?', array($this->getId()));
 		$this->update();
+		$this->saveToHistory('update','untrash');
 	}
 
 	public function updateStatus($status = 0) {
@@ -571,47 +754,65 @@ class pz_email extends pz_model{
 		$this->update();
 	}
 
-	public function moveToProjectId($project_id = 0) {
+	public function moveToProjectId($project_id = 0) 
+	{
 		$u = rex_sql::factory();
 		$u->setQuery('update pz_email set trash=0,project_id=? where id = ?', array($project_id,$this->getId()));
-		$this->update();	
+		$this->update();
+		
+		$this->setProjectId($project_id);
+		$this->saveToHistory('update','movetoproject');
 	}
 
-	public function update() {
+	public function removeFromProject() 
+	{
+		$u = rex_sql::factory();
+		$u->setQuery('update pz_email set trash=0,project_id=? where id = ?', array(0,$this->getId()));
+		$this->update();
+		$this->saveToHistory('update','removefromproject');
 	}
 
-	public function create() {
+	public function update() 
+	{
+		
 	}
 
-	public function delete() {
+	public function create() 
+	{
+		$this->saveToHistory('add');
+	}
+
+	public function delete() 
+	{
+
+		$this->saveToHistory('delete');
 
 		if($this->getId() == "")
+		{
 			return FALSE;
+    	}
 
 		if($this->isDraft())
 		{
 			$d = rex_sql::factory();
 			$d->setQuery('delete from pz_email where id = ?', array($this->getId()));
 			return TRUE;
+	
+		}else if($this->isTrash())
+		{
+			$d = rex_sql::factory();
+			$d->setQuery('delete from pz_email where id = ?', array($this->getId()));
+  		rex_dir::delete($this->getFolder());
+      return TRUE;		  
+		  
 		}
-		// TODO
-		// Aus der Datenbank löschen
-		
-		// getFolder()
-		
-		// Aus dem Filesystem löschen
-		
-		// Verknüpfungen
-		// - in Projekten
-		// - Historien
-		// etc . löschen
-		
 		return FALSE;
 	}
 
 	// --------------------------------------------------------------------------
 
-	public function refreshHeaderInfo() {
+	public function refreshHeaderInfo() 
+	{
 
 		$headerinfo = pz_eml::parseHeaderToArray($this->getHeader());
 		
@@ -653,7 +854,25 @@ class pz_email extends pz_model{
 		return TRUE;
 	}
 
-
+  public function saveToHistory($mode = 'update', $func = '')
+  {
+    $sql = rex_sql::factory();
+    $sql->setTable('pz_history')
+      ->setValue('control', 'email')
+      ->setValue('func', $func)
+      ->setValue('data_id', $this->getId())
+      ->setValue('project_id', $this->getProjectId())
+      ->setValue('user_id', pz::getUser()->getId())
+      ->setRawValue('stamp', 'NOW()')
+      ->setValue('mode', $mode);
+    if($mode != 'delete')
+    {
+      $data = $this->vars;
+      unset($data['vt']);
+      $sql->setValue('data', json_encode($data));
+    }
+    $sql->insert();
+  }
 
 
 

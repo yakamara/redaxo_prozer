@@ -15,7 +15,14 @@ class pz_project_file extends pz_project_node
     $filename = date('YmdHis');
     $this->setVar('filename', $filename);
     rex_file::put($this->getRealPath(), $data);
-    rex_sql::factory()->setQuery('UPDATE pz_project_file SET filename = ?, updated = NOW(), updated_user_id = ? WHERE id = ?', array($filename, pz::getUser()->getId(), $this->getId()));
+    
+    $filesize = $this->getSize();
+    $this->setVar('filesize', $filesize);
+
+    $mimetype = $this->getMimeType();
+    $this->setVar('mimetype', $mimetype);
+
+    rex_sql::factory()->setQuery('UPDATE pz_project_file SET filename = ?, filesize = ?, mimetype = ?, updated = NOW(), updated_user_id = ? WHERE id = ?', array($filename, $filesize, $mimetype, pz::getUser()->getId(), $this->getId()));
 
     if($saveToHistory)
       $this->saveToHistory('update');
@@ -29,7 +36,21 @@ class pz_project_file extends pz_project_node
   public function getSize()
   {
   	return filesize($this->getRealPath());
+  }
 
+  public function getMimeType()
+  {
+    return pz::getMimeTypeByFilename($this->getVar('name'));
+  }
+
+  // only for update.inc.php
+  public function updateFilesizeAndMimetype()
+  {
+    rex_sql::factory()->setQuery(
+      'UPDATE pz_project_file SET filesize = ?, mimetype = ? WHERE id = ?', 
+      array($this->getSize(), $this->getMimeType(), $this->getId() )
+    );
+  
   }
 
   public function delete()

@@ -103,4 +103,13 @@ class pz_sabre_principal_backend implements Sabre_DAVACL_IPrincipalBackend
   {
   }
 
+  function updatePrincipal($path, $mutations)
+  {
+    return false;
+  }
+
+  function searchPrincipals($prefixPath, array $searchProperties)
+  {
+    return array();
+  }
 }

@@ -8,7 +8,6 @@
 	text-decoration: underline !important;
 }
 
-
 .qq-upload-button {
 	display:block; /* or inline-block */
 	width: 600px; 
@@ -20,9 +19,10 @@
 	background: -moz-linear-gradient(center top , #626D72, #AFAFAF) repeat scroll 0 0 transparent;
 	border-radius: 3px 3px 3px 3px;
 }
-.qq-upload-button-hover {
-	background:#cc0000;
+.qq-upload-button:hover {
+	background:#cc0000; 
 }
+
 
 .qq-upload-button-focus {
 	outline:1px dotted black;
@@ -66,7 +66,7 @@
 	font-size:12px;
 	background: #e5e5e5;
 	border-bottom: 1px solid #eee;
-border-radius: 3px 3px 3px 3px;
+  border-radius: 3px 3px 3px 3px;
 }
 
 .qq-uploaded-list li:hover,
@@ -140,4 +140,12 @@ li.qq-upload-fail a {
 .design1col .qq-upload-button {
 	width: 250px; 
 }
+
+#clipboard .qq-upload-button {
+  margin: 20px auto;
+  line-height: 50px;
+
+}
+
+
 

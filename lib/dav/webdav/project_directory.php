@@ -6,7 +6,7 @@ class pz_sabre_project_directory extends pz_sabre_project_node implements Sabre_
   {
     $child = $this->node->getChild($name);
     if(!$child)
-      throw new Sabre_DAV_Exception_FileNotFound('File with name ' . $name . ' could not be located');
+      throw new Sabre_DAV_Exception_NotFound('File with name ' . $name . ' could not be located');
     return self::factory($child);
   }
 

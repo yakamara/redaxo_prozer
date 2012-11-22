@@ -4,24 +4,29 @@ class pz_projects_controller_screen extends pz_projects_controller {
 
 	var $name = "projects";
 	var $function = "";
-	var $functions = array("my", "all", "archive", "api");
-	var $function_default = "my";
-	var $navigation = array("my", "all", "archive");
+	var $functions = array("all", "archive", "api");
+	var $function_default = "all";
+	var $navigation = array("all", "archive");
 
-	function controller($function) {
+	function controller($function) 
+	{
 
-
-		if(pz::getUser()->isAdmin() || pz::getUser()->hasPerm('projectsadmin')) { 
+		if(pz::getUser()->isAdmin() || pz::getUser()->hasPerm('projectsadmin')) 
+		{
 			$this->functions[] = "customers";
 			$this->navigation[] = "customers";
 		}
 
-		if(pz::getUser()->isAdmin()) { 
+		if(pz::getUser()->isAdmin()) 
+		{ 
 			$this->functions[] = "labels";
 			$this->navigation[] = "labels";
 		}
 
-		if(!in_array($function,$this->functions)) $function = $this->function_default;
+		if(!in_array($function,$this->functions))
+		{
+		  $function = $this->function_default;
+		}
 		$this->function = $function;
 
 		$p = array();
@@ -44,15 +49,16 @@ class pz_projects_controller_screen extends pz_projects_controller {
 	}
 
 
-	private function getProjectFilter() {
+	private function getProjectFilter() 
+	{
 
 		$filter = array();
 		if(rex_request("search_name","string") != "")
-		$filter[] = array(
-			"field" => "name", 
-			"type" => "like", 
-			"value" => rex_request("search_name","string")
-		);
+  		$filter[] = array(
+  			"field" => "name", 
+  			"type" => "like", 
+  			"value" => rex_request("search_name","string")
+  		);
 		if(rex_request("search_label","string") != "")
 			$filter[] = array(
 				"field" => "label_id", 
@@ -60,11 +66,11 @@ class pz_projects_controller_screen extends pz_projects_controller {
 				"value" => rex_request("search_label","string")
 			);
 		if(rex_request("search_customer","string") != "")
-		$filter[] = array(
-			"field" => "customer_id", 
-			"type" => "=",
-			"value" => rex_request("search_customer","string")
-		);
+  		$filter[] = array(
+  			"field" => "customer_id", 
+  			"type" => "=",
+  			"value" => rex_request("search_customer","string")
+  		);
 		return $filter;
 
 	}
@@ -77,34 +83,6 @@ class pz_projects_controller_screen extends pz_projects_controller {
 
 	// -------------------------------------------------------- Project Views
 
-	/*
-	private function getProjectListView($projects,$p = array())
-	{
-		$content = "";
-		
-		echo "ERROROR";
-		
-		$paginate_screen = new pz_paginate_screen($projects);
-		$paginate = $paginate_screen->getPlainView($p);
-		
-		$first = " first";
-		foreach($paginate_screen->getCurrentElements() as $project) {
-			if($e = new pz_project_screen($project)) {
-				$content .= '<li class="lev1 entry'.$first.'">'.$e->getListView($p).'</li>';
-				$first = "";
-			}
-		}
-		$content = $paginate.'<ul class="entries view-list">'.$content.'</ul>';
-		$content = $this->getSearchPaginatePlainView().$content;
-		$f = new rex_fragment();
-		$f->setVar('title', $p["title"], false);
-		$f->setVar('content', $content , false);
-		
-		return '<div id="projects_list" class="design2col">'.$f->parse('pz_screen_list').'</div>';
-	}
-	*/
-
-
 	private function getProjectTableView($projects,$p = array())
 	{
 		$content = "";
@@ -114,30 +92,54 @@ class pz_projects_controller_screen extends pz_projects_controller {
 		$paginate_screen = new pz_paginate_screen($projects);
 		$paginate = $paginate_screen->getPlainView($p);
 		
+		$list = '';
 		foreach($paginate_screen->getCurrentElements() as $project) {
 			$ps = new pz_project_screen($project);
-			$content .= $ps->getTableView($p);
+			$list .= $ps->getTableView($p);
 		}
-		$content = $paginate.'
-          <table class="projects tbl1">
-          <thead><tr>
-              <th></th>
-              <th>'.rex_i18n::msg("customer").'</th>
-              <th>'.rex_i18n::msg("project_name").'</th>
-              <th>'.rex_i18n::msg("project_createdate").'</th>
-              <th>'.rex_i18n::msg("project_admins").'</th>
-              <th class="label"></th>
-          </tr></thead>
-          <tbody>
-            '.$content.'
-          </tbody>
-          </table>';
+		
 		// $content = $this->getSearchPaginatePlainView().$content;
+		
+		$list .= ''; /*<script>
+				$(document).ready(function() {
+				  pz_screen_select_event("#emails_list li.selected");
+				});
+				</script>';*/
+				
+		$paginate_loader = $paginate_screen->setPaginateLoader($p, '#projects_list');
+
+		if($paginate_screen->isScrollPage())
+		{
+		  $content = '
+		        <table class="projects tbl1">
+		        <tbody class="projects_table_list">
+		          '.$list.'
+		        </tbody>
+		        </table>'.$paginate_loader;
+		
+		  return $content;
+		}
+		
+		$content = $paginate.'
+		      <table class="projects tbl1">
+		      <thead><tr>
+		          <th></th>
+		          <th>'.rex_i18n::msg("customer").'</th>
+		          <th>'.rex_i18n::msg("project_name").'</th>
+		          <th>'.rex_i18n::msg("project_createdate").'</th>
+		          <th>'.rex_i18n::msg("project_admins").'</th>
+		          <th class="label"></th>
+		      </tr></thead>
+		      <tbody class="projects_table_list">
+		        '.$list.'
+		      </tbody>
+		      </table>'
+		      .$paginate_loader;
 		
 		$f = new rex_fragment();
 		$f->setVar('title', $p["title"], false);
 		$f->setVar('content', $content , false);
-		return '<div id="projects_list" class="design2col">'.$f->parse('pz_screen_list').'</div>';
+		return '<div id="projects_list" class="design2col">'.$f->parse('pz_screen_list.tpl').'</div>';
 	}
 
 	private function getProjectMatrixView($projects,$p = array())
@@ -162,7 +164,7 @@ class pz_projects_controller_screen extends pz_projects_controller {
 		$f->setVar('title', $p["title"], false);
 		$f->setVar('content', $content , false);
 		
-		return '<div id="projects_list" class="design3col">'.$f->parse('pz_screen_list').'</div>';
+		return '<div id="projects_list" class="design3col">'.$f->parse('pz_screen_list.tpl').'</div>';
 	}
 
 
@@ -180,8 +182,6 @@ class pz_projects_controller_screen extends pz_projects_controller {
 		}
 
 		$content = '<ul class="entries view-block">'.$content.'</ul>';
-		// $content = $this->getSearchPaginatePlainView().$content;
-
 		$paginate = "";
 
 		$f = new rex_fragment();
@@ -190,7 +190,7 @@ class pz_projects_controller_screen extends pz_projects_controller {
 		$f->setVar('content', $content , false);
 		$f->setVar('paginate', $paginate, false);
 
-		return $f->parse('pz_screen_list');
+		return $f->parse('pz_screen_list.tpl');
 
 	}
 
@@ -207,95 +207,9 @@ class pz_projects_controller_screen extends pz_projects_controller {
 
 	// --------------------------------------------------- Formular Views
 
-	function getProjectsSearchForm ()
-	{
-	    $return = '
-	        <header>
-	          <div class="header">
-	            <h1 class="hl1">'.rex_i18n::msg("search_for_projects").'</h1>
-	          </div>
-	        </header>';
-		
-		$xform = new rex_xform;
-		$xform->setObjectparams("real_field_names",TRUE);
-		$xform->setObjectparams("form_showformafterupdate", TRUE);
-		
-		$xform->setObjectparams("form_action", "javascript:pz_loadFormPage('projects_list','project_search_form','".pz::url('screen','projects',$this->function,array("mode"=>'list'))."')");
-		$xform->setObjectparams("form_id", "project_search_form");
-		
-		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform', 'runtime'));
-		$xform->setValueField("text",array("search_name",rex_i18n::msg("project_name")));
-		$xform->setValueField('pz_select_screen',array('search_label', rex_i18n::msg('project_label'), pz_labels::getAsString(),"","",1,rex_i18n::msg("please_choose")));
-		$xform->setValueField('pz_select_screen',array('search_customer', rex_i18n::msg('customer'), pz_customers::getAsString(),"","",1,rex_i18n::msg("please_choose")));
-		// $xform->setValueField('pz_date_screen',array('search_datetime', rex_i18n::msg('createdate')));
-		$xform->setValueField("submit",array('submit',rex_i18n::msg('search'), '', 'search'));
-		$return .= $xform->getForm();
-		
-		$return = '<div id="project_search" class="design1col xform-search">'.$return.'</div>';
-		return $return;
-
-	}
+	
 
 	// --------------------------------------------------- Main Pages Views
-
-	function getMyProjectsPage($p = array())
-	{
-		$p["title"] = rex_i18n::msg("my_projects");
-		
-		$filter = $this->getProjectFilter();
-		$projects = pz::getUser()->getMyProjects($filter);
-		
-		$section_1 = $this->getProjectMatrixView(
-							$projects,
-							array_merge( $p, 
-								array("linkvars" => array( 
-									"mode" =>"list", 
-									"search_name" => rex_request("search_name"), 
-									"archived" => rex_request("archived") ) ) )
-						);
-
-		$mode = rex_request("mode","string");
-		switch($mode) {
-			case("list"):
-				return $section_1;
-				break;
-			default:
-		}
-		
-		$f = new rex_fragment();
-		$f->setVar('header', pz_screen::getHeader($p), false);
-		$f->setVar('function', $this->getNavigation($p) , false);
-		$f->setVar('section_1', $section_1 , false);
-		return $f->parse('pz_screen_main');
-	}
-
-	function getArchiveProjectsPage($p = array())
-	{
-		$p["title"] = rex_i18n::msg("archived_projects");
-
-		$filter = $this->getProjectFilter();
-
-		$mode = rex_request("mode","string");
-		switch($mode)
-		{
-			case("list"):
-				$projects = pz::getUser()->getArchivedProjects($filter);
-				return $this->getProjectTableView($projects,$p);
-				break;
-		}
-
-		$section_1 = $this->getProjectsSearchForm();
-		$projects = pz::getUser()->getArchivedProjects($filter);
-		$section_2 = $this->getProjectTableView($projects,$p);
-
-		$f = new rex_fragment();
-		$f->setVar('header', pz_screen::getHeader($p), false);
-		$f->setVar('function', $this->getNavigation($p), false);
-		$f->setVar('section_1', $section_1 , false);
-		$f->setVar('section_2', $section_2 , false);
-		return $f->parse('pz_screen_main');
-
-	}
 
 	function getAllProjectsPage($p = array())
 	{
@@ -304,7 +218,21 @@ class pz_projects_controller_screen extends pz_projects_controller {
 		$s1_content = "";
 		$s2_content = "";
 
+		$p["linkvars"]["search_name"] = rex_request("search_name");
+		$p["linkvars"]["search_customer"] = rex_request("search_customer");
+		$p["linkvars"]["search_label"] = rex_request("search_label");
+		$p["linkvars"]["search_myprojects"] = rex_request("search_myprojects");
+		$p["linkvars"]["archived"] = rex_request("archived");
+
 		$filter = $this->getProjectFilter();
+		if($p["linkvars"]["search_myprojects"] == 1)
+		{
+		  $projects = pz::getUser()->getMyProjects($filter);
+		}else 
+		{
+  		$projects = pz::getUser()->getProjects($filter);
+		}
+		
 		$mode = rex_request("mode","string");
 		switch($mode)
 		{
@@ -312,27 +240,23 @@ class pz_projects_controller_screen extends pz_projects_controller {
 				if(pz::getUser()->isAdmin() || pz::getUser()->hasPerm('projectsadmin'))
 					return pz_project_screen::getAddForm($p);
 				return '';
+
 			case("list"):
-				$projects = pz::getUser()->getProjects($filter);
-				return $this->getProjectTableView(
-					$projects,
-					array_merge(
-						$p,
-						array("linkvars" => array( "mode" =>"list", "search_name" => rex_request("search_name"), "archived" => rex_request("archived") ) )
-					)
-				);
+				$p["linkvars"]["mode"] = "list";
+				return $this->getProjectTableView($projects, $p);
+
 			default:
-				$s1_content .= $this->getProjectsSearchForm($p);
-				$projects = pz::getUser()->getProjects($filter);
-				$s2_content .= $this->getProjectTableView(
-					$projects,
-					array_merge(
-						$p,
-						array("linkvars" => array( "mode" =>"list", "search_name" => rex_request("search_name"), "archived" => rex_request("archived") ) )
-					)
-				);
+				$p["linkvars"]["mode"] = "list";
+				$ignore_searchfields = array("myprojects");
 				if(pz::getUser()->isAdmin() || pz::getUser()->hasPerm('projectsadmin'))
+				  $ignore_searchfields = array();
+				
+				$s1_content .= pz_project_screen::getProjectsSearchForm($p, $ignore_searchfields);
+				$s2_content .= $this->getProjectTableView( $projects, $p);
+				if(pz::getUser()->isAdmin() || pz::getUser()->hasPerm('projectsadmin'))
+				{
 					$s1_content .= pz_project_screen::getAddForm($p);
+				}
 		}
 
 		$f = new rex_fragment();
@@ -340,9 +264,43 @@ class pz_projects_controller_screen extends pz_projects_controller {
 		$f->setVar('function', $this->getNavigation($p), false);
 		$f->setVar('section_1', $s1_content, false);
 		$f->setVar('section_2', $s2_content, false);
-		return $f->parse('pz_screen_main');
+		return $f->parse('pz_screen_main.tpl');
 
 	}
+	
+	
+	function getArchiveProjectsPage($p = array())
+	{
+		$p["title"] = rex_i18n::msg("archived_projects");
+
+		$p["linkvars"]["mode"] = "list";
+		$p["linkvars"]["search_name"] = rex_request("search_name");
+		$p["linkvars"]["search_customer"] = rex_request("search_customer");
+		$p["linkvars"]["search_label"] = rex_request("search_label");
+		$p["linkvars"]["archived"] = rex_request("archived");
+
+		$filter = $this->getProjectFilter();
+		$projects = pz::getUser()->getArchivedProjects($filter);
+
+		$mode = rex_request("mode","string");
+		switch($mode)
+		{
+			case("list"):
+				return $this->getProjectTableView($projects,$p);
+		}
+
+		$section_1 = pz_project_screen::getProjectsSearchForm($p, array("myprojects"));
+		$section_2 = $this->getProjectTableView($projects,$p);
+
+		$f = new rex_fragment();
+		$f->setVar('header', pz_screen::getHeader($p), false);
+		$f->setVar('function', $this->getNavigation($p), false);
+		$f->setVar('section_1', $section_1 , false);
+		$f->setVar('section_2', $section_2 , false);
+		return $f->parse('pz_screen_main.tpl');
+
+	}
+
 
 	// ----------------------------------------------------------- Customersview
 
@@ -355,17 +313,13 @@ class pz_projects_controller_screen extends pz_projects_controller {
 
 		$filter = array();
 		if(rex_request("search_name","string") != "")
-			$filter[] = array(
-				"field" => "name",
-				"value" => rex_request("search_name","string"),
-				"type" => "like"
-				);
+			$filter[] = array( "field" => "name", "value" => rex_request("search_name","string"), "type" => "like" );
+		
+		$archived = 0;
 		if(rex_request("archived","int") == 1)
-			$filter[] = array(
-				"field" => "archived",
-				"value" => rex_request("archived","int"),
-				"type" => "="
-				);
+			$archived = 1;
+			
+		$filter[] = array( "field" => "archived", "value" => $archived, "type" => "=" );
 		
 		$mode = rex_request("mode","string");
 		
@@ -446,7 +400,7 @@ class pz_projects_controller_screen extends pz_projects_controller {
 		$f->setVar('function', $this->getNavigation($p), false);
 		$f->setVar('section_1', $s1_content, false);
 		$f->setVar('section_2', $s2_content, false);
-		return $f->parse('pz_screen_main');
+		return $f->parse('pz_screen_main.tpl');
 
 	}
 
@@ -475,12 +429,15 @@ class pz_projects_controller_screen extends pz_projects_controller {
 					return $r->getDeleteForm($p);
 				}
 				return '';
+				
 			case("add_label"):
 				return pz_label_screen::getAddForm($p);
+			
 			case("list"):
 				$labels = pz_labels::get();
 				$cs = new pz_labels_screen($labels);
 				return $cs->getListView($p);
+			
 			case("edit_label"):
 				$label_id = rex_request("label_id","int",0);
 				if($label_id > 0 && $label = pz_label::get($label_id)) {
@@ -493,6 +450,7 @@ class pz_projects_controller_screen extends pz_projects_controller {
 					return '<div id="label_form"><p class="xform-warning">'.rex_i18n::msg("label_not_found").'</p></div>';
 				}
 				break;
+			
 			case("label_info"):
 				$label_id = rex_request("label_id","int",0);
 				if($label_id > 0 && $label = pz_label::get($label_id)) {
@@ -518,7 +476,7 @@ class pz_projects_controller_screen extends pz_projects_controller {
 		$f->setVar('function', $this->getNavigation($p), false);
 		$f->setVar('section_1', $s1_content, false);
 		$f->setVar('section_2', $s2_content, false);
-		return $f->parse('pz_screen_main');
+		return $f->parse('pz_screen_main.tpl');
 
 	}
 

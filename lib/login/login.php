@@ -36,8 +36,7 @@ class pz_login extends rex_login
         {
           $this->setSessionVar('UID', $sql->getValue('id'));
           setcookie($cookiename, $cookiekey, time() + 60*60*24*365, '/');
-        }
-        else
+        }else
         {
           setcookie($cookiename, '', time() - 3600, '/');
         }
@@ -62,12 +61,13 @@ class pz_login extends rex_login
           $params[] = $cookiekey;
           setcookie($cookiename, $cookiekey, time() + 60*60*24*365, '/');
         }
-        array_push($params, time(), session_id(), $this->usr_login);
-        $sql->setQuery('UPDATE pz_user SET '. $add .'login_tries=0, lasttrydate=?, session_id=? WHERE login=? LIMIT 1', $params);
+
+        array_push($params, time(), pz::getDateTime()->format("Y-m-d H:i:s"), session_id(), $this->usr_login);
+        $sql->setQuery('UPDATE pz_user SET '. $add .'login_tries=0, lasttrydate=?, last_login=?, session_id=? WHERE login=? LIMIT 1', $params);
       }
-      pz::setUser(new pz_user($this->USER));
-    }
-    else
+      pz::setUser(new pz_user($this->USER), $this);
+    
+    }else
     {
       // fehlversuch speichern | login_tries++
       if($this->usr_login != '')

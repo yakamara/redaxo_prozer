@@ -1,42 +1,39 @@
 <?php
 
-class pz_labels {
+class pz_labels 
+{
 
 	static $labels = array();
 
-	static function get() {
-		
+	static function get() 
+	{
 		$sql = rex_sql::factory();
 		$sql->setQuery('select * from pz_label order by name');
-		
 		$labels = array();
 		foreach($sql->getArray() as $l)
 		{
 			$label = new pz_label($l);
 			$labels[$label->getId()] = $label;
 		}
-
 		return $labels;		
-		
 	}
 
-	static function getAsString() {
-	
+	static function getAsString() 
+	{
 		$return = array();
-		foreach(pz_labels::get() as $label) {
+		foreach(pz_labels::get() as $label) 
+		{
 			$v = $label->getName();
 			$v = str_replace('=','',$v);
 			$v = str_replace(',','',$v);
 			$return[] = $v.'='.$label->getId();
 		}
 		return implode(",",$return);
-		
 	}
 
-	static function update() {
-		
+	static function update() 
+	{
 		$content = '';
-		
 		foreach(pz_labels::get() as $l)
 		{
 			$content .= "\n".'.labelc'.$l->getId().' { background-color:'.$l->getColor().' !important; }';	
@@ -51,9 +48,7 @@ class pz_labels {
 		//.labelc6 { background-color: #eb005f !important; /* rot (zart) */ }
 
 		$file = rex_path::addonAssets('prozer', 'labels_screen.css',rex_path::ABSOLUTE);
-
 		file_put_contents($file,$content);
-		
 	}
 
 }

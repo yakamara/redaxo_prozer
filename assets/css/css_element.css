@@ -23,11 +23,11 @@ span.tooltip .inner,
 /* Buttons  ********************************************************************
 *******************************************************************************/
 
-a.bt5.bt-loading span {
+a.bt-loading span {
 	background-image:url(loading.gif);
 	background-repeat:no-repeat;
 	background-position:3px 50%;
-	padding-left:25px;
+	padding-left:25px!important;
 }
 
 /* 23 Hoehe - N: Grau - H: Blau */
@@ -69,6 +69,14 @@ a.bt17 {
 }
 a.bt5 span.icon {
   display: block;
+}
+.grid2col.header a.bt5 {
+  display: block;
+  float: left;
+  margin: 0 5px -7px 0;
+}
+.grid2col.header a.bt5 + .sl1 {
+  float: right;
 }
 
 /* 21 Hoehe - N: Blau - H: Silber
@@ -114,7 +122,7 @@ a.bt10 {
     - ohne Abrundung, Zeiten 6, 7, 8 ...
 */
 a.bt11 {
-  width: 22px;
+  width: 20px;
   height: 22px;
 }
 
@@ -184,15 +192,22 @@ a.bt16 {
 
 /* Tooltip  ********************************************************************
 *******************************************************************************/
-a.tooltip {
+a.tooltip, 
+div.tooltip {
   position: relative;
+  line-height: 1;
 }
-a.tooltip:hover span.tooltip {
+.project-file div.tooltip {
+  float: left;
+  margin: 4px 5px 0 0;
+}
+a.tooltip:hover span.tooltip, 
+div.tooltip:hover span.tooltip {
   display: block;
 }
 span.tooltip {
   position: absolute;
-  top: -30px;
+  top: -20px;
   left: -6px;
   display: none;
   padding-bottom: 6px;
@@ -207,7 +222,29 @@ span.tooltip .inner {
   box-shadow: 1px 1px 3px #b4b4b4;
 }
 
-
+.status span.tooltip {
+  top: -30px;
+  left: -8px;
+}
+.entry-email figure div.tooltip span.tooltip, 
+.entry-email .attachments div.tooltip span.tooltip, 
+.project-file div.tooltip span.tooltip {
+  top: -30px;
+  left: 3px;
+}
+.tbl3 div.tooltip {
+  height: 90%;
+}
+.tbl3 span.tooltip {
+  top: auto;
+  bottom: 30px;
+}
+/*
+.entry-email figure span.tooltip {
+  top: -55px;
+  left: 3px;
+}
+*/
 
 /* Status  *********************************************************************
 *******************************************************************************/
@@ -291,6 +328,18 @@ span.tooltip .inner {
   border-bottom: 1px solid #f6f7f7;
 }
 
+
+/* Pageload  *******************************************************************
+*******************************************************************************/
+.page-load {
+  clear: both;
+  position: relative;
+  margin-bottom: 10px; 
+  background-color: #CFDCE2;
+  text-align: center; 
+  line-height: 40px;
+  cursor:pointer;
+}
 
 /* Bloat  **********************************************************************
 *******************************************************************************/

@@ -1,0 +1,373 @@
+.dragable {
+  cursor: move;
+}
+
+
+.piped {
+  display: block;
+  overflow: hidden;
+}
+.piped li, 
+.piped > span {
+  display: inline;
+  float: left;
+  border-left: 1px solid #ccc;
+}
+.piped li a, 
+.piped > span {
+  margin-left: 4px;
+  padding-left: 4px;
+}
+.piped li:first-child, 
+.piped > span:first-child {
+  margin-left: 0;
+  padding-left: 0;
+  border-left: 0;
+}
+
+/*
+article.block span.more {
+  display: block;
+  padding: 5px 0 0 0;
+  cursor: pointer;
+  color: #ccc;
+  text-align: center;
+}
+article.block span.more:hover {
+  color: #aaa;
+}
+article.block span.more:before {
+  content: "\F04B";
+  font-family: "Wingdings";
+  font-size: 20px;
+  font-weight: normal;
+}
+article.block span.more:hover:before {
+  content: "\F04A";
+}
+*/
+
+
+dl.facts dt {
+  float: left;
+  width: 80px;
+  font-weight: bold;
+}
+dl.facts dd {
+  display: block;
+  margin-left: 85px;
+}
+
+
+
+/* article  ********************************************************************
+*******************************************************************************/
+article img, 
+header img {
+  vertical-align: top;
+}
+article .name, 
+header  .name, 
+article .title, 
+header  .title {
+  font-weight: bold;
+}
+article .title, 
+header  .title {
+  font-size: 14px;
+}
+
+
+
+/* article.block  **************************************************************
+*******************************************************************************/
+article.block:after, 
+article.block section:after {
+  clear: both;
+  content: '.';
+  display: block;
+  height: 0;
+  visibility: hidden;
+  font-size: 0px;
+  line-height: 0;
+}
+article.block {
+  position: relative;
+  padding: 10px;
+}
+
+article.block figure {
+  float: left;
+}
+article.block figure + figure {
+  padding-left: 15px;
+}
+article.block figure + .data, 
+article.block.image section.content {
+  margin-left: 60px;
+}
+article.block figure + figure + .data, 
+article.block.images section.content {
+  margin-left: 100px;
+}
+article.block figure.figure-to {
+  background: url(../themes/blue_grey/ic_arrow_007_011_r_v.png) 5px -85px no-repeat;
+}
+
+
+article.block.label {
+  padding-right: 30px;
+}
+
+article.block footer, 
+article.block footer span.label {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+}
+article.block footer span.label {
+  display: block;
+  width: 20px;
+  text-indent: -1000em;
+}
+
+
+/* Address  ********************************************************************
+*******************************************************************************/
+.address.block {
+  background-color: #fff;
+  border-bottom: 1px solid #d8d8d8;
+}
+.address.block:hover {
+  background-color: #f7f7f7;
+}
+
+
+/* Calendar  *******************************************************************
+*******************************************************************************/
+.design2col .job.block header section.data .column.first {
+  width: 400px;
+}
+.design2col .job.block header section.data .column.last {
+  width: 200px;
+}
+/*
+.design2col .history .job.block header section.data .column.first {
+  width: 332px;
+}
+.design2col .history .job.block header section.data .column.last {
+  width: 280px;
+}
+*/
+
+
+
+
+/* E-Mail  *********************************************************************
+*******************************************************************************/
+.email.block header, 
+.email.block section.content {
+  background: none;
+}
+
+.email.block {
+  margin-bottom: 10px;
+  background-color: #fff;
+}
+.email.block:nth-child(even) {
+  background-color: #f7f7f7;
+}
+.email.block.open {
+  background-color: #d8d8d8;
+}
+
+.email.block > header {
+  margin: -10px -10px 0 -10px;
+  padding: 10px;
+}
+.email.block header .grid2col .column.first {
+  width: 60%;
+}
+.email.block header .grid2col .column.last {
+  width: 39%;
+}
+.email.block header ul.sl2 {
+  position: absolute;
+  right: 35px;
+  top: 45px;
+}
+.email.draft.block header ul.sl2 {
+  position: absolute;
+  right: 25px;
+  top: auto;
+  bottom: 5px;
+}
+
+.email.block section.content {
+  margin: 0 50px 0 100px;
+  padding: 0;
+}
+.email.block section.content.preview {
+  margin-right: 300px;
+}
+.email.block.open section.content  {
+  margin: 0;
+}
+
+
+.email.block.open .email-read header {
+  margin-left: 100px;
+  margin-bottom: 15px;
+}
+.email.block.open .email-read dl.data {
+  width: 100%;
+}
+.email.block.open .email-read dl.data dt, 
+.email.block.open .email-read dl.data dd {
+  display: block;
+  float: left;
+}
+.email.block.open .email-read dl.data dt {
+  clear: both;
+  width: 54px;
+  color: #4d595f;
+  font-weight: bold;
+}
+.email.block.open .email-read dl.data dd {
+  width: 320px;
+}
+.email.block.open .email-read dl.data dd.from {
+  font-weight: bold;
+}
+.email.block.open .email-read dl.data dd.date {
+  color: #626d72;
+}
+.email.block.open .email-read dl.data dd.subject {
+  color: #06a9d6;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+
+.email.block header ul.functions li.function, 
+.email.block header ul.functions li.option {
+  display: block;
+  float: left;
+  height: 30px;
+}
+.email.block header ul.functions li.function {
+  margin-left: 10px;
+}
+.email.block header ul.functions li.option span.option {
+  margin-top: 8px;
+}
+.email.block header ul.functions li.function a, 
+.email.block header ul.functions li.function a {
+  display: block;
+}
+
+
+/* Attachments */
+.email.block.open section.attachments {
+  margin: 0 -10px;
+  padding: 0 10px;
+  background-color: #f7f7f7;
+}
+.email.block.open section.attachments .attachment {
+  display: block;
+  float: left;
+  width: 100%;
+  margin-bottom: 0px;
+  padding: 6px 0;
+  border-top: 1px solid #fff;
+  border-bottom: 1px solid #d8d8d8;
+}
+.email.block.open section.attachments .attachment:first-child {
+  border-top: 0;
+}
+.email.block.open section.attachments .attachment:last-child {
+  border-bottom: 0;
+}
+.email.block.open section.attachments span.piped {
+  float: left;
+}
+.email.block.open section.attachments ul.functions {
+  float: right;
+  margin-right: 5px;
+}
+.email.block.open section.attachments ul.functions li.function {
+  display: inline-block;
+  padding-left: 20px;
+}
+
+.email.block.open .email-read section.content-body-navigation, 
+.email.block.open .email-read section.content {
+  margin: 0 -10px;
+}
+.email.block.open .email-read section.content {
+  padding: 15px;
+  background-color: #fff;
+}
+
+
+/* unreaded */
+.email.block.email-unreaded {
+  background-color: #ff6;
+  border-left: 10px solid #666100;
+}
+.email.block .email-quote {
+  padding-left: 10px;
+  padding-bottom: 10px;
+  border-left: 1px solid #000;
+}
+/*
+.email.block section.attachments .attachment .name {
+  margin-right: 6px;
+  padding-right: 6px;
+  border-right-style: solid;
+  border-right-width: 1px;
+  margin-left: 6px;
+  padding-left: 6px;
+  border-left-style: solid;
+  border-left-width: 1px;
+}
+*/
+
+
+.email .email-header-link {
+}
+.email .email-header {
+  clear:both;
+}
+
+/* History  ********************************************************************
+*******************************************************************************/
+.history {
+  margin-bottom: 10px;
+  background-color: #d8d8d8;
+  border-radius: 10px 0 0 0;
+}
+.history .head {
+  overflow: hidden;
+  padding: 10px;
+}
+.history .head figure {
+  float: left;
+}
+.history .head figure + .data {
+  margin-left: 35px;
+}
+.history .head .button {
+  float: right;
+}
+.history article.block {
+  background-color: #fff;
+}
+.history article.block:hover {
+  background-color: #f7f7f7;
+}
+
+
+/* User  ***********************************************************************
+*******************************************************************************/

@@ -21,17 +21,13 @@ class pz_eml{
 		$this->children = array();
 		$this->extractHeaderBody();
 		$this->mail_filename = rex_i18n::msg("emlname");
+		
 	}
 
 
 	// ----- getter
 	
-	public function getChildren()
-	{
-		if($this->hasChildren())
-			return $this->vars["children"];
-		return array();
-	}
+	
 
 	public function getContentDisposition() 
 	{
@@ -55,9 +51,8 @@ class pz_eml{
 
 	public function getContentType()
 	{
-		if($this->parent === NULL)
+		if(!isset($this->vars["header"]["content-type"]) && !$this->hasParent())
 			return "message/rfc822";
-		
 		return @$this->vars["header"]["content-type"];
 	}
 	
@@ -66,9 +61,19 @@ class pz_eml{
 		return @$this->vars["header"]["content-type-charset"];
 	}
 
+	public function getContentTypeBoundary()
+	{
+		return @$this->vars["header"]["content-type-boundary"];
+	}
+
 	public function getContentTypeName()
 	{
 		return @$this->vars["header"]["content-type-name"];
+	}
+
+  public function setContentTypeName($name)
+	{
+		$this->vars["header"]["content-type-name"] = $name;
 	}
 
 	public function getContentDispositionFilename()
@@ -78,9 +83,14 @@ class pz_eml{
 
 	public function getBody()
 	{
-		if($this->parent === NULL)
-			return $this->src;
+		// if($this->parent === NULL)
+		//	return $this->src;
 		return @$this->vars["body"];
+	}
+
+	public function getSource()
+	{
+		return $this->src;
 	}
 
 	public function getFileName()
@@ -92,14 +102,11 @@ class pz_eml{
 		if($filename == "")
 			$filename = $this->getContentDispositionFilename();
 
-		if($filename == "") {
+		if($filename == "") 
+		{
 			$filename = rex_i18n::msg("no_filename");
-			
-			if($fn = pz::getFilenameByMimeType($this->getContentType()))
-				$filename = $fn;
-				
-			if($ext = pz::getExtensionByMimeType($this->getContentType()))
-				$filename .= '.'.$ext;
+  		if($ext = pz::getExtensionByMimeType($this->getContentType()))
+  			$filename .= '.'.$ext;
 		}
 
 		$filename = pz_eml::decodeCharset($filename);
@@ -142,29 +149,83 @@ class pz_eml{
 
 	// ---- func
 
+  public function extractBody($body, $content_transfer_encoding = "", $content_type_charset = "")
+  {
+		if($content_transfer_encoding == "base64")
+		{
+			$body = base64_decode($body);
+			
+		}elseif($content_transfer_encoding == "quoted-printable")
+		{
+			$body = quoted_printable_decode($body);
+
+		}
+
+		if($content_type_charset != "" && $content_type_charset != "utf-8")
+		{
+			$body = @mb_convert_encoding($body, "UTF-8", $content_type_charset);
+		}
+
+    /*		
+		if(isset($this->vars["header"]["content-type"]) && $this->vars["header"]["content-type"] == "text/plain")
+		{
+			$this->vars["body"] = $this->vars["body"];
+		}
+		*/
+		return $body;
+  
+  }
+
 	public function extractHeaderBody()
 	{
 		if (preg_match("/^(.*?)\r?\n\r?\n(.*)/s", $this->src, $elements))
 		{
-			$header = $elements[1];
-			$body = $elements[2];
+			$this->header = $elements[1];
+			$this->body = $elements[2];
 
-			$this->vars["header"] = $this->parseHeaderToArray($header);
+			$this->vars["header"] = $this->parseHeaderToArray($this->header);
 
-			if(isset($this->vars["header"]["content-type-boundary"]) && $this->vars["header"]["content-type-boundary"] != "")
+      if($this->getContentTypeBoundary() == "")
+			{
+			  // -> no multipart
+        $this->vars["body"] = $this->extractBody($this->body, @$this->vars["header"]["content-transfer-encoding"], @$this->vars["header"]["content-type-charset"]);
+
+        // is extracted multipart ?
+        if (preg_match("/^(.*?)\r?\n\r?\n(.*)/s", $this->vars["body"], $elements))
+		    {
+			    $header = $this->parseHeaderToArray($elements[1]);
+          if(isset($header["content-type-boundary"]) && $header["content-type-boundary"] != "")
+     			{
+     			  // yes
+			      // echo '<pre>';var_dump($this->vars["header"]); echo '</pre>';
+            // echo '<pre>';var_dump($header); echo '</pre>';
+            $this->body = $elements[2];
+            $content_type_name = $this->getContentTypeName();
+            $this->vars["header"] = $header;
+            if($content_type_name != "" && $this->getContentTypeName() == "")
+              $this->setContentTypeName($content_type_name);
+
+     			}
+        }
+
+			}
+			
+			
+			if($this->getContentTypeBoundary() != "")
 			{
 				// -> multipart -> extract body
 				
-				$elements = explode("--".$this->vars["header"]["content-type-boundary"],$body);
+				$elements = explode("--".$this->getContentTypeBoundary(),$this->body);
 				$i=1;
 
-				$part_id = $this->part_id;				
+				$part_id = $this->part_id;
+				$depth = 	$this->depth + 1;
 				foreach($elements as $element)
 				{
 					if($i > 1 && $i < count($elements))
 					{
 						$part_id++;
-						$e = new pz_eml($element, $part_id, ($this->depth+1));
+						$e = new pz_eml($element, $part_id, $depth);
 						$e->parent = $this;
 						$this->children[] = $e;
 					}
@@ -173,75 +234,70 @@ class pz_eml{
 			
 				$this->vars["children"] = $this->children;
 			
-			}else
-			{
-				$this->vars["body"] = $body;
-
-				if(isset($this->vars["header"]["content-transfer-encoding"]) && $this->vars["header"]["content-transfer-encoding"] != "")
-				{
-					if($this->vars["header"]["content-transfer-encoding"] == "base64")
-					{
-						$this->vars["body"] = base64_decode($this->vars["body"]);
-					}elseif($this->vars["header"]["content-transfer-encoding"] == "quoted-printable")
-					{
-						$this->vars["body"] = quoted_printable_decode($this->vars["body"]);
-					}
-				}
-
-				if(isset($this->vars["header"]["content-type-charset"]) && $this->vars["header"]["content-type-charset"] != "utf-8")
-				{
-					$this->vars["body"] = @mb_convert_encoding($this->vars["body"], "UTF-8", $this->vars["header"]["content-type-charset"]);
-				}
-				
-				if(isset($this->vars["header"]["content-type"]) && $this->vars["header"]["content-type"] == "text/plain")
-				{
-					$this->vars["body"] = $this->vars["body"];
-				}
-				
-				
 			}
 
-		}else
-		{
-			return "";
 		}
-
 	
 	}
+
 
 	public function hasChildren()
 	{
 		if(isset($this->vars["children"]) && count($this->vars["children"]) > 0)
-			return TRUE;
-		return FALSE;
+		{
+			return true;
+		}
+		return false;
 	}
 
-	public function getAllElements() {
+  public function getChildren()
+	{
+		if($this->hasChildren())
+			return $this->vars["children"];
+		return array();
+	}
 
+	public function hasParent()
+	{
+		if($this->parent != NULL)
+		{
+		  return true;
+		}
+		return false;
+	}
+
+
+	public function getAllElements() 
+	{
 		$elements = array();
 		$elements[] = $this;
-		foreach($this->getChildren() as $child) {
+		foreach($this->getChildren() as $child) 
+		{
 			$elements = array_merge($elements,$child->getAllElements());
 		}
 		return $elements;
 	}
 
 
-	public function getElementByElementId($element_id) {
-		
+	public function getElementByElementId($element_id) 
+	{
 		$elements = $this->getAllElements();
-		foreach($elements as $element) {
-			if($element->getElementId() == "$element_id") {
+		foreach($elements as $element) 
+		{
+			if($element->getElementId() == "$element_id") 
+			{
 				return $element;
 			}
 		}
 		return FALSE;
 	}
 
-	public function getElementByContentId($element_id) {
-		
+
+	public function getElementByContentId($element_id) 
+	{
 		$elements = $this->getAllElements();
-		foreach($elements as $element) {
+		foreach($elements as $element) 
+		{
 			if(isset($element->vars["header"]["content-id"]) && $element->vars["header"]["content-id"] == "$element_id") {
 				return $element;
 			}
@@ -263,6 +319,26 @@ Content-Type: text/calendar; charset="utf-8"; method=REQUEST
 
 */
 
+
+	/*
+		check for real Attachments, 
+		- no inline images, 
+		- no text or html part..
+	*/
+	public function hasRealAttachments()
+	{
+		foreach($this->getAllElements() as $e) {
+			if(	$e->getContentDisposition() == "attachment" || $e->getContentDispositionFilename() != "" )  {
+				return TRUE;
+			}
+		}
+		return FALSE;
+	}
+
+	/*
+		get all attached Elements, also inline images..
+	*/
+
 	public function getAttachmentElements() {
 	
 		$return = array();
@@ -272,23 +348,43 @@ Content-Type: text/calendar; charset="utf-8"; method=REQUEST
 			if(	
 				isset($e->vars["body"]) && 
 					(
-					$e->getContentType() != "" || // == "message/rfc822"
-					$e->getContentDisposition() == "attachment" || 
-					$e->getContentDispositionFilename() != "" ||
-					$e->getContentTypeName() != ""
+					  ( 
+					  $e->getContentType() != "" || // == "message/rfc822"
+					  $e->getContentDisposition() == "attachment" || 
+					  $e->getContentDispositionFilename() != "" ||
+					  $e->getContentTypeName() != ""
 					//  ||	$e->getContentDisposition() == "inline" 
+				    ) 
+				    and 
+				    $e->hasParent()
 					)
 				) {
+				
 				$return[] = $e;
-			}elseif($e->parent === NULL)
+			}
+			
+			/*
+			elseif($e->parent === NULL)
 			{
 				$return[] = $e;
 			}
-
-
+			*/
 		}
-
 		return $return;
+	}
+
+	public function getFirstHTML()
+	{
+		$body = "";
+		$body = $this->getFirstContentTypeElement("text/html");
+
+		// TODO: scripts, onlick etc deactivate
+
+		$body = preg_replace("#<[ ]*script.*>.*<[ ]*/script[ ]*>#isU", "", $body);
+		$body = preg_replace("#<!--.*-->#isU", "", $body);
+		// $body = html_entity_decode(strip_tags($body),ENT_COMPAT,"UTF-8");
+		
+		return $body;
 	}
 
 	public function getFirstText()
@@ -323,8 +419,7 @@ Content-Type: text/calendar; charset="utf-8"; method=REQUEST
 		$body = str_replace("\r","\n",$body);
 		$body = str_replace("\t","",$body);
 		
-$body = str_replace("#&nbsp;#isU"," ",$body);
-
+		$body = str_replace("#&nbsp;#isU"," ",$body);
 
 		$body = preg_replace("#([\ ]{2,50})#", "", $body);
 		$body = preg_replace("#([\n]{3,50})#", "\n", $body);
@@ -334,17 +429,20 @@ $body = str_replace("#&nbsp;#isU"," ",$body);
 		return $body;
 	}
 
-	public function getFirstContentTypeElement($content_type = "text/plain")
+	public function getFirstContentTypeElement($content_type = "text/plain", $get_body = true)
 	{
 		if(isset($this->vars["header"]["content-type"]) && $this->vars["header"]["content-type"] == $content_type)
 		{
-			if(isset($this->vars["body"]))
+			if($get_body && isset($this->vars["body"]))
 				return $this->vars["body"];
+			elseif (isset($this->vars["body"]))
+				return $this;
+				
 		}else
 		{
 			foreach($this->getChildren() as $child) {
 				if($child->getFirstContentTypeElement($content_type) != "") {
-					return $child->getFirstContentTypeElement($content_type);
+					return $child->getFirstContentTypeElement($content_type, $get_body);
 				}
 			}
 		}
@@ -477,7 +575,7 @@ $body = str_replace("#&nbsp;#isU"," ",$body);
    			if (preg_match("#content-type: ([^;\ ]*)#im", $content_type_all, $content_type)){
    				$return["content-type"] = strtolower($content_type[1]); 
    			}
-   			if (preg_match('#boundary=(.[^;\ ]*)#im', $content_type_all, $boundary)) { 						
+   			if (preg_match('#boundary[ ]*=[ ]*(.[^;\ ]*)#im', $content_type_all, $boundary)) {
    				$return["content-type-boundary"] = str_replace(array('"',"'"),"",trim($boundary[1]));
    			}
    			
@@ -488,7 +586,7 @@ $body = str_replace("#&nbsp;#isU"," ",$body);
 	   		if (preg_match('#name[ ]*=[" \']*([a-zA-Z-0-9\.-_\[\]]*)[" \';,]*#im', $header, $regs)) {
 */
 	   		if (preg_match('#name[ ]*=[ ]*["\']{1}([a-zA-Z-0-9\.-_\[\] ]*)["\';,]{1}#im', $header, $regs)) {
-   				$return["content-type-name"] = strtolower(trim($regs[1]));
+   				$return["content-type-name"] = (trim($regs[1])); // strtolower
    			}
 
    			

@@ -28,5 +28,8 @@ RewriteCond %{REQUEST_FILENAME} -d [OR]
 RewriteCond %{REQUEST_FILENAME} -l
 RewriteRule .* - [L]
 
+# Direkt Clip download
+RewriteRule ^clip/(.*) index.php?mediaview=screen&controll=clipboard&func=get&clip_key=$1 [QSA,L]
+
 # REWRITE ALL OTHER REQUESTS TO INDEX.PHP
 RewriteRule ^(\w*)/?(\w*)/?(\w*) index.php?mediaview=$1&controll=$2&func=$3 [QSA,L]

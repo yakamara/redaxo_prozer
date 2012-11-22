@@ -24,6 +24,7 @@ class pz_project_controller extends pz_controller {
 				"id" => -1,
 				"admin" => 1,
 				"calendar" => 1,
+				"calendar_jobs" => 1,
 				"files" => 1,
 				"emails" => 1,
 				"wiki" => 1

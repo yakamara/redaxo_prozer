@@ -160,8 +160,10 @@ abstract class pz_project_node extends pz_model
   protected function saveToHistory($mode = 'update')
   {
     $sql = rex_sql::factory();
-    $sql->setTable('pz_project_file_history')
-      ->setValue('file_id', $this->getId())
+    $sql->setTable('pz_history')
+      ->setValue('control', 'project_file')
+      ->setValue('project_id', $this->getProjectId())
+      ->setValue('data_id', $this->getId())
       ->setValue('user_id', pz::getUser()->getId())
       ->setRawValue('stamp', 'NOW()')
       ->setValue('mode', $mode);

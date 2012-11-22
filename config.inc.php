@@ -8,6 +8,7 @@ if(!rex::isBackend())
       $output = $params['subject'];
       $output .= pz::controller();
       rex_response::sendArticle($output, 'frontend');
+
     }
   );
 }

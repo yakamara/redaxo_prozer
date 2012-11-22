@@ -27,7 +27,7 @@ class pz_sabre_dav_server extends Sabre_DAV_Server
 
     set_error_handler(function($errno, $errstr, $errfile, $errline ) {
       if((error_reporting() & $errno) == $errno)
-        throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
+        throw new ErrorException($errstr." $errfile $errline", 0, $errno, $errfile, $errline);
       return true;
     });
 

@@ -44,7 +44,7 @@ class rex_xform_value_pz_reminder_screen extends rex_xform_value_abstract
     $f->setVar('selected', $tpl_selected_text, false);
     $f->setVar('entries', $tpl_entries, false);
     $f->setVar('extra', '<input id="' . $this->getFieldId().'-'. $id_counter++ . '" type="hidden" name="'.$this->getFieldName().'" value="'.htmlspecialchars(stripslashes($tpl_selected_value)).'" />', false);
-    $reminder_dropdown = $f->parse('pz_screen_select_dropdown');
+    $reminder_dropdown = $f->parse('pz_screen_select_dropdown.tpl');
 
 		
     // XForm Fragment aufbauen
@@ -111,7 +111,7 @@ class rex_xform_value_pz_reminder_screen extends rex_xform_value_abstract
     $f->setVar('selected', $tpl_selected_text, false);
     $f->setVar('entries', $tpl_entries, false);
     $f->setVar('extra', '<input id="' . $this->getFieldId() . '-'. $id_counter .'" type="hidden" name="'.$this->getFieldName().'" value="'.htmlspecialchars(stripslashes($tpl_selected_value)).'" />', false);
-    $popup_dropdown = $f->parse('pz_screen_select_dropdown');
+    $popup_dropdown = $f->parse('pz_screen_select_dropdown.tpl');
 
 		
     // XForm Fragment aufbauen
@@ -180,7 +180,7 @@ class rex_xform_value_pz_reminder_screen extends rex_xform_value_abstract
     $f->setVar('selected', $tpl_selected_text, false);
     $f->setVar('entries', $tpl_entries, false);
     $f->setVar('extra', '<input id="' . $this->getFieldId() . '-'. $id_counter .'" type="hidden" name="'.$this->getFieldName().'" value="'.htmlspecialchars(stripslashes($tpl_selected_value)).'" />', false);
-    $popup_dropdown = $f->parse('pz_screen_select_dropdown');
+    $popup_dropdown = $f->parse('pz_screen_select_dropdown.tpl');
     
     
     
@@ -238,7 +238,7 @@ class rex_xform_value_pz_reminder_screen extends rex_xform_value_abstract
     $f->setVar('selected', $tpl_selected_text, false);
     $f->setVar('entries', $tpl_entries, false);
     $f->setVar('extra', '<input id="' . $this->getFieldId().'-'. $id_counter++ . '" type="hidden" name="'.$this->getFieldName().'" value="'.htmlspecialchars(stripslashes($tpl_selected_value)).'" />', false);
-    $sound_dropdown = $f->parse('pz_screen_select_dropdown');
+    $sound_dropdown = $f->parse('pz_screen_select_dropdown.tpl');
 
 		
     // XForm Fragment aufbauen
@@ -289,7 +289,7 @@ class rex_xform_value_pz_reminder_screen extends rex_xform_value_abstract
     $f->setVar('selected', $tpl_selected_text, false);
     $f->setVar('entries', $tpl_entries, false);
     $f->setVar('extra', '<input id="' . $this->getFieldId().'-'. $id_counter++ . '" type="hidden" name="'.$this->getFieldName().'" value="'.htmlspecialchars(stripslashes($tpl_selected_value)).'" />', false);
-    $email_dropdown = $f->parse('pz_screen_select_dropdown');
+    $email_dropdown = $f->parse('pz_screen_select_dropdown.tpl');
 
 		
     // XForm Fragment aufbauen

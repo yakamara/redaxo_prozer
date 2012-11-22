@@ -36,6 +36,10 @@ class pz_calcarddav_controller extends pz_controller
     $carddavPlugin = new Sabre_CardDAV_Plugin();
     $server->addPlugin($carddavPlugin);
 
+    $server->addPlugin(new pz_sabre_caldav_attachments_plugin());
+
+    Sabre_VObject_Property::$classMap['ACKNOWLEDGED'] = 'Sabre_VObject_Property_DateTime';
+
     // And off we go!
     $server->exec();
   }

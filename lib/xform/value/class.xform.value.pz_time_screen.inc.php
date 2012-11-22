@@ -83,7 +83,7 @@ class rex_xform_value_pz_time_screen extends rex_xform_value_abstract
     $f->setVar('selected', $tpl_selected_text, false);
     $f->setVar('entries', $tpl_entries, false);
     $f->setVar('extra', '<input id="' . $this->getFieldId() . '-'. $id_counter .'" type="hidden" name="'.$this->getFieldName().'" value="'.htmlspecialchars(stripslashes($tpl_selected_value)).'" />', false);
-    $hours = $f->parse('pz_screen_select_dropdown');
+    $hours = $f->parse('pz_screen_select_dropdown.tpl');
     
 		
 		
@@ -109,7 +109,7 @@ class rex_xform_value_pz_time_screen extends rex_xform_value_abstract
     
     $f = new rex_fragment();
     $f->setVar('entries', $tpl_entries, false);
-    $butler = $f->parse('pz_screen_navi_butler');
+    $butler = $f->parse('pz_screen_navi_butler.tpl');
 		
 		
     // ---------------------------------------------------------------- Form Element

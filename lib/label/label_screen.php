@@ -9,6 +9,19 @@ class pz_label_screen{
 		$this->label = $label;
 	}
 
+
+	// --------------------------------------------------------------- Static returns
+
+  static function getColorClass($id)
+  {
+    return 'labelc'.$id;
+  }
+
+  static function getBorderColorClass($id)
+  {
+    return 'labelb'.$id;
+  }
+
 	// --------------------------------------------------------------- Listviews
 
 	function getListView($p = array())
@@ -72,7 +85,7 @@ class pz_label_screen{
 		$xform->setObjectparams("main_id",$this->label->getId());
 		$xform->setObjectparams("main_where",'id='.$this->label->getId()); // array("id"=>$this->label->getId())
 		$xform->setObjectparams('getdata',true);
-		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform'));
+		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
 		
 		$xform->setObjectparams("form_action", "javascript:pz_loadFormPage('label_form','label_edit_form','".pz::url('screen','projects','labels',array("mode"=>'edit_label'))."')");
 		$xform->setObjectparams("form_id", "label_edit_form");
@@ -135,7 +148,7 @@ class pz_label_screen{
 		$xform->setObjectparams("form_action", "javascript:pz_loadFormPage('label_form','label_add_form','".pz::url('screen','projects','labels',array("mode"=>'add_label'))."')");
 		$xform->setObjectparams("form_id", "label_add_form");
 		
-		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform'));
+		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
 		$xform->setValueField("text",array("name",rex_i18n::msg("label_name")));
 		$xform->setValidateField("empty",array("name",rex_i18n::msg("error_label_name_empty")));
 		$xform->setValueField("text",array("color",rex_i18n::msg("label_color")));

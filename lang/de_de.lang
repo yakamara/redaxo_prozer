@@ -2,6 +2,10 @@
 locale = de_DE
 
 format_month = F Y
+format_day = d.m
+format_time = H:i
+format_datetime = d.m.Y H:i:s
+
 format_ddmy = l d. F Y
 format_d_month = d. m
 format_month_y = m Y
@@ -10,11 +14,25 @@ format_d_m_y_h_i = d.m.Y - H:i
 format_h_i = H:i
 format_DdFY = D d. F Y
 
-minutes = Minuten
 
-jobtime_total = Gesamtzeit:
+show_date_long = %A %d.%B %Y
+show_date_normal = %d. %B %Y
+show_datetime_normal = %d.%m.%Y %H:%Mh
+show_month_long = %B %Y
+show_day_short_weekday = %a. %d.
+show_day_short = %d.
+show_day_short2 = %a. %d.%m
+
+
+minutes = Minuten
+allday = ganztägig
+time = Uhrzeit
+
+jobtime_total = Gesamtzeit
 
 enter_keyword = Suchbegriff eingeben...
+
+install_failed_htaccess_copy = Installation konnte nicht vollständig durchgeführt werden. .htaccess konnte nicht geschrieben werden.
 
 location = Ort
 close = schließen
@@ -70,6 +88,7 @@ projects = Projekte
 
 title = Titel
 hours = Stunden
+attachments = Anhänge
 
 page_emails_inbox = Inbox
 page_emails_outbox = Outbox
@@ -78,8 +97,7 @@ page_emails_spam = Spam
 page_emails_trash = Müll
 page_emails_new = Neue Mail
 page_emails_history = Logbuch
-page_emails_search = Suche
-page_emails_setup = Setup
+page_emails_search = Alle E-Mails
 
 userperm_list = Projektrechte
 
@@ -104,25 +122,22 @@ page_project_files = Dateien
 page_project_emails = E-Mails
 page_project_history = Logbuch
 
-history = Logbuch
-
 dragdrop_files_for_upload = Dateien zum Upload auswählen / per Drag & Drop ablegen
+dragdrop_file_for_upload = Datei zum Upload auswählen / per Drag & Drop ablegen
+files_for_upload = per Drag & Drop ablegen
 dragdrop_files_upload_failed = fehlgeschlagen
 dragdrop_files_exit = abbrechen
 dragdrop_files_remove_from_list = aus Liste entfernen
-
-dragdrop_file_for_upload = Datei zum Upload auswählen / per Drag & Drop ablegen
-dragdrop_file_upload_failed = fehlgeschlagen
-dragdrop_file_exit = abbrechen
-dragdrop_file_remove_from_list = aus Liste entfernen
 
 page_calendars_day = Tag
 page_calendars_month = Monat
 page_calendars_week = Woche
 page_calendars_list = Liste
 page_calendars_usertime = Benutzer-/Zeitansicht
-page_calendars_projectjob = Projekt-/Terminansicht
+page_calendars_projectjob = Projekt-/Jobzeitansicht
 page_calendars_new = Neuer Eintrag
+page_calendars_projectevent = Projekt-/Terminansicht
+page_calendars_customerplan = Kundenkalender
 
 
 page_addresses_my = Meine Adressen
@@ -130,25 +145,61 @@ page_addresses_all = Alle Adressen
 page_addresses_export = Export
 page_addresses_new = Neuer Eintrag
 
-page_tools_profile = Profil
+page_tools_perms = Rechtevergabe
+page_tools_profile = Profil und Rechte
 page_tools_jobs = Jobs
 page_tools_sms = SMS
 page_tools_users = Benutzer
-page_tools_system = Systeminfo
+page_tools_emailsetup = Emailsetup
+page_tools_calendar_event_labels = Kalenderlabels
+
+
+page_admin_system = System
+page_admin_profiles = Rechte
+page_admin_jobs = Jobs
+page_admin_users = Benutzer
+page_admin_history = Log
+
+
+user_perms = Userrechte
+user_perm_add = Userrecht hinzufügen
+user_perm_edit = Userrecht bearbeiten
+user_perm_calendar_read = Kalender lesen
+user_perm_calendar_write = Kalender bearbeiten
+user_perm_email_read = Emails lesen
+user_perm_email_write = Emails bearbeiten
+user_perm_user_exists = Für diesen User wurde bereits eine Berechtigung angelegt
+user_perm_updated = Userrechte wurde aktualisiert
+user_perm_added = Userrecht wurde hingefügt
+user_perm_user_isme = Man kann sich nicht selbst Rechte vergeben
+
+
+responsible_user = verantwortlich
+created_by_user = erstellt von
+updated_by_user = aktualisiert von
 
 
 calendar_event_attendees = Einladungen
 add_attendee = Einladung hinzufügen
+calendar_event_attendees_unanswered = unbeantwortete Einladungen
+
 
 calendar_event_attendee_accepted = bestätigt
 calendar_event_attendee_tentative = unverbindlich
 calendar_event_attendee_declined = abgelehnt
 calendar_event_attendee_needs-action = wartend
 
+calendar_event_attachments = Anhänge
+
 calendar_event_rule = Typ
 calendar_event_has_rule = Wiederholungstermin
 calendar_event_frequence = Frequenz
 calendar_event_interval = Häufigkeit
+
+calendar_projectevent_list = Projekt-/Terminansicht
+
+calendar_customerplan_list = Kundenterminansicht
+
 
 
 address_prefix = Titel
@@ -211,6 +262,15 @@ region = Bundesland
 zip = PLZ
 country = Land
 
+address_orderby_iddesc = Älteste ID zuerst
+address_orderby_idasc = Neuste ID zuerst
+address_orderby_lastnamedesc = Nachname, absteigend
+address_orderby_lastnameasc = Nachname, aufsteigend
+address_orderby_firstnamedesc = Vorname, absteigend
+address_orderby_firstnameasc = Vorname, aufsteigend
+address_orderby_companydesc = Firma, absteigend
+address_orderby_companyasc = Firma, aufsteigend
+
 download_emails = E-Mails abrufen
 
 customers = Kunden
@@ -228,37 +288,54 @@ customer_updated = Kunde wurde aktualisiert
 customer_confirm_delete = Kunde `{0}` löschen ?
 customer_deleted = Kunde `{0}` wurde gelöscht
 
+customer_notexists = Kein Kunde zugewiesen
+
 photo = Foto
 
 
 label = Label
 labels = Labels
-
 label_edit = Label editieren
 label_add = Label hinzufügen
 delete_label = Label löschen
-
 label_edited = Label wurde editiert
 label_added = Label wurde hinzugefügt
 label_deleted = Label wurde gelöscht
 label_updated = Label wurde aktualisiert
-
 label_name = Name
 label_color = Farbe
-
 label_confirm_delete = Label `{0}` löschen ?
 label_deleted = Label `{0}` wurde gelöscht
-
 add_label = Label hinzufügen
+
+calendar_event_label = Label
+calendar_event_labels = Labels
+calendar_event_label_edit = Label editieren
+calendar_event_label_add = Label hinzufügen
+delete_calendar_event_label = Label löschen
+calendar_event_label_edited = Label wurde editiert
+calendar_event_label_added = Label wurde hinzugefügt
+calendar_event_label_deleted = Label wurde gelöscht
+calendar_event_label_updated = Label wurde aktualisiert
+calendar_event_label_name = Name
+calendar_event_label_color = Farbe
+calendar_event_label_confirm_delete = Label `{0}` löschen ?
+calendar_event_label_deleted = Label `{0}` wurde gelöscht
+add_calendar_event_label = Label hinzufügen
+
+calendar_events = Kalender [Termine]
+calendar_jobs = Kalender [Jobs]
 
 ok = Ok
 select = auswählen
 
 projects_archive = Projektarchiv
 
-get_from_clipboard = Aus dem Clipboard auswählen
-clips_exist = Sie haben {0} Clips
-2clipboard = 2C
+get_from_clipboard = + Aus dem Clipboard auswählen
+clips_exist = Es wurden {0} Clips gefunden
+copy_to_clipboard = ins Clipboard legen
+copy_to_myclipboard = in meine Ablage legen
+copied_to_myclipboard = Datei `{0}` wurde in `Meine Ablage` gelegt.
 
 project_name = Name
 project_description = Beschreibung
@@ -268,7 +345,7 @@ project_has_emails = Projekt braucht E-Mails
 project_has_calendar = Projekt braucht einen Kalender
 project_has_files = Projekt braucht Dateien
 project_jobs = Liste der Jobs
-project_info = Aktuelles
+project_info = Aktuelle Projekttermine
 
 project_added = Projekt wurde angelegt
 
@@ -284,12 +361,23 @@ add_project = Projekt anlegen
 edit_project = Projekt bearbeiten
 
 emails_search = E-Mail Suche
+emails_inbox_search = E-Mails in Inbox suchen
+emails_outbox_search = E-Mails in Outbox suchen
+emails_spam_search = E-Mails in Spam suchen
+emails_trash_search = E-Mails im Müll suchen
+emails_search_search = In allen E-mails suchen
+emails_projekt_search = Im Projekt nach E-Mails suchen
+
 
 error_customer_name_empty = Bitte den Kundennamen eingeben
 error_project_enter_name = Bitte die Projektbezeichnung eingeben
 error_label_name_empty = Bitte Labelnamen eingeben
 error_label_color_empty = Bitte Labelfarbe definieren
 error_label_bordercolor_empty = Bitte Labelrandfarbe definieren
+
+error_calendar_event_label_name_empty = Bitte Labelnamen eingeben
+error_calendar_event_label_color_empty = Bitte Labelfarbe definieren
+
 error_user_already_exists = Benutzer existiert bereits
 error_please_choose_user = Bitte einen Benutzer auswählen
 error_name_empty = Bitte den Namen eingeben
@@ -345,7 +433,7 @@ project_file_confirm_delete = Datei `{0}` löschen ?
 project_file_deleted = Datei `{0}` wurde gelöscht
 
 
-please_choose = --- Bitte auswählen ---
+please_choose = Bitte auswählen
 id = ID
 stay = eingeloggt bleiben
 psw = Passwort
@@ -353,6 +441,9 @@ options = Optionen
 
 mark_as_unread = als ungelesen markieren
 mark_as_unproject = Projektzuordnung entfernen
+
+mark_as_status_1 = E-Mail als bearbeitet markieren
+mark_as_status_0 = E-Mail als unbearbeitet markieren
 
 projectuserlist = Projektteilnehmer
 
@@ -362,17 +453,34 @@ search_for_files = Nach Dateien suchen
 search_for_jobs = Nach Jobs suchen
 search_for_addresses = Nach Adressen suchen
 search_for_users = Nach Benutzern suchen
+search_for_clips = Nach Clips suchen
+search_for_userperms = Nach Userrechten suchen
+
+search_email_fulltext = Allgemein
+search_email_from = von
+search_email_to = an
+search_email_subject = Betreff
+search_date_from = Datum von
+search_date_to = Datum bis
+search_email_unread = nur ungelesene Emails
+search_email_my = nur eigene Emails lesen
+search_email_noprojects = nur Emails ohne Projektzuweisung
+search_email_intrash = auch Emails aus Müll
+
+order_name = Sortierung
+
 
 events = Termine
 job = Job
 jobs = Jobs
+todos = ToDos
 mycontacts = Meine
 createdate = Erstelldatum
 
 all_projects = Alle Projekte
 archived_projects = Archivierte Projekte
 project_admins = Projektverwalter
-my_projects = Meine Projekte
+myprojects = Meine Projekte
 
 duration = Dauer
 
@@ -425,6 +533,7 @@ view_project = Projektinfos
 no = nein
 yes = ja
 active = aktiviert
+inactive = nicht aktiviert
 trash = Müll
 untrash = Wiederverwerten
 reply = Antworten
@@ -442,14 +551,38 @@ calendar_jobs_caldav = CalDAV Jobs
 
 webdav = WebDAV
 carddav = CardDav
-projectsadmin = Projekte administrieren
+projectsadmin = Projekt- Admin
 
 admin_info = User anlegen, Alle Projekte einsehen können
 carddav_info = CardDav Schnittstelle verwendbar
 webdav_info = WebDav Schnittstelle verwendbar
 projectsadmin_info = Projekte erstellen
 
-search_for_history = Im Logbuch suchen
+search_for_history_entries = Im Logbuch suchen
+history_fulltext = Volltext
+history_mode = Modussuche
+history = Logbuch
+no_history_entries_found = Keine Einträge gefunden
+project_history = Projekt Historie
+history_modi = Nach Art suchen
+history_control = Nach Objekt suchen
+
+search_login = Nach Login suchen
+search_create = Nach Erstellungen suchen
+search_update = Nach Updates suchen
+search_delete = Nach Löschungen suchen
+search_download = Nach Downloads suchen
+search_clip = Nach Clips suchen
+
+search_user = Nach User suchen
+search_email = Nach E-Mail suchen
+search_calendar_event = Nach Termin suchen
+search_address = Nach Adresse suchen
+search_project = Nach Projekt suchen
+search_projectuser = Nach Projektuser suchen
+search_projectfiles = Nach Projektdateien suchen
+
+toggle = auf-/zuklappen
 
 functions = Funktionen
 no_subject_entered = [Es wurde kein Subject eingegeben]
@@ -482,9 +615,19 @@ email_account_delete = E-Mail Account wurde gelöscht
 email_account_delete_emails = E-Mails nach dem Herunterladen löschen
 email_account_mailboxtype = Art des Kontos
 email_account_not_exists = E-Mail Account existiert nicht
+
 email_account_download_emails = Download der Emails gestartet
 email_account_download_ok = Download mit Email-Account {0} ist gelungen
 email_account_download_failed = Download mit Email-Account {0} ist nicht gelungen
+
+email_account_last_login_failed = Letzter E-Mail-Abruf ist fehlgeschlagen.
+email_account_last_login_ok = Letzter E-Mail-Abruf ist gelungen.
+email_account_last_login_working = E-Mails werden gerade abgerufen.
+
+email_account_last_login = Zuletzt gestarteter E-Mail-Abruf
+email_account_last_login_finished = Letzter erfolgreicher E-Mail-Abruf
+
+
 
 email_account_added = E-Mail-Account wurde hinzugefügt
 email_account_edit = E-Mail-Account editieren
@@ -515,17 +658,37 @@ email_edit = E-Mail bearbeiten und abschicken
 save_as_draft = Als Entwurf ablegen
 email_saved_in_drafts = E-Mail wurde in Entwürfe gespeichert
 email_send = E-Mail wurde abgeschickt
+email_send_failed = E-Mail-Versand ist fehlgeschlagen.
+
+email_show_header = Header anzeigen
+email_hide_header = Header verstecken
+
 
 email_original = -----Ursprüngliche Nachricht-----
 email_original_send = Gesendet
 
+
+email_textversion = Text-Version
+email_htmlversion = HTML-Version
+
+email_textversion_popup = Text-Version-Popup
+email_htmlversion_popup = HTML-Version-Popup
+
+email_orderby_subjectdesc = Betreff, absteigend
+email_orderby_subjectasc = Betreff, aufsteigend
+email_orderby_attachmentdesc = Mit Anhängen zuerst
+email_orderby_vonasc = Absender, aufsteigend
+email_orderby_vondesc = Absender, absteigend
+email_orderby_createdesc = Erstellungsdatum, absteigend
+email_orderby_createasc = Erstellungsdatum, aufsteigend
 
 emlname = mail
 
 previous = zurück
 next = weiter
 today = Heute
-new_event = Neuer Eintrag
+new_event = Neuen Termin
+new_job = Neuen Job
 calendarweek = Kalenderwoche
 calendarweek_short = KW
 calendar_day_list = Tagesansicht
@@ -536,10 +699,6 @@ user_updated = Benutzer wurde aktualisiert
 
 user_comment = Kommentar
 
-emailaccount_last_login_failed = Letzter E-Mail-Abruf ist fehlgeschlagen.
-emailaccount_last_login_ok = Letzter E-Mail-Abruf ist gelungen.
-emailaccount_last_login = Letzter E-Mail-Abruf
-
 users = Benutzer
 admin = Admin
 login = Login
@@ -549,6 +708,11 @@ ham = Kein-Spam
 
 calendar_event_edit = Termin editieren
 calendar_event_add = Termin hinzufügen
+calendar_event_copy = Termin kopieren
+calendar_event_copied = Job `{0}` wurde erstellt
+calendar_event_copy2job = Als Job kopieren
+calendar_event_delete = Termin löschen
+calendar_event_deleted = Termin/Job wurde gelöscht
 calendar_event_title = Titel
 calendar_event_location = Ort
 calendar_event_allday = Ganztagestermin
@@ -564,12 +728,87 @@ error_calendar_from_datetime = Bitte das "von"-Datum prüfen
 error_calendar_to_datetime = Bitte das "bis"-Datum prüfen
 error_calendar_event_not_added = Termin konnte nicht hinzugefügt werden
 error_calendar_event_project_id = Das Projekt existiert nicht. Bitte ein Projekt auswählen.
+error_calendar_job_project_id = Sie können auf dieses Projekt keinen Job buchen
+error_calendar_event_project_id = Sie können in diesem Projekt keinen Termin eintragen
 error_calendar_event_fromto_compare = Das "von" Datum muss vor dem "bis" Datum sein
 
 error_calendar_event_title_empty = Bitte die Bezeichnung eingeben
+error_login_empty = Login ist nicht eingetragen
+error_email_empty = Bitte die E-Mail eintragen
+error_login_unique = Login existiert bereits
+
+info_projectuser_cannot_be_created = Sie können keine Projektuser anlegen
+
+calendar_projectjob_list = Projekt-/Zeitansicht
 
 profile_edit = Mein Profil bearbeiten
 profile_edit_password = Mein Passwort ändern
 
 password_reenter = wiederholen
 user_password_updated = Passwort wurde aktualisiert
+
+time_allofmonth = Gesamtzeit
+
+paginate_page = Seite {0}
+
+files_orderby_createdesc = Erstellungsdatum, neue Dateien zuerst
+files_orderby_createasc = Erstellungsdatum, alte Dateien zuerst
+files_orderby_namedesc = Name, Z-A
+files_orderby_nameasc = Name, A-Z
+files_orderby_filesizedesc = Dateigröße, große Dateien zuerst
+files_orderby_filesizeasc = Dateigröße, kleine Dateien zuerst
+files_orderby_mimetypedesc = Dateityp, Z-A
+files_orderby_mimetypeasc = Dateityp, A-Z
+
+clip_geturl = Url übernehmen
+clip_download = download
+clip_delete = löschen
+clip_select = auswählen
+clip_url = Url
+clip_created = erstellt am
+
+clip_release = freigeben
+clip_released = Clip wurde freigegeben
+clip_unrelease = sperren
+clip_unreleased = Clip gesperrt
+
+clip_is_released = ist freigegeben
+clip_is_not_released = ist nicht freigegeben
+
+clip_released_until = freigeben bis
+
+clip_release_duration_today = für heute freigeben
+clip_release_duration_week = für eine Woche freigeben
+clip_release_duration_month = für einen Monat freigeben
+clip_release_duration_month_3 = für 3 Monate freigeben
+
+clipboard_my = Meine Ablage
+clipboard_releasedlist = Freigegebene Clips
+clipboard_upload = Clip hochladen
+clipboard_project_files = Dateien aus Projekten hochladen
+
+
+
+page_project_project_sub = Teilprojekte
+add_project_sub = Teilprojekt hinzufügen
+project_sub = Teilprojekt
+project_subs = Teilprojekte
+project_sub_name = Name
+project_sub_edit = Teilprojekt editieren
+delete_project_sub = Teilprojekt löschen
+project_sub_updated = Teilprojekt wurde aktualisiert
+project_sub_added = Teilprojekt wurde hinzugefügt
+error_project_sub_name_empty = Bitte einen Namen eingeben
+project_sub_confirm_delete = Teilprojekt `{0}` löschen ?
+project_sub_deleted = Teilprojekt `{0}` wurde gelöscht
+
+calendar_resize = auf-/zuklappen
+calendar_month_view = Monat
+calendar_2weeks_view = 2 Wochen
+
+editable = editierbar
+not_editable = nicht editierbar
+has_attachments = Dateien hängen an
+has_not_attachments = Keine Dateien hängen an
+
+no_results_text = Keine Ergebnisse für

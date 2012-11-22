@@ -2,11 +2,28 @@
 
 class pz_project_directory extends pz_project_node
 {
-  public function getChildren()
+  public function getChildren($orders = array())
   {
+  
+    // ----- Orders
+		$orders[] = array("orderby" => "name", "sort" => "asc");
+		$order_sql = array();
+		foreach($orders as $order) {
+			$order_sql[] = $order["orderby"].' '.$order["sort"];
+		}
+  
+    $params = array();
+    $params[] = $this->vars['project_id'];
+    $params[] = $this->getId();
+    $sql_folder = 'SELECT * FROM pz_project_file WHERE project_id = ? AND parent_id = ? AND is_directory = 1 ORDER BY name LIMIT 1000'; // without LIMIT UNION wont work
+  
+    $params[] = $this->vars['project_id'];
+    $params[] = $this->getId();
+    $sql_files = 'SELECT * FROM pz_project_file WHERE project_id = ? AND parent_id = ? AND is_directory = 0 ORDER BY '.implode(',',$order_sql).' LIMIT 1000'; // without LIMIT UNION wont work
+
     $sql = rex_sql::factory();
-    $params = array($this->vars['project_id'], $this->getId());
-    $array = $sql->getArray('SELECT * FROM pz_project_file WHERE project_id = ? AND parent_id = ? ORDER BY is_directory desc,name', $params);
+    // $sql->debugsql = 1;
+    $array = $sql->getArray('('.$sql_folder.') UNION ALL ('.$sql_files.')', $params);
     $children = array();
     foreach($array as $row)
     {
@@ -87,7 +104,9 @@ class pz_project_root_directory extends pz_project_directory
   public function __construct(pz_project $project)
   {
     $vars['id'] = 0;
-    $vars['name'] = str_replace('/', '-', $project->getName()) .' ['. $project->getId() .']';
+    $vars['name'] = str_replace('/', '-', $project->getName()) .' - '. $project->getId() .'';
+    $vars['name'] = str_replace('[', '', $vars['name']);
+    $vars['name'] = str_replace(']', '', $vars['name']);
     $vars['parent_id'] = 0;
     $vars['project_id'] = $project->getId();
     parent::__construct($vars);

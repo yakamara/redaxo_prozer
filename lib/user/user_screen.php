@@ -12,11 +12,11 @@ class pz_user_screen {
 	
 	public function getTableView($p = array())
 	{
-		$edit_link = pz::url("screen","tools","users",array("user_id"=>$this->user->getId(),"mode"=>"edit_user"));
-		$del_link = pz::url("screen","tools","users",array("user_id"=>$this->user->getId(),"mode"=>"delete_user"));
+		$edit_link = pz::url($p["mediaview"],$p["controll"],$p["function"],array("user_id"=>$this->user->getId(),"mode"=>"edit_user"));
+		$del_link = pz::url($p["mediaview"],$p["controll"],$p["function"],array("user_id"=>$this->user->getId(),"mode"=>"delete_user"));
 		
 		$return = '
-              <tr>
+              <tr class="user-'.$this->user->getId().' user-screen-tableview">
                 <td class="img1"><img src="'.$this->user->getInlineImage().'" width="40" height="40" alt="" /></td>';
                 
 		if(pz::getUser()->isAdmin()) {
@@ -27,17 +27,55 @@ class pz_user_screen {
 		}
 
 		if($this->user->isAdmin())  
-			$return .= '<td><span class="status status1">'.rex_i18n::msg("yes").'</span></td>';
+			$return .= '<td><span class="status status-1">'.rex_i18n::msg("yes").'</span></td>';
 		else 
-			$return .= '<td><span class="status status2">'.rex_i18n::msg("no").'</span></td>';
+			$return .= '<td><span class="status status-2">'.rex_i18n::msg("no").'</span></td>';
 
 		if($this->user->isActive())  
-			$return .= '<td><span class="status status1">'.rex_i18n::msg("yes").'</span></td>';
+			$return .= '<td><span class="status status-1">'.rex_i18n::msg("yes").'</span></td>';
 		else 
-			$return .= '<td><span class="status status2">'.rex_i18n::msg("no").'</span></td>';
+			$return .= '<td><span class="status status-2">'.rex_i18n::msg("no").'</span></td>';
 
 		if(pz::getUser()->isAdmin())
 		{
+		
+      if($this->user->hasPerm('webdav')) {
+        $return .= '<td><span class="status status-1">'.rex_i18n::msg("yes").'</span></td>';
+      }else {
+        $return .= '<td><span class="status status-2">'.rex_i18n::msg("no").'</span></td>';
+      }
+
+      if($this->user->hasPerm('carddav')) {
+        $return .= '<td><span class="status status-1">'.rex_i18n::msg("yes").'</span></td>';
+      }else {
+        $return .= '<td><span class="status status-2">'.rex_i18n::msg("no").'</span></td>';
+      }
+		  
+      if($this->user->hasPerm('projectsadmin')) {
+        $return .= '<td><span class="status status-1">'.rex_i18n::msg("yes").'</span></td>';
+      }else {
+        $return .= '<td><span class="status status-2">'.rex_i18n::msg("no").'</span></td>';
+      }
+		
+		  $last_login = "-";
+      if($this->user->getValue("last_login") != "")
+      {
+  		  $d = DateTime::createFromFormat('Y-m-d H:i:s', $this->user->getValue("last_login"), pz::getDateTimeZone());
+        $last_login = ' '.strftime(rex_i18n::msg("show_datetime_normal"),pz_user::getDateTime($d)->format("U")).'';
+      }
+      
+      /*
+      $created = "-";
+      if($this->user->getValue("created") != "")
+      {
+		    $d = DateTime::createFromFormat('Y-m-d H:i:s', $this->user->getValue("created"), pz::getDateTimeZone());
+        $created = ' '.strftime(rex_i18n::msg("show_datetime_normal"),pz_user::getDateTime($d)->format("U")).'';
+		  }
+		  */
+		
+		  $return .= '<td>'.$last_login.'</td>'; // last_login
+		  // $return .= '<td>'.$created.'</td>'; // created
+		
 			if(pz::getUser()->getId() != $this->user->getId()) {
         		$return .= '<td><a class="bt2" href="javascript:pz_loadPage(\'users_list\',\''.$del_link.'\')"><span class="title">'.rex_i18n::msg("delete").'</span></a></td>';
 			}else
@@ -74,6 +112,10 @@ class pz_user_screen {
 		
 		if(pz::getUser()->isAdmin()) {
 			$content .= '
+              <th>'.rex_i18n::msg("webdav").'</th>
+              <th>'.rex_i18n::msg("carddav").'</th>
+              <th>'.rex_i18n::msg("projectsadmin").'</th>
+              <th>'.rex_i18n::msg("last_login").'</th>
               <th>'.rex_i18n::msg("functions").'</th>
 				';
 		}
@@ -92,22 +134,19 @@ class pz_user_screen {
 		$f = new rex_fragment();
 		$f->setVar('title', $p["title"], false);
 		$f->setVar('content', $content , false);
-		return '<div id="users_list" class="design2col">'.$f->parse('pz_screen_list').'</div>';
+		return '<div id="users_list" class="design2col">'.$f->parse('pz_screen_list.tpl').'</div>';
 
 	}
 	
-	
-	public function getProjectTableView($p, $projects)
+	public function getProjectPermTableListView($p, $projects)
 	{
 		$list = "";
-		
-		$p["linkvars"]["mode"] = "list_userperm";
 		
 		$paginate_screen = new pz_paginate_screen($projects);
 		$paginate = $paginate_screen->getPlainView($p);
 		
 		foreach($paginate_screen->getCurrentElements() as $project) {
-			$list .= $this->getProjectTableRowView($p, $project);
+			$list .= $this->getProjectPermTableView($p, $project);
 		}
 		
 		$content = $paginate.'
@@ -118,11 +157,12 @@ class pz_user_screen {
               
 		$content .= '<th>'.rex_i18n::msg("project_name").'</th>';
 		$content .= '<th>'.rex_i18n::msg("emails").'</th>';
-		$content .= '<th>'.rex_i18n::msg("calendar").'</th>';
+		$content .= '<th>'.rex_i18n::msg("calendar_events").'</th>';
+		$content .= '<th>'.rex_i18n::msg("calendar_jobs").'</th>';
 		$content .= '<th>'.rex_i18n::msg("calendar_caldav").'</th>';
 		$content .= '<th>'.rex_i18n::msg("calendar_jobs_caldav").'</th>';
 		$content .= '<th>'.rex_i18n::msg("files").'</th>';
-		$content .= '<th>'.rex_i18n::msg("wiki").'</th>';
+		// $content .= '<th>'.rex_i18n::msg("wiki").'</th>';
 		
         $content .= '
           </tr></thead>
@@ -138,80 +178,48 @@ class pz_user_screen {
 		$f = new rex_fragment();
 		$f->setVar('title', $p["title"], false);
 		$f->setVar('content', $content , false);
-		return '<div id="userperm_list" class="design2col">'.$f->parse('pz_screen_list').'</div>';
+		return '<div id="userperm_list" class="design2col">'.$f->parse('pz_screen_list.tpl').'</div>';
 	
 	}
 	
-	
-	public function getProjectTableRowView($p = array(),$project)
+	public function getProjectPermTableView($p = array(),$project)
 	{
 		
 		if(!($projectuser = pz_projectuser::get($this->user,$project)))
 			return "";
-		
-		$toggle_caldav_events_link = pz::url("screen",$p["controll"],$p["function"],array("project_id"=>$project->getId(),"mode"=>"toggle_caldav_events"));
-		$toggle_caldav_jobs_link = pz::url("screen",$p["controll"],$p["function"],array("project_id"=>$project->getId(),"mode"=>"toggle_caldav_jobs"));
-		$toggle_webdav_link = pz::url("screen",$p["controll"],$p["function"],array("project_id"=>$project->getId(),"mode"=>"toggle_webdav"));
-		
-		$toggle_caldav_events_link = "pz_exec_javascript('".$toggle_caldav_events_link."')";
-		$toggle_caldav_jobs_link = "pz_exec_javascript('".$toggle_caldav_jobs_link."')";
-		$toggle_webdav_link = "pz_exec_javascript('".$toggle_webdav_link."')";
-		
-		$return = '
-              <tr>
-                <td class="img1"><img src="'.$project->getInlineImage().'" width="40" height="40" alt="" /></td>';
-                
-		$return .= '<td><span class="title">'.$project->getName().'</span></td>';
 
-		if($project->hasEmails() == 1) {
-			if($projectuser->hasEmails())  
-				$return .= '<td><span class="status status1">'.rex_i18n::msg("yes").'</span></td>';
-			else 
-				$return .= '<td><span class="status status0">'.rex_i18n::msg("no").'</span></td>';
-		}else {
-			$return .= '<td><span class="status status2">'.rex_i18n::msg("not_available").'</span></td>';
-		}
-		
-		if($project->hasCalendar() == 1) {
-			if($projectuser->hasCalendar())
-				$return .= '<td><span class="status status1">'.rex_i18n::msg("yes").'</span></td>';
-			else 
-				$return .= '<td><span class="status status0">'.rex_i18n::msg("no").'</span></td>';
+		$project_user_screen = new pz_projectuser_screen($projectuser);
 
-			if($projectuser->hasCalDAVEvents())  
-				$return .= '<td><a href="javascript:void(0);" onclick="'.$toggle_caldav_events_link.'"><span class="status status-changeable status1 project-'.$project->getId().'-caldavevents">'.rex_i18n::msg("yes").'</span></a></td>';
-			else 
-				$return .= '<td><a href="javascript:void(0);" onclick="'.$toggle_caldav_events_link.'"><span class="status status-changeable status0 project-'.$project->getId().'-caldavevents">'.rex_i18n::msg("no").'</span></a></td>';
-			
-			if($projectuser->hasCalDAVJobs())  
-				$return .= '<td><a href="javascript:void(0);" onclick="'.$toggle_caldav_jobs_link.'"><span class="status status-changeable status1 project-'.$project->getId().'-caldavjobs">'.rex_i18n::msg("yes").'</span></a></td>';
-			else 
-				$return .= '<td><a href="javascript:void(0);" onclick="'.$toggle_caldav_jobs_link.'"><span class="status status-changeable status0 project-'.$project->getId().'-caldavjobs">'.rex_i18n::msg("no").'</span></a></td>';
+    $td = array();
+    $td[] = '<td class="img1"><img src="'.$project->getInlineImage().'" width="40" height="40" alt="" /></td>';
+		$td[] = '<td><span class="title">'.$project->getName().'</span></td>';
 
-		}else {
-			$return .= '<td><span class="status status2">'.rex_i18n::msg("not_available").'</span></td>';
-			$return .= '<td><span class="status status2">'.rex_i18n::msg("not_available").'</span></td>';
-			$return .= '<td><span class="status status2">'.rex_i18n::msg("not_available").'</span></td>';
-		}
+    $status = 2;
+		if($project->hasEmails() == 1) { $status = $projectuser->hasEmails() ? $status = 1 : $status = 0; }
+	  $td[] = $project_user_screen->getPermTableCellView("emails", $status);
+
+    $status = 2;
+	  if ($project->hasCalendarEvents() == 1) { $status = $projectuser->hasCalendarEvents() ? $status = 1 : $status = 0; }
+	  $td[] = $project_user_screen->getPermTableCellView("calendar_events", $status);
+
+    $status = 2;
+    if ($project->hasCalendarJobs() == 1) { $status = $projectuser->hasCalendarJobs() ? $status = 1 : $status = 0; }
+    $td[] = $project_user_screen->getPermTableCellView("calendar_jobs", $status);
+
+    $status = 2;
+	  if ($project->hasCalendarEvents() == 1) { $status = $projectuser->hasCalDAVEvents() ? $status = 1 : $status = 0; }
+	  $td[] = $project_user_screen->getPermTableCellView("caldav_events", $status);
+
+    $status = 2;
+    if ($project->hasCalendarJobs() == 1) { $status = $projectuser->hasCalDAVJobs() ? $status = 1 : $status = 0; }
+    $td[] = $project_user_screen->getPermTableCellView("caldav_jobs", $status);
+
+    $status = 2;
+    if ($project->hasFiles() == 1) { $status = $projectuser->hasFiles() ? $status = 1 : $status = 0; }
+    $td[] = $project_user_screen->getPermTableCellView("files", $status);
 		
-		if($project->hasFiles() == 1) {
-			if($projectuser->hasFiles())  
-				$return .= '<td><span class="status status1">'.rex_i18n::msg("yes").'</span></td>';
-			else 
-				$return .= '<td><span class="status status0">'.rex_i18n::msg("no").'</span></td>';
-		}else {
-			$return .= '<td><span class="status status2">'.rex_i18n::msg("not_available").'</span></td>';
-		}
+    $return = '<tr>'.implode("",$td).'</tr>';
 		
-		if($project->hasWiki() == 1) {
-			if($projectuser->hasWiki())  
-				$return .= '<td><span class="status status1">'.rex_i18n::msg("yes").'</span></td>';
-			else 
-				$return .= '<td><span class="status status0">'.rex_i18n::msg("no").'</span></td>';
-		}else {
-			$return .= '<td><span class="status status2">'.rex_i18n::msg("not_available").'</span></td>';
-		}
-        
 		return $return;
 	}
 	
@@ -228,9 +236,9 @@ class pz_user_screen {
 		$xform = new rex_xform;
 		$xform->setObjectparams("real_field_names",TRUE);
 		$xform->setObjectparams("form_showformafterupdate", TRUE);
-		$xform->setObjectparams("form_action", "javascript:pz_loadFormPage('users_list','users_search_form','".pz::url('screen','tools','users')."')");
+		$xform->setObjectparams("form_action", "javascript:pz_loadFormPage('users_list','users_search_form','".pz::url($p["mediaview"],$p["controll"],$p["function"])."')");
 		$xform->setObjectparams("form_id", "users_search_form");
-		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform', 'runtime'));
+		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl', 'runtime'));
 		$xform->setValueField("text",array("search_name",rex_i18n::msg("name")));
 		$xform->setValueField("submit",array('submit',rex_i18n::msg('search'), '', 'search'));
 		$xform->setValueField("hidden",array("mode","list"));
@@ -242,7 +250,66 @@ class pz_user_screen {
 		
 	}
 	
-	
+	public function getBlockView($p = array())
+	{
+		// $edit_link = pz::url("screen","tools","users",array("user_id"=>$this->user->getId(),"mode"=>"edit_user"));
+
+    /*
+		if($this->user->isAdmin())  
+			$return .= '<td><span class="status status-1">'.rex_i18n::msg("yes").'</span></td>';
+		else 
+			$return .= '<td><span class="status status-2">'.rex_i18n::msg("no").'</span></td>';
+
+		if($this->user->isActive())  
+			$return .= '<td><span class="status status-1">'.rex_i18n::msg("yes").'</span></td>';
+		else 
+			$return .= '<td><span class="status status-2">'.rex_i18n::msg("no").'</span></td>';
+    */
+
+    $info = "";
+		if(pz::getUser()->isAdmin())
+		{
+		  $last_login = "-";
+      if($this->user->getValue("last_login") != "")
+      {
+  		  $d = DateTime::createFromFormat('Y-m-d H:i:s', $this->user->getValue("last_login"), pz::getDateTimeZone());
+        $last_login = ' '.strftime(rex_i18n::msg("show_datetime_normal"),pz_user::getDateTime($d)->format("U")).'';
+      }
+      		
+      $created = "-";
+      if($this->user->getValue("created") != "")
+      {
+		    $d = DateTime::createFromFormat('Y-m-d H:i:s', $this->user->getValue("created"), pz::getDateTimeZone());
+        $created = ' '.strftime(rex_i18n::msg("show_datetime_normal"),pz_user::getDateTime($d)->format("U")).'';
+		  }
+
+      $info = $last_login.''.$created.''; // created
+		
+		}
+
+		$return = '
+		        <article class="user block image">
+		          <header>
+		            <a class="detail" href="">
+		              <figure><img src="'.$this->user->getInlineImage().'" width="40" height="40" /></figure>
+		              <hgroup class="data">
+		                <h2 class="hl7 piped">
+		                  <span class="name">'.$this->user->getName().'</span>
+		                  <span class="info">'.$this->user->getId().'</span>
+		                </h2>
+		                <span class="">'.$info.'</span>
+		              </hgroup>
+		            </a>
+		          </header>
+		        </article>
+    ';
+
+
+
+        
+		return $return;
+		
+	}
 	
 		
 	public function getApiView($p) 
@@ -280,10 +347,10 @@ class pz_user_screen {
 		// $xform->setDebug(TRUE);
 
 		$xform->setObjectparams("main_table",'pz_user');
-		$xform->setObjectparams("form_action", "javascript:pz_loadFormPage('user_form','user_add_form','".pz::url('screen','tools','users',array("mode"=>'add_user'))."')");
+		$xform->setObjectparams("form_action", "javascript:pz_loadFormPage('user_form','user_add_form','".pz::url($p["mediaview"],$p["controll"],$p["function"],array("mode"=>'add_user'))."')");
 		$xform->setObjectparams("form_id", "user_add_form");
 
-		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform'));
+		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
 		$xform->setValueField("text",array("name",rex_i18n::msg("name")));
 			$xform->setValidateField("empty",array("name",rex_i18n::msg("error_name_empty")));
 		$xform->setValueField("text",array("login",rex_i18n::msg("login")));
@@ -333,7 +400,7 @@ class pz_user_screen {
 				$user->create();
 			}
 			$return = $header.'<p class="xform-info">'.rex_i18n::msg("user_added").'</p>'.$return;
-			$return .= pz_screen::getJSLoadFormPage('users_list','users_search_form',pz::url('screen','tools','users',array("mode"=>'list')));
+			$return .= pz_screen::getJSLoadFormPage('users_list','users_search_form',pz::url($p["mediaview"],$p["controll"],$p["function"],array("mode"=>'list')));
 		}else
 		{
 			$return = $header.$return;	
@@ -363,7 +430,7 @@ class pz_user_screen {
 		$xform->setObjectparams("main_where",'id='.$this->user->getId());
 		$xform->setObjectparams('getdata',true);
 
-		$xform->setObjectparams("form_action", "javascript:pz_loadFormPage('user_form','user_edit_form','".pz::url('screen','tools','users',array("mode"=>'edit_user'))."')");
+		$xform->setObjectparams("form_action", "javascript:pz_loadFormPage('user_form','user_edit_form','".pz::url($p["mediaview"],$p["controll"],$p["function"],array("mode"=>'edit_user'))."')");
 		$xform->setObjectparams("form_id", "user_edit_form");
 		$xform->setObjectparams('form_showformafterupdate',1);
 
@@ -371,7 +438,7 @@ class pz_user_screen {
 
 		$xform->setValueField("pz_digest",array("digest","login","password"));
 
-		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform'));
+		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
 		$xform->setValueField("text",array("name",rex_i18n::msg("name")));
 		$xform->setValidateField("empty",array("name",rex_i18n::msg("error_name_empty")));
 
@@ -424,7 +491,7 @@ class pz_user_screen {
 			$this->user = pz_user::get($this->user->getId(),TRUE);
 			$this->user->update();
 			$return = $header.'<p class="xform-info">'.rex_i18n::msg("user_updated").'</p>'.$return;
-			$return .= pz_screen::getJSLoadFormPage('users_list','users_search_form',pz::url('screen','tools','users',array("mode"=>'list')));
+			$return .= pz_screen::getJSLoadFormPage('users_list','users_search_form',pz::url($p["mediaview"],$p["controll"],$p["function"],array("mode"=>'list')));
 			
 		}else
 		{
@@ -455,11 +522,11 @@ class pz_user_screen {
 		$xform->setObjectparams("main_where",'id='.$this->user->getId());
 		$xform->setObjectparams('getdata',true);
 
-		$xform->setObjectparams("form_action", "javascript:pz_loadFormPage('user_form','user_edit_form','".pz::url('screen','tools','profile',array("mode"=>'edit_user'))."')");
+		$xform->setObjectparams("form_action", "javascript:pz_loadFormPage('user_form','user_edit_form','".pz::url($p["mediaview"],$p["controll"],$p["function"],array("mode"=>'edit_user'))."')");
 		$xform->setObjectparams("form_id", "user_edit_form");
 		$xform->setObjectparams('form_showformafterupdate',1);
 
-		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform'));
+		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
 		$xform->setValueField("text",array("name",rex_i18n::msg("name")));
 		$xform->setValidateField("empty",array("name",rex_i18n::msg("error_name_empty")));
 
@@ -471,14 +538,14 @@ class pz_user_screen {
 			$xform->setValidateField("empty",array("email",rex_i18n::msg("error_email_empty")));
 			$xform->setValidateField("unique",array("email",rex_i18n::msg("error_email_unique")));
 
-		$xform->setValueField("select",array("account_id",rex_i18n::msg("default_email_account"),pz::getUser()->getEmailaccountsAsString(),"","",0,rex_i18n::msg("please_choose")));
+		$xform->setValueField("pz_select_screen",array("account_id",rex_i18n::msg("default_email_account"),pz::getUser()->getEmailaccountsAsString(),"","",0));
 		
 		$startpages = array();
 		$startpages[] = array('id'=>'projects','label'=>rex_i18n::msg("projects"));
 		$startpages[] = array('id'=>'emails','label'=>rex_i18n::msg("emails"));
 		$startpages[] = array('id'=>'calendars','label'=>rex_i18n::msg("calendars"));
 		
-		$xform->setValueField("select",array("startpage",rex_i18n::msg("default_startpage_account"),$startpages,"no_db",$this->user->getConfig('startpage'),0,rex_i18n::msg("please_choose")));
+		$xform->setValueField("pz_select_screen",array("startpage",rex_i18n::msg("default_startpage_account"),$startpages,"no_db",$this->user->getConfig('startpage'),0));
 		
 		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0"));
 		$xform->setActionField("db",array('pz_user','id='.$this->user->getId()));
@@ -521,11 +588,11 @@ class pz_user_screen {
 		$xform->setObjectparams("main_where",'id='.$this->user->getId());
 		$xform->setObjectparams('getdata',true);
 
-		$xform->setObjectparams("form_action", "javascript:pz_loadFormPage('user_form_2','user_edit_password_form','".pz::url('screen','tools','profile',array("mode"=>'edit_password'))."')");
+		$xform->setObjectparams("form_action", "javascript:pz_loadFormPage('user_form_2','user_edit_password_form','".pz::url($p["mediaview"],$p["controll"],$p["function"],array("mode"=>'edit_password'))."')");
 		$xform->setObjectparams("form_id", "user_edit_password_form");
 		$xform->setObjectparams('form_showformafterupdate',1);
 
-		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform'));
+		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
 
 		$xform->setValueField("password",array("password",rex_i18n::msg("password")));
 		$xform->setValueField("password",array("password_2",rex_i18n::msg("password_reenter"),"","no_db"));
@@ -546,7 +613,6 @@ class pz_user_screen {
 			$this->user = pz_user::get($this->user->getId(),TRUE); // refresh data
 			$this->user->update();
 			$return = $header.'<p class="xform-info">'.rex_i18n::msg("user_password_updated").'</p>'.$return;
-			// $return .= pz_screen::getJSLoadFormPage('users_list','users_search_form',pz::url('screen','tools','users',array("mode"=>'list')));
 		}else
 		{
 			$return = $header.$return;	

@@ -50,7 +50,7 @@ class rex_xform_value_pz_repeat_screen extends rex_xform_value_abstract
     $f->setVar('selected', $tpl_selected_text, false);
     $f->setVar('entries', $tpl_entries, false);
     $f->setVar('extra', '<input id="' . $this->getFieldId().'-'. $id_counter++ . '" type="hidden" name="'.$this->getFieldName().'" value="'.htmlspecialchars(stripslashes($tpl_selected_value)).'" />', false);
-    $repeat_dropdown = $f->parse('pz_screen_select_dropdown');
+    $repeat_dropdown = $f->parse('pz_screen_select_dropdown.tpl');
 
 		
     // XForm Fragment aufbauen
@@ -107,7 +107,7 @@ class rex_xform_value_pz_repeat_screen extends rex_xform_value_abstract
     $f->setVar('selected', $tpl_selected_text, false);
     $f->setVar('entries', $tpl_entries, false);
     $f->setVar('extra', '<input id="' . $this->getFieldId() . '-'. $id_counter .'" type="hidden" name="'.$this->getFieldName().'" value="'.htmlspecialchars(stripslashes($tpl_selected_value)).'" />', false);
-    $dropdown = $f->parse('pz_screen_select_dropdown');
+    $dropdown = $f->parse('pz_screen_select_dropdown.tpl');
 
     
     $pzcal = new pz_calendar_screen();
@@ -179,7 +179,7 @@ class rex_xform_value_pz_repeat_screen extends rex_xform_value_abstract
     $f->setVar('selected', $tpl_selected_text, false);
     $f->setVar('entries', $tpl_entries, false);
     $f->setVar('extra', '<input id="' . $this->getFieldId().'-'. $id_counter++ . '" type="hidden" name="'.$this->getFieldName().'" value="'.htmlspecialchars(stripslashes($tpl_selected_value)).'" />', false);
-    $custom_repeat_dropdown = $f->parse('pz_screen_select_dropdown');
+    $custom_repeat_dropdown = $f->parse('pz_screen_select_dropdown.tpl');
 
 		
     // XForm Fragment aufbauen

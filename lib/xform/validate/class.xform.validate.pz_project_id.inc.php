@@ -19,6 +19,7 @@ class rex_xform_validate_pz_project_id extends rex_xform_validate_abstract
 
 					$filter = array();
 					$filter[] = array("field"=>"id","value"=>$project_id);
+					
 					$projects = pz::getUser()->getAllProjects($filter);
 
 					if(count($projects) != 1) {
@@ -41,4 +42,3 @@ class rex_xform_validate_pz_project_id extends rex_xform_validate_abstract
 		return "pz_project_id|field|Warning Message";
 	}
 }
-?>

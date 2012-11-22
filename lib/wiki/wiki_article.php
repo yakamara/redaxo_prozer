@@ -128,8 +128,10 @@ class pz_wiki_article extends pz_model
   public function saveToHistory($mode = 'update')
   {
     $sql = rex_sql::factory();
-    $sql->setTable('pz_wiki_history')
-      ->setValue('wiki_id', $this->getId())
+    $sql->setTable('pz_history')
+      ->setValue('control', 'wiki')
+      ->setValue('data_id', $this->getId())
+//      ->setValue('project_id', $this->getId())
       ->setValue('user_id', pz::getUser()->getId())
       ->setRawValue('stamp', 'NOW()')
       ->setValue('mode', $mode);

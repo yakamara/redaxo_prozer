@@ -57,7 +57,7 @@ class pz_calendar_rule extends pz_calendar_element
    */
   protected $base;
 
-  protected function __construct(pz_calendar_event $base, array $params = array())
+  protected function __construct(pz_calendar_item $base, array $params = array())
   {
     $this->base = $base;
     $this->begin = $base->getFrom();
@@ -245,6 +245,7 @@ class pz_calendar_rule extends pz_calendar_element
   public function save()
   {
     $base = $this->getBase();
+    $column = $base instanceof pz_calendar_todo ? 'todo_id' : 'event_id';
     $sql = rex_sql::factory()
       ->setTable(self::TABLE);
     foreach(array_keys($this->changed) as $key)
@@ -260,7 +261,7 @@ class pz_calendar_rule extends pz_calendar_element
       {
         $base->save();
       }
-      $sql->setValue('event_id', $base->getId())
+      $sql->setValue($column, $base->getId())
         ->insert();
       $this->id = $sql->getLastId();
     }
@@ -269,12 +270,14 @@ class pz_calendar_rule extends pz_calendar_element
       $sql->setWhere(array('id' => $this->id))
         ->update();
     }
+
+    $class = get_class($base);
     $sql->flushValues()
-      ->setTable(pz_calendar_event::TABLE)
+      ->setTable($class::TABLE)
       ->setWhere(array('id' => $base->getId()))
       ->setValue('rule_id', $this->id)
       ->setRawValue('updated', 'NOW()');
-    if(array_key_exists('begin', $this->changed))
+    if($base instanceof pz_calendar_event && array_key_exists('begin', $this->changed))
     {
       $from = $this->changed['begin']->modify($this->begin->format(self::TIME));
       $to = clone $from;
@@ -283,6 +286,7 @@ class pz_calendar_rule extends pz_calendar_element
         ->setValue('to', $to->format(self::DATETIME));
     }
     $sql->update();
+
     $this->changed = array();
     $this->new = false;
   }
@@ -295,26 +299,22 @@ class pz_calendar_rule extends pz_calendar_element
       ->delete();
   }
 
-  static public function create(pz_calendar_event $base)
+  static public function create(pz_calendar_item $base)
   {
     $rule = new self($base);
     $rule->new = true;
     return $rule;
   }
 
-  static public function get(pz_calendar_event $base)
+  static public function get(pz_calendar_item $base)
   {
-    static $sql = null;
-    if(!$sql)
-    {
-      $sql = rex_sql::factory();
-      $sql->prepareQuery('
-    		SELECT *
-        FROM '. self::TABLE .' r
-        WHERE event_id = ?
-      ');
-    }
-
+    $column = $base instanceof pz_calendar_todo ? 'todo_id' : 'event_id';
+    $sql = rex_sql::factory();
+    $sql->prepareQuery('
+      SELECT *
+      FROM '. self::TABLE .' r
+      WHERE `'. $column .'` = ?
+    ');
     $sql->execute(array($base->getId()));
     return new self($base, $sql->getRow());
   }
@@ -328,7 +328,7 @@ class pz_calendar_rule extends pz_calendar_element
     $inClause = implode(',', array_pad(array(), count($projects), '?'));
     $sql = rex_sql::factory();
     $sql->setQuery('
-  		SELECT *
+      SELECT *
       FROM '. self::TABLE .' r
       LEFT JOIN '. pz_calendar_event::TABLE .' e
       ON event_id = e.id

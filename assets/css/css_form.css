@@ -92,9 +92,11 @@
 /* Checkbox Reverse */
 .xform1-reverse.xform-checkbox .flabel {
   width: 248px;
+  max-width: 248px;
 }
 .xform1-reverse.xform-checkbox .felement {
   width: 82px;
+  max-width: 82px;
   text-align: right;
 }
 
@@ -107,7 +109,6 @@
 .xform1.xform-captcha .fextra .xform-captcha img {
 }
 
-
 .xform1.action {
   text-align: right;
 }
@@ -115,6 +116,15 @@
   display: inline;
 }
 
+#calendar_event_add_form .xform-textarea textarea,
+#calendar_event_edit_form .xform-textarea textarea {
+  height:45px;
+}
+
+#calendar_event_add_form .xform-textarea textarea[name=description],
+#calendar_event_edit_form .xform-textarea textarea[name=description] {
+  height: 45px;
+}
 
 
 
@@ -131,6 +141,7 @@
 .xform .xform2 input[type=text], 
 .xform .xform2 textarea {
   width: 252px;
+  max-width: 252px;
   height: 22px;
   padding: 0 6px;
   border: 0;
@@ -142,9 +153,11 @@
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
+  font-size: 100%;
 }
 .xform .xform1 select {
   width: 252px;
+  max-width: 252px;
 }
 .xform .xform1 select[multiple=multiple] {
   height: auto;
@@ -164,15 +177,18 @@
 .xform .xform2 textarea {
   float: left;
   width: 82px;
+  max-width: 82px;
   margin-right: 6px;
 }
 .xform .xform1.xform-number input[type=number] {
   float: left;
   width: 42px;
+  max-width: 42px;
   margin-right: 6px;
 }
 .xform .xform1b input[type=text] {
   width: 163px;
+  max-width: 163px;
 }
 
 .xform .xform1.xform-submit {
@@ -225,7 +241,12 @@
 .design2col .xform .xform1 textarea, 
 .design2col .xform .xform2 input[type="text"], 
 .design2col .xform .xform2 textarea {
-width:600px;
+  width: 600px;
+  max-width: 600px;
+}
+.design2col .xform .xform1 select {
+  width: 600px;
+  max-width: 600px;
 }
 
 .design2col .xform .xform-checkbox .felement,
@@ -259,22 +280,28 @@ width:600px;
   width: 100%;
 }
 
+.popbox .xform-search-small {
+  width:270px;
+  display:block;
+  float:right;
+}
 
-
-.sidebar .xform-search-small .data.xform-text {
+.popbox .xform-search-small .data.xform-text {
   float: left;
   width: 230px;
 }
-.sidebar .xform-search-small .data.xform-text:after {
+.popbox .xform-search-small .data.xform-text:after {
   clear: none;
 }
-.sidebar .xform-search-small .data.xform-text .flabel {
+.popbox .xform-search-small .data.xform-text .flabel {
   display: none;
 }
-.sidebar .xform-search-small .data.xform-submit {
+.popbox .xform-search-small .data.xform-submit {
   clear: none;
+  float: left;
+  margin: 7px 0 0 10px;
   width: auto;
 }
-.sidebar .xform-search-small .data.xform-submit input {
+.popbox .xform-search-small .data.xform-submit input {
   width: 22px;
 }

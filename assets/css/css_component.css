@@ -23,6 +23,9 @@ li.hover ul li .flyout {
 li.hover ul li:hover .flyout {
   display: block;
 }
+li.flyouthover:hover .flyout {
+  display: block;
+}
 
 .flyout .grid2col {
   width: auto;
@@ -44,6 +47,12 @@ li.hover ul li:hover .flyout {
   width: 600px;
 }
 
+.grid2col.header .sl1 {
+  margin-bottom: -7px;
+}
+.grid2col .last .sl1 {
+  min-width: 248px;
+}
 .sl1b .flyout {
   width: 500px;
 }
@@ -98,8 +107,6 @@ li.hover ul li:hover .flyout {
   width: 600px;
 }
 
-
-
 /*
 .sl1 .flyout .content {
   max-height: 200px;
@@ -107,6 +114,34 @@ li.hover ul li:hover .flyout {
   overflow-x: hidden;
 }
 */
+
+
+dl.data {
+  width: 100%;
+  overflow: hidden;
+}
+dl.data dt, 
+dl.data dd {
+  display: block;
+  float: left;
+}
+dl.data dt {
+  clear: both;
+  width: 54px;
+}
+dl.data dd {
+  width: 320px;
+}
+dl.data.normal dt {
+  width: auto;
+  margin-bottom: 1em;
+  font-weight: bold;
+}
+dl.data.normal dd {
+  float: none;
+  width: auto;
+  margin: 0 0 1em 150px;
+}
 
 /* Eintraege pro Seite  ********************************************************
 *******************************************************************************/
@@ -128,8 +163,14 @@ li.hover ul li:hover .flyout {
 /* Header  *********************************************************************
 *******************************************************************************/
 .header {
-  margin-bottom: 18px;
+  margin-bottom: 12px;
   padding-top: 16px;
+}
+
+.project-name-view .header {
+  margin-top: 10px;;
+padding: 4px;
+  background-color: #fff;
 }
 
 
@@ -172,12 +213,16 @@ footer .setting .last > ul,
 */
   float: left;
 }
+
 .entries .entry article .name {
   margin-right: 7px;
   padding-right: 7px;
   border-right-width: 1px;
   border-right-style: solid;
   font-weight: bold;
+}
+.entries .entry article .name.alone {
+  border-right-width: 0;
 }
 .entries .entry article header .title {
   display: inline-block;
@@ -196,10 +241,23 @@ footer .setting .last > ul,
 /* View - Block ------------------------------------ */
 .entries.view-block .entry article header hgroup, 
 .entries.view-block .entry article section.content {
-  margin: 0 50px 0 50px;
+  margin: 0 50px 0 100px;
 }
 .entries.view-block .entry-email article header hgroup {
   margin-right: 0;
+}
+.email-drafts .entries .entry-email article header hgroup, 
+.email-drafts .entries .entry article section.content {
+  margin-left: 50px;
+}
+
+.entry article header hgroup.scope.one, 
+.entry article section.content.scope.one {
+  margin-left: 50px;
+}
+.entry article header hgroup.scope.two, 
+.entry article section.content.scope.two {
+  margin-left: 100px;
 }
 
 /* View - List ------------------------------------ */
@@ -282,9 +340,9 @@ footer .setting .last > ul,
   border-right: 1px solid #ccc !important;
 }
 .flyout .entries .entry .wrapper .links a:last-child {
-  margin-right: 0;
-  padding-right: 0;
-  border-right: 0;
+  margin-right: 0 !important;
+  padding-right: 0 !important;
+  border-right: 0 !important;
 }
 .flyout .entries .entry label:hover, 
 .flyout .entries .entry .wrapper:hover {
@@ -312,59 +370,8 @@ footer .setting .last > ul,
 
 
 
-/* Attachments */
-.attachments .entries .entry {
-  margin-bottom: 0px;
-  padding: 6px 0;
-  background: none;
-  border-top-width: 1px;
-  border-top-style: solid;
-  border-bottom-width: 1px;
-  border-bottom-style: solid;
-}
-.attachments .entries .first {
-  border-top: 0;
-}
-.attachments .entries .last {
-  border-bottom: 0;
-}
-.attachments .entries .entry .name {
-  margin-right: 6px;
-  padding-right: 6px;
-  border-right-style: solid;
-  border-right-width: 1px;
-  margin-left: 6px;
-  padding-left: 6px;
-  border-left-style: solid;
-  border-left-width: 1px;
-}
-
-.entry-email header ul.functions li.function, 
-.entry-email header ul.functions li.option {
-  display: block;
-  float: left;
-  height: 30px;
-}
-.entry-email header ul.functions li.function {
-  margin-left: 10px;
-}
-.entry-email header ul.functions li.option span.option {
-  margin-top: 8px;
-}
-.entry-email header ul.functions li.function a, 
-.entry-email header ul.functions li.function a {
-  display: block;
-}
 
 
-.entry-email section.attachments ul.functions {
-  float: right;
-  margin-right: 5px;
-}
-.entry-email section.attachments ul.functions li.function {
-  display: inline-block;
-  padding-left: 20px;
-}
 
 
 
@@ -374,7 +381,7 @@ footer .setting .last > ul,
   position: fixed;
   right: 0;
   top: 0;
-  width: 300px;
+  width: 400px;
   height: 100%;
   border-left-width: 3px;
   border-left-style: solid;
@@ -382,7 +389,6 @@ footer .setting .last > ul,
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
-  z-index: 10000;
 }
 .sidebar2 {
   right: 300px;
@@ -431,6 +437,12 @@ footer .setting .last > ul,
   display: block;
   padding: 0 8px;
 }
+.sidebar .list .item .block {
+  display: block;
+}
+.sidebar .list .item .iblock {
+  display: inline-block;
+}
 
 
 
@@ -455,59 +467,30 @@ ul.actions li.action a.down {
   height: 19px;
 }
 
+.popbox ul.actions {
+  padding: 5px 15px 15px 15px;
+}
+.popbox ul.actions li {
+  display: inline;
+  margin-right: 10px;
+}
 
 /* E-Mail **********************************************************************
 *******************************************************************************/
 .email {
 }
-.email header, 
-.email section.attachments, 
-.email section.editor, 
-.email section.content {
-  margin-right: 20px;
-  padding: 15px;
-}
-.email header {
-  padding-top: 0;
-}
-.email section.attachments {
-  padding: 0 10px;
-  border-top-width: 1px;
-  border-top-style: solid;
-}
-.email footer {
+
+
+/* Kalender  *******************************************************************
+*******************************************************************************/
+
+.tooltipbox p.close{
   position: absolute;
-  right: 0;
-  top: 0;
-  width: 20px;
-  z-index: 1;
-}
-.email dl.data {
-  width: 100%;
-}
-.email dl.data dt, 
-.email dl.data dd {
-  display: block;
-  float: left;
-}
-.email dl.data dt {
-  clear: both;
-  width: 54px;
-  margin-left: 45px;
-}
-.email dl.data dd {
-  width: 320px;
+  top: 6px;
+  right: 8px;
 }
 
-.email-read {
-  margin: 0 -10px;
-}
-.entry-email .open section.content.detail {
-  margin: 20px 0 0 0 !important;
-}
-.entry-email .open .email-read section.content {
-  margin: 0 !important;
-}
+
 
 /* Kalender  *******************************************************************
 *******************************************************************************/
@@ -554,11 +537,13 @@ ul.actions li.action a.down {
   height: 781px;
   overflow-y: scroll;
 }
-.calendar.view-day .grid {
+.calendar.view-day .grid, 
+.calendar.view-project-stream .grid {
   border-width: 1px;
   border-style: none solid solid solid;
 }
-.calendar.view-day .grid .hour {
+.calendar.view-day .grid .hour, 
+.calendar.view-project-stream .grid .day {
   display: inline-block;
   float: left;
   border-width: 1px;
@@ -567,18 +552,35 @@ ul.actions li.action a.down {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
 }
-.calendar.view-day .grid .hour.title {
+.calendar.view-day .grid .hour.title, 
+.calendar.view-project-stream .grid .day.title {
   width: 8%;
   height: 60px;
   padding-right: 6px;
   border-right-style: solid;
   text-align: right;
 }
-.calendar.view-day .grid .hour.box {
+.calendar.view-project-stream .grid .day.title {
+  border-right: 0;
+  clear: both;
+}
+.calendar.view-day .grid .hour.box, 
+.calendar.view-project-stream .grid .day.box {
   width: 92%;
   height: 31px;
   margin-bottom: 29px;
   border-bottom-style: dashed;
+}
+.calendar.view-project-stream .grid .day.title, 
+.calendar.view-project-stream .grid .day.box {
+  height: auto;
+  min-height: 30px;
+  margin-bottom: 0;
+  border-bottom: 0;
+}
+.calendar.view-project-stream .grid .day.box {
+  position: relative;
+  border-left-style: solid;
 }
 
 .calendar.view-day .events {
@@ -593,7 +595,7 @@ ul.actions li.action a.down {
   overflow: hidden;
 }
 .calendar.view-day .events .event .event-info {
-  padding: 5px;
+  padding: 0px 4px;
   height: 100%;
   border-width: 1px;
   border-style: solid;
@@ -605,6 +607,17 @@ ul.actions li.action a.down {
   text-decoration: underline;
 }
 
+.calendar.view-day .events .event.event_attandees .event-info {
+border-left-width: 20px;
+border-style: solid;
+border-color:#000 !important; 
+}
+
+.calendar.view-day .events .event.event_attandees.event_attandees_for_me .event-info {
+border-left-width: 20px;
+border-style: solid;
+border-color:#666 !important; 
+}
 
 .calendar.view-day .timeline {
   position: absolute;
@@ -628,6 +641,36 @@ ul.actions li.action a.down {
 
 
 
+.calendar.view-project-stream .event {
+  position: relative;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+}
+.calendar.view-project-stream .box .event:last-child {
+  border-bottom-width: 0;
+}
+.calendar.view-project-stream .event .event-info {
+  padding: 10px;
+}
+.calendar.view-project-stream .event header figure {
+  float: left;
+  margin-right: 10px;
+}
+.calendar.view-project-stream .event header .title {
+  margin: 0 0 0 10px;
+  padding: 0 0 0 10px;
+  border-left: 1px solid #fff;
+  font-weight: bold;
+}
+.calendar.view-project-stream .event .content {
+  clear: both;
+  margin: 0 150px 0 50px;
+}
+.calendar.view-project-stream .event footer {
+  position: absolute;
+  right: 18px;
+  top: 18px;
+}
 
 /******************************************************************** Week */
 .calendar.view-week .wrapper {
@@ -769,7 +812,6 @@ ul.actions li.action a.down {
   margin: 2px;
   padding: 0 2px;
 }
-
 .calendar.view-month .day.box.day-big {
   position: absolute;
   top: -20%;
@@ -786,12 +828,165 @@ ul.actions li.action a.down {
   right: 10px;
 }
 
-
-
-
 .calendar.view-month .day.box.day-big {
   background-color: #f6f7f7;
 }
+
+
+
+
+/******************************************************************** Customerplan */
+
+ul.customerplan-months {
+  clear: both;
+  border-left: 1px solid #DEDEDE;
+  overflow: hidden;
+}
+li.customerplan-month {
+  display: block;
+  float: left;
+  background-color: #F6F7F7;
+  border-top: 1px solid #DEDEDE;
+  line-height: 25px;
+  text-align: center;
+  overflow: hidden;
+}
+li.customerplan-month span.label {
+  display: block;
+  border-right: 1px solid #DEDEDE;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+ul.customerplan-days {
+}
+li.customerplan-day {
+  display: block;
+  float: left;
+  border-top: 1px solid #DEDEDE;
+  border-right: 1px solid #DEDEDE;
+  font-weight: bold;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+li.customerplan-day.weekday {
+  background-color: #fff;
+}
+li.customerplan-day:first-child {
+}
+
+li.customerplan-day:last-child {
+}
+
+dl.customerplan-project {
+  clear: both;
+  display: block;
+  width: 100%;
+  background-color: #F6F7F7;
+  border-top: 1px solid #DEDEDE;
+  overflow: hidden;
+}
+dl.customerplan-project dt {
+  display: block;
+  float: left;
+  height: 25px;
+  padding: 0 0 0 15px;
+  font-weight: bold;
+  line-height: 25px;
+  overflow: hidden;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+dl.customerplan-project .label-color-block {
+  margin-top: -4px;
+  margin-right: 10px;
+}
+
+dl.customerplan-project dd.customerplan-project-events {
+  display: block;
+  /* min-height: 30px; */
+  height: 200px;
+  border-left: 1px solid #DEDEDE;
+  /* overflow: hidden; */
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+dl.customerplan-subproject-event dd,
+dl.customerplan-project dd.customerplan-project-events div.customerplan-project-events-wrapper {
+  width: 20000em;
+  position: relative;
+}
+
+dl.customerplan-project dd.customerplan-subproject-events {
+  clear: both;
+}
+dl.customerplan-subproject-event {
+  display: block;
+  width: 100%;  
+  border-top: 1px solid #DEDEDE;
+}
+dl.customerplan-subproject-event dt {
+  display: block;
+  float: left;
+  padding: 0 0 0 30px;
+  font-weight: bold;
+  line-height: 25px;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+dl.customerplan-subproject-event dd {
+  display: block;
+  background-color: #fff;
+  border-left: 1px solid #DEDEDE;
+}
+dl.customerplan-subproject-event dd:after {
+  clear: both;
+  content: '.';
+  display: block;
+  height: 0;
+  visibility: hidden;
+  font-size: 0px;
+  line-height: 0;
+}
+dl.customerplan-project dd div.event-info, 
+div.event-info.ui-draggable-dragging {
+  position: absolute;
+  padding: 0 5px;
+  height: 25px;
+  line-height: 23px;
+  overflow: hidden;
+  border-width: 1px;
+  border-style: solid;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+dl.customerplan-project dd div.event-info a, 
+div.event-info.ui-draggable-dragging a{
+  color: #fff;
+  display: block;
+  width: 1000px;
+}
+
+div.event-info.ui-draggable-dragging {
+  width: 200px;
+}
+
+
+
+
+
+
+
+
+
 
 /******************************************************************** Overview */
 /******************************************************************** Flyout */
@@ -800,7 +995,7 @@ ul.actions li.action a.down {
   position: relative;
   padding: 0 15px;
   text-align: center;
-  line-height: 37px;
+  line-height: 41px;
 }
 .calendar.view-overview section.content {
   padding: 15px;
@@ -861,12 +1056,16 @@ ul.actions li.action a.down {
 td.img1 {
   width: 40px;
 }
+td.img1 img {
+  vertical-align: top;
+}
 .tbl1 td.img1 {
   padding-right: 0px;
 }
 
 .tbl1 {
   width: 100%;
+  margin-bottom: 10px;
 }
 .tbl1 th, 
 .tbl1 td {
@@ -890,9 +1089,76 @@ td.img1 {
   padding: 0;
   width: 20px;
 }
+.tbl1 .title {
+  font-weight: bold;
+}
 
+/* Clipboard - Clips */
+.clips.tbl1 {
+  margin-bottom: 0px;
+}
+.clips.tbl1 tr.clip td.clipname {
+/*  width: 430px; */
+}
+.clips.tbl1 tr.clip td {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.clips.tbl1 tbody.released tr.clip td {
+  padding-bottom: 5px;
+}
 
+.clips.tbl1 tbody.checked:hover td,
+.clips.tbl1 tbody.checked td{
+  background: #ee5;
+}
 
+.clips.tbl1 tr.clipinfo td {
+  padding-top: 5px;
+}
+.clips.tbl1 tr.folder td {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.clips.tbl1 tbody {
+  background-color: #fff;
+  border-top: 1px solid #dedede;
+  border-bottom: 0;
+}
+.clips.tbl1 tbody td {
+  border-bottom: 0;
+}
+.clips.tbl1 tbody:hover td {
+  background: #f6f7f7;
+}
+.clips.tbl1 .filesize {
+  margin: 0 10px;
+  color: #626d72;
+}
+.clips.tbl1 .datetime {
+  color: #626d72;
+}
+.clips.tbl1 .clipinfo {
+  color: #626d72;
+}
+.clips.tbl1 .url {
+  margin: 0 0 0 40px;
+}
+.clips.tbl1 .bt {
+  text-align: right;
+}
+.clips.tbl1 .foldername figure {
+  float: left;
+  margin: 7px 15px 0 0;
+}
+#clipboard_list .clips.tbl1:last-child {
+  border-bottom: 1px solid #dedede;
+}
+
+.tbl1 tbody tr:hover td.inactive,
+.tbl1 tbody td.inactive {
+    background-color: #eeeeee;
+}
 
 .tbl2 {
   width: 100%;
@@ -943,6 +1209,96 @@ td.img1 {
   height: 100%;
 }
 
+
+
+
+.tbl3 {
+  width: 100%;
+}
+.tbl3 th, 
+.tbl3 td {
+  border-bottom: 1px solid #dedede;
+  height: 28px;
+  text-align: center;
+  vertical-align: middle;
+}
+.tbl3 th {
+  background-color: #d8d8d8;
+  border-left: 1px solid #dedede;
+  font-weight: bold;
+  white-space: nowrap;
+}
+.tbl3 th.highlighted {
+  background-color: #f6f7f7;
+}
+.tbl3 th.lighter, 
+.tbl3 th.weekend, 
+.tbl3 td.weekend {
+  background-color: #ebebeb;
+}
+.tbl3 tr th:first-child {
+  padding-left: 15px;
+  text-align: left;
+}
+.tbl3 td {
+  background-color: #fff;
+  border-bottom: 1px solid #dedede;
+  border-left: 1px solid #e7e7e7;
+}
+.tbl3 td.weekend {
+  border-left-color: #dedede;
+}
+.tbl3 td.highlighted {
+  background-color: #f6f7f7;
+}
+.tbl3 tr:hover td {
+  background-color: #f6f7f7;
+}
+.tbl3 tfoot th {
+  background-color: #cecece;
+}
+.tbl3 tfoot td.highlighted {
+  background-color: #d8d8d8;
+}
+
+.tbl3 th div, 
+.tbl3 td div {
+  text-align: left;
+  white-space: normal;
+}
+
+.tbl3 .sl4, 
+.tbl3 .sl4 .has-flyout {
+  display: block;
+  height: 100%;
+}
+
+
+
+table.addresses td.image {
+  width: 55px;
+}
+table.addresses td.phone, 
+table.addresses td.email {
+  width: 200px;
+}
+
+
+
+table.projects td.customer {
+  width: 150px;
+}
+table.projects td.name {
+
+}
+table.projects td.date {
+  width: 100px;
+}
+table.projects td.admin {
+  width: 100px;
+}
+
+
 /* Loader  *********************************************************************
 *******************************************************************************/
 .loader {
@@ -951,4 +1307,68 @@ td.img1 {
   left: 0;  
   width: 100%;
   height: 100%;
+}
+
+/* Label  *********************************************************************
+*******************************************************************************/
+
+.selected-project .flyout .label-color-block,
+.label-color-block {
+  display: inline-block;
+  height: 15px;
+  margin-right: 5px;
+  width: 10px;
+  vertical-align: middle;
+  border: 0px;
+}
+
+.label-color-text {
+ padding:0px 12px;
+}
+
+.selected-project .label-color-block {
+  border: 1px solid #adadae;
+  margin: 3px 8px 4px 0;
+}
+
+
+/* Overlay  ********************************************************************
+*******************************************************************************/
+
+#overlay {
+  height: 100%; 
+  left: 0; 
+  position: fixed; 
+  top: 0; 
+  width: 100%; 
+  display: block; 
+  opacity: 0.2; 
+  background-color: #000000;
+}
+
+
+
+/*   *********************************************************************
+*******************************************************************************/
+
+ul.projects-customer-flyout li.customer ul {
+  display: none;
+}
+ul.projects-customer-flyout li.customer-active ul {
+  display: block;
+}
+
+
+
+.noheader header {
+  display: none;
+}
+
+#clipboard-project-files-list .project-folder-path {
+  margin-top: -10px;
+  margin-bottom: 0px;
+  background-color: #F4F3F5;
+}
+#clipboard-project-files-list .project-folder-path dl {
+  padding-left: 18px;
 }

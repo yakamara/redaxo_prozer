@@ -55,6 +55,12 @@ class rex_xform_value_pz_email_screen extends rex_xform_value_abstract
 		$fragment = $this->params['fragment'];
 		$this->params["form_output"][$this->getId()] = $f->parse($fragment);
 
+    $this->params["form_output"][$this->getId()] .= '<script>
+		$(document).ready(function() {
+		  pz_setEmailAutocomplete("#'.$html_id.' input");
+		});
+		</script>';
+
 
 		$this->params["value_pool"]["email"][$this->getElement(1)] = stripslashes($this->getValue());
 		if ($this->getElement(4) != "no_db")

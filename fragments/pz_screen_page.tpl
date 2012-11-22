@@ -9,10 +9,12 @@
 	<link rel="stylesheet" type="text/css" href="/assets/addons/prozer/themes/blue_grey/css_theme.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="/assets/addons/prozer/css/facebox.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="/assets/addons/prozer/labels_screen.css" media="screen" />
+	
 	<script type="text/javascript" src="/assets/addons/prozer/js/jquery.min.js"></script>
 	<script type="text/javascript" src="/assets/addons/prozer/js/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="/assets/addons/prozer/js/facebox.js"></script>
 	<script type="text/javascript" src="/assets/addons/prozer/js/prozer.js"></script>
+	
 </head>
 <body class="grid-a-bc"<?php echo (isset($this->page_id) && $this->page_id != '') ? ' id="'.$this->page_id.'"' : ''; ?>>
 

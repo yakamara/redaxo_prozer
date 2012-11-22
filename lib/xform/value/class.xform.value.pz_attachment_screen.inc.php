@@ -14,10 +14,12 @@ class rex_xform_value_pz_attachment_screen extends rex_xform_value_abstract
 		
 		$clip_ids = "";
 		$clips = array();
-		foreach($value_ids as $value_id) {
+		foreach($value_ids as $value_id) 
+		{
 			$value_id = (int) $value_id;
-			if($clip = pz_clipboard::getClipById($value_id)) {
-				$clip_ids .= $clip["id"].',';
+			if( ($clip = pz_clip::get($value_id)) && $clip->getUser()->getId() == pz::getLoginUser()->getId()) 
+			{
+				$clip_ids .= $clip->getId().',';
 				$clips[] = $clip;
 			}
 		}
@@ -73,6 +75,8 @@ class rex_xform_value_pz_attachment_screen extends rex_xform_value_abstract
 					    			l = $("#pz_multiupload_'.$this->getId().' .qq-upload-list").children().length - 1;
 					    			m = $("#pz_multiupload_'.$this->getId().' .qq-upload-list li:eq("+l+")");
 					    			l +" ##  "+m.attr("data-clip_id",result.clipdata.id);
+					    			n = m.find(".qq-upload-file");
+					    			n.html(\'<a href="/screen/clipboard/get/?mode=download_clip&clip_id=\'+result.clipdata.id+\'">\'+n.html()+\'</a>\');
 						    	}
 							},
 							maxConnections: 4,
@@ -90,17 +94,17 @@ class rex_xform_value_pz_attachment_screen extends rex_xform_value_abstract
 						foreach($clips as $clip)
 						{
 							// size noch hinterlegen
-							$file_name = htmlspecialchars($clip["filename"]);
-							$file_size = (int) $clip["content_length"];
-							$file_type = htmlspecialchars($clip["content_type"]);
-							$clip_id = $clip["id"];
+							$file_name = htmlspecialchars($clip->getFilename());
+							$file_size = (int) $clip->getContentLength();
+							$file_type = htmlspecialchars($clip->getContentType());
+							$clip_id = $clip->getid();
 							
 							$output .= '
 							fileName = uploader._formatFileName("'.$file_name.'");
 							fileSize = uploader._formatSize('.$file_size.');
 								
-							li = (\'<li class="qq-upload-success" data-clip_id="'.$clip["id"].'">\'+
-								\'<span class="qq-upload-file">\'+fileName+\'</span>\'+
+							li = (\'<li class="qq-upload-success" data-clip_id="'.$clip->getId().'">\'+
+								\'<span class="qq-upload-file"><a href="/screen/clipboard/get/?mode=download_clip&clip_id='.$clip->getId().'" target="_blank">\'+fileName+\'</a></span>\'+
 								\'<span class="qq-upload-size">\'+fileSize+\'\'+
 								\'<span class="clear_link"><a href="javascript:void(0);" onclick="\'+
 								\'	li_field = $(this).parents(\\\'li\\\'); \'+
@@ -131,7 +135,6 @@ class rex_xform_value_pz_attachment_screen extends rex_xform_value_abstract
 		
 		$after = '<a class="bt-upload" id="'.$this->getFieldId('clipboard_button').'" href="javascript:pz_clipboard_select(\'#'.$this->getFieldId('clipboard_button').'\',\'#pz_multiupload_'.$this->getId().' .qq-uploaded-list\',\'#'.$this->getFieldId().'\')">'.rex_i18n::msg("get_from_clipboard").'</a>';
 
-
 		$label = ($this->getElement(2) != '') ? '<label class="'.$classes.'" for="' . $this->getFieldId() . '">' . rex_i18n::translate($this->getElement(2)) . '</label>' : '';	
 		$field = '<input class="'.$classes.' clip-ids" id="'.$this->getFieldId().'" type="hidden" name="'.$this->getFieldName().'" value="'.htmlspecialchars(stripslashes($this->getValue())).'" />'.$output;
 		$html_id = $this->getHTMLId();
@@ -146,7 +149,7 @@ class rex_xform_value_pz_attachment_screen extends rex_xform_value_abstract
 		$f->setVar('class', $class, false);
 		
 		$fragment = $this->params['fragment'];
-		$this->params["form_output"][$this->getId()] = $f->parse($fragment).$this->getValue();
+		$this->params["form_output"][$this->getId()] = $f->parse($fragment);
 
 		$this->params["value_pool"]["email"][$this->getElement(1)] = stripslashes($this->getValue());
 		$this->params["value_pool"]["sql"][$this->getElement(1)] = $this->getValue();

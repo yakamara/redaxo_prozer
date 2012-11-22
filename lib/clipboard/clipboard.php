@@ -3,119 +3,82 @@
 class pz_clipboard
 {
 
-	static $clipboards = array();
+  static $clipboards = array();
+  static $user = NULL;
+  
+  static function get( $user_id = 0 )
+  {
+    if(isset(self::$clipboards[$user_id]))
+    return self::$clipboards[$user_id];
+    
+    $user = pz_user::get($user_id);
+    if($user === null)
+    return false;
+    
+    self::$clipboards[$user_id] = new self();
+    self::$clipboards[$user_id]->user = $user;
+    
+    return self::$clipboards[$user_id];
+  }
 
-	static function getByUserId( $user_id = 0 )
-	{
-		if(isset(self::$clipboards[$user_id]))
-			return self::$clipboards[$user_id];
-		
-		$user = pz_user::get($user_id);
-		if($user === null)
-			return false;
-		
-		self::$clipboards[$user_id] = new self();
-		self::$clipboards[$user_id]->user = $user;
-		
-		return self::$clipboards[$user_id];
-	}
-
-	public function getClips($filter = array())
-	{
-		
-		$where = array();
-		$where[] = 'user_id = ?';
-		$where[] = 'hidden = ?';
-		$params = array();
-		$params[] = $this->user->getId();
-		$params[] = 0;
-		
-		$return = pz::getFilter($filter, $where, $params);
-		
-		$sql = rex_sql::factory();
-		// $sql->debugsql = 1;
-		$files = $sql->getArray('SELECT c.* FROM pz_clipboard as c '.$return['where_sql'].' ORDER BY c.id desc', $return["params"]);
-		return $files;
-	}
-
-	static function deleteClipById($clip_id)
-	{
-		$sql = rex_sql::factory();
-		// $sql->debugsql = 1;
-		$clips = $sql->setQuery('delete from pz_clipboard where id = ?', array($clip_id));
-		return true;
-	}
+  public function getClips($filter = array())
+  {
+  
+    $filter[] = array("field"=>"user_id", "type" => "=", "value" => $this->user->getId());
+  
+    $return = pz::getFilter($filter);
+    
+    $sql = rex_sql::factory();
+    // $sql->debugsql = 1;
+    $clips_array = $sql->getArray('SELECT c.* FROM pz_clipboard as c '.$return['where_sql'].' ORDER BY c.id desc', $return["params"]);
+    
+    $clips = array();
+    foreach($clips_array as $clip)
+    {
+      $clips[] = new pz_clip($clip);
+    }
+    return $clips;
+  }
 
 
-	static function getClipById($clip_id, $user_id = 0)
-	{
-		if($user_id == 0)
-			$user_id = pz::getUser()->getId();
-			
-		$sql = rex_sql::factory();
-		// $sql->debugsql = 1;
-		$clips = $sql->getArray('SELECT c.* FROM pz_clipboard as c where user_id = ? and id = ? LIMIT 2', array($user_id,$clip_id));
-		if(count($clips) == 1) {
-			return $clips[0];
-		}
-		return false;
-	}
+  public function getMyClips($filter = array())
+  {
+    return $this->getClips($filter);
+  }
 
-	static function getPath($clip_id,$user_id = 0)
-	{
-		if($user_id == 0) $user_id = pz::getUser()->getId();
-		return rex_path::addonData('prozer', 'users/'.$user_id.'/clipboard/'.$clip_id.'.data');
-	}
 
-	/* Creates Clip with ID */
-	public function getClipname($filename, $content_length, $content_type, $hidden = TRUE)
-	{
-		$s = rex_sql::factory();
-		$s->setTable('pz_clipboard');
-		$s->setValue('created',date("Y-m-d H:i:s"));
-		$s->setValue('updated',date("Y-m-d H:i:s"));
-		$s->setValue('user_id',$this->user->getId());
-		$s->setValue('filename',$filename);
-		$s->setValue('content_type',$content_type);
-		$s->setValue('content_length',$content_length);
-		if($hidden) 	$s->setValue('hidden',1);
-		else			$s->setValue('hidden',0);
-		$s->insert();
+  public function getUnreleasedClips($filter = array())
+  {
+    $d = pz::getDateTime()->format("Y-m-d H:i:s");
+    $or = array();
+    $or[] = array('field'=>'uri', 'type'=>'=', 'value' => "");
+    $or[] = array('field'=>'online_date', 'type'=>'=', 'value' => "0000-00-00 00:00:00");
+    $or[] = array('field'=>'offline_date', 'type'=>'=', 'value' => "0000-00-00 00:00:00");
+    $or[] = array('field'=>'offline_date', 'type'=>'<', 'value' => $d);
+    $orfilter = pz::getFilter($or, NULL, NULL, "OR");
 
-		$id = (int) $s->getLastId();
-		$path = pz_clipboard::getPath($id,$this->user->getId());
+    $filter[] = array('type'=>'query', 'query' => $orfilter["query"], 'params' => $orfilter["params"]);
+    $filter[] = array('field'=>'open', 'type'=>'=', 'value' => 0);
+    return $this->getClips($filter);
+  }
 
-		$return = array('id' => $id, 'path' => $path, 'filename' => $filename);
 
-		return $return;
-	}
+  public function getReleasedClips($filter = array())
+  {
 
-	public function addClipAsStream($stream, $filename, $content_length, $content_type)
-	{
-		$clipdata = $this->getClipname($filename,$content_length,$content_type);
-		rex_dir::create(dirname($clipdata["path"]));
-		$target = fopen($clipdata["path"], "w");        
-        fseek($stream, 0, SEEK_SET);
-        stream_copy_to_stream($stream, $target);
-        fclose($target);
-        unset($clipdata["path"]);
-        return $clipdata;
-	}
+    $filter[] = array('field'=>'open', 'type'=>'=', 'value' => 1);
+    $filter[] = array('field'=>'uri', 'type'=>'<>', 'value' => "");
 
-	public function addClipAsSource($filesource, $filename, $content_length, $content_type, $hidden)
-	{
-		$clipdata = $this->getClipname($filename, $content_length, $content_type, $hidden);
-		rex_dir::create(dirname($clipdata["path"]));
-		file_put_contents($clipdata["path"], $filesource);
-		return $clipdata;
-	}
+    $filter[] = array('field'=>'online_date', 'type'=>'<>', 'value' => "0000-00-00 00:00:00");
+    $filter[] = array('field'=>'offline_date', 'type'=>'<>', 'value' => "0000-00-00 00:00:00");
+
+    $d = pz::getDateTime()->format("Y-m-d H:i:s");
+    $filter[] = array('field'=>'online_date', 'type'=>'<', 'value' => $d);
+    $filter[] = array('field'=>'offline_date', 'type'=>'>=', 'value' => $d);
+    
+    return $this->getClips($filter);
+  }
 
 
 
 }
-
-
-
-
-
-

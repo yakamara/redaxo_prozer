@@ -9,10 +9,13 @@
 		$class = '';
 		if (isset($item["classes"]) && $item["classes"] != '') $class = ' '.$item["classes"];
 		echo '<li class="lev1'.$active.$class.'">';
-		echo '<a class="lev1'.$active.$class.'" href="'.$item["url"].'">'.$item["name"];
+		
+		$a = '<a class="lev1'.$active.$class.'" href="'.$item["url"].'">'.$item["name"];
 		if (isset($item["span"]) && $item["span"] != "")
-			echo '<span class="info info1"><span class="inner">'.$item["span"].'</span></span>';
-		echo '</a>';
+			$a .= '<span class="info info1"><span class="inner">'.$item["span"].'</span></span>';
+		$a .= '</a>';
+
+		echo $a;
 		
 		if(isset($item["flyout"]))
 		{

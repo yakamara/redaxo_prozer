@@ -4,17 +4,20 @@ class pz_paginate_screen{
 
 	private 
 		$list_amount = 10,
+		$list_max = 5000,
 		$counter_all,
-		$link_vars = array();
-
-	public
+		$link_vars = array(),
 		$elements = array(),
-		$current_elements = array();	
+		$current_elements = array(),
+		$current = 0,
+		$page_current = 0,
+		$page_all = 0;
+		
 
 	public function __construct($elements) 
 	{
-		$this->elements = $elements;
-		$this->current_elements = $elements;
+		$this->elements = array_values($elements);
+		$this->current_elements = array_values($elements);
 		$this->counter_all = count($elements);
 	}
 
@@ -23,18 +26,11 @@ class pz_paginate_screen{
 		$this->list_amount = (int) $l;	
 	}
 
-	private function getUrl($p,$skip)
+	private function getUrl($p, $skip)
 	{
-		
 		$p["linkvars"]["skip"] = $skip;
-		
 		return "javascript:pz_loadPage('".$p["layer"]."','".
 			pz::url($p["mediaview"],$p["controll"],$p["function"],$p["linkvars"])."')";
-		
-		return pz::url($p["mediaview"],$p["controll"],$p["function"],$p["linkvars"]);
-		
-		// $p["linkvars"]["skip"] = $prev;
-		// pz::url($p["mediaview"],$p["controll"],$p["function"],$p["linkvars"])
 		
 	}
 
@@ -42,7 +38,7 @@ class pz_paginate_screen{
 	public function getPlainView($p = array())
 	{
 	
-		if($this->counter_all < $this->list_amount) return '';
+		if($this->counter_all <= $this->list_amount) return '';
 	
 		// TODO - Linkmanagement..
 		// order
@@ -50,6 +46,8 @@ class pz_paginate_screen{
 		// layer
 		// linkvars
 
+
+    $scroll = rex_request("scroll","int",0);
 	
 		$current = rex_request("skip","int",0);
 		if($current > $this->counter_all || $current < 0) $current = 0;
@@ -122,11 +120,20 @@ class pz_paginate_screen{
 		$count_to = (($page_current+1)*$this->list_amount);
 		if($count_to > $this->counter_all) 
 			$count_to = $this->counter_all;
+
+    $greater = "";
+    if($this->counter_all == $this->list_max)
+      $greater = "&gt;";
+
 		$links = array();
-		$links[] = '<li>'.$count_from.' - '.$count_to.' von '.$this->counter_all.' Treffern</li>';
+		$links[] = '<li>'.$count_from.' - '.$count_to.' von '.$greater.$this->counter_all.' Treffern</li>';
 		
 		$echo = '<div class="grid2col setting"><div class="column first">'.$echo.'</div><div class="column last"><ul>'.implode("",$links).'</ul></div></div>';
 	
+	  $this->current = $current;
+	  $this->page_current = $page_current;
+	  $this->page_all = $page_all;
+	  
 		$this->current_elements = array();
 		for($i=$current;$i<($current+$this->list_amount);$i++)
 		{
@@ -134,7 +141,8 @@ class pz_paginate_screen{
 				$this->current_elements[] = $this->elements[$i];
 		}
 		
-		return $echo;
+		if($scroll != 1) return $echo;
+		else return "";
 	}
 
 	public function getCurrentElements()
@@ -143,7 +151,42 @@ class pz_paginate_screen{
 	
 	}
 
+  public function setPaginateLoader($p, $append_layer)
+  {
+    $return = "";
+    if($this->page_current < $this->page_all)
+    {
+      $load_id = $p["layer"].'-'.$this->page_current.'-paginate';
+      
+      $p["linkvars"]["scroll"] = 1;
+      $p["linkvars"]["skip"] = ($this->current+$this->list_amount);
+      
+      $link = "pz_paginatePage('".$append_layer."','".pz::url($p["mediaview"],$p["controll"],$p["function"],$p["linkvars"])."','#".$load_id."','#".$load_id."');";
 
+      $return .= '<div id="'.$load_id.'" class="page-load not-visible">'.rex_i18n::msg("paginate_page",($this->page_current+2)).'</div>';
+
+      $return .= '<script>
+      $(document).ready(function() {
+        $("#'.$load_id.'").bind("enterviewport",function(){
+          '.$link.'
+        }).bullseye().bind("click",function(){
+          $(this).trigger("enterviewport");
+        });
+      })
+      </script>';
+      
+    }
+    return $return;
+  }
+
+  public function isScrollPage()
+  {
+    if(rex_request("scroll","int",0) == 1)
+    {
+      return true;
+    }
+    return false;
+  }
 
 
 

@@ -86,7 +86,7 @@ class pz_customer_screen{
 		$xform->setObjectparams("form_id", "customer_edit_form");
 		$xform->setObjectparams('form_showformafterupdate',1);
 		$xform->setHiddenField("customer_id",$this->customer->getId());
-		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform'));
+		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
 		
 		$xform->setValueField("pz_image_screen",array("image_inline",rex_i18n::msg("photo"),pz_customer::getDefaultImage()));
 		
@@ -116,7 +116,7 @@ class pz_customer_screen{
 			$delete_link = pz::url("screen","projects","customers",array("customer_id"=>$this->customer->getId(),"mode"=>"delete_customer"));
 			$return .= '<div class="xform">
 				<p><a class="bt17" onclick="check = confirm(\''.
-				rex_i18n::msg("customer_confirm_delete",htmlspecialchars($this->customer->getName())).
+				str_replace(array("'","\n","\r"),array("","",""),rex_i18n::msg("customer_confirm_delete",htmlspecialchars($this->customer->getName()))).
 				'\'); if (check == true) pz_loadPage(\'customer_form\',\''.
 				$delete_link.'\')" href="javascript:void(0);">- '.rex_i18n::msg("delete_customer").'</a></p>
 				</div>';
@@ -143,7 +143,7 @@ class pz_customer_screen{
 		$xform->setObjectparams("main_table",'pz_customer');
 		$xform->setObjectparams("form_action", "javascript:pz_loadFormPage('customer_add','customer_add_form','".pz::url('screen','projects','customers',array("mode"=>'add_customer'))."')");
 		$xform->setObjectparams("form_id", "customer_add_form");
-		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform'));
+		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
 		foreach($p["linkvars"] as $k => $v) { $xform->setHiddenField($k,$v); }
 		
 		$xform->setValueField("pz_image_screen",array("image_inline",rex_i18n::msg("photo"),pz_customer::getDefaultImage()));
