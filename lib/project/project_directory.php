@@ -125,20 +125,22 @@ class pz_project_root_directory extends pz_project_directory
   public function getAllPaths()
   {
     $sql = rex_sql::factory();
-    $sql->prepareQuery('SELECT id, name FROM pz_project_file WHERE project_id = '. $this->getProjectId() .' AND is_directory = 1 AND parent_id = ? ORDER BY name');
+    $ps = $sql->getArray('SELECT id, name, parent_id FROM pz_project_file WHERE project_id = '. $this->getProjectId() .' AND is_directory = 1 ORDER BY name');
+    $paths = array();
+    foreach($ps as $p) {
+      $paths[$p["id"]] = array("id" => $p["id"], "name" => $p["name"], "parent_id" => $p["parent_id"]);
+    }
     $array = array();
-    $func = function($id, $path) use($sql, &$func, &$array)
-    {
+    $func = function($id, $path) use(&$paths, &$func, &$array, $rt) {
       $array[] = array('id' => $id, 'label' => $path);
-      $sql->execute(array($id));
       $rows = array();
-      foreach($sql as $row)
-      {
-        $rows[] = array($row->getValue('id'), $path . $row->getValue('name') .'/');
+      foreach($paths as $p) {
+        if($p["parent_id"] == $id) {
+            $rows[] = array($p['id'], $path.$p['name'].'/');
+        }
       }
-      foreach($rows as $row)
-      {
-        $func($row[0], $row[1]);
+      foreach($rows as $row) {
+         $func($row[0], $row[1]);
       }
     };
     $func(0, '/');
