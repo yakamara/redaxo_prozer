@@ -244,10 +244,11 @@ class pz_clip extends pz_model
 	}
 
 
-	public function create($filename, $content_length, $content_type, $hidden = TRUE, $user = NULL)
+	public function create($filename = "", $content_length = 0, $content_type = "", $hidden = TRUE, $user = NULL)
 	{
-	  if($user == NULL)
+	  if($user == NULL) {
 	    $user = pz::getLoginUser();
+	  }
 	
 		$s = rex_sql::factory();
 		$s->setTable('pz_clipboard');
@@ -257,11 +258,9 @@ class pz_clip extends pz_model
 		$s->setValue('filename',$filename);
 		$s->setValue('content_type',$content_type);
 		$s->setValue('content_length',$content_length);
-		if($hidden)
-		{
+		if ($hidden) {
 		  $s->setValue('hidden',1);
-		}else 
-		{
+		} else {
 		  $s->setValue('hidden',0);
 		}
 		$s->insert();

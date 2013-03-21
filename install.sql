@@ -472,7 +472,7 @@ CREATE TABLE IF NOT EXISTS `pz_user` (
   `status` tinyint(4) NOT NULL DEFAULT '0',
   `role` int(11) NOT NULL,
   `login` varchar(100) NOT NULL,
-  `password` varchar(100) NOT NULL,
+  `password` varchar(255) NOT NULL,
   `digest` varchar(255) NOT NULL,
   `login_tries` int(11) NOT NULL DEFAULT '0',
   `lasttrydate` int(11) NOT NULL,
@@ -595,7 +595,7 @@ ALTER TABLE `pz_address` ADD `responsible_user_id` INT NOT NULL AFTER `updated_u
 ALTER TABLE `pz_user` ADD `last_login` VARCHAR( 255 ) NOT NULL AFTER `lasttrydate` ;
 ALTER TABLE `pz_project_file` ADD `filesize` INT NOT NULL AFTER `filename` , ADD `mimetype` VARCHAR( 255 ) NOT NULL AFTER `filesize` ;
 
-CREATE TABLE IF NOT EXISTS `pz_project_history` ( 
+CREATE TABLE IF NOT EXISTS `pz_project_history` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `project_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
@@ -605,7 +605,7 @@ CREATE TABLE IF NOT EXISTS `pz_project_history` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `pz_user_history` ( 
+CREATE TABLE IF NOT EXISTS `pz_user_history` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `history_user_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,

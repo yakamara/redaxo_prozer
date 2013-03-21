@@ -201,7 +201,8 @@ calendar_projectevent_list = Projekt-/Terminansicht
 calendar_customerplan_list = Kundenterminansicht
 
 
-
+all_addresses = Alle Adressen
+my_addresses = Meine Adressen
 address_prefix = Titel
 address_suffix = Ergänzung
 address_suffix_labels = Dr.,Prof.,Herr,Frau 

@@ -6,31 +6,37 @@ class pz_api_controller extends pz_controller
 	static $controller = array('emails', 'addresses', 'calendar_event', 'admin');
 	static $controll = NULL;
 
-	public function controller($function) 
+	public function controller($function)
 	{
-		
-		$login = rex_request('login','string','aa');
-		$apikey = rex_request('apitoken','string',-1);
-		
-   	$pz_login = new pz_login;
-   	$pz_login->setSysID('pz_api_'. rex::getProperty('instname'));
-   	$pz_login->setLoginquery('SELECT * FROM pz_user WHERE status=1 AND login = :login AND digest = :password');
-		$pz_login->setLogin($login, $apikey);
 
-  	$pz_login->checkLogin();
+		$login = rex_request('login','string','aa');
+		$digest = rex_request('apitoken','string',-1);
+
+   	$pz_login = new pz_login;
+   	$pz_login->setSystemId('pz_api_'. rex::getProperty('instname'));
+		$pz_login->setLogin($login, $apikey);
+  	// $pz_login->checkLogin();
+
+    $check_query = rex_sql::factory();
+    $check_query->setQuery('select * from pz_user where login = ? and digest = ?', array($login, $digest));
+
+    if($check_query->getRows() == 1) {
+      $pz_login->setUser($check_query);
+      pz::setUser(new pz_user($pz_login->getUser()), $pz_login);
+    }
 
 		$controller = array();
-		foreach(self::$controller as $controll) 
+		foreach(self::$controller as $controll)
 		{
 			$class = 'pz_'.$controll.'_controller_'.pz::$mediaview;
-			if(class_exists($class)) 
+			if(class_exists($class))
 			{
 				$controller[$controll] = new $class;
-				if(!$controller[$controll]->checkPerm()) 
+				if(!$controller[$controll]->checkPerm())
 				{
 					unset($controller[$controll]);
 				}
-			}else 
+			}else
 			{
 				pz::debug("class does not exist: $controll");
 			}
@@ -48,18 +54,18 @@ class pz_api_controller extends pz_controller
 		static::$controll = $controll;
 		pz::debug("controll: $controll");
 
-		if(isset($controller[$controll])) 
+		if(isset($controller[$controll]))
 		{
 			$return = $controller[$controll]->controller($function);
 
-		}else 
+		}else
 		{
 			$return = 'failed';
 
 		}
 
   	return $return;
-		
+
 	}
 
 }

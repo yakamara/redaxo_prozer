@@ -325,7 +325,7 @@ class pz_project_controller_screen extends pz_project_controller
 
  			case("toggle_calendar_jobs"):
  			
-			  if (!$this->project->hasCalendar()) {
+			  if (!$this->project->hasCalendarJobs()) {
           return;
         }
 

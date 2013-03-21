@@ -1,4 +1,36 @@
 
+____________ 2.0 beta5
+
+* Bugs
+** Calendar - Calendarjobprojekte wurden falsch ausgelesen, Rechte konnten nicht geändert werden.
+** Darstellung der Stunden bei Stunden über mehrere Tage war falsch
+** Beim Erstellen eines Labels wurde das Label CSS nicht erstellt
+** Attachmenticon taucht wieder in den E-Mail-Listen auf.
+
+* Performance
+** Projektdateien/Ordner auflisten geht nun schneller: pz_project_root_directory::getAllPaths
+
+* Texte
+** Alle Projekt -> Alle Adressen/Meine Adressen
+
+* Login / Passwort
+** Loginprozess wurde in REDAXO geändert. Umbau in Prozer war notwendig
+** Passwort sind nun immer verschlüsselt.
+** API Keys werden nun bei Passwortänderung immer neu erstellt.
+** Passwörter sind bei den Usern nicht mehr im Klartext zu lesen
+
+____________ 2.0 beta4
+
+* Bugs
+** Calendar - Calendarjobprojekte wurden falsch ausgelesen.
+** Clip::create.. Defition wurde unter strikten Einstellung nicht akzeptiert.
+** Labels konnten nicht mehr bearbeitet werden, rex_path Prinzip von redaxo hatte sich geändert
+
+____________ 2.0 beta3
+
+* Bugs
+** CalDAVJobs - Es wurde die falschen Kalender angezeigt.
+
 ____________ 2.0 beta2
 
 * Bugs

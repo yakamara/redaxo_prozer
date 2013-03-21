@@ -8,12 +8,12 @@ class pz_login extends rex_login
   {
     parent::__construct();
 
-    $this->setSysID('pz_'. rex::getProperty('instname'));
-    $this->setSessiontime(rex::getProperty('session_duration'));
-    $this->setUserID('id');
+    $this->setSystemId('pz_'. rex::getProperty('instname'));
+    $this->setSessionDuration(rex::getProperty('session_duration'));
+    $this->setIdColumn('id');
     $qry = 'SELECT * FROM pz_user WHERE status=1';
-    $this->setUserquery($qry .' AND id = :id');
-    $this->setLoginquery($qry .' AND login = :login AND password = :password');
+    $this->setUserQuery($qry .' AND id = :id');
+    $this->setLoginQuery($qry .' AND login = :login');
   }
 
   public function setStayLoggedIn($stayLoggedIn = false)
@@ -25,7 +25,7 @@ class pz_login extends rex_login
   {
     $sql = rex_sql::factory();
     $userId = $this->getSessionVar('UID');
-    $cookiename = 'pz_user_'. sha1($this->system_id.rex::getProperty('instname'));
+    $cookiename = 'pz_user_'. sha1($this->systemId.rex::getProperty('instname'));
 
     if($cookiekey = rex_cookie($cookiename, 'string'))
     {
@@ -49,30 +49,30 @@ class pz_login extends rex_login
     if($check)
     {
       // gelungenen versuch speichern | login_tries = 0
-      if($this->usr_login != '')
+      if($this->userLogin != '')
       {
-        $this->sessionFixation();
+        $this->regenerateSessionId();
         $params = array();
         $add = '';
         if($this->stayLoggedIn)
         {
-          $cookiekey = $this->USER->getValue('cookiekey') ?: sha1($this->system_id . time() . $this->usr_login);
+          $cookiekey = $this->user->getValue('cookiekey') ?: sha1($this->systemId . time() . $this->userLogin);
           $add = 'cookiekey = ?, ';
           $params[] = $cookiekey;
           setcookie($cookiename, $cookiekey, time() + 60*60*24*365, '/');
         }
 
-        array_push($params, time(), pz::getDateTime()->format("Y-m-d H:i:s"), session_id(), $this->usr_login);
+        array_push($params, time(), pz::getDateTime()->format("Y-m-d H:i:s"), session_id(), $this->userLogin);
         $sql->setQuery('UPDATE pz_user SET '. $add .'login_tries=0, lasttrydate=?, last_login=?, session_id=? WHERE login=? LIMIT 1', $params);
       }
-      pz::setUser(new pz_user($this->USER), $this);
-    
+      pz::setUser(new pz_user($this->user), $this);
+
     }else
     {
       // fehlversuch speichern | login_tries++
-      if($this->usr_login != '')
+      if($this->userLogin != '')
       {
-        $sql->setQuery('UPDATE pz_user SET login_tries=login_tries+1,session_id="",cookiekey="",lasttrydate=? WHERE login=? LIMIT 1', array(time(), $this->usr_login));
+        $sql->setQuery('UPDATE pz_user SET login_tries=login_tries+1,session_id="",cookiekey="",lasttrydate=? WHERE login=? LIMIT 1', array(time(), $this->userLogin));
       }
     }
 
@@ -83,5 +83,10 @@ class pz_login extends rex_login
     }
 
     return $check;
+  }
+
+  public function setUser($user)
+  {
+    $this->user = $user;
   }
 }

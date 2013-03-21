@@ -159,9 +159,9 @@ class pz_label_screen{
 		$return = $xform->getForm();
 
 		if($xform->getObjectparams("actions_executed")) {
-			
 			$label_id = $xform->getObjectparams("main_id");
-			if($label = pz_project::get($label_id)) {
+			
+			if($label = pz_label::get($label_id)) {
 				$label->create();
 			}
 			$return = $header.'<p class="xform-info">'.rex_i18n::msg("label_added").'</p>'.$return;

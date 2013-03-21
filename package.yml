@@ -1,4 +1,5 @@
-version: '2.0 beta2'
+package: prozer
+version: '2.0 beta5'
 author: Yakamara Media GmbH & Co. KG
 supportpage: www.prozer.org
 

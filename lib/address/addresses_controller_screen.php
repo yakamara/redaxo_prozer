@@ -201,7 +201,7 @@ class pz_addresses_controller_screen extends pz_addresses_controller {
 
 	function getMyAddressesPage($p = array()) 
 	{
-		$p["title"] = rex_i18n::msg("all_projects");
+		$p["title"] = rex_i18n::msg("my_addresses");
 		
 		$s1_content = "";
 		$s2_content = "";
@@ -281,7 +281,7 @@ class pz_addresses_controller_screen extends pz_addresses_controller {
 
 	function getAddressesPage($p = array()) 
 	{
-		$p["title"] = rex_i18n::msg("all_projects");
+		$p["title"] = rex_i18n::msg("all_addresses");
 		
 		$s1_content = "";
 		$s2_content = "";

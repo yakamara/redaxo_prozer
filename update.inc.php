@@ -238,8 +238,8 @@ if(version_compare($version, '2.0 alpha15', '<'))
   $sql->setQuery('ALTER TABLE `pz_address` ADD `responsible_user_id` INT NOT NULL AFTER `updated_user_id` ;');
   $sql->setQuery('ALTER TABLE `pz_user` ADD `last_login` VARCHAR( 255 ) NOT NULL AFTER `lasttrydate` ;');
   $sql->setQuery('ALTER TABLE `pz_project_file` ADD `filesize` INT NOT NULL AFTER `filename` , ADD `mimetype` VARCHAR( 255 ) NOT NULL AFTER `filesize` ;');
-  
-  $sql->setQuery('CREATE TABLE IF NOT EXISTS `pz_project_history` ( 
+
+  $sql->setQuery('CREATE TABLE IF NOT EXISTS `pz_project_history` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `project_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
@@ -250,7 +250,7 @@ if(version_compare($version, '2.0 alpha15', '<'))
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;');
 
 
-  $sql->setQuery('CREATE TABLE IF NOT EXISTS `pz_user_history` ( 
+  $sql->setQuery('CREATE TABLE IF NOT EXISTS `pz_user_history` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `history_user_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
@@ -259,11 +259,11 @@ if(version_compare($version, '2.0 alpha15', '<'))
   `mode` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;');
-  
+
   $sql->setQuery('ALTER TABLE `pz_calendar_history` CHANGE `mode` `mode` ENUM( \'create\', \'update\', \'delete\' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;');
-  
+
   $sql->setQuery('UPDATE `pz_calendar_history` SET MODE = "create" WHERE MODE = ""');
-  
+
 }
 
 // ------------------------------------------------- alpha16
@@ -277,7 +277,7 @@ if(version_compare($version, '2.0 alpha17', '<'))
   $sql = rex_sql::factory();
   $sql->setQuery('ALTER TABLE `pz_calendar_history` ADD `project_id` INT NOT NULL ;');
   $sql->setQuery('ALTER TABLE `pz_project_file_history` ADD `project_id` INT NOT NULL ;');
-  
+
   $sql->setQuery('ALTER TABLE `pz_wiki_history` CHANGE `mode` `mode` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;');
   $sql->setQuery('ALTER TABLE `pz_calendar_history` CHANGE `mode` `mode` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;');
   $sql->setQuery('ALTER TABLE `pz_address_history` CHANGE `mode` `mode` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;');
@@ -315,7 +315,24 @@ PRIMARY KEY ( `id` )
   $sql->setQuery('ALTER TABLE `pz_project` ADD `has_calendar_jobs` TINYINT NOT NULL AFTER `has_calendar`;');
 
   $sql->setQuery('UPDATE `pz_project_user` set calendar_jobs = 1 where calendar = 1;');
-  $sql->setQuery('UPDATE `pz_project` SET has_calendar_jobs = 1 WHERE has_calendar = 1;'); 
+  $sql->setQuery('UPDATE `pz_project` SET has_calendar_jobs = 1 WHERE has_calendar = 1;');
+
+}
+
+// ------------------------------------------------- beta5
+
+if(version_compare($version, '2.0 beta5', '<'))
+{
+  $sql = rex_sql::factory();
+
+  $sql->setQuery('ALTER TABLE `pz_user` CHANGE `password` `password` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL');
+
+  $sql->setQuery('SELECT id, password FROM pz_user');
+  $sql2 = rex_sql::factory();
+  $sql2->prepareQuery('UPDATE pz_user SET password = ? WHERE id = ?');
+  foreach ($sql as $row) {
+    $sql2->execute(array(rex_login::passwordHash($row->getValue('password')), $row->getValue('id')));
+  }
 
 }
 

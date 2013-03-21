@@ -592,6 +592,14 @@ class pz_email extends pz_model{
 		  try 
 		  {
 
+        // Während des Mailversandes als Draft markiert.
+        $u = rex_sql::factory();
+        $u->setTable("pz_email");
+        $u->setWhere(array('id'=>$this->getId()));
+        $u->setValue("draft",1);
+        $u->update();
+
+
   			$mail = new pz_mailer();
   
   			$mail->From             = $email_account->getEmail();
@@ -787,19 +795,16 @@ class pz_email extends pz_model{
 
 		$this->saveToHistory('delete');
 
-		if($this->getId() == "")
-		{
+		if($this->getId() == "") {
 			return FALSE;
-    	}
+    }
 
-		if($this->isDraft())
-		{
+		if($this->isDraft()) {
 			$d = rex_sql::factory();
 			$d->setQuery('delete from pz_email where id = ?', array($this->getId()));
 			return TRUE;
 	
-		}else if($this->isTrash())
-		{
+		}else if($this->isTrash()) {
 			$d = rex_sql::factory();
 			$d->setQuery('delete from pz_email where id = ?', array($this->getId()));
   		rex_dir::delete($this->getFolder());
@@ -837,14 +842,12 @@ class pz_email extends pz_model{
 			$update["content_type"] = $headerinfo["content_type"];
 		}
 
-		if(count($update)>0)
-		{
+		if(count($update)>0) {
 			$u = rex_sql::factory();
 			// $u->debugsql = 1;
 			$u->setTable('pz_email');
 			$u->setWhere(array('id' => $this->getId()));
-			foreach($update as $k => $v)
-			{
+			foreach($update as $k => $v) {
 				$u->setValue($k,$v);
 			}
 			$u->update();

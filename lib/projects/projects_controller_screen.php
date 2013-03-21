@@ -421,8 +421,9 @@ class pz_projects_controller_screen extends pz_projects_controller {
 			case("delete_label"):
 				$label_id = rex_request("label_id","int");
 				if(($label = pz_label::get($label_id))) {
-					if($label->hasProjects())
+					if($label->hasProjects()) {
 						return '';
+					}
 					$r = new pz_label_screen($label);
 					$label->delete();
 					$p["label_name"] = $label->getName();
@@ -443,8 +444,9 @@ class pz_projects_controller_screen extends pz_projects_controller {
 				if($label_id > 0 && $label = pz_label::get($label_id)) {
 						$cs = new pz_label_screen($label);
 						$p["show_delete"] = false;
-						if(!$label->hasProjects())
+						if(!$label->hasProjects()) {
 							$p["show_delete"] = true;
+						}
 						return $cs->getEditForm($p);
 				}else {
 					return '<div id="label_form"><p class="xform-warning">'.rex_i18n::msg("label_not_found").'</p></div>';

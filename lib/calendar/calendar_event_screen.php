@@ -644,7 +644,7 @@ class pz_calendar_event_screen{
 			
 			$user = $this->calendar_event->getUser();
 			$project = pz_project::get($this->calendar_event->getProjectId());
-			$duration = (($this->calendar_event->getDuration()->format("%d")*24*60)+$this->calendar_event->getDuration()->format("%h")).'h ';
+			$duration = (($this->calendar_event->getDuration()->format("%d")*24)+$this->calendar_event->getDuration()->format("%h")).'h ';
 			if($this->calendar_event->getDuration()->format("%I") != 0) $duration .= $this->calendar_event->getDuration()->format("%I").'m';
 			
 			$dur = $this->calendar_event->getFrom()->format(rex_i18n::msg("format_d_m_y"))."<br /><nobr>".$this->calendar_event->getFrom()->format(rex_i18n::msg("format_h_i")).'h - '.$this->calendar_event->getTo()->format(rex_i18n::msg("format_h_i")).'</nobr>';
@@ -1534,7 +1534,7 @@ class pz_calendar_event_screen{
 		foreach($paginate_screen->getCurrentElements() as $job) {
 			
 			$user = $job->getUser();
-			$duration = (($job->getDuration()->format("%d")*24*60)+$job->getDuration()->format("%h")).'h ';
+			$duration = (($job->getDuration()->format("%d")*24)+$job->getDuration()->format("%h")).'h ';
 			if($job->getDuration()->format("%I") != 0) $duration .= $job->getDuration()->format("%I").'m';
 			
 			$content .= '<tr>';
@@ -1581,7 +1581,8 @@ class pz_calendar_event_screen{
 		foreach($paginate_screen->getCurrentElements() as $job) {
 
 			$project = pz_project::get($job->getProjectId());
-			$duration = (($job->getDuration()->format("%d")*24*60)+$job->getDuration()->format("%h")).'h ';
+			
+			$duration = (($job->getDuration()->format("%d")*24)+$job->getDuration()->format("%h")).'h ';
 			if($job->getDuration()->format("%I") != 0) $duration .= $job->getDuration()->format("%I").'m';
 			
 			$content .= '<tr>';

@@ -22,7 +22,7 @@ class pz_user extends rex_user
 
 	}
 
-  public function getVars() 
+  public function getVars()
   {
     $v = array("id","email","status","name");
     $vars = array();
@@ -40,12 +40,7 @@ class pz_user extends rex_user
 
 	public function getLogin()
 	{
-	  return $this->getUserLogin();
-	}
-
-	public function getPassword()
-	{
-	  return $this->getValue('password');
+	  return $this->getLogin();
 	}
 
 	public function getEmail()
@@ -83,11 +78,6 @@ class pz_user extends rex_user
 		return FALSE;
 	}
 
-	public function getDigest()
-	{
-		return md5($this->getUserLogin() .':prozer:'. $this->getValue("password"));
-	}
-
 	public function getAPIKey()
 	{
 		return $this->getValue("digest");
@@ -100,11 +90,11 @@ class pz_user extends rex_user
 
 	public function getInlineImage()
 	{
-		if($this->inline_image != "") 
+		if($this->inline_image != "")
 		{
 			return $this->inline_image;
 
-		}elseif($this->getEmail() == "") 
+		}elseif($this->getEmail() == "")
 		{
 			return pz_user::getDefaultImage();
 
@@ -120,14 +110,9 @@ class pz_user extends rex_user
 
   // ----------------- static
 
-	static public function getDefaultImage() 
+	static public function getDefaultImage()
 	{
 		return "/assets/addons/prozer/css/user.png";
-	}
-
-	static function digest($login,$password)
-	{
-		return md5($login .':prozer:'. $password);
 	}
 
   static public function get($id, $refresh = FALSE)
@@ -154,10 +139,10 @@ class pz_user extends rex_user
   {
     // TODO: Userspecifix Timezone
     // current default: Europe/Berlin
-  
+
     if(!$datetime)
       $datetime = new DateTime();
-  
+
     $datetime->setTimezone(new DateTimeZone('Europe/Berlin'));
     return $datetime;
   }
@@ -168,9 +153,9 @@ class pz_user extends rex_user
 
   public function saveToHistory($mode = 'update', $func = '')
   {
-  
+
     $fields = array("id", "name", "status", "login", "login_tries", "lasttrydate", "last_login", "session_id", "cookiekey", "admin", "created", "updated", "address_id", "email", "account_id", "config", "perms", "comment");
-  
+
     $sql = rex_sql::factory();
     $sql->setTable('pz_history')
       ->setValue('control', 'user')
@@ -179,7 +164,7 @@ class pz_user extends rex_user
       ->setValue('user_id', pz::getUser()->getId())
       ->setRawValue('stamp', 'NOW()')
       ->setValue('mode', $mode);
-      
+
     $data = array();
     $data["REMOTE_ADDR"] = $_SERVER["REMOTE_ADDR"];
     $data["QUERY_STRING"] = $_SERVER["QUERY_STRING"];
@@ -202,25 +187,25 @@ class pz_user extends rex_user
   }
 
 
-	public function update() 
+	public function update()
 	{
-	  $this->updateDigest();
 		$this->saveToHistory('update');
 	}
 
-  public function updateDigest() 
-  {
-  	$u = rex_sql::factory();
+  public function passwordHash($password) {
+    $password = rex_login::passwordHash($password);
+    $u = rex_sql::factory();
   	// $u->debugsql = 1;
   	$u->setTable('pz_user');
   	$u->setWhere( array( 'id' => $this->getId() ) );
-  	$u->setValue('digest', pz_user::digest( $this->getLogin(), $this->getPassword() ));
+  	$u->setValue('password', $password );
+  	$u->setValue('digest', sha1($password));
   	$u->update();
+
   }
 
-	public function create() 
+  public function create()
 	{
-	  $this->updateDigest();
 	  $this->saveToHistory('create');
 	}
 
@@ -236,7 +221,7 @@ class pz_user extends rex_user
 		$this->user_perm = $user_perm;
 	}
 
-	public function isMe() 
+	public function isMe()
 	{
 		if(isset($this->user_perm))
 			return FALSE;
@@ -278,9 +263,9 @@ class pz_user extends rex_user
 		if(in_array($perm,$this->perms))
 		{
 			$perms = array();
-			foreach($this->perms as $p) 
+			foreach($this->perms as $p)
 			{
-				if($perm != $p) 
+				if($perm != $p)
 				{
 					$perms[] = $p;
 				}
@@ -292,7 +277,7 @@ class pz_user extends rex_user
 	public function savePerm()
 	{
 		$perms = array();
-		foreach($this->perms as $p) 
+		foreach($this->perms as $p)
 		{
 			if(is_string($p))
 			{
@@ -401,7 +386,7 @@ class pz_user extends rex_user
   public function getCustomersAsString($filter = array())
   {
   	$return = array();
-  	foreach(self::getCustomers($filter) as $customer) 
+  	foreach(self::getCustomers($filter) as $customer)
   	{
   		$v = $customer->getName();
   		$v = str_replace('=','',$v);
@@ -510,10 +495,10 @@ class pz_user extends rex_user
 		return pz_email_account::getAccounts($this->getId());
   }
 
-  public function getEmailaccountsAsString() 
+  public function getEmailaccountsAsString()
   {
 		$return = array();
-		foreach(pz_email_account::getAccounts($this->getId()) as $email_account) 
+		foreach(pz_email_account::getAccounts($this->getId()) as $email_account)
 		{
 			$v = $email_account->getName();
 			$v = str_replace('=','',$v);
@@ -523,14 +508,14 @@ class pz_user extends rex_user
 		return implode(",",$return);
   }
 
-  public function getDefaultEmailaccountId() 
+  public function getDefaultEmailaccountId()
   {
 		if($this->getValue("account_id")>0)
 			return $this->getValue("account_id");
 
 		$accounts = $this->getEmailaccounts();
 
-		if(is_array($accounts) && count($accounts)>0) 
+		if(is_array($accounts) && count($accounts)>0)
 		{
 			$account = current($accounts);
 			return $account->getId();
@@ -574,10 +559,6 @@ class pz_user extends rex_user
     return $this->_getProjects('', true, $filter);
   }
 
-  /*
-  	Alle, auch die archivierten Projekte
-  */
-
   public function getAllProjects($filter = array())
   {
     if($this->isAdmin())
@@ -597,77 +578,41 @@ class pz_user extends rex_user
     return $this->_getProjects('', true, $filter);
   }
 
-  /*
-  	Alle aktuellen, nicht archivierten Projekte
-  */
-
   public function getMyProjects($filter = array())
   {
-  	// Alle nicht archivierten (archived != 1) Projekte
-  	// + in den man eingtragen ist (table:project_user) ODER man hat in seinen Rolle den Projekt Admin
-
 	  $filter[] = array("field" => "archived", "value" => 0);
     return $this->_getProjects('', true, $filter);
   }
 
   public function getCalendarProjects($filter = array())
   {
-  	// Alle getProjects
-  	// + im Projekt ist Calendar aktiviert
-
-    $cfilter = array();
-    $cfilter[] = array("field" => "has_calendar", "value" => 1);
-    $cfilter[] = array("field" => "has_calendar_jobs", "value" => 1);
-    $cfi = pz::getFilter($cfilter,array(),array(),"OR");
-    $filter[] = array("type" => "plain", "value" => $cfi['query']);
-    
     $filter[] = array("field" => "archived", "value" => 0);
-
-    return $this->_getProjects('(pu.calendar = 1 OR pu.admin = 1)', true, $filter);
+    return $this->_getProjects('((pu.calendar = 1 OR pu.calendar_jobs = 1 OR pu.admin = 1) and (p.has_calendar = 1 OR p.has_calendar_jobs = 1))', true, $filter);
   }
 
   public function getCalendarJobsProjects($filter = array())
   {
-  	// Alle getProjects
-  	// + im Projekt ist Calendar aktiviert
-
-    $filter[] = array("field" => "has_calendar", "value" => 1);
+    $filter[] = array("field" => "has_calendar_jobs", "value" => 1);
     $filter[] = array("field" => "archived", "value" => 0);
-
     return $this->_getProjects('(pu.calendar_jobs = 1 OR pu.admin = 1)', true, $filter);
   }
 
   public function getCalDavProjects($filter = array())
   {
-  	// Alle getProjects
-  	// + im Projekt ist Kalender aktiviert
-  	// + Persönliche Einstellung, dieser Calendar ist freigeschaltet
-
-  	$filter[] = array("field" => "has_calendar_jobs", "value" => 1);
+  	$filter[] = array("field" => "has_calendar", "value" => 1);
   	$filter[] = array("field" => "archived", "value" => 0);
-
     return $this->_getProjects('(pu.caldav = 1 and (pu.calendar = 1 or pu.admin = 1) )', true, $filter);
   }
 
   public function getCalDavJobsProjects($filter = array())
   {
-  	// Alle getProjects
-  	// + im Projekt ist Kalender aktiviert
-  	// + Persönliche Einstellung, dieser Calendar ist freigeschaltet
-
-  	$filter[] = array("field" => "has_calendar", "value" => 1);
+  	$filter[] = array("field" => "has_calendar_jobs", "value" => 1);
   	$filter[] = array("field" => "archived", "value" => 0);
-
     return $this->_getProjects('(pu.caldav_jobs = 1 and (pu.calendar_jobs = 1  or pu.admin = 1) )', true, $filter);
   }
 
   public function getWebDavProjects($filter = array())
   {
-  	// Alle getProjects
-  	// + im Projekt sind Files aktiviert
-	  // + Nur User, die das WebDavRecht haben
-  	// + Persönliche Einstellung, dieser WebDav files Ordner ist freigeschaltet
-
   	if(pz::getUser()->hasPerm('webdav') || pz::getUser()->isAdmin())
   	{
   		$filter[] = array("field" => "has_files", "value" => 1);
@@ -710,6 +655,7 @@ class pz_user extends rex_user
 
     // ----- Filter
 
+
     $nfilter = array();
   	foreach($filter as $f)
   	{
@@ -719,6 +665,7 @@ class pz_user extends rex_user
   	  		case("archived"):
   	  		case("customer_id"):
   	  		case("has_calendar"):
+  	  		case("has_calendar_jobs"):
   	  		case("has_files"):
   	  		case("has_emails"):
   	  		case("label_id"):
@@ -728,8 +675,6 @@ class pz_user extends rex_user
   		}
   	}
 
-  	// echo '<pre>';var_dump($nfilter); echo '</pre>';
-
     // ----- Filter
 
   	$f = pz::getFilter($nfilter, $where, $params);
@@ -738,7 +683,6 @@ class pz_user extends rex_user
   	$where_sql = $f["where_sql"];
 
     $sql = rex_sql::factory();
-    //  $sql->debugsql = 1;
     $sql->setQuery('SELECT p.* FROM pz_project p'. $join .' '. $where_sql .' ORDER BY '.$orderby, $params);
     $projects = array();
     foreach($sql->getArray() as $row)
@@ -752,7 +696,7 @@ class pz_user extends rex_user
   // -------------------------------------------------------------------- emails
 
 
-  public function countInboxEmails() 
+  public function countInboxEmails()
   {
   	$filter = array();
     $filter[] = array("field" => "send", "value" => 0);
@@ -820,7 +764,7 @@ class pz_user extends rex_user
 
     $filter = array();
     $filter[] = array("field" => "id", "value" => $email_id);
-    
+
     $projects = array();
     $projects = $this->getEmailProjects();
 

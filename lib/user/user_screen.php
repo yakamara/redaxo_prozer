@@ -436,8 +436,6 @@ class pz_user_screen {
 
 		$xform->setHiddenField("user_id",$this->user->getId());
 
-		$xform->setValueField("pz_digest",array("digest","login","password"));
-
 		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
 		$xform->setValueField("text",array("name",rex_i18n::msg("name")));
 		$xform->setValidateField("empty",array("name",rex_i18n::msg("error_name_empty")));
@@ -446,8 +444,8 @@ class pz_user_screen {
 		$xform->setValidateField("empty",array("login",rex_i18n::msg("error_login_empty")));
 		$xform->setValidateField("unique",array("login",rex_i18n::msg("error_login_unique")));
 
-		$xform->setValueField("text",array("password",rex_i18n::msg("password")));
-		
+		$xform->setValueField("password",array("password",rex_i18n::msg("password"),"","no_db"));
+				
 		$xform->setValueField("text",array("email",rex_i18n::msg("email")));
 			$xform->setValidateField("empty",array("email",rex_i18n::msg("error_email_empty")));
 			$xform->setValidateField("unique",array("email",rex_i18n::msg("error_email_unique")));
@@ -465,7 +463,6 @@ class pz_user_screen {
 		$xform->setValueField("checkbox",array("projectsadmin",rex_i18n::msg("projectsadmin").' ('.rex_i18n::msg("projectsadmin_info").')',"1",$this->user->hasPerm("projectsadmin"),"no_db"));
 
 		$xform->setValueField("textarea",array("comment",rex_i18n::msg("user_comment")));
-
 
 		$xform->setActionField("db",array('pz_user','id='.$this->user->getId()));
 
@@ -489,7 +486,12 @@ class pz_user_screen {
 			$this->user->savePerm();
 			
 			$this->user = pz_user::get($this->user->getId(),TRUE);
-			$this->user->update();
+			if($xform->objparams["value_pool"]["email"]["password"] != "") {
+        $this->user->passwordHash($xform->objparams["value_pool"]["email"]["password"]);
+      }
+      
+      $this->user->update();
+			
 			$return = $header.'<p class="xform-info">'.rex_i18n::msg("user_updated").'</p>'.$return;
 			$return .= pz_screen::getJSLoadFormPage('users_list','users_search_form',pz::url($p["mediaview"],$p["controll"],$p["function"],array("mode"=>'list')));
 			
@@ -594,24 +596,25 @@ class pz_user_screen {
 
 		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
 
-		$xform->setValueField("password",array("password",rex_i18n::msg("password")));
+		$xform->setValueField("password",array("password",rex_i18n::msg("password"),"","no_db"));
 		$xform->setValueField("password",array("password_2",rex_i18n::msg("password_reenter"),"","no_db"));
 
 		$xform->setValidateField("empty",array("password",rex_i18n::msg("error_password_empty")));
-		// TODO: compare passwords 
 
 		$xform->setValidateField("compare",array("password","password_2",rex_i18n::msg("error_passwords_different")));
-
-		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0"));
-
-		$xform->setActionField("db",array('pz_user','id='.$this->user->getId()));
 
 		$return = $xform->getForm();
 
 		if($xform->getObjectparams("actions_executed")) 
 		{
 			$this->user = pz_user::get($this->user->getId(),TRUE); // refresh data
+			
+			if($xform->objparams["value_pool"]["email"]["password"] != "") {
+        $this->user->passwordHash($xform->objparams["value_pool"]["email"]["password"]);
+      }
+			
 			$this->user->update();
+			// $this->user->hashPassword();
 			$return = $header.'<p class="xform-info">'.rex_i18n::msg("user_password_updated").'</p>'.$return;
 		}else
 		{

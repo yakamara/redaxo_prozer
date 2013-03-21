@@ -47,7 +47,8 @@ class pz_labels
 		//.labelc5 { background-color: #0f5dca !important; /* blau */ }
 		//.labelc6 { background-color: #eb005f !important; /* rot (zart) */ }
 
-		$file = rex_path::addonAssets('prozer', 'labels_screen.css',rex_path::ABSOLUTE);
+		$file = rex_path::addonAssets('prozer', 'labels_screen.css');
+		$file = "/".rex_path::absolute($file);
 		file_put_contents($file,$content);
 	}
 
