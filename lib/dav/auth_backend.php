@@ -1,46 +1,27 @@
 <?php
 
-class pz_sabre_auth_backend extends Sabre_DAV_Auth_Backend_AbstractDigest
+class pz_sabre_auth_backend extends Sabre_DAV_Auth_Backend_AbstractBasic
 {
-  private $sql;
-
-	/**
-   * Returns the digest hash for a user.
-   *
-   * @param string $realm
-   * @param string $username
-   * @return string|null
-   */
-  public function getDigestHash($realm,$username)
-  {
-    $this->sql = rex_sql::factory();
-    $this->sql->setQuery('SELECT * FROM pz_user WHERE status = 1 AND login = ? LIMIT 2', array($username));
-
-    if($this->sql->getRows() != 1)
-    {
-      throw new Sabre_DAV_Exception_NotAuthenticated('User doesn\'t exist!');
-    }
-
-    return $this->sql->getValue('digest');
-  }
-
   /**
-   * Authenticates the user based on the current request.
+   * Validates a username and password
    *
-   * If authentication is succesful, true must be returned.
-   * If authentication fails, an exception must be thrown.
+   * This method should return true or false depending on if login
+   * succeeded.
    *
-   * @throws Sabre_DAV_Exception_NotAuthenticated
+   * @param string $username
+   * @param string $password
    * @return bool
    */
-  public function authenticate(Sabre_DAV_Server $server,$realm)
+  protected function validateUserPass($username, $password)
   {
-    parent::authenticate($server, $realm);
+    $sql = rex_sql::factory();
+    $sql->setQuery('SELECT * FROM pz_user WHERE status = 1 AND login = ? LIMIT 2', array($username));
 
-    if($this->sql)
+    if($sql->getRows() == 1 && rex_login::passwordVerify($password, $sql->getValue('password')))
     {
-      pz::setUser(new pz_user($this->sql));
+      pz::setUser(new pz_user($sql));
       return true;
     }
+    return false;
   }
 }
