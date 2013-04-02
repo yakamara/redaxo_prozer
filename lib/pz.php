@@ -282,18 +282,6 @@ class pz {
   	return $return;
   }
 
-	// ------ props
-
-	static function setProperty($key, $value = null)
-	{
-	  return rex_config::set("prozer", $key, $value);
-	}
-
-	static function getProperty($key)
-	{
-	  return rex_config::get("prozer", $key, "");
-	}
-
   static function getServer()
   {
     return rex::getProperty('server');
@@ -307,10 +295,6 @@ class pz {
   	}
     return 'http'.$protocolSecure.'://'.rex::getProperty('server');
   }
-
-
-
-	// ------ prozer config / changeable
 
 	static public function setConfig($key, $value)
 	{

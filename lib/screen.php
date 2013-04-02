@@ -16,7 +16,7 @@ class pz_screen
 	{
 	  $package = rex_package::get("prozer");
 
-	  $page_title = pz::getProperty("page_title");
+	  $page_title = pz::getConfig("page_title");
 	  if($page_title != "") {
 	    return $page_title.' - PROZER '.$package->getVersion();
 	  }
