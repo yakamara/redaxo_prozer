@@ -397,7 +397,13 @@ class pz_user_screen {
 			
 				$user->savePerm();
 				
+  			if($xform->objparams["value_pool"]["email"]["password"] != "") {
+          $user->passwordHash($xform->objparams["value_pool"]["email"]["password"]);
+        }
+        $user->update();
+
 				$user->create();
+				
 			}
 			$return = $header.'<p class="xform-info">'.rex_i18n::msg("user_added").'</p>'.$return;
 			$return .= pz_screen::getJSLoadFormPage('users_list','users_search_form',pz::url($p["mediaview"],$p["controll"],$p["function"],array("mode"=>'list')));

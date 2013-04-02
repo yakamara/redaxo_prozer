@@ -3,12 +3,11 @@
 if(!rex::isBackend())
 {
   rex_extension::register('FE_OUTPUT',
-    function($params)
+    function(rex_extension_point $ep)
     {
-      $output = $params['subject'];
+      $output = $ep->getSubject();
       $output .= pz::controller();
-      rex_response::sendArticle($output, 'frontend');
-
+      rex_response::sendPage($output);
     }
   );
 }

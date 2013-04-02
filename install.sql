@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS `pz_address` (
   `updated` varchar(255) NOT NULL,
   `created_user_id` int(11) NOT NULL,
   `updated_user_id` int(11) NOT NULL,
+  `responsible_user_id` int(11) NOT NULL,
   `uri` text NOT NULL,
   `company` text NOT NULL,
   `is_company` varchar(255) NOT NULL,
@@ -55,20 +56,6 @@ CREATE TABLE IF NOT EXISTS `pz_address_field` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `pz_address_history`
---
-
-CREATE TABLE IF NOT EXISTS `pz_address_history` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `address_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `data` longtext NOT NULL,
-  `stamp` varchar(255) NOT NULL,
-  `mode` text NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -150,22 +137,6 @@ CREATE TABLE IF NOT EXISTS `pz_calendar_event` (
   KEY `default` (`rule_id`,`from`,`to`,`project_id`),
   KEY `uri` (`uri`),
   KEY `project` (`project_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `pz_calendar_history`
---
-
-CREATE TABLE IF NOT EXISTS `pz_calendar_history` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `event_id` int(10) unsigned NOT NULL,
-  `user_id` int(10) unsigned NOT NULL,
-  `data` text NOT NULL,
-  `stamp` datetime NOT NULL,
-  `mode` enum('add','update','delete') NOT NULL,
-  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -378,6 +349,7 @@ CREATE TABLE IF NOT EXISTS `pz_project` (
   `archived` tinyint(4) NOT NULL,
   `has_emails` tinyint(4) NOT NULL,
   `has_calendar` tinyint(4) NOT NULL,
+  `has_calendar_jobs` tinyint(4) NOT NULL,
   `has_files` tinyint(4) NOT NULL,
   `has_wiki` tinyint(4) NOT NULL,
   `update_user_id` int(11) NOT NULL,
@@ -404,25 +376,12 @@ CREATE TABLE IF NOT EXISTS `pz_project_file` (
   `updated_user_id` int(10) unsigned NOT NULL,
   `parent_id` int(10) unsigned NOT NULL,
   `filename` varchar(255) NOT NULL,
+  `filesize` int(11) NOT NULL,
+  `mimetype` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_project_parent` (`name`,`project_id`,`parent_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `pz_project_file_history`
---
-
-CREATE TABLE IF NOT EXISTS `pz_project_file_history` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `file_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `data` text NOT NULL,
-  `stamp` datetime NOT NULL,
-  `mode` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -449,14 +408,15 @@ CREATE TABLE IF NOT EXISTS `pz_project_user` (
   `project_id` int(11) NOT NULL,
   `created` varchar(255) NOT NULL,
   `updated` varchar(255) NOT NULL,
-  `calendar` varchar(255) NOT NULL,
-  `wiki` varchar(255) NOT NULL,
-  `admin` varchar(255) NOT NULL,
-  `webdav` varchar(255) NOT NULL,
-  `caldav` varchar(255) NOT NULL,
-  `caldav_jobs` varchar(255) NOT NULL,
-  `files` varchar(255) NOT NULL,
-  `emails` varchar(255) NOT NULL,
+  `calendar` tinyint(4) NOT NULL,
+  `calendar_jobs` tinyint(4) NOT NULL,
+  `wiki` tinyint(4) NOT NULL,
+  `admin` tinyint(4) NOT NULL,
+  `webdav` tinyint(4) NOT NULL,
+  `caldav` tinyint(4) NOT NULL,
+  `caldav_jobs` tinyint(4) NOT NULL,
+  `files` tinyint(4) NOT NULL,
+  `emails` tinyint(4) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
@@ -476,6 +436,7 @@ CREATE TABLE IF NOT EXISTS `pz_user` (
   `digest` varchar(255) NOT NULL,
   `login_tries` int(11) NOT NULL DEFAULT '0',
   `lasttrydate` int(11) NOT NULL,
+  `last_login` varchar(255) NOT NULL,
   `session_id` varchar(255) NOT NULL,
   `cookiekey` varchar(255) NOT NULL,
   `admin` varchar(255) NOT NULL,
@@ -545,93 +506,7 @@ CREATE TABLE IF NOT EXISTS `pz_wiki` (
 
 -- --------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `pz_wiki_history`
---
-
-CREATE TABLE IF NOT EXISTS `pz_wiki_history` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `wiki_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `stamp` varchar(255) NOT NULL,
-  `mode` text NOT NULL,
-  `data` text NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-
-
-
-
-
-
--- --------------------------------------------------------
-
---
--- Dummydatensaetze
---
-
-INSERT INTO `pz_user` (`id`, `name`, `status`, `role`, `login`, `password`, `digest`, `login_tries`, `lasttrydate`, `session_id`, `cookiekey`, `admin`, `image_inline`, `image`, `created`, `updated`, `address_id`, `email`, `account_id`) VALUES
-(1, 'admin', 1, 0, 'admin', 'admin', 'b6660eaed16bbc782ab8a1ce76aabb1d', 0, 1323940123, '97f8218f54b6190a83748796b1eb957c', '', '1', '', '1', '2011-11-02 17:54:56', '2011-12-11 21:17:14', 0, 'info@yakamara.de', 5);
-
-INSERT INTO `pz_customer` (`id`, `name`, `created`, `status`, `description`, `archived`, `updated`, `image_inline`, `image`) VALUES
-(1, 'Yakamara Media', '2011-04-02 12:35:43', 1, 'Yakamara Media GmbH & Co. KG', '', '', '', '');
-
-INSERT INTO `pz_label` (`id`, `color`, `border`, `name`, `created`, `updated`) VALUES
-(1, '#fcb819', '#e3a617', 'Support', '', ''),
-(2, '#e118fc', '#cb17e3', 'Kundenprojekte', '', ''),
-(3, '#119194', '#0d797a', 'Private Projekte', '', ''),
-(4, '#678820', '#536e1a', 'Öffentliche Projekte', '', ''),
-(5, '#0f5dca', '#0c52b3', 'Agenturprojekte', '', ''),
-(6, '#aa6600', '#950c00', 'Interne Projekte', '', '');
-
-
-
-
-
--- -------------------------------------------------------- alpha 15
-
-ALTER TABLE `pz_address` ADD `responsible_user_id` INT NOT NULL AFTER `updated_user_id` ;
-ALTER TABLE `pz_user` ADD `last_login` VARCHAR( 255 ) NOT NULL AFTER `lasttrydate` ;
-ALTER TABLE `pz_project_file` ADD `filesize` INT NOT NULL AFTER `filename` , ADD `mimetype` VARCHAR( 255 ) NOT NULL AFTER `filesize` ;
-
-CREATE TABLE IF NOT EXISTS `pz_project_history` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `project_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `data` text NOT NULL,
-  `stamp` datetime NOT NULL,
-  `mode` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
-
-CREATE TABLE IF NOT EXISTS `pz_user_history` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `history_user_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `data` text NOT NULL,
-  `stamp` datetime NOT NULL,
-  `mode` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
-
-ALTER TABLE `pz_calendar_history` CHANGE `mode` `mode` ENUM( 'create', 'update', 'delete' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
-
-UPDATE `pz_calendar_history` SET MODE = "create" WHERE MODE = "";
-
-
-
-
-
-
 -- -------------------------------------------------------- alpha 17
-
-ALTER TABLE `pz_calendar_history` ADD `project_id` INT NOT NULL ;
-ALTER TABLE `pz_project_file_history` ADD `project_id` INT NOT NULL ;
-
-ALTER TABLE `pz_wiki_history` CHANGE `mode` `mode` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
-ALTER TABLE `pz_calendar_history` CHANGE `mode` `mode` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
-ALTER TABLE `pz_address_history` CHANGE `mode` `mode` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
 
 CREATE TABLE IF NOT EXISTS `pz_history` (
 `id` int( 11 ) NOT NULL AUTO_INCREMENT ,
@@ -646,21 +521,3 @@ CREATE TABLE IF NOT EXISTS `pz_history` (
 PRIMARY KEY ( `id` )
 ) ENGINE = MYISAM DEFAULT CHARSET = utf8;
 
-ALTER TABLE `pz_project_user` ADD `calendar_jobs` TINYINT NOT NULL AFTER `calendar` ;
-ALTER TABLE `pz_project_user` CHANGE `calendar` `calendar` TINYINT NOT NULL ;
-ALTER TABLE `pz_project_user` CHANGE `wiki` `wiki` TINYINT NOT NULL ;
-ALTER TABLE `pz_project_user` CHANGE `admin` `admin` TINYINT NOT NULL ;
-ALTER TABLE `pz_project_user` CHANGE `webdav` `webdav` TINYINT NOT NULL ;
-ALTER TABLE `pz_project_user` CHANGE `caldav` `caldav` TINYINT NOT NULL ;
-ALTER TABLE `pz_project_user` CHANGE `caldav_jobs` `caldav_jobs` TINYINT NOT NULL ;
-ALTER TABLE `pz_project_user` CHANGE `files` `files` TINYINT NOT NULL ;
-ALTER TABLE `pz_project_user` CHANGE `emails` `emails` TINYINT NOT NULL;
-
-DROP TABLE `pz_address_history`;
-DROP TABLE `pz_calendar_history`;
-DROP TABLE `pz_wiki_history`;
-DROP TABLE `pz_project_file_history`;
-DROP TABLE `pz_project_history`;
-DROP TABLE `pz_user_history`;
-
-ALTER TABLE `pz_project` ADD `has_calendar_jobs` TINYINT NOT NULL AFTER `has_calendar` ;

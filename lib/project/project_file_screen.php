@@ -90,7 +90,7 @@ class pz_project_file_screen
   
 
 
-	function getIntoFolderLink($file_id, $p)
+	static function getIntoFolderLink($file_id, $p)
 	{
 		$p["linkvars"]["file_id"] = $file_id;
 		
@@ -100,7 +100,7 @@ class pz_project_file_screen
 		return "javascript:$('.section1 select[name=parent_id]').each(function(i,e){ $(this).val('".$file_id."').trigger('liszt:updated'); });pz_loadPage('".$p["layer_list"]."','".pz::url($p["mediaview"],$p["controll"],$p["function"],array_merge($p["linkvars"]))."')";
 	}
 
-	function getPathView($category, $p = array()) 
+	static function getPathView($category, $p = array()) 
 	{
 		$content = '';
 		$first = ' first';
@@ -137,7 +137,7 @@ class pz_project_file_screen
 
 	}
 
-	function getFilesListView($category, $files, $p = array(), $orders = array()) 
+	static function getFilesListView($category, $files, $p = array(), $orders = array()) 
 	{
 		$content = "";
 		$first = " first";
@@ -175,11 +175,6 @@ class pz_project_file_screen
 		return '<div id="project_files_list" class="design2col">'.$f->parse('pz_screen_list.tpl').'</div>';
 
 	}
-
-
-
-
-
 
   public function getClipboardFilesListView($category, $files, $p = array(), $orders = array()) 
 	{

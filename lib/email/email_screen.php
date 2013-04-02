@@ -1091,11 +1091,9 @@ class pz_email_screen{
   }
 
 
-
-	public function prepareOutput($text, $specialchars = TRUE) 
+	static function prepareOutput($text, $specialchars = TRUE) 
 	{
 	  return pz_screen::prepareOutput($text, $specialchars);
-
 	}
 	
 }

@@ -9,7 +9,7 @@ class pz_customers_screen {
 		$this->customers = $customers;
 	}
 
-	function getCustomersSearchForm ($p = array())
+	static function getCustomersSearchForm ($p = array())
 	{
 	    $return = '
 	        <header>

@@ -132,7 +132,7 @@ class pz_label_screen{
 	}
 
 
-	function getAddForm($p = array()) 
+	static function getAddForm($p = array()) 
 	{
 		$header = '
 	        <header>

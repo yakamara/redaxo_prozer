@@ -260,27 +260,6 @@ ul.pagination li.next a.page span.inner {
   display: inline-block;
 }
 
-.calendar.view-overview header ul.pagination li.prev, 
-.calendar.view-overview header ul.pagination li.next, 
-.calendar.view-flyout header ul.pagination li.prev, 
-.calendar.view-flyout header ul.pagination li.next {
-  position: absolute;
-  top: 0;
-  margin-right: 0px;
-}
-.calendar.view-overview header ul.pagination li.prev {
-  left: 15px;
-}
-.calendar.view-overview header ul.pagination li.next {
-  right: 15px;
-}
-.calendar.view-flyout header ul.pagination li.prev {
-  left: 6px;
-}
-.calendar.view-flyout header ul.pagination li.next {
-  right: 6px;
-}
-
 
 
 

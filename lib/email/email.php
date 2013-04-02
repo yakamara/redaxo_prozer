@@ -39,7 +39,7 @@ class pz_email extends pz_model{
 	}
 
 
-	function get($email_id = "")
+	static function get($email_id = "")
 	{
 		if($email_id == "") return FALSE;
 		$email_sql = rex_sql::factory();

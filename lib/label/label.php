@@ -19,9 +19,8 @@ class pz_label extends pz_model{
 		$id = (int) $id;
 
 		$sql = rex_sql::factory();
-		$sql->setQuery('select * from pz_label where id = '.$id).' LIMIT 2';
+		$labels = $sql->getArray('select * from pz_label where id = ? LIMIT 2', array($id));
 
-		$labels = $sql->getArray();
 		if(count($labels) != 1) return FALSE;
 
 		return new static($labels[0]);

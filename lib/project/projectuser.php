@@ -19,7 +19,7 @@ class pz_projectuser extends pz_model
     return false;
   }
 
-  public function get($user, $project)
+  static function get($user, $project)
   {
     $s = rex_sql::factory();
     // $s->debugsql = 1;

@@ -131,7 +131,7 @@ class pz_project_root_directory extends pz_project_directory
       $paths[$p["id"]] = array("id" => $p["id"], "name" => $p["name"], "parent_id" => $p["parent_id"]);
     }
     $array = array();
-    $func = function($id, $path) use(&$paths, &$func, &$array, $rt) {
+    $func = function($id, $path) use(&$paths, &$func, &$array) {
       $array[] = array('id' => $id, 'label' => $path);
       $rows = array();
       foreach($paths as $p) {

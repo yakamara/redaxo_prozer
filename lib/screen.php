@@ -14,7 +14,13 @@ class pz_screen
 
 	static function getPageTitle() 
 	{
-		return 'PROZER 2.0';	
+	  $package = rex_package::get("prozer");
+
+	  $page_title = pz::getProperty("page_title");
+	  if($page_title != "") {
+	    return $page_title.' - PROZER '.$package->getVersion();
+	  }
+		return 'PROZER '.$package->getVersion();
 	}
 
 	static function getHeader($p = array()) 
@@ -127,7 +133,7 @@ class pz_screen
 		return '<div class="tooltip">'.$html.'<span class="tooltip"><span class="inner">'.$tooltip.'</span></span></div>';	
 	}
 
-  public function prepareOutput($text, $specialchars = TRUE) 
+  static public function prepareOutput($text, $specialchars = TRUE) 
   {
 		$text = pz_screen::setLinks($text);
 		if($specialchars)
@@ -136,7 +142,7 @@ class pz_screen
 		return $text;
 	}
   
-	public function setLinks($text) 
+	static public function setLinks($text) 
 	{
 		$urlsuch[]="/([^]_a-z0-9-=\"'\/])((https?|ftp):\/\/|www\.)([^ \r\n\(\)\^\$!`\"'\|\[\]\{\}<>]*)/si";
 		$urlsuch[]="/^((https?|ftp):\/\/|www\.)([^ \r\n\(\)\^\$!`\"'\|\[\]\{\}<>]*)/si";
@@ -157,7 +163,7 @@ class pz_screen
 		return $text;
 	}
 
-	public function replaceLinks($text) 
+	static function replaceLinks($text) 
 	{
 		$text = preg_replace("/\[URL\]www.(.*?)\[\/URL\]/si", "<a target=\"_blank\" href=\"http://www.\\1\">www.\\1</a>", $text);
 		$text = preg_replace("/\[URL\](.*?)\[\/URL\]/si", "<a target=\"_blank\" href=\"\\1\">\\1</a>", $text);

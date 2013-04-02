@@ -79,7 +79,7 @@ class pz_project_sub_screen{
 	}
 
 
-	function getEditForm($p = array()) 
+	public function getEditForm($p = array()) 
 	{
 	
 		$header = '
@@ -139,7 +139,7 @@ class pz_project_sub_screen{
 	}
 
 
-	function getAddForm($p = array(), $project) 
+	static function getAddForm($p = array(), $project) 
 	{
 		$header = '
 	        <header>

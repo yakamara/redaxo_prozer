@@ -58,7 +58,7 @@ class rex_xform_value_pz_select_screen extends rex_xform_value_abstract
 
 
 		foreach($options as $e) {
-			$SEL->addOption(rex_i18n::translate($e["label"],null,false), $e["id"]);
+			$SEL->addOption(rex_i18n::translate($e["label"],null), $e["id"]);
 		}    	
 
 

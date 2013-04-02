@@ -813,3 +813,10 @@ has_attachments = Dateien hängen an
 has_not_attachments = Keine Dateien hängen an
 
 no_results_text = Keine Ergebnisse für
+
+
+
+system_edit = Systemdaten ändern
+page_title = Bezeichnung (Title)
+system_info_updated = Systemdaten wurden aktualisiert
+

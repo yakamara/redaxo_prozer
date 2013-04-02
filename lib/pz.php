@@ -5,7 +5,6 @@ class pz {
 	static $login_user = NULL;
 	static $user = NULL;
 	static $users = NULL;
-	static $properties = array();
 	static $mediaviews = array('screen', 'calcarddav', 'caldav', 'webdav', 'carddav', 'api'); // 'mobile'
 	static $mediaview = 'screen';
 
@@ -261,7 +260,7 @@ class pz {
 		return implode(",",$return);
 	}
 
-  public function getUsersAsArray($users = NULL) 
+  static public function getUsersAsArray($users = NULL) 
   {
     if(!$users)		
       $users = pz::getUsers();
@@ -285,14 +284,14 @@ class pz {
 
 	// ------ props
 
-	static function getProperty($prop)
+	static function setProperty($key, $value = null)
 	{
-		return static::$properties[$prop];
+	  return rex_config::set("prozer", $key, $value);
 	}
 
-	static function setProperty($prop,$value)
+	static function getProperty($key)
 	{
-		pz::$properties[$prop] = $value;
+	  return rex_config::get("prozer", $key, "");
 	}
 
   static function getServer()

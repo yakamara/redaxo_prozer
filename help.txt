@@ -1,4 +1,17 @@
 
+____________ 2.0 beta6
+
+* Bugs
+** Anpassungen zu aktuellster REDAXO 5 Version. boot.php, install.php diverse EP Aufrufe ...
+** -> Anpassungen für PHP 5.4 .. Strict Meldungen entfernt
+** htaccess ersetzung angepasst
+** Wenn User erstellt wurde war das Passwort noch falsch gehasht
+
+* System
+** Prozer Title kann nun vergeben werden
+** WebDAV Hinweis. Wenn fastcgi und nicht mod_php installiert, dann geht WebDAV nur eingeschränkt
+
+
 ____________ 2.0 beta5
 
 * Bugs
@@ -6,6 +19,7 @@ ____________ 2.0 beta5
 ** Darstellung der Stunden bei Stunden über mehrere Tage war falsch
 ** Beim Erstellen eines Labels wurde das Label CSS nicht erstellt
 ** Attachmenticon taucht wieder in den E-Mail-Listen auf.
+** package name ergänzt
 
 * Performance
 ** Projektdateien/Ordner auflisten geht nun schneller: pz_project_root_directory::getAllPaths

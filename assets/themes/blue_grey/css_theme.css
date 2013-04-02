@@ -924,12 +924,10 @@ ul.actions li.action a.down:hover {
   background-position: -56px -16px;
 }
 
-.email .email-hasattachments .preview {
+.email.email-hasattachments section.preview {
 padding-left:17px;
 background:url(ic_file_15.png) 0 50% no-repeat;
 }
-
-
 
 .email a.add {
   background-image: url(ic_plus_011_012.png);
@@ -1719,7 +1717,39 @@ clear:both;
 .calendar.view-overview header, 
 .calendar.view-flyout header {
   background-color: #d8d8d8;
+  padding: 0px;
 }
+.calendar.view-overview div.column.first h2.hl3 {
+  padding-left: 50px;
+  text-align: left;
+}
+.calendar.view-overview div.column.last h2.hl3 {
+  padding-right: 50px;
+  text-align: right;
+}
+
+.calendar.view-overview header ul.pagination li.prev, 
+.calendar.view-overview header ul.pagination li.next, 
+.calendar.view-flyout header ul.pagination li.prev, 
+.calendar.view-flyout header ul.pagination li.next {
+  position: absolute;
+  top: 0;
+  margin-right: 0px;
+}
+.calendar.view-overview header ul.pagination li.prev {
+  left: 12px;
+}
+.calendar.view-overview header ul.pagination li.next {
+  right: 12px;
+}
+.calendar.view-flyout header ul.pagination li.prev {
+  left: 6px;
+}
+.calendar.view-flyout header ul.pagination li.next {
+  right: 6px;
+}
+
+
 .calendar table.overview th, 
 .calendar table.overview td.calendarweek {
   background-color: #dedede;

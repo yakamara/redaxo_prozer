@@ -4,7 +4,6 @@ class pz_clipboard
 {
 
   static $clipboards = array();
-  static $user = NULL;
   
   static function get( $user_id = 0 )
   {

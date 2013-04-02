@@ -63,7 +63,7 @@ class pz_history_screen
 
 	// --------------------------------------------------------------- Listviews
 
-	function getListView($entries, $p = array()) 
+	static function getListView($entries, $p = array()) 
 	{
 
 	  $paginate_screen = new pz_paginate_screen($entries);

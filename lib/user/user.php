@@ -135,7 +135,7 @@ class pz_user extends rex_user
 
   // ----------------- Date
 
-  public function getDateTime($datetime = NULL)
+  static function getDateTime($datetime = NULL)
   {
     // TODO: Userspecifix Timezone
     // current default: Europe/Berlin
@@ -168,7 +168,13 @@ class pz_user extends rex_user
     $data = array();
     $data["REMOTE_ADDR"] = $_SERVER["REMOTE_ADDR"];
     $data["QUERY_STRING"] = $_SERVER["QUERY_STRING"];
-    $data["SCRIPT_URI"] = $_SERVER["SCRIPT_URI"];
+    
+    $data["SCRIPT_URI"] = "";
+    if(isset($_SERVER["SCRIPT_URI"])) {
+      $data["SCRIPT_URI"] = $_SERVER["SCRIPT_URI"];
+    } else if (isset($_SERVER["SCRIPT_URI"])) {
+      $data["SCRIPT_URI"] = $_SERVER["REQUEST_URI"];
+    }
 
     switch($mode)
     {

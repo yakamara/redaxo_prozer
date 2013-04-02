@@ -309,7 +309,12 @@ class pz_clip extends pz_model
       $data = $this->vars;
       $data["REMOTE_ADDR"] = $_SERVER["REMOTE_ADDR"];
       $data["QUERY_STRING"] = $_SERVER["QUERY_STRING"];
-      $data["SCRIPT_URI"] = $_SERVER["SCRIPT_URI"];
+      $data["SCRIPT_URI"] = "";
+      if(isset($_SERVER["SCRIPT_URI"])) {
+        $data["SCRIPT_URI"] = $_SERVER["SCRIPT_URI"];
+      } else if (isset($_SERVER["SCRIPT_URI"])) {
+        $data["SCRIPT_URI"] = $_SERVER["REQUEST_URI"];
+      }
       $sql->setValue('data', json_encode($data));
     }
     $sql->insert();

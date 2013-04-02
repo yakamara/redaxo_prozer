@@ -14,7 +14,7 @@ class pz_api_controller extends pz_controller
 
    	$pz_login = new pz_login;
    	$pz_login->setSystemId('pz_api_'. rex::getProperty('instname'));
-		$pz_login->setLogin($login, $apikey);
+		$pz_login->setLogin($login, $digest);
   	// $pz_login->checkLogin();
 
     $check_query = rex_sql::factory();

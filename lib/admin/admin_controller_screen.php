@@ -324,6 +324,18 @@ class pz_admin_controller_screen extends pz_admin_controller {
 			case("show_phpinfo"):
 				phpinfo();
 				exit;
+			case("edit_system"):
+			  return $this->getSystemEditPage($p);
+			  break;
+		}
+		
+		ob_start();
+    phpinfo();
+		$phpinfo = ob_get_contents();
+		ob_end_clean();
+		$webdav = "WebDAV works";
+		if(preg_match('/fcgi/', $phpinfo) || !preg_match('/mod_php/', $phpinfo)) {
+		  $webdav = "WebDAV won`t work. Please deactivate FastCGI (fcgi) and use mod_php.";
 		}
 		
 		$section_1 = '			
@@ -346,6 +358,8 @@ class pz_admin_controller_screen extends pz_admin_controller {
 					
     					<!-- check .. mbstring.func_overload -- must be 0 -->
     					<!-- fastcgi inactive und mod_php active - then web dav works well -->
+		
+		          <br /><br />'.$webdav.'
 		
 		          <br /><br />API: Download all emails (every 15 Minutes): 
 		          <br /> http://'.rex::getProperty('server').'/api/emails/download_all/?login=ADMINLOGIN&apitoken=APITOKEN		          
@@ -370,14 +384,8 @@ class pz_admin_controller_screen extends pz_admin_controller {
         	</div>
 			';
 			
-		$section_2 = '';
+		$section_2 = $this->getSystemEditPage($p);
 		
-		/* TODO:
-		  - Anfangsbild setzen können
-			- Anfangstext setzen können
-			- Firmenlogo setzen können
-		*/
-
 		$p = array();
 		$f = new rex_fragment();
 		$f->setVar('header', pz_screen::getHeader(), false);
@@ -390,7 +398,43 @@ class pz_admin_controller_screen extends pz_admin_controller {
 	}
 
 
+	public function getSystemEditPage($p) {
+  
+		/* TODO:
+		  - Anfangsbild setzen können
+			- Anfangstext setzen können
+			- Firmenlogo setzen können
+		*/
+		
+    $header = '
+        <header>
+          <div class="header">
+            <h1 class="hl1">'.rex_i18n::msg("system_edit").'</h1>
+          </div>
+        </header>';
+    
+		$xform = new rex_xform;
+		$xform->setObjectparams("form_action", "javascript:pz_loadFormPage('system_edit','system_edit_form','".pz::url($p["mediaview"],"admin",$p["function"],array("mode"=>'edit_system'))."')");
+		$xform->setObjectparams("form_id", "system_edit_form");
+		$xform->setObjectparams('form_showformafterupdate',1);
+		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
+		$xform->setValueField("text",array("system_page_title",rex_i18n::msg("page_title"),pz::getProperty("page_title")));
+		// $xform->setValueField("pz_select_screen",array("account_id",rex_i18n::msg("default_email_account"),pz::getUser()->getEmailaccountsAsString(),"","",0));
+		$return = $xform->getForm();
+
+		if($xform->getObjectparams("actions_executed")) {
+		
+		  pz::setProperty("page_title", $xform->objparams["value_pool"]["email"]["system_page_title"]);
+			$return = $header.'<p class="xform-info">'.rex_i18n::msg("system_info_updated").'</p>'.$return;
+
+		}else {
+			$return = $header.$return;	
+		}
+		$return = '<div id="user_form"><div id="system_edit" class="design1col xform-edit">'.$return.'</div></div>';
+
+		return $return;	
 	
+  }
 
 
 
@@ -466,5 +510,17 @@ class pz_admin_controller_screen extends pz_admin_controller {
 		// $f->setVar('section_3', $section_3 , false);
 		return $f->parse('pz_screen_main.tpl');
 	}
+
+
+  
+
+
+
+
+
+
+
+
+
 
 }

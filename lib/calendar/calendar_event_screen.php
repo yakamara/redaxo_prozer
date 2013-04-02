@@ -1980,7 +1980,7 @@ class pz_calendar_event_screen{
 
 
 
-  public function getCustomerplanAllviewslistView($customer, $customers, $projects, $events, $p, $start, $end)
+  static function getCustomerplanAllviewslistView($customer, $customers, $projects, $events, $p, $start, $end)
   {
   
     $diff = $start->diff($end);
