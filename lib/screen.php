@@ -50,6 +50,29 @@ class pz_screen
 		return $fragment->parse('pz_screen_header.tpl');
 	}
 
+  static function getTheme() {
+    $theme = pz::getConfig("page_theme");
+    if($theme == "") {
+      $themes = pz_screen::getThemes();
+      $theme = key($themes);
+    }
+    return $theme;
+  }
+
+  static function getThemes() {
+    $themes = array(
+      'blue_grey' => '/assets/addons/prozer/themes/blue_grey', 
+      'magneto_dark' => '/assets/addons/prozer/themes/magneto_dark'
+    );
+    
+    $themes = rex_extension::registerPoint(
+      new rex_extension_point('PROZER_THEMES', $themes, array() )
+    );
+    
+    return $themes;
+  }
+
+
 	static function getMainNavigation($p = array()) 
 	{
 	

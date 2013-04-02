@@ -419,12 +419,19 @@ class pz_admin_controller_screen extends pz_admin_controller {
 		$xform->setObjectparams('form_showformafterupdate',1);
 		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
 		$xform->setValueField("text",array("system_page_title",rex_i18n::msg("page_title"),pz::getConfig("page_title")));
-		// $xform->setValueField("pz_select_screen",array("account_id",rex_i18n::msg("default_email_account"),pz::getUser()->getEmailaccountsAsString(),"","",0));
+		
+		$themes = array();
+		foreach(pz_screen::getThemes() as $theme => $path) { $themes[] = $theme; }
+		
+		$xform->setValueField("pz_select_screen",array("system_page_theme",rex_i18n::msg("page_theme"),implode(",",$themes),"",pz_screen::getTheme(),0));
+
 		$return = $xform->getForm();
 
 		if($xform->getObjectparams("actions_executed")) {
 		
 		  pz::setConfig("page_title", $xform->objparams["value_pool"]["email"]["system_page_title"]);
+		  pz::setConfig("page_theme", $xform->objparams["value_pool"]["email"]["system_page_theme"]);
+		  
 			$return = $header.'<p class="xform-info">'.rex_i18n::msg("system_info_updated").'</p>'.$return;
 
 		}else {

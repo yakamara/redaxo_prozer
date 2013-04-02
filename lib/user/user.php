@@ -331,6 +331,11 @@ class pz_user extends rex_user
 		return $startpage;
 	}
 
+  public function getTheme()
+  {
+    return pz_screen::getTheme();
+  }
+
 
   // -------------------------------------------------------------------- Customers
 

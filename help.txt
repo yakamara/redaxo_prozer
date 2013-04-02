@@ -1,4 +1,11 @@
 
+____________ 2.0 beta7
+
+* Themes eingeführt
+** Änderbar über SystemEditPage
+** EP mit "PROZER_THEMES" ergänzt. Eigene Themes sind möglich. Auch auf anderen Domains.
+
+
 ____________ 2.0 beta6
 
 * Bugs

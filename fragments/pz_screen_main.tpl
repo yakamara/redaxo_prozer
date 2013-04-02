@@ -1,19 +1,30 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-	<title><?php echo pz_screen::getPageTitle(); ?></title>
+	<title><?php echo htmlspecialchars(pz_screen::getPageTitle()); ?></title>
 	<meta charset="utf-8">
 	<base href="<?php echo pz::getServerUrl(); ?>/" />
-	<link rel="stylesheet" type="text/css" href="/assets/addons/prozer/fonts/css_fonts.css" media="screen" />
+	<?php 
+
+	if(pz::getUser()) {
+	  $theme = pz::getUser()->getTheme();
+	} else {
+	  $theme = pz_screen::getTheme();
+	}
+	
+	$themes = pz_screen::getThemes();
+	$themepath = $themes[$theme];
+	
+?><link rel="stylesheet" type="text/css" href="/assets/addons/prozer/fonts/css_fonts.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="/assets/addons/prozer/css/css_import.css" media="screen" />
-	<link rel="stylesheet" type="text/css" href="/assets/addons/prozer/themes/blue_grey/css_theme.css" media="screen" />
+	<link rel="stylesheet" type="text/css" href="<?php echo $themepath; ?>/css_theme.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="/assets/addons/prozer/css/fileuploader.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="/assets/addons/prozer/labels_screen.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="/assets/addons/prozer/css/jquery_ui.css" media="screen" />
-  <link rel="shortcut icon" type="image/x-icon" href="/assets/addons/prozer/themes/blue_grey/faviconn.ico" />
+  <link rel="shortcut icon" type="image/x-icon" href="<?php echo $themepath; ?>/faviconn.ico" />
 	
   <!--[if IE]>
-    <link rel="stylesheet" type="text/css" href="/assets/addons/prozer/themes/blue_grey/css_ie.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $themepath; ?>/css_ie.css" media="screen" />
 	<![endif]-->
 	
 	<script type="text/javascript" src="/assets/addons/prozer/js/jquery.min.js"></script>
