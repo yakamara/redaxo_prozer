@@ -144,7 +144,7 @@ class pz_calendar_event extends pz_calendar_item
   {
     return $this->getValue('booked');
   }
-  
+
   public function isBooked()
   {
     return $this->isJob();
@@ -492,14 +492,14 @@ class pz_calendar_event extends pz_calendar_item
     }
 
     if (!$onlyJobs && $from) {
-    
+
       $rules = pz_calendar_rule::getAll($projects);
       foreach ($rules as $rule) {
 
         // $events = array_merge($events, pz_calendar_rule_event::getAll($rule, $from, $to));
-        $rule_events = pz_calendar_rule_event::getAll($rule, $from, $to);
+        $rule_events = pz_calendar_rule_event::getAllRuleEvents($rule, $from, $to);
         $events = $events + $rule_events;
-        
+
       }
 
       // self::sort($events);

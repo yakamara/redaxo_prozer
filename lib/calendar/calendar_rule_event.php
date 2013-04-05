@@ -326,7 +326,7 @@ class pz_calendar_rule_event extends pz_calendar_event
     return new self($rule, $params, $exception);
   }
 
-  static public function getAll($rule, DateTime $from, DateTime $to = null)
+  static public function getAllRuleEvents($rule, DateTime $from, DateTime $to = null)
   {
     $from->setTime(0, 0);
     $to = $to ?: clone $from;
