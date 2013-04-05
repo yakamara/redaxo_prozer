@@ -45,18 +45,9 @@ if($c->getRows() == 0) {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+// create WebDAV tmp Ordner
+$dav_path = rex_path::addonData("prozer", "dav");
+rex_dir::create($dav_path);
 
 
 

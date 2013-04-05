@@ -334,9 +334,12 @@ class pz_admin_controller_screen extends pz_admin_controller {
 		$phpinfo = ob_get_contents();
 		ob_end_clean();
 		$webdav = "WebDAV works";
+	  $dav_path = rex_path::addonData("prozer", "dav");
+    rex_dir::create($dav_path);
 		if(preg_match('/fcgi/', $phpinfo) || !preg_match('/mod_php/', $phpinfo)) {
 		  $webdav = "WebDAV won`t work. Please deactivate FastCGI (fcgi) and use mod_php.";
 		}
+
 		
 		$section_1 = '			
 			<div id="server_info">
