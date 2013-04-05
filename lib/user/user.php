@@ -670,19 +670,21 @@ class pz_user extends rex_user
     $nfilter = array();
   	foreach($filter as $f)
   	{
-  		switch($f["field"]) {
-  	  		case("id"):
-  	  		case("name"):
-  	  		case("archived"):
-  	  		case("customer_id"):
-  	  		case("has_calendar"):
-  	  		case("has_calendar_jobs"):
-  	  		case("has_files"):
-  	  		case("has_emails"):
-  	  		case("label_id"):
-  	  			$f["field"] = "p.".$f["field"];
-  	  			$nfilter[] = $f;
-  	  			break;
+  	  if(isset($f["field"])) {
+    		switch($f["field"]) {
+    	  		case("id"):
+    	  		case("name"):
+    	  		case("archived"):
+    	  		case("customer_id"):
+    	  		case("has_calendar"):
+    	  		case("has_calendar_jobs"):
+    	  		case("has_files"):
+    	  		case("has_emails"):
+    	  		case("label_id"):
+    	  			$f["field"] = "p.".$f["field"];
+    	  			$nfilter[] = $f;
+    	  			break;
+    		}
   		}
   	}
 
