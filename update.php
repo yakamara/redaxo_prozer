@@ -8,7 +8,7 @@ $version = $this->getVersion();
 
 // ------------------------------------------------- alpha5
 
-if(version_compare($version, '2.0 alpha5', '<'))
+if(rex_string::versionCompare($version, '2.0 alpha5', '<'))
 {
 
 	// user profile
@@ -25,7 +25,7 @@ if(version_compare($version, '2.0 alpha5', '<'))
 
 // ------------------------------------------------- alpha7
 
-if(version_compare($version, '2.0 alpha7', '<'))
+if(rex_string::versionCompare($version, '2.0 alpha7', '<'))
 {
 
 	// clipboard
@@ -36,7 +36,7 @@ if(version_compare($version, '2.0 alpha7', '<'))
 
 // ------------------------------------------------- alpha8
 
-if(version_compare($version, '2.0 alpha8', '<'))
+if(rex_string::versionCompare($version, '2.0 alpha8', '<'))
 {
 	rex_sql::factory()->setQuery('ALTER TABLE `pz_user` ADD `comment` TEXT NOT NULL;',array());
 
@@ -44,7 +44,7 @@ if(version_compare($version, '2.0 alpha8', '<'))
 
 // ------------------------------------------------- alpha10
 
-if(version_compare($version, '2.0 alpha10', '<'))
+if(rex_string::versionCompare($version, '2.0 alpha10', '<'))
 {
     $sql = rex_sql::factory();
 
@@ -122,7 +122,7 @@ if(version_compare($version, '2.0 alpha10', '<'))
 
 // ------------------------------------------------- alpha12
 
-if(version_compare($version, '2.0 alpha12', '<'))
+if(rex_string::versionCompare($version, '2.0 alpha12', '<'))
 {
 
 	$sql = rex_sql::factory();
@@ -137,7 +137,7 @@ if(version_compare($version, '2.0 alpha12', '<'))
 
 // ------------------------------------------------- alpha13
 
-if(version_compare($version, '2.0 alpha13', '<'))
+if(rex_string::versionCompare($version, '2.0 alpha13', '<'))
 {
   $sql = rex_sql::factory();
   $sql->setQuery('ALTER TABLE `pz_email_account` CHANGE `last_login` `last_login` DATETIME NOT NULL;');
@@ -160,7 +160,7 @@ if(version_compare($version, '2.0 alpha13', '<'))
 
 // ------------------------------------------------- alpha14
 
-if(version_compare($version, '2.0 alpha14', '<'))
+if(rex_string::versionCompare($version, '2.0 alpha14', '<'))
 {
   $sql = rex_sql::factory();
   $sql->setQuery('CREATE TABLE IF NOT EXISTS `pz_project_sub` (
@@ -232,7 +232,7 @@ if(version_compare($version, '2.0 alpha14', '<'))
 
 // ------------------------------------------------- alpha15
 
-if(version_compare($version, '2.0 alpha15', '<'))
+if(rex_string::versionCompare($version, '2.0 alpha15', '<'))
 {
   $sql = rex_sql::factory();
   $sql->setQuery('ALTER TABLE `pz_address` ADD `responsible_user_id` INT NOT NULL AFTER `updated_user_id` ;');
@@ -272,7 +272,7 @@ if(version_compare($version, '2.0 alpha15', '<'))
 
 // ------------------------------------------------- alpha17
 
-if(version_compare($version, '2.0 alpha17', '<'))
+if(rex_string::versionCompare($version, '2.0 alpha17', '<'))
 {
   $sql = rex_sql::factory();
   $sql->setQuery('ALTER TABLE `pz_calendar_history` ADD `project_id` INT NOT NULL ;');
@@ -321,7 +321,7 @@ PRIMARY KEY ( `id` )
 
 // ------------------------------------------------- beta5
 
-if(version_compare($version, '2.0 beta5', '<'))
+if(rex_string::versionCompare($version, '2.0 beta5', '<'))
 {
   $sql = rex_sql::factory();
 
