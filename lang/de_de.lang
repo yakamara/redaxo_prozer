@@ -7,7 +7,7 @@ format_time = H:i
 format_datetime = d.m.Y H:i:s
 
 format_ddmy = l d. F Y
-format_d_month = d. m
+format_d_month = d.m
 format_month_y = m Y
 format_d_m_y = d.m.Y
 format_d_m_y_h_i = d.m.Y - H:i
