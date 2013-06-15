@@ -641,6 +641,10 @@ class pz {
 
 	}
 
+  static function strftime($f, $t) {
+    return utf8_encode(strftime($f, $t));
+  }
+
 	static function getIniGetInBytes($val)
   {
     if(empty($val)) return 0;
