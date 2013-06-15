@@ -196,7 +196,12 @@ class pz_calendar_event extends pz_calendar_item
 
   public function isDay(DateTime $day)
   {
-
+    $interval = new DateInterval('P1D');
+    $daterange = new DatePeriod($this->getFrom(), $interval ,$this->getTo());
+    foreach($daterange as $date){
+      if($date->format("Ymd") == $day->format("Ymd")) return true;
+    }
+    return false;
   }
 
   // ---------------------------

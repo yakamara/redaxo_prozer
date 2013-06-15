@@ -4,9 +4,9 @@ class pz_calendars_controller_screen extends pz_calendars_controller {
 
 	var $name = "calendars";
 	var $function = "";
-	var $functions = array("day",  "customerplan", "event"); // ,"week""projectevent", "projectjob", "usertime", "projectjob", "list", "month",, 
+	var $functions = array("day",  "week", "customerplan", "event"); // ,"week""projectevent", "projectjob", "usertime", "projectjob", "list", "month",, 
 	var $function_default = "day";
-	var $navigation = array("day",  "customerplan"); // ,"week""projectevent", "projectjob", "week", "usertime", "projectjob","list", "month", "projectjob", 
+	var $navigation = array("day", "week", "customerplan"); // ,"week""projectevent", "projectjob", "week", "usertime", "projectjob","list", "month", "projectjob", 
 
 	function controller($function) {
 
@@ -29,11 +29,11 @@ class pz_calendars_controller_screen extends pz_calendars_controller {
 
 			case("event"):
 				return $this->getEventPage($p);
-/*
   
       case("week"):
 				return $this->getWeekPage($p);
 
+/*
 			case("projectevent"):
 				return $this->getProjecteventPage($p);
 
@@ -200,7 +200,7 @@ class pz_calendars_controller_screen extends pz_calendars_controller {
 				return $return;
 					
 					
-		  case("move_event_by_minutes"):
+		  case("move_event"):
 		    $return = array();
 		    $return["status"] = 0;
 				$calendar_event_id = rex_request("calendar_event_id","string",0);
@@ -218,7 +218,7 @@ class pz_calendars_controller_screen extends pz_calendars_controller {
 		      $return["status"] = 1;
 		      $return["calendar_event_id"] = $event->getId();
 		      $event_screen = new pz_calendar_event_screen($event);
-					$content = $event_screen->getDayEventView($from, $p);
+					$content = $event_screen->getEventView($from, $p);
 					$return["calendar_event_dayview"] = $content;
 				}
         return json_encode($return);;		  
@@ -242,7 +242,7 @@ class pz_calendars_controller_screen extends pz_calendars_controller {
 		      $return["status"] = 1;
 		      $return["calendar_event_id"] = $event->getId();
 		      $event_screen = new pz_calendar_event_screen($event);
-					$content = $event_screen->getDayEventView($from, $p);
+					$content = $event_screen->getEventView($from, $p);
 					$return["calendar_event_dayview"] = $content;
 				}
         return json_encode($return);
@@ -356,6 +356,135 @@ class pz_calendars_controller_screen extends pz_calendars_controller {
 	}
 	
 	
+	public function getWeekPage($p = array())
+	{
+		$p["mediaview"] = "screen";
+		$p["controll"] = "calendars";
+		$p["function"] = "week";
+		$p["layer_list"] = "calendar_events_week_list";
+		$p["layer_search"] = "calendar_events_week_search";
+
+    $days = 14;
+
+		$s1_content = "";
+		$s2_content = "";
+
+		$request_day = rex_request("day","string"); // 20112019 Ymd
+		if(!$day = DateTime::createFromFormat('Ymd', $request_day)) {
+			$day = new DateTime();
+		}
+
+
+		$day->modify('monday this week');
+
+		
+		$day_last = clone $day;
+		$day_last->modify('+'.($days-1).' days');
+		
+		
+		$projects = pz::getUser()->getCalendarProjects();
+		$project_ids = pz_project::getProjectIds($projects);
+	
+		$mode = rex_request("mode","string");
+		switch($mode)
+		{
+			case("search"):
+				$month_firstday = clone $day;
+				$month_firstday->modify("first day of this month");
+				$month_firstday->modify("-".($month_firstday->format("N")-1)." days"); // -kw days
+				$month_lastday = clone $day;
+				$month_lastday->modify("+1 month");
+				$month_lastday->modify("last day of this month");
+				// $events = pz::getUser()->getAllEvents($project_ids, $month_firstday, $month_lastday);
+				$events = pz_calendar_event::getAll($project_ids, $month_firstday, $month_lastday);
+				
+				return pz_calendar_event_screen::getSearch(
+							$project_ids, 
+							$events, 
+							array_merge( $p, array("linkvars" => array( "mode" =>"search", "project_ids" => implode(",",$project_ids) ) ) ), 
+							$day
+						);
+						
+			case("list"):
+				// $events = pz::getUser()->getAllEvents($project_ids, $day, $day_last);
+				$events = pz_calendar_event::getAll($project_ids, $day, $day_last);
+				return pz_calendar_event_screen::getWeekListView(
+					$events,
+					array_merge(
+						$p,
+						array("linkvars" => array(
+							"mode" =>"list",
+							"project_ids" => implode(",",$project_ids),
+							"day" => $day->format('Ymd')
+							) 
+						)
+					),
+					$day
+				);
+
+			case(""):
+
+				$month_firstday = clone $day;
+				$month_firstday->modify("first day of this month");
+				$month_firstday->modify("-".($month_firstday->format("N")-1)." days"); // -kw days
+				$month_lastday = clone $day;
+				$month_lastday->modify("+1 month");
+				$month_lastday->modify("last day of this month");
+				// $events = pz::getUser()->getAllEvents($project_ids, $month_firstday, $month_lastday);
+				$events = pz_calendar_event::getAll($project_ids, $month_firstday, $month_lastday);
+				
+				$s1_content .= pz_calendar_event_screen::getSearch(
+						$project_ids, 
+						$events, 
+						array_merge(
+							$p,
+							array("linkvars" => array(
+								"mode" =>"search",
+								"project_ids" => implode(",",$project_ids),
+								"day" => $day->format('Ymd')
+								) 
+							)
+						), 
+						$day);
+
+				// $events = pz::getUser()->getAllEvents($project_ids, $day, $day_last);
+				$events = pz_calendar_event::getAll($project_ids, $day, $day_last);
+
+				$s2_content = pz_calendar_event_screen::getWeekListView(
+					$events,
+					array_merge(
+						$p,
+						array("linkvars" => array(
+							"mode" =>"list",
+							"project_ids" => implode(",",$project_ids),
+							"day" => $day->format('Ymd')
+							) 
+						)
+					),
+					$day
+				);
+				
+				$attandee_events = pz::getUser()->getAttandeeEvents($day,null,array(pz_calendar_attendee::ACCEPTED, pz_calendar_attendee::TENTATIVE, pz_calendar_attendee::DECLINED));
+				
+				$s1_content .= pz_calendar_event_screen::getAddForm($p);
+				break;
+				
+		}
+
+		$f = new rex_fragment();
+		$f->setVar('header', pz_screen::getHeader($p), false);
+		$f->setVar('function', $this->getNavigation($p), false);
+		$f->setVar('section_1', $s1_content, false);
+		$f->setVar('section_2', $s2_content, false);
+		return $f->parse('pz_screen_main.tpl');
+		
+	}
+	
+	
+	
+	
+	
+	
 	
 	public function getCustomerplanPage($p = array())
 	{
@@ -407,7 +536,7 @@ class pz_calendars_controller_screen extends pz_calendars_controller {
     else
       $customer_id = 0;
 
-		// nur projekte eine bestimmten kunden
+		// nur projekte eines bestimmten kunden
 		
 		$all_calendar_projects = pz::getUser()->getCalendarProjects();
 		$projects = array();
@@ -429,7 +558,8 @@ class pz_calendars_controller_screen extends pz_calendars_controller {
 				$month_lastday = clone $day;
 				$month_lastday->modify("+1 month");
 				$month_lastday->modify("last day of this month");
-				$events = pz::getUser()->getEvents($project_ids, $month_firstday, $month_lastday);
+				// $events = pz::getUser()->getEvents($project_ids, $month_firstday, $month_lastday);
+        $events = pz_calendar_event::getAll($project_ids, $month_firstday, $month_lastday, false );
 				return pz_calendar_event_screen::getSearch(
 							$project_ids, 
 							$events, 
@@ -441,7 +571,9 @@ class pz_calendars_controller_screen extends pz_calendars_controller {
 				);
 				
 			case("list"):
-				$events = pz::getUser()->getEvents($project_ids, $day, $end);
+				// $events = pz::getUser()->getEvents($project_ids, $day, $end);
+        $events = pz_calendar_event::getAll($project_ids, $day, $end, false );
+
 				return pz_calendar_event_screen::getCustomerplanlistView(
 				      $customer,
 				      $customers,
@@ -463,7 +595,9 @@ class pz_calendars_controller_screen extends pz_calendars_controller {
 				$month_lastday = clone $day;
 				$month_lastday->modify("+1 month");
 				$month_lastday->modify("last day of this month");
-				$events = pz::getUser()->getEvents($project_ids, $month_firstday, $month_lastday);
+        // $events = pz::getUser()->getEvents($project_ids, $month_firstday, $month_lastday);
+				$events = pz_calendar_event::getAll($project_ids, $month_firstday, $month_lastday, false );
+				
 				$s1_content .= pz_calendar_event_screen::getSearch(
 							$project_ids, 
 							$events, 
@@ -474,7 +608,9 @@ class pz_calendars_controller_screen extends pz_calendars_controller {
 							$day
 				);
 
-				$events = pz::getUser()->getEvents($project_ids, $day, $end);
+				// $events = pz::getUser()->getEvents($project_ids, $day, $end);
+				$events = pz_calendar_event::getAll($project_ids, $day, $end, false );
+				
 				$s2_content = pz_calendar_event_screen::getCustomerplanListView(
 	    			$customer,
 	    			$customers,
@@ -702,134 +838,7 @@ public function getProjectJobPage($p = array())
 
   // --------------------- SPÄTER
 
-public function getWeekPage($p = array())
-	{
-		$p["mediaview"] = "screen";
-		$p["controll"] = "calendars";
-		$p["function"] = "week";
-		$p["layer_list"] = "calendar_events_week_list";
-		$p["layer_search"] = "calendar_events_week_search";
 
-		$s1_content = "";
-		$s2_content = "";
-
-		$request_day = rex_request("day","string"); // 20112019 Ymd
-		if(!$day = DateTime::createFromFormat('Ymd', $request_day)) {
-			$day = new DateTime();
-		}
-		
-		$day_last = clone $day;
-		$day_last->modify("+7 days");
-		
-		$projects = pz::getUser()->getCalendarProjects();
-		$project_ids = pz_project::getProjectIds($projects);
-	
-		$mode = rex_request("mode","string");
-		switch($mode)
-		{
-			case("add_event"):
-				return pz_calendar_event_screen::getAddForm($p);
-				break;
-			case("search"):
-				$month_firstday = clone $day;
-				$month_firstday->modify("first day of this month");
-				$month_firstday->modify("-".($month_firstday->format("N")-1)." days"); // -kw days
-				$month_lastday = clone $day;
-				$month_lastday->modify("+1 month");
-				$month_lastday->modify("last day of this month");
-				$events = pz::getUser()->getAllEvents($project_ids, $month_firstday, $month_lastday);
-
-				return pz_calendar_event_screen::getSearch(
-								$project_ids, 
-								$events, 
-								array_merge(
-									$p,
-									array("linkvars" => array(
-										"mode" =>"search",
-										"project_ids" => implode(",",$project_ids)
-										) 
-									)
-								), 
-								$day
-								);
-				break;
-			case("list"):
-				$events = pz::getUser()->getAllEvents($project_ids,$day,$day_last);
-				return pz_calendar_event_screen::getWeekListView(
-					$events,
-					array_merge(
-						$p,
-						array("linkvars" => array(
-							"mode" =>"list",
-							"project_ids" => implode(",",$project_ids),
-							"day" => $day->format('Ymd')
-							) 
-						)
-					),
-					$day
-				);
-				break;
-			case("edit_event"):
-				$event_id = rex_request("event_id","int",0);
-				if($event_id > 0 && $event = pz_calendar_event::get($event_id)) {
-					$cs = new pz_calendar_event_screen($event);
-					return $cs->getEditForm($p);
-				}else {
-					return '<p class="xform-warning">'.rex_i18n::msg("event_not_exists").'</p>';
-				}
-				break;
-			case(""):
-
-				$month_firstday = clone $day;
-				$month_firstday->modify("first day of this month");
-				$month_firstday->modify("-".($month_firstday->format("N")-1)." days"); // -kw days
-				$month_lastday = clone $day;
-				$month_lastday->modify("+1 month");
-				$month_lastday->modify("last day of this month");
-				$events = pz::getUser()->getAllEvents($project_ids, $month_firstday, $month_lastday);
-				$s1_content .= pz_calendar_event_screen::getSearch(
-						$project_ids, 
-						$events, 
-						array_merge(
-							$p,
-							array("linkvars" => array(
-								"mode" =>"search",
-								"project_ids" => implode(",",$project_ids),
-								"day" => $day->format('Ymd')
-								) 
-							)
-						), 
-						$day);
-
-				$events = pz::getUser()->getAllEvents($project_ids, $day, $day_last);
-
-				$s2_content = pz_calendar_event_screen::getWeekListView(
-					$events,
-					array_merge(
-						$p,
-						array("linkvars" => array(
-							"mode" =>"list",
-							"project_ids" => implode(",",$project_ids),
-							"day" => $day->format('Ymd')
-							) 
-						)
-					),
-					$day
-				);
-				$s1_content .= pz_calendar_event_screen::getAddForm($p);
-				break;
-			default:
-				break;
-		}
-
-		$f = new rex_fragment();
-		$f->setVar('header', pz_screen::getHeader($p), false);
-		$f->setVar('function', $this->getNavigation($p), false);
-		$f->setVar('section_1', $s1_content, false);
-		$f->setVar('section_2', $s2_content, false);
-		return $f->parse('pz_screen_main.tpl');
-		
-	}
 	public function getMonthPage($p = array())
 	{
 		

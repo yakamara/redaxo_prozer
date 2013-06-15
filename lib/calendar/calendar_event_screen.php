@@ -740,7 +740,7 @@ class pz_calendar_event_screen{
 				if ($e->calendar_event->isAllDay()) {
 					$content_allday .= $e->getDayEventAlldayView($p);
 				}else {
-					$content .= $e->getDayEventView($day, $p);
+					$content .= $e->getEventView($day, $p);
 				}
 			}
 		}
@@ -858,7 +858,7 @@ class pz_calendar_event_screen{
 		return '<div class="design2col" id="calendar_events_day_list" data-list-type="calendar" data-url="'.$link_refresh.'">'.$return.'</div>';
 	}
 
-	public function getDayEventView($day, $p = array()) 
+	public function getEventView($day, $p = array()) 
 	{
 
 		$from = pz::getUser()->getDateTime($this->calendar_event->getFrom());
@@ -932,7 +932,7 @@ class pz_calendar_event_screen{
 		}
 		
 		$info = array();
-    $info[] = '<span class="name">'.$from->format("H:i").' - '.$to->format("H:i").'</span>';
+    $info[] = '<span class="time">'.$from->format("H:i").' - '.$to->format("H:i").'</span>';
     $info[] = $this->calendar_event->getTitle();
     $info[] = $this->user_name;
 		
@@ -944,14 +944,25 @@ class pz_calendar_event_screen{
 
     $data_attr = array();
     $data_attr[] = 'data-event-id="'.$this->calendar_event->getId().'"';
+    $data_attr[] = 'data-event-date-start="'.$from->format("Ymd").'"';
     $data_attr[] = 'data-event-day-start="'.$from->format("d").'"';
     $data_attr[] = 'data-event-hour-start="'.$from->format("G").'"';
     $data_attr[] = 'data-event-minute-start="'.$from->format("i").'"';
     $data_attr[] = 'data-event-minute-duration="'.$duration_in_minutes.'"';
+    $data_attr[] = 'data-event-day-end="'.$to->format("d").'"';
+    $data_attr[] = 'data-event-hour-end="'.$to->format("G").'"';
+    $data_attr[] = 'data-event-minute-end="'.$to->format("i").'"';
+    $data_attr[] = 'data-event-date-end="'.$to->format("Ymd").'"';
     $data_attr[] = 'data-event-job="'.$job.'"';
     $data_attr[] = 'data-event-project_id="'.$this->calendar_event->getProject()->getId().'"';
     $data_attr[] = 'data-event-user_id="'.$this->calendar_event->getUserId().'"';
     $data_attr[] = 'data-event-attandees="'.count($attandees).'"';
+
+    if($this->calendar_event->isAllDay()) {
+      $data_attr[] = 'data-event-isallday="1"';
+		} else {
+      $data_attr[] = 'data-event-isallday="0"';
+		}
 		
 		$url = pz::url("screen","calendars","event",array_merge($p["linkvars"],array("mode"=>"get_flyout_calendar_event","calendar_event_id"=>$this->calendar_event->getId())));
 		$flyout_link = "pz_tooltipbox(this, '".$url."')";
@@ -961,7 +972,7 @@ class pz_calendar_event_screen{
 		      <div class="event-info labelb'.$this->label_id.'">
            <header>
              <hgroup>
-               <h2 class="hl7"><a href="javascript:void(0);" onclick="'.$flyout_link.'">'.$editable.$attachments.implode(" | ",$info).'</span></a></h2>
+               <h2 class="hl7"><a href="javascript:void(0);" onclick="'.$flyout_link.'">'.$editable.$attachments.implode(" ",$info).'</span></a></h2>
              </hgroup>
            </header>
            <section class="content">
@@ -1011,145 +1022,63 @@ class pz_calendar_event_screen{
 
 	// --------------------------------------------------------------- Week
 
-
-	public function getWeekAlldayView($p = array()) 
-	{
-		$return = '<li class="box"><span class="label '.pz_label_screen::getBorderColorClass($this->label_id).'"><span class="name">'.$this->calendar_event->getTitle().'</span> - <span class="title">'.$this->user_name.'</span></span></li>';
-	    return $return;
-	}
-
-	public function getWeekView($p = array(), $position = 0) 
-	{
-
-		$from = $this->calendar_event->getFrom();
-		$to = $this->calendar_event->getTo();
-		$duration = $this->calendar_event->getDuration();
-		
-		$return = '
-		    <article class="event label '.pz_label_screen::getColorClass($this->label_id).' '.pz_label_screen::getBorderColorClass($this->label_id).' dragable resizeable" id="event-'.$this->calendar_event->getId().'">
-		      <div class="event-info '.pz_label_screen::getBorderColorClass($this->label_id).'">
-           <header>
-             <hgroup>
-               <h2 class="hl7"><span class="name">'.$this->calendar_event->getTitle().'</span></h2>
-             </hgroup>
-           </header>
-           <section class="content">
-             <p>'.$this->calendar_event->getDescription().'</p>
-           </section>
-          </div>
-	     </article>';
-	     return $return;
-	}
-
 	static function getWeekListView($events = array(), $p = array(), $day)
 	{
 
+    $days = 14;
+
 		$day_clone = clone $day;
 		$day_last = clone $day;
-		$day_last->modify("+6 days");
+		$day_last->modify("+".($days-1)." days");
 		
-		$return = "";
-		$content = "";
-		$content_allday = "";
-		
-		if(count($events) > 0)
-		{
-			$position = 0;
-			foreach($events as $event)
-			{
+    $content = "";
+		if(count($events) > 0) {
+			foreach($events as $event) {
 				$e = new pz_calendar_event_screen($event);
-				if($e->calendar_event->isAllDay()) {
-					$content_allday .= $e->getWeekAlldayView($p);
-				}else {
-					$content .= $e->getWeekView($p,$position);
-					$position++;
-				}
+				$content .= $e->getEventView($day, $p);
 			}
 		}
 
+		$return = "";
+    $grid = '';
+    $grid_title = '';
+		for($d=0; $d < $days; $d++) {
 
-		$grid = '';
-		
-		for($d=0;$d<8;$d++)
-		{
-			if($d>1)
-				$day_clone->modify("+1 day");
+			$day_clone = clone $day;
+      $day_clone->modify('+'.$d.' days');
 
-			if($d == 0)
-			{
+			if($d == 0) {
+        $grid_title .= '<li class="weekday first">&nbsp;</li>';
+
 				$grid .= '<li class="weekday first">'; // erste Spalte immer ein first
-				
 				$grid .= '<dl>';
-				$grid .= '<dt class="title"></dt>';
 				$grid .= '<dd class="box">';
-				
-				// ganztaegig
-				$grid .= '<ul class="allday clearfix">';
-				$grid .= '<li class="box"></li>';
-				$grid .= '<li class="box"></li>';
-				$grid .= '</ul>';
-				
-				// Stundenliste
 				$grid .= '<ul class="hours clearfix">';
-				for ($j = 0; $j < 24; $j++)
-				{
-					$grid .= '<li class="hour title">'.$j.':00</li>';
-				}
-				
-				$grid .= '</ul>';
-				$grid .= '</dd></dl></li>';
-				
-			}else
-			{
-				$class = array();
-				if($day_clone->format("N") == 6 or $day_clone->format("N") == 7) {
-					$class[] = "weekday";
-					// TODO weekend
-				}else
-				{
-					$class[] = "weekday";
-				}
-
-				if($day_clone->format("Ymd") == date("Ymd")) {
-					$class[] = "active";
-				}
-
-				if($d == 7) {
-					$class[] = "last";
-				}
-
-				$key = "mon";				
-				
-				// elseif ($key === 'sun')
-				// $grid .= '<li class="weekday last" rel="weekday-'.$key.'">';
-				// Bspl fuer aktiver Wochentag
-				// $grid .= '<li class="weekday active" rel="weekday-'.$key.'">';
-				$grid .= '<li class="'.implode(" ",$class).'" rel="weekday-'.$key.'">';
-				
-				$grid .= '<dl>';
-				$grid .= '<dt class="title">'.$day_clone->format(rex_i18n::msg("format_d_month")).'</dt>';
-				$grid .= '<dd class="box">';
-				
-				// ganztaegig
-				$grid .= '<ul class="allday clearfix">';
-				for ($j = 1; $j <= 1; $j++)
-				{
-					$grid .= '<li class="box">Geburtstag</li>';
-					$grid .= '<li class="box">Urlaub</li>';
-				}
-				$grid .= '</ul>';
-				
-				// Stundenliste
-				$grid .= '<ul class="hours clearfix">';
-				for ($j = 0; $j < 24; $j++)
-				{
-					$grid .= '<li class="hour box"></li>';
-				}
-				
+				for ($j = 0; $j < 24; $j++) { $grid .= '<li class="hour title">'.$j.':00</li>'; }
 				$grid .= '</ul>';
 				$grid .= '</dd></dl></li>';
 				
 			}
+		
+			$class = array();
+			if($day_clone->format("N") == 6 or $day_clone->format("N") == 7) { $class[] = "weekday"; $class[] = "weekend";
+			}else { $class[] = "weekday"; }
+			if($day_clone->format("Ymd") == date("Ymd")) { $class[] = "active"; }
+			if($d == $days) { $class[] = "last"; }
+
+			$grid .= '<li class="'.implode(" ",$class).'" data-grid="day" data-day="'.$day_clone->format("d").'" data-month="'.$day_clone->format("m").'" data-year="'.$day_clone->format("Y").'" data-date="'.$day_clone->format("Ymd").'">';
+			$grid .= '<dl><dd class="box">';
+			// Stundenliste
+			$grid .= '<ul class="hours clearfix">';
+			for ($j = 0; $j < 24; $j++)	{
+				$grid .= '<li class="hour box"></li>';
+			}
+			$grid .= '</ul>';
+			$grid .= '</dd></dl></li>';
+			
+			$grid_title .= '<li class="'.implode(" ",$class).'" data-grid="allday" data-day="'.$day_clone->format("d").'" data-month="'.$day_clone->format("m").'" data-year="'.$day_clone->format("Y").'" data-date="'.$day_clone->format("Ymd").'"><dl>';
+      $grid_title .= '<dt class="title">'.pz::strftime(rex_i18n::msg("show_day_short2"),$day_clone->getTimestamp()).'</dt>';
+      $grid_title .= '</dl></li>';
 			
 		}
 
@@ -1162,10 +1091,7 @@ class pz_calendar_event_screen{
 		height  = Endzeit - Startzeit (in Minuten)
 		*/
 	
-		// Timeline - Jetzt - 7 Stunden (0 Punkt) / 60 (1 Stunde 60px hoch)
-		$timeline = ceil((time() - mktime(7, 0, 0)) / 60);
-
-		$link_refresh = pz::url("screen","calendars","day",
+		$link_refresh = pz::url("screen","calendars","week",
 			array_merge(
 				$p["linkvars"],
 				array(
@@ -1176,33 +1102,40 @@ class pz_calendar_event_screen{
 			)
 		);
 
-		$link_add = "javascript:pz_loadPage('calendar_event_form','".pz::url("screen","calendars",$p["function"],array_merge($p["linkvars"],array("mode"=>"add_calendar_event","day"=>$day->format("Ymd"))))."')";
+		$link_event_add = "javascript:pz_loadPage('calendar_event_form','".pz::url("screen","calendars","event",array_merge($p["linkvars"],array("mode"=>"add_calendar_event","day"=>$day->format("Ymd"),"booked"=>0)))."')";
+		$link_job_add = "javascript:pz_loadPage('calendar_event_form','".pz::url("screen","calendars","event",array_merge($p["linkvars"],array("mode"=>"add_calendar_event","day"=>$day->format("Ymd"),"booked"=>1)))."')";
 
-		$day->modify('-7 day');
+    $return = '
+      <header>
+        <div class="header">
+          <h1 class="hl1">'.
+          pz::strftime(rex_i18n::msg("show_date_normal"), $day->getTimestamp()).' - '.
+          pz::strftime(rex_i18n::msg("show_date_normal"), $day_last->getTimestamp()).
+          ' <span class="info">('.rex_i18n::msg("calendarweek").' '.pz::dateTime2dateFormat($day,"W").')</span></h1>
+        </div>
+      </header>';
+
+		$day->modify('-'.($days).' day');
 		$link_previous = "javascript:pz_loadPage('calendar_events_week_list','".pz::url("screen","calendars","week",array_merge($p["linkvars"],array("mode"=>"list","day"=>$day->format("Ymd"))))."')";
-		$day->modify('+14 day');
+		$day->modify('+'.($days+$days).' day');
 		$link_next = "javascript:pz_loadPage('calendar_events_week_list','".pz::url("screen","calendars","week",array_merge($p["linkvars"],array("mode"=>"list","day"=>$day->format("Ymd"))))."')";
-		$day->modify('-7 day');
+		$day->modify('-'.($days-1).' day');
 		
 		$today = new DateTime();
 		$link_today = "javascript:pz_loadPage('calendar_events_week_list','".pz::url("screen","calendars","week",array_merge($p["linkvars"],array("mode"=>"list","day"=>$today->format("Ymd"))))."')";
 
-		$return = '
-	        <header>
-	          <div class="header">
-	            <h1 class="hl1">'.$day->format(rex_i18n::msg("format_dmy")).' - '.$day_last->format(rex_i18n::msg("format_dmy")).' <span class="info">('.rex_i18n::msg("calendarweek").' '.$day->format("W").')</span></h1>
-	          </div>
-	        </header>';
 
 		$return .= '
 
-		<div class="calendar view-week clearfix">
+		<div class="calendar view-week clearfix" data-days="'.$days.'">
 
 			<header class="header">
 			<div class="grid3col">
 				<div class="column first">
-				<a class="bt2" href="'.$link_add.'">'.rex_i18n::msg("new_event").'</a>
-				</div>
+				        <a href="javascript:void(0);" onclick="pz_toggleSection();" class="toggle bt5"><span class="icon">'.rex_i18n::msg("calendar_resize").'</span></a>
+				        <a class="bt2" href="'.$link_event_add.'">'.rex_i18n::msg("new_event").'</a>
+				        <a class="bt2" href="'.$link_job_add.'">'.rex_i18n::msg("new_job").'</a>
+				      </div>
 				<div class="column last">
 				<ul class="pagination">
 				<li class="first prev"><a class="page prev bt5" href="'.$link_previous.'"><span class="inner">'.rex_i18n::msg("previous").'</span></a></li>
@@ -1213,9 +1146,16 @@ class pz_calendar_event_screen{
 			</div>
 			</header>
 
+      <div class="header grid clearfix">
+        <ul class="weekdays">
+  			'.$grid_title.'
+  			</ul>
+  			<div class="allday"></div>
+      </div>
+
 			<div class="wrapper">
 			
-				<div class="grid clearfix">
+				<div class="grid clearfix calendargrid">
 				<ul class="weekdays">
 				'.$grid.'
 				</ul>
@@ -1231,7 +1171,14 @@ class pz_calendar_event_screen{
 		</div>
 		';
 
-		return '<div class="design2col" id="calendar_events_week_list" data-url="'.$link_refresh.'">'.$return.'</div>';
+    $return .= '<script language="Javascript"><!--	
+    
+    // $(".calendar.view-week").pz_cal_week({ days: '.$days.' })
+    
+    pz_set_calendarweek_init();
+		--></script>';
+
+		return '<div class="design3col" id="calendar_events_week_list" data-list-type="calendar" d data-url="'.$link_refresh.'">'.$return.'</div>';
 
 	}
 
@@ -1937,7 +1884,7 @@ class pz_calendar_event_screen{
 	        <header>
 	          <div class="grid2col header">
 	            <div class="column first">
-	              <h1 class="hl1"><a href="javascript:void(0);" onclick="pz_toggleSection();" class="page prev bt5"><span class="inner">'.rex_i18n::msg("calendar_resize").'</span></a>'.rex_i18n::msg("calendar_customerplan_list").'</h1>
+	              <h1 class="hl1">'.rex_i18n::msg("calendar_customerplan_list").'</h1>
 	            </div>
 	            <div class="column last">
                 <ul class="sl1 view-layout">
@@ -2209,6 +2156,7 @@ class pz_calendar_event_screen{
 		  <header class="header">
 		    <div class="grid3col">
 		      <div class="column first">
+		        <a href="javascript:void(0);" onclick="pz_toggleSection();" class="toggle bt5"><span class="icon">'.rex_i18n::msg("calendar_resize").'</span></a>
   		      <a class="bt2" href="javascript:void(0);" onclick="'.$link_event_add.'">'.rex_i18n::msg("new_event").'</a>
 		      </div>
 		      <div class="column">
