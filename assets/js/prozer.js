@@ -893,7 +893,7 @@ function pz_set_calendarday_dragresize_init() {
 
 		  pz_loading_start("#"+$(this).attr("id"));
    		$.get(pz_event_day_url, {
-   		  mode: "move_event_by_minutes", 
+   		  mode: "move_event", 
    		  calendar_event_id: calendar_event_id, 
    		  calendar_event_move_minutes: calendar_event_move_minutes,
    		},
@@ -952,37 +952,308 @@ function pz_set_calendarday_offset()
 
 // Kalender - Woche
 // Termine richtig positionieren
-function pz_set_calendarweek_events()
-{
-  $('ul.weekdays li.weekday').each(function()
-  {
-    // das <li> hat ein rel mit entsprechenden Wochentag
-    // das event <article> hat ebenfalls den Wochentag im rel 
-    
-    var $rel = $(this).attr('rel');           // Wochentag holen -> "weekday-mon", "weekday-tue"
-    var $hours = $(this).find('.hours');      // Tagesstunden des Wochentages
-    var $hours_position = $hours.position();  // Position der Tagesstunden-Spalte
-    var $hours_width = $hours.width();
-    
-    var $first_column_width = $('ul.weekdays li.weekday ul.hours').width(); // Breite der Tagesstunden-Spalte
-    
-    // Alle Event <article> mit Wochentag holen und platzieren
-    $('.events article[rel="' + $rel + '"]').each(function()
-    {
-      var $event = $(this);
-      var $top = parseInt($event.css('top').replace('px', ''));
-      var $left = parseInt($event.css('left').replace('px', ''));
-      
-      $top = $top + $hours_position.top;
-      $left = $left + $hours_position.left - $first_column_width;
-      $event.css('top', $top + 'px')
-      $event.css('left', $left + 'px')
-      $event.css('width', $hours_width + 'px')
-    });
-  });
-}
-// ENDE - Kalender - Woche
 
+function pz_set_calendarweek_init() 
+{
+  pz_toggleSection(2);
+  pz_set_calendarweek_offset();
+  pz_calendarweek_rearrange_events();
+  pz_set_calendarweek_dragresize_init();
+
+  $(".calendar.view-week a.toggle").click(function() {
+    pz_calendarweek_rearrange_events();
+  });
+
+
+}
+
+function pz_set_calendarweek_offset()
+{
+  var time = 8;
+  var scroll = time * 60;
+  $('.calendar.view-week .wrapper').scrollTop(scroll);
+}
+
+function pz_calendarweek_rearrange_events()
+{
+
+  // erstmal alle ausblenden
+  $(".calendar.view-week").find('article').hide();
+
+  // var day_first = $(".calendar.view-week .weekdays:nth-child(2)");
+  var days = $(".calendar.view-week").attr("data-days");
+  var wrapper_width = parseInt($(".view-week .wrapper").css("width"));
+  var hour_width = parseInt($(".view-week .hours li.hour").css("width"));
+  var box_width = parseInt((wrapper_width-hour_width) / days)-3;
+  
+  // TODO: events über mehrere tage clonen, jedes event ist in jedem tag einzeln vorhanden
+  // weekdays
+  
+  $('li[data-grid="day"],li[data-grid="allday"]')
+    .css("width",box_width)
+    .attr("data-calc-offset",hour_width);
+
+  // TODO
+  // - allday block
+  // - breite automatisch anpassen onclick / onchange
+  // - wenn mehr als bis 24h - entsprechend clonen und d&d beachten
+
+  // allday
+  
+  articles = $(".calendar.view-week").find('article[data-event-isallday="1"]');
+  articles.each(function(i)
+  {
+    var d_date_start = $(this).attr("data-event-date-start");
+    var d_date_end = $(this).attr("data-event-date-end");
+    var started = 0;
+    var left = 0;
+    var width = 0;
+    $('li[data-grid="day"]').each(function(i, d) {
+      var c_date = $(d).attr("data-date");
+      if(started == 0 && ( d_date_start <= c_date) ) {
+        started = 1;
+        left = box_width*i;
+      } else if (started == 1 && ( d_date_end >= c_date) ){
+        width++;
+      }
+    })
+    $(this)
+      .prependTo('.allday')
+      .css("position","absolute")
+      .css("top",(i*20))
+      .css("left",(left-1))
+      .css("width",(((width+1)*box_width)))
+      .attr("data-calc-position", width)
+      .show();
+
+  });
+
+  $('.allday').css("height",(articles.length*20));
+
+  $('li[data-grid="day"]').each(function(i, d) {
+  
+    var c_day = $(d).attr("data-day");
+    var c_offset_left = parseInt(i * parseInt($(d).css("width")));
+    var c_boxwidth = parseInt($(d).css("width"));
+    var c_position = i;
+    
+    $(d)
+      .attr("data-calc-left",c_offset_left);
+    
+    articles = $(".calendar.view-week").find('article[data-event-isallday="0"][data-event-day-start="'+c_day+'"]');
+
+    articles.sort(function(a,b) {
+      start_a = parseInt( ($(a).attr("data-event-hour-start") * 60) ) + parseInt($(a).attr("data-event-minute-start"));
+      start_b = parseInt( ($(b).attr("data-event-hour-start") * 60) ) + parseInt($(b).attr("data-event-minute-start"));
+      if (start_a < start_b) return -1;
+      if (start_a > start_b) return 1;
+      height_a = parseInt($(a).attr("data-event-minute-duration"));;
+      height_b = parseInt($(b).attr("data-event-minute-duration"));;
+      if (height_a > height_b) return -1;
+      if (height_a < height_b) return 1;
+      
+      return 0;
+    });
+
+    // cleanup
+    articles.each(function(i,e)
+    {
+      $(this)
+        .removeAttr("data-calc-block")
+        .removeAttr("data-calc-column")
+        .removeAttr("data-calc-columns")
+        .attr("data-calc-position",c_position);
+  
+      start_position = parseInt( ($(this).attr("data-event-hour-start") * 60) ) + parseInt($(this).attr("data-event-minute-start"));
+      height = parseInt($(this).attr("data-event-minute-duration"));
+      end_position = start_position + height -1;
+  
+      $(this).css("top",start_position);
+      $(this).css("height",height);
+      $(this).css("left",c_offset_left);
+      
+      $(this).attr("data-calc-end",end_position);
+      $(this).show();
+
+    });
+  
+    var current_block = 0;
+    var current_column = 1;
+    var columns = 0;
+     
+    articles.each(function(i,e)
+    {
+      start_position = parseInt( $(this).css("top") );
+      end_position = parseInt( $(this).attr("data-calc-end") );
+  
+      if (current_block == 0) {
+        
+        // the very first element
+        current_block = 1;
+        current_column = 1;
+        columns = 1;
+        
+      }else {
+  
+        block_max_end_position = 0;
+        new_column = true;
+        for(i=1;i<=columns;i++)
+        {
+          // columns max end postion
+          column_max_end_position = 0;
+          
+          block_articles = $(".calendar.view-week").find('article[data-event-isallday="0"][data-event-day-start="'+c_day+'"][data-calc-block="'+current_block+'"][data-calc-column="'+i+'"]');
+          
+          block_articles.each(function(ii){
+            i_end = parseInt($(this).attr("data-calc-end"));
+            if(column_max_end_position < i_end) {
+              column_max_end_position = i_end;
+            }
+          });
+  
+          // block max end position
+          if(column_max_end_position > block_max_end_position) {
+              block_max_end_position = column_max_end_position;
+          };
+  
+          // fits under column
+          if (start_position > column_max_end_position && new_column) {
+            current_column = i;
+            new_column = false;
+          }
+        }
+  
+        if(start_position > block_max_end_position) {
+        
+          current_block++;
+          current_column = 1;
+          columns = 1;
+  
+        } else if(new_column) {
+  
+          columns++;
+          current_column = columns;
+        }
+        
+      }
+  
+      $(this).attr("data-calc-block", current_block);
+      $(this).attr("data-calc-column", current_column);
+      $(this).attr("data-calc-columns", columns);
+      
+      $(".calendar.view-week").find('article[data-event-isallday="0"][data-event-day-start="'+c_day+'"][data-calc-block="'+current_block+'"]').each(function(){
+        $(this).attr("data-calc-columns", columns);
+      });
+  
+    });
+    
+  
+    articles.each(function(i,e)
+    {
+      block = parseInt($(this).attr("data-calc-block"));
+      column = parseInt($(this).attr("data-calc-column"));
+      columns = parseInt($(this).attr("data-calc-columns"));
+      
+      max = c_boxwidth;
+  
+      width = parseInt(max / columns);
+      left = parseInt(column * width) - width;
+  
+      $(this).css("width", width);
+      $(this).css("left", c_offset_left+left);
+  
+    });
+  
+  }) 
+  
+  
+}
+
+function pz_set_calendarweek_dragresize_init() {
+
+	$("#calendar_events_week_list .dragable").draggable({
+		containment: "#calendar_events_week_list .calendargrid",
+		cursor: "move",
+		axis: "x,y",
+		delay: "200",
+		grid: [15, 15],
+		opacity: 0.75,
+		scroll: true,
+   	start: function(event, ui) {
+   		$(".draggable").css("z-index","auto");
+   		$(this).css("z-index","10000");
+
+      box_width = parseInt($('li[data-grid="allday"]').css("width"));
+      box_height = 15;
+   		$("#calendar_events_week_list .dragable" ).draggable( "option", "grid", [box_width, box_height] );
+   		
+   	},
+
+   	stop: function(event, ui) {
+      var start_minutes = parseInt( ($(this).attr("data-event-hour-start") * 60) ) + parseInt($(this).attr("data-event-minute-start"));
+    	var calendar_event_move_minutes = ui.position.top-start_minutes;
+
+      var box_width = parseInt($('li[data-grid="allday"]').css("width"));
+      var start_position = parseInt($(this).attr("data-calc-position")) * box_width;
+      dd = parseInt ( parseInt(ui.position.left) - start_position); //  - parseInt( box_width / 2 )
+      if(dd < 0) {
+        dd = dd - box_width + 2; // weil events kleiner sein können
+      }
+      dd = parseInt (dd / box_width);
+      if(dd != 0) {
+        calendar_event_move_minutes = calendar_event_move_minutes + ( dd * 1440 );
+      }
+
+   		var calendar_event_id = $(this).attr("id").replace("event-","");
+		  pz_loading_start("#"+$(this).attr("id"));
+		  
+   		$.get(pz_event_day_url, {
+   		  mode: "move_event", 
+   		  calendar_event_id: calendar_event_id, 
+   		  calendar_event_move_minutes: calendar_event_move_minutes,
+   		},
+   		  function(data){
+   		    if(data.status == 1) {
+   		   	  $("#event-" + calendar_event_id).replaceWith(data.calendar_event_dayview);
+   		   	  pz_calendarweek_rearrange_events();
+   		   	  pz_set_calendarweek_dragresize_init();
+   		    } else {
+   		      pz_calendarweek_rearrange_events();
+   		      pz_loading_end("#event-" + calendar_event_id);
+   		    }
+   		}, "json");
+	  }
+	});
+	
+	$( "#calendar_events_week_list .resizeable").resizable({
+		handles: "s",
+		minHeight: "15",
+		grid: [0, 15],
+		stop: function(e, ui) {
+   		var calendar_event_id = $(this).attr("id").replace("event-","");
+   		var calendar_event_extend_minutes = parseInt($(this).outerHeight()) - parseInt($(this).attr("data-event-minute-duration"));
+
+		  pz_loading_start("#"+$(this).attr("id"));
+
+   		$.get(pz_event_day_url, {
+	   	  mode: "extend_event_by_minutes", 
+	   		calendar_event_id: calendar_event_id, 
+	   		calendar_event_extend_minutes: calendar_event_extend_minutes,
+	   	},
+	   	  function(data){
+	   		  if(data.status == 1) {
+   		   	  $("#event-" + calendar_event_id).replaceWith(data.calendar_event_dayview);
+   		   	  pz_calendarweek_rearrange_events();
+   		   	  pz_set_calendarweek_dragresize_init();
+   		    } else {
+   		      pz_calendarweek_rearrange_events();
+   		      pz_loading_end("#event-" + calendar_event_id);
+   		    }
+	   	}, "json");
+		}
+   });
+
+}
 
 
 // ----- customerplan
@@ -1185,8 +1456,7 @@ function pz_customerplan_rearrange_events()
 
 function pz_refresh_calendar_lists()
 {
-  $("[data-list-type=calendar]").each(function(i,e)
-  {
+  $("[data-list-type=calendar]").each(function(i,e) {
     id = "#"+$(e).attr("id");
     url = $(e).attr("data-url");
     pz_loadPage(id,url);

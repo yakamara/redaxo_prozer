@@ -819,9 +819,6 @@ ul.actions li.action a.down:hover {
     display: none !important;
 }
 
-
-
-
 .email.email-hasproject .function .unproject, 
 .email.email-readed .function .unread, 
 .email .function .reply, 
@@ -962,7 +959,48 @@ a.close.bt5 span.icon {
 a.close.bt5:hover span.icon {
   background-position: 0 0;
 }
-  
+
+
+
+
+a.toggle {
+  height: 23px;
+  margin-right: 10px;
+}
+
+a.toggle span.icon {
+  background-image: url(ic_toggle.png);
+}
+a.toggle span.icon {
+  background-image: url(ic_toggle.png);
+}
+a.toggle span.icon {
+  margin: 0 2px 0 1px;
+  width: 20px;
+  height: 23px;
+  background-position: 0px -44px;
+  background-repeat: no-repeat;
+  text-indent: -1000em;
+}
+a.toggle span.icon {
+  margin: 0 1px 0 2px;
+}
+a.toggle:hover span.icon, 
+a.toggle.active span.icon, 
+a.toggle.inactive span.icon {
+  background-position: 0 6px;
+}
+
+
+
+
+
+
+
+
+
+
+
 /* Buttons  ********************************************************************
 *******************************************************************************/
 .bucket ul.buttons {
@@ -1874,15 +1912,16 @@ clear:both;
 
 
 #calendar_customerplan_list .has-attachments,
-.calendar.view-day .has-attachments {
+.calendar .has-attachments {
   display: inline-block;
   width: 17px;
   height: 15px;
   background: url(ic_calender_function.png) 0 -117px no-repeat;
   text-indent: -1000em;
 }
+
 #calendar_customerplan_list .has-not-attachments,
-.calendar.view-day .has-not-attachments {
+.calendar .has-not-attachments {
   display: none;
 }
 
@@ -1910,24 +1949,30 @@ clear:both;
 }
 
 /******************************************************************** Week */
+.calendar.view-week .allday,
 .calendar.view-week .grid .weekday .title {
   color: #969696;
 }
 .calendar.view-week .grid .weekday.active .title {
   color: #06a9d6;
+  background-color: #dce1ea;
 }
-
+.calendar.view-week .grid .weekday.weekend .title {
+  background-color: #f0f1f1;
+}
 .calendar.view-week .grid .weekday .hours .title {
   color: #515a5f;
 }
-
 .calendar.view-week .grid .weekday .hours, 
 .calendar.view-week .grid .weekday .hours .hour, 
 .calendar.view-week .grid .weekday .allday, 
 .calendar.view-week .grid .weekday .allday .box {
-  border-color: #d8d8d8;
+  border-color: #c8c8c8;
 }
 .calendar.view-week .grid .weekday.active .hours {
+  background-color: #dce1ea;
+}
+.calendar.view-week .grid .weekday.weekend .hours {
   background-color: #f6f7f7;
 }
 .calendar.view-week .grid .weekday.first .allday {
