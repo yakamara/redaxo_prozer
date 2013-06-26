@@ -69,7 +69,7 @@ class pz_tools_controller_screen extends pz_tools_controller {
 	{
 		$emails = pz::getUser()->countInboxEmails();
 		$attandees = pz::getUser()->countAttendeeEvents();
-		$title = pz_screen::getPageTitle().' ['.$emails.']';
+		$title = '['.$emails.'] '.pz_screen::getPageTitle();
 		$return = '<script>pz_updateInfocounter('.$emails.', '.$attandees.',"'.$title.'");</script>';
 		return $return;
 	}
