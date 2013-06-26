@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-	<title>Home | Prozer </title>
+	<title><?php echo htmlspecialchars(pz_screen::getPageTitle()); ?></title>
 	<meta charset="utf-8">
-	<base href="http://<?php echo rex::getProperty('server'); ?>/" />
+	<base href="<?php echo pz::getServerUrl(); ?>/" />
 	<link rel="stylesheet" type="text/css" href="/assets/addons/prozer/fonts/css_fonts.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="/assets/addons/prozer/css/css_import.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="/assets/addons/prozer/themes/blue_grey/css_theme.css" media="screen" />

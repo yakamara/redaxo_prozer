@@ -284,7 +284,8 @@ class pz {
 
   static function getServer()
   {
-    return rex::getProperty('server');
+    return $_SERVER["HTTP_HOST"];
+    // return rex::getProperty('server');
   }
 
   static function getServerUrl()
@@ -293,7 +294,7 @@ class pz {
   	if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
   		$protocolSecure = 's';
   	}
-    return 'http'.$protocolSecure.'://'.rex::getProperty('server');
+    return 'http'.$protocolSecure.'://'.pz::getServer();
   }
 
 	static public function setConfig($key, $value)

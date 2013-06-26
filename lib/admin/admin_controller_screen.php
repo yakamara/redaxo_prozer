@@ -350,7 +350,7 @@ class pz_admin_controller_screen extends pz_admin_controller {
 		          </div>
         		</header>
         		<div class="xform">
-        			Domain: <b>http://'.rex::getProperty('server').'</b>
+        			Domain: <b>'.pz::getServerUrl().'</b>
         			<br /><br />REDAXO Version: <b>'.rex::getVersion().'</b>
         			<br />Prozer Version: <b>'.rex_package::get("prozer")->getProperty("version").'</b>
 					    <br /><br />Disk Total Space: <b>'.pz::readableFilesize(disk_total_space("/")).'</b>
@@ -365,22 +365,22 @@ class pz_admin_controller_screen extends pz_admin_controller {
 		          <br /><br />'.$webdav.'
 		
 		          <br /><br />API: Download all emails (every 15 Minutes): 
-		          <br /> http://'.rex::getProperty('server').'/api/emails/download_all/?login=ADMINLOGIN&apitoken=APITOKEN		          
+		          <br />'.pz::getServerUrl().'/api/emails/download_all/?login=ADMINLOGIN&apitoken=APITOKEN		          
 
               <br /><br />API: Cleanup Sytem (Delete old trashed emails / older than 6 months / Delete Logentries older than 6 months) (once a day): 
-              <br /> http://'.rex::getProperty('server').'/api/admin/cleanup/?login=ADMINLOGIN&apitoken=APITOKEN		          
+              <br />'.pz::getServerUrl().'/api/admin/cleanup/?login=ADMINLOGIN&apitoken=APITOKEN		          
 					
               <br /><br />API: Download Jobs as CSV              
-              <br />http://'.rex::getProperty('server').'/api/calendar_event/jobs/?login=ADMINLOGIN&apitoken=APITOKEN&from=20111201&to=20111220&mode=all
+              <br />'.pz::getServerUrl().'/api/calendar_event/jobs/?login=ADMINLOGIN&apitoken=APITOKEN&from=20111201&to=20111220&mode=all
 
               <br /><br />API: Download Users as CSV              
-              <br />http://'.rex::getProperty('server').'/api/admin/users/?login=ADMINLOGIN&apitoken=APITOKEN&format=csv
+              <br />'.pz::getServerUrl().'/api/admin/users/?login=ADMINLOGIN&apitoken=APITOKEN&format=csv
               
               <br /><br />API: Refresh System (Update Label CSS, Update Address VT)              
-              <br />http://'.rex::getProperty('server').'/api/admin/refresh/?login=ADMINLOGIN&apitoken=APITOKEN
+              <br />'.pz::getServerUrl().'/api/admin/refresh/?login=ADMINLOGIN&apitoken=APITOKEN
 					
               <br /><br />API: Address Export as CSV              
-              <br />http://'.rex::getProperty('server').'/api/addresses/export/?login=ADMINLOGIN&apitoken=APITOKEN
+              <br />'.pz::getServerUrl().'/api/addresses/export/?login=ADMINLOGIN&apitoken=APITOKEN
 					
         		</div>
         		</div>
