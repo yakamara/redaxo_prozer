@@ -337,16 +337,14 @@ if(rex_string::versionCompare($version, '2.0 beta5', '<'))
 }
 
 
-// allways check
+// -------------------------------------------------  allways check
 $dav_path = rex_path::addonData("prozer", "dav");
 rex_dir::create($dav_path);
 
-
-
-
 // -------------------------------------------------
 
-if($error)
+if($error) {
   $this->setProperty('updatemsg', $error);
-else
+} else {
   $this->setProperty('update', true);
+}

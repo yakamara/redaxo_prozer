@@ -1,13 +1,11 @@
 package: prozer
-version: '2.0 beta8'
+version: '2.0 beta10'
 author: Yakamara Media GmbH & Co. KG
 supportpage: www.prozer.org
 package: prozer
 
 requires:
-  addons:
-    xform:
-      min-version: '3.0.3'
-      plugins:
-        manager:
-          min-version: '3.0.3'
+  packages:
+    xform: '>=3.0.3'
+    xform/manager: '>=3.0.3'
+    phpmailer: '>=1'
