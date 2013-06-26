@@ -1852,7 +1852,7 @@ class pz_calendar_event_screen{
   
 
 
-	public function getCustomerplanListView($customer, $customers, $projects, $events, $p, $start, $end)
+	public static function getCustomerplanListView($customer, $customers, $projects, $events, $p, $start, $end)
 	{
 
     $diff = $start->diff($end);
@@ -2186,7 +2186,7 @@ class pz_calendar_event_screen{
 
 
 
-  public function getCustomerplanStyle()
+  public static function getCustomerplanStyle()
   {
     
     $day_starts = array( 
