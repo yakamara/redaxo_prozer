@@ -43,7 +43,7 @@ class pz_project_sub extends pz_model
 		$id = (int) $id;
 
 		$sql = rex_sql::factory();
-		$sql->setQuery('select * from pz_project_sub where id = '.$id).' LIMIT 2';
+		$sql->setQuery('select * from pz_project_sub where id = '.$id.' LIMIT 2');
 
 		$project_subs = $sql->getArray();
 		if(count($project_subs) != 1) return FALSE;
