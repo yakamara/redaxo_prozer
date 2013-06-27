@@ -191,21 +191,43 @@ class pz_email extends pz_model{
 		return $this->from_address;
 	}
 	
-	public function getCreateDate() {
-		return $this->vars["created"];
+	public function getCreateDate() 
+	{
+	  return $this->getDateTime()->format("Y-m-d");
 	}
 	
-	public function getDate() {
-	
-		$date = $this->vars["date"];
-		if($date == "")
-			$date = $this->vars["created"];
-		return $date;
+	public function getDate() 
+	{
+	  return $this->getDateTime()->format("Y-m-d");
 	}
 
   public function getDateTime()
   {
-    return DateTime::createFromFormat("Y-m-d H:i:s", $this->getCreateDate(), pz::getDateTimeZone());
+    // DateTime::RFC822 ->  "Mon, 15 Aug 05 15:52:01 +0000"
+    // DateTime::RFC1036 -> "Mon, 15 Aug 05 15:52:01 +0000"
+    // DateTime::RSS  ->    "Mon, 15 Aug 2005 15:52:01 +0000";
+    // DateTime::RFC850 ->  "Monday, 15-Aug-05 15:52:01 UTC";
+    // DateTime::ISO8601->  "2005-08-15T15:52:01+0000"
+    // DateTime::RFC1123    "Mon, 15 Aug 2005 15:52:01 +0000"
+    // DateTime::W3C        "2005-08-15T15:52:01+00:00"
+    // 'Y-m-d H:i:s'        "2013-06-27 22:14:57"
+    // does not work - 'D, d M Y H:i:s O (T)' "Wed, 26 Jun 2013 10:56:08 +0200 (CEST)"
+    
+    $dts = array( DateTime::RFC822, DateTime::RFC1036, DateTime::RSS, DateTime::RFC850, DateTime::ISO8601, DateTime::RFC1123, DateTime::W3C, 'Y-m-d H:i:s');
+    
+    $date = $this->vars["date"];
+    if($date == "")
+    	$date = $this->vars["created"];
+
+    $date = preg_replace('@\((.*?)\)@siU','',$date); // delete stuff like "(EDT)" ..
+    $date = trim($date);
+
+    foreach($dts as $dt) {
+      if(($d = DateTime::createFromFormat($dt, $date, pz::getDateTimeZone()) )) {
+        return $d;
+      }
+    }
+    return new DateTime();
   }
 
 	public function getSubject() {

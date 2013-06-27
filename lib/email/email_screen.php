@@ -460,7 +460,7 @@ class pz_email_screen{
                   <figure class="figure-from">'.pz_screen::getTooltipView('<img src="'.$image_from_address.'" width="40" height="40" />',htmlspecialchars($image_from_adresse_title)).'</figure>
                   <figure class="figure-to">'.pz_screen::getTooltipView('<img src="'.$image_to_address.'" width="40" height="40" />',$image_to_adresse_title).'</figure>
                   <hgroup class="data">
-                    <h2 class="hl7"><span class="name">'.htmlspecialchars(pz::cutText($this->email->getVar("from"))).'</span><span class="info">'.$this->email->getVar("created").'</span></h2>
+                    <h2 class="hl7"><span class="name">'.htmlspecialchars(pz::cutText($this->email->getVar("from"))).' </span><span class="info">'.strftime(rex_i18n::msg("show_datetime_normal"),pz::getUser()->getDateTime($this->email->getDateTime())->format("U")).'</span></h2>
                     <h3 class="hl7"><a href="'.$link_open.'"><span class="title">'.htmlspecialchars($this->email->getSubject()).'</span></a></h3>
                   </hgroup>
                   
@@ -745,8 +745,6 @@ class pz_email_screen{
               <dt class="to">To:</dt>
               <dd class="to">'.$this->prepareOutput(implode(", ",$to)).'</dd>
               '.$cc.'
-              <dt class="date">Date</dt>
-              <dd class="date">'.$this->email->getDate().'</dd>
             </dl>
 			
           </header>
