@@ -84,7 +84,7 @@ class pz_screen
 			if($controll->isVisible())
 			{
 				$items[$k]["classes"] = $k.$first;
-				$items[$k]["name"] = $controll->getName().$controll->name;
+				$items[$k]["name"] = $controll->getName();
 				if(method_exists($controll,'getMainFlyout'))
 					$items[$k]["flyout"] = $controll->getMainFlyout();
 				$items[$k]["url"] = pz::url('screen',$controll->name);
