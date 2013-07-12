@@ -1164,12 +1164,12 @@ class pz_calendar_event_screen{
 				<div class="events clearfix">
 				'.$content.'
 				</div>
-				
-				<div class="timeline" style="top: '.$timeline.'px;"><span class="icon"></span><span class="line"></span></div>
 			
 			</div>
 		</div>
 		';
+
+    // <div class="timeline" style="top: '.$timeline.'px;"><span class="icon"></span><span class="line"></span></div>
 
     $return .= '<script language="Javascript"><!--	
     
