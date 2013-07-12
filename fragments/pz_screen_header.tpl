@@ -4,7 +4,7 @@
     </nav>
     
     <ul id="navi-meta" class="sl1">
-      <li class="lev1 first date"><span class="date"><?php echo pz::getDatetime()->format(rex_i18n::msg("format_DdFY")); ?></span></li>
+      <li class="lev1 first date"><span class="date"><?php echo pz::strftime(rex_i18n::msg("show_date_long"),pz::getDatetime()->format("U")); ?></span></li>
       <?php if(pz::getUser()) { ?>
       
       <!--
