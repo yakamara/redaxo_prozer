@@ -232,12 +232,12 @@ class pz_calendar_event_screen{
 		$date_info = '';
 		if($this->calendar_event->isAllday())
 			if($from->format("Ymd") == $to->format("Ymd"))
-				$date_info = $from->format("d.m.Y");
+				$date_info = pz::strftime(rex_i18n::msg("show_date_normal"),$from->format("U")); // $from->format("d.m.Y");
 			else
-				$date_info = $from->format("d.m.Y").' - '.$to->format("d.m.Y");
+				$date_info = pz::strftime(rex_i18n::msg("show_date_normal"),$from->format("U")).' - '.pz::strftime(rex_i18n::msg("show_date_normal"),$to->format("U"));
 		else
 			if($from->format("Ymd") == $to->format("Ymd"))
-				$date_info = $from->format("d.m.Y").', <span>'.$from->format("H:i").' - '.$to->format("H:i").'</span>';
+				$date_info = pz::strftime(rex_i18n::msg("show_date_normal"),$from->format("U")).', <span>'.pz::strftime(rex_i18n::msg("show_time_normal"),$from->format("U")).' - '.pz::strftime(rex_i18n::msg("show_time_normal"),$to->format("U")).'</span>';
 			else
 				$date_info = $from->format("d.m.Y H:i").' - '.$to->format("d.m.Y H:i");
     
@@ -364,7 +364,7 @@ class pz_calendar_event_screen{
 		
 		$return = 	'
 					<div class="bucket event-flyout-view event-'.$this->calendar_event->getId().'">
-            <div class="condtent">
+            <div class="content">
               <div class="output">
                 <header>
                   <h1 class="hl2">'.$this->calendar_event->getTitle().'</h1>
@@ -806,7 +806,7 @@ class pz_calendar_event_screen{
 	        <header>
 	          <div class="header">
 	            <h1 class="hl1">'.
-	            strftime(rex_i18n::msg("show_date_long"), $day->getTimestamp()).
+	            pz::strftime(rex_i18n::msg("show_date_long"), $day->getTimestamp()).
 	            ' <span class="info">('.rex_i18n::msg("calendarweek").' '.pz::dateTime2dateFormat($day,"W").')</span></h1>
 	          </div>
 	        </header>';
@@ -932,7 +932,9 @@ class pz_calendar_event_screen{
 		}
 		
 		$info = array();
-    $info[] = '<span class="time">'.$from->format("H:i").' - '.$to->format("H:i").'</span>';
+    $info[] = '<span class="time">'.pz::strftime(rex_i18n::msg("show_time_normal"),$from->format("U"))
+.' - '.pz::strftime(rex_i18n::msg("show_time_normal"),$to->format("U"))
+.'</span>';
     $info[] = $this->calendar_event->getTitle();
     $info[] = $this->user_name;
 		

@@ -15,13 +15,14 @@ format_h_i = H:i
 format_DdFY = D d. F Y
 
 
-show_date_long = %A %d.%B %Y
-show_date_normal = %d. %B %Y
-show_datetime_normal = %d.%m.%Y %H:%Mh
+show_date_long = %A, %d. %B %Y
+show_date_normal = %e. %B %Y
+show_datetime_normal = %e.%-m.%Y %H:%Mh
 show_month_long = %B %Y
-show_day_short_weekday = %a. %d.
-show_day_short = %d.
-show_day_short2 = %a. %d.%m
+show_day_short_weekday = %a., %e.
+show_day_short = %e.
+show_day_short2 = %a., %e.%-m
+show_time_normal = %H:%Mh
 
 
 minutes = Minuten
@@ -95,7 +96,7 @@ page_emails_outbox = Outbox
 page_emails_drafts = Entwürfe
 page_emails_spam = Spam
 page_emails_trash = Müll
-page_emails_new = Neue Mail
+page_emails_new = Neue E-Mail
 page_emails_history = Logbuch
 page_emails_search = Alle E-Mails
 
@@ -150,7 +151,7 @@ page_tools_profile = Profil und Rechte
 page_tools_jobs = Jobs
 page_tools_sms = SMS
 page_tools_users = Benutzer
-page_tools_emailsetup = Emailsetup
+page_tools_emailsetup = E-Mail-Setup
 page_tools_calendar_event_labels = Kalenderlabels
 
 
@@ -166,8 +167,8 @@ user_perm_add = Userrecht hinzufügen
 user_perm_edit = Userrecht bearbeiten
 user_perm_calendar_read = Kalender lesen
 user_perm_calendar_write = Kalender bearbeiten
-user_perm_email_read = Emails lesen
-user_perm_email_write = Emails bearbeiten
+user_perm_email_read = E-Mails lesen
+user_perm_email_write = E-Mails bearbeiten
 user_perm_user_exists = Für diesen User wurde bereits eine Berechtigung angelegt
 user_perm_updated = Userrechte wurde aktualisiert
 user_perm_added = Userrecht wurde hingefügt
@@ -236,7 +237,7 @@ address_email = E-Mail
 address_postaddress = Postadresse
 
 add_phonefield = Telefonfeld hinzufügen
-add_emailfield = E-Mailfeld hinzufügen
+add_emailfield = E-Mail-Feld hinzufügen
 add_postaddressfield = Adressfeld hinzufügen
 add_urlfield = URL hinzufügen
 add_socialprofile = Profil hinzufügen
@@ -463,10 +464,10 @@ search_email_to = an
 search_email_subject = Betreff
 search_date_from = Datum von
 search_date_to = Datum bis
-search_email_unread = nur ungelesene Emails
-search_email_my = nur eigene Emails lesen
-search_email_noprojects = nur Emails ohne Projektzuweisung
-search_email_intrash = auch Emails aus Müll
+search_email_unread = nur ungelesene E-Mails
+search_email_my = nur eigene E-Mails lesen
+search_email_noprojects = nur E-Mails ohne Projektzuweisung
+search_email_intrash = auch E-Mails aus Müll
 
 order_name = Sortierung
 
@@ -527,7 +528,7 @@ default_startpage_account = Startseite
 project_updated = Projekt wurde aktualisiert
 
 search_for_emails = Nach E-Mails suchen
-project_emails = Projektemails
+project_emails = Projekt-E-Mails
 
 view_project = Projektinfos
 
@@ -599,7 +600,6 @@ customer_name = Name
 customer_description = Beschreibung
 customer_archived = archiviert
 
-
 email_account_add = E-Mail Account hinzufügen
 email_accounts = E-Mail Accounts
 email_account = E-Mail Account
@@ -617,9 +617,9 @@ email_account_delete_emails = E-Mails nach dem Herunterladen löschen
 email_account_mailboxtype = Art des Kontos
 email_account_not_exists = E-Mail Account existiert nicht
 
-email_account_download_emails = Download der Emails gestartet
-email_account_download_ok = Download mit Email-Account {0} ist gelungen
-email_account_download_failed = Download mit Email-Account {0} ist nicht gelungen
+email_account_download_emails = Download der E-Mails gestartet
+email_account_download_ok = Download mit E-Mail-Account {0} ist gelungen
+email_account_download_failed = Download mit E-Mail-Account {0} ist nicht gelungen
 
 email_account_last_login_failed = Letzter E-Mail-Abruf ist fehlgeschlagen.
 email_account_last_login_ok = Letzter E-Mail-Abruf ist gelungen.
@@ -627,8 +627,6 @@ email_account_last_login_working = E-Mails werden gerade abgerufen.
 
 email_account_last_login = Zuletzt gestarteter E-Mail-Abruf
 email_account_last_login_finished = Letzter erfolgreicher E-Mail-Abruf
-
-
 
 email_account_added = E-Mail-Account wurde hinzugefügt
 email_account_edit = E-Mail-Account editieren
