@@ -429,6 +429,7 @@ class pz_project_controller_screen extends pz_project_controller
 	
 		$mode = rex_request("mode","string");
 		$return = "";
+		$ps = new pz_project_screen($this->project);
 		switch($mode)
 		{
 			case("add_form"):
@@ -437,7 +438,7 @@ class pz_project_controller_screen extends pz_project_controller
 					return '<div id="projectuser_form">'.pz_projectuser_screen::getAddForm($p, $this->project).'</div>';
 				}else 
 				{
-					return '<div id="projectuser_form">'.pz_projectuser_screen::getViewForm($p, $this->project).'</div>';
+					return '<div id="project_form">'.$ps->getViewForm($p).'</div>';
 				}
 				break;
 				
@@ -464,7 +465,8 @@ class pz_project_controller_screen extends pz_project_controller
 					$section_1 .= '<div id="projectuser_form">'.pz_projectuser_screen::getAddForm($p, $this->project).'</div>';
 				}else 
 				{
-					$section_1 .= '<div id="projectuser_form">'.pz_projectuser_screen::getViewForm($p, $this->project).'</div>';
+					$section_1 .= '<div id="project_form">'.$ps->getViewForm($p).'</div>';
+					
 				}
 				$projectusers = $this->project->getUsers();
 				$p["layer"] = "projectusers_list";
