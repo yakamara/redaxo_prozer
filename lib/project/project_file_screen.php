@@ -176,7 +176,7 @@ class pz_project_file_screen
 
 	}
 
-  public function getClipboardFilesListView($category, $files, $p = array(), $orders = array()) 
+  public static function getClipboardFilesListView($category, $files, $p = array(), $orders = array()) 
 	{
 		$content = "";
 		$first = " first";
