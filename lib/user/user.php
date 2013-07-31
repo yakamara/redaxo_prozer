@@ -40,7 +40,7 @@ class pz_user extends rex_user
 
 	public function getLogin()
 	{
-	  return $this->getLogin();
+	  return $this->getValue('login');
 	}
 
 	public function getEmail()

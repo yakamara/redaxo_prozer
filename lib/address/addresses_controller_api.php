@@ -34,14 +34,7 @@ class pz_addresses_controller_api extends pz_controller
       $return[] = $a_api->getDataArray();
     }
     return $return;
-  
-    $addresses = array();
-    foreach(pz_address::getAll(array()) as $address)
-    {
-      $a_api = new pz_address_api($address);
-      $return[] = $a_api->getDataArray();
-    }
-    return $return;
+
   }
 
 }
