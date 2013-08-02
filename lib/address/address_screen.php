@@ -410,7 +410,7 @@ class pz_address_screen{
 			birthname
 		*/
 
-		$xform->setValueField("textarea",array("company",rex_i18n::msg("address_company")));
+		$xform->setValueField("text",array("company",rex_i18n::msg("address_company")));
 		$xform->setValueField("checkbox",array("is_company",rex_i18n::msg("address_is_company")));
 		$xform->setValueField("text",array("title",rex_i18n::msg("address_title")));
 		$xform->setValueField("text",array("department",rex_i18n::msg("address_department")));
@@ -508,7 +508,7 @@ class pz_address_screen{
 		$xform->setValueField("text",array("firstname",rex_i18n::msg("address_firstname")));
 		$xform->setValueField("text",array("name",rex_i18n::msg("address_name")));
 		$xform->setValueField("text",array("suffix",rex_i18n::msg("address_suffix")));
-		$xform->setValueField("textarea",array("company",rex_i18n::msg("address_company")));
+		$xform->setValueField("text",array("company",rex_i18n::msg("address_company")));
 		
 		$xform->setValueField("checkbox",array("is_company",rex_i18n::msg("address_is_company")));
 		$xform->setValueField("text",array("title",rex_i18n::msg("address_title")));

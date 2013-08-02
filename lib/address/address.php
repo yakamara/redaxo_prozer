@@ -113,7 +113,7 @@ class pz_address extends pz_model
 
   public function getCompany()
   {
-    return $this->vars['company'];
+    return str_replace(array("\n","\r"),array(" "," "),$this->vars['company']);
   }
 
   public function isCompany()
