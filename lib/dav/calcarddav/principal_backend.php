@@ -62,7 +62,7 @@ class pz_sabre_principal_backend implements Sabre_DAVACL_IPrincipalBackend
   {
     return array(
       'id' => $sql->getValue('id'),
-      'uri' => 'principals/users/'. $sql->getValue('login'),
+      'uri' => 'principals/users/'. strtolower($sql->getValue('login')),
       '{DAV:}displayname' => $sql->getValue('name'),
       '{http://sabredav.org/ns}email-address' => $sql->getValue('email')
     );
