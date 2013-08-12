@@ -1479,23 +1479,37 @@ class pz_calendar_event_screen{
 		$paginate_screen = new pz_paginate_screen($jobs);
 		$paginate = $paginate_screen->getPlainView($p);
 		
-		$content = "";
+		$list = "";
 		foreach($paginate_screen->getCurrentElements() as $job) {
 			
 			$user = $job->getUser();
 			$duration = (($job->getDuration()->format("%d")*24)+$job->getDuration()->format("%h")).'h ';
 			if($job->getDuration()->format("%I") != 0) $duration .= $job->getDuration()->format("%I").'m';
 			
-			$content .= '<tr>';
-			$content .= '<td class="img1"><img src="'.$user->getInlineImage().'" /></td>';
-			$content .= '<td>'.$user->getName().'</td>';
-			$content .= '<td>'.$job->getTitle().'</td>';
-			$content .= '<td>'.$job->getDescription().'</td>';
-			$content .= '<td><nobr>'.$duration.'</nobr>&nbsp;</td>';
-			$content .= '<td>'.$job->getFrom()->format(rex_i18n::msg("format_d_m_y"))."<br /><nobr>".$job->getFrom()->format(rex_i18n::msg("format_h_i")).'h - '.$job->getTo()->format(rex_i18n::msg("format_h_i")).'</nobr></td>';
-			$content .= '<td>'.$job->getCreated()->format(rex_i18n::msg("format_d_m_y")).'</td>';
-			$content .= '</tr>';
+			$list .= '<tr>
+			              <td class="img1"><img src="'.$user->getInlineImage().'" /></td>
+			              <td>'.$user->getName().'</td>
+			              <td>'.$job->getTitle().'</td>
+			              <td>'.$job->getDescription().'</td>
+			              <td><nobr>'.$duration.'</nobr>&nbsp;</td>
+			              <td>'.$job->getFrom()->format(rex_i18n::msg("format_d_m_y"))."<br /><nobr>".$job->getFrom()->format(rex_i18n::msg("format_h_i")).'h - '.$job->getTo()->format(rex_i18n::msg("format_h_i")).'</nobr></td>
+			              <td>'.$job->getCreated()->format(rex_i18n::msg("format_d_m_y")).'</td>
+			            </tr>';
 		}
+		
+		
+		$paginate_loader = $paginate_screen->setPaginateLoader($p, '#projectjobs_list');
+
+		if($paginate_screen->isScrollPage()) {
+		  $content = '
+        <table class="projectjobs tbl1">
+        <tbody>
+          '.$list.'
+        </tbody>
+        </table>'.$paginate_loader;
+		  return $content;
+		}
+		
 		$content = $paginate.'
           <table class="projectjobs tbl1">
           <thead><tr>
@@ -1507,17 +1521,25 @@ class pz_calendar_event_screen{
               <th>'.rex_i18n::msg("createdate").'</th>
           </tr></thead>
           <tbody>
-            '.$content.'
+            '.$list.'
           </tbody>
-          </table>';
-		// $content = $this->getSearchPaginatePlainView().$content;
+          </table>'.$paginate_loader;
+		
+		$link_refresh = pz::url("screen",$p["controll"],$p["function"],
+			array_merge(
+				$p["linkvars"],
+				array(
+					"mode"=>"list"	
+				)
+			)
+		);
 		
 		$f = new rex_fragment();
 		$f->setVar('title', $p["title"], false);
 		if(isset($p["list_links"]))
 			$f->setVar('links', $p["list_links"], false);
 		$f->setVar('content', $content , false);
-		return '<div id="'.$p["layer_list"].'" class="design2col">'.$f->parse('pz_screen_list.tpl').'</div>';
+		return '<div id="'.$p["layer"].'" class="design2col" data-url="'.$link_refresh.'">'.$f->parse('pz_screen_list.tpl').'</div>';
 	}
 
 	static function getUserJobsTableView($jobs,$p = array())
@@ -1526,7 +1548,7 @@ class pz_calendar_event_screen{
 		$paginate_screen = new pz_paginate_screen($jobs);
 		$paginate = $paginate_screen->getPlainView($p);
 		
-		$content = "";
+		$list = "";
 		foreach($paginate_screen->getCurrentElements() as $job) {
 
 			$project = pz_project::get($job->getProjectId());
@@ -1534,18 +1556,31 @@ class pz_calendar_event_screen{
 			$duration = (($job->getDuration()->format("%d")*24)+$job->getDuration()->format("%h")).'h ';
 			if($job->getDuration()->format("%I") != 0) $duration .= $job->getDuration()->format("%I").'m';
 			
-			$content .= '<tr>';
-			$content .= '<td class="img1"><img src="'.$project->getInlineImage().'" /></td>';
-			$content .= '<td>'.$project->getName().'</td>';
-			$content .= '<td>'.$job->getTitle().'</td>';
-			$content .= '<td>'.$job->getDescription().'</td>';
-			$content .= '<td><nobr>'.$duration.'</nobr>&nbsp;</td>';
-			$content .= '<td>'.$job->getFrom()->format(rex_i18n::msg("format_d_m_y"))."<br /><nobr>".$job->getFrom()->format(rex_i18n::msg("format_h_i")).'h - '.$job->getTo()->format(rex_i18n::msg("format_h_i")).'</nobr></td>';
-			$content .= '<td>'.$job->getCreated()->format(rex_i18n::msg("format_d_m_y")).'</td>';
-			$content .= '</tr>';
+			$list .= '<tr>
+			            <td class="img1"><img src="'.$project->getInlineImage().'" /></td>
+			            <td>'.$project->getName().'</td>
+			            <td>'.$job->getTitle().'</td>
+			            <td>'.$job->getDescription().'</td>
+			            <td><nobr>'.$duration.'</nobr>&nbsp;</td>
+			            <td>'.$job->getFrom()->format(rex_i18n::msg("format_d_m_y"))."<br /><nobr>".$job->getFrom()->format(rex_i18n::msg("format_h_i")).'h - '.$job->getTo()->format(rex_i18n::msg("format_h_i")).'</nobr></td>
+			            <td>'.$job->getCreated()->format(rex_i18n::msg("format_d_m_y")).'</td>
+			          </tr>';
 		}
+		
+		$paginate_loader = $paginate_screen->setPaginateLoader($p, '#userjobs_list');
+
+		if($paginate_screen->isScrollPage()) {
+		  $content = '
+        <table class="userjobs tbl1">
+        <tbody>
+          '.$list.'
+        </tbody>
+        </table>'.$paginate_loader;
+		  return $content;
+		}
+		
 		$content = $paginate.'
-          <table class="projectjobs tbl1">
+          <table class="userjobs tbl1">
           <thead><tr>
               <th colspan="2">'.rex_i18n::msg("project").'</th>
               <th>'.rex_i18n::msg("title").'</th>
@@ -1555,17 +1590,16 @@ class pz_calendar_event_screen{
               <th>'.rex_i18n::msg("createdate").'</th>
           </tr></thead>
           <tbody>
-            '.$content.'
+            '.$list.'
           </tbody>
-          </table>';
-		// $content = $this->getSearchPaginatePlainView().$content;
+          </table>'.$paginate_loader;
 		
 		$f = new rex_fragment();
 		$f->setVar('title', $p["title"], false);
 		if(isset($p["list_links"]))
 			$f->setVar('links', $p["list_links"], false);
 		$f->setVar('content', $content , false);
-		return '<div id="'.$p["layer_list"].'" class="design2col">'.$f->parse('pz_screen_list.tpl').'</div>';
+		return '<div id="userjobs_list" class="design2col">'.$f->parse('pz_screen_list.tpl').'</div>';
 	}
 
 

@@ -60,7 +60,10 @@ class pz_user extends rex_user
 	  $emails = array();
 	  if(($address = pz_address::getByEmail($this->getValue('email'))))
 	  {
-		  $emails = $address->getFieldsByType("EMAIL");
+		  $emails_tmp = $address->getFieldsByType("EMAIL");
+		  foreach($emails_tmp as $email) {
+		    $emails[] = strtolower($email);
+		  }
 	  }else
 	  {
 	  	$emails[] = strtolower($this->getValue('email'));
