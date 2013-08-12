@@ -321,8 +321,10 @@ class pz_email_screen{
 
 		$image_from_address = pz_user::getDefaultImage();
 		$image_from_adresse_title = htmlspecialchars($this->email->getFromEmail());
-		if($address = $this->email->getFromAddress())
+
+		if( ($address = $this->email->getFromAddress()) )
 		{
+	
 			$image_from_address = $address->getInlineImage();
 			$image_from_adresse_title = htmlspecialchars($address->getFullName());
 		}

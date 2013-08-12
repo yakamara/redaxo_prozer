@@ -82,7 +82,6 @@ class pz_tools_controller_screen extends pz_tools_controller {
 		$p["controll"] = "tools";
 		$p["function"] = "jobs";
 		$p["layer"] = "jobs_list";
-		$p["layer_list"] = "jobs_list";
 		
 		$section_1 = '';
 		$section_2 = '';
@@ -362,7 +361,7 @@ class pz_tools_controller_screen extends pz_tools_controller {
 		
 		if(pz::getUser()->isAdmin())
 		{
-			$section_1.= $u_screen->getApiView($p);
+			$section_1 .= $u_screen->getApiView($p);
 		}
 		
 		$projects = $user->getMyProjects();

@@ -26,15 +26,16 @@ class pz_user_screen {
         	$return .= '<td><span class="title">'.$this->user->getName().'</span></td>';
 		}
 
+		if($this->user->isActive())  
+			$return .= '<td><span class="status status-1">'.rex_i18n::msg("yes").'</span></td>';
+		else 
+			$return .= '<td><span class="status status-2">'.rex_i18n::msg("no").'</span></td>';
+
 		if($this->user->isAdmin())  
 			$return .= '<td><span class="status status-1">'.rex_i18n::msg("yes").'</span></td>';
 		else 
 			$return .= '<td><span class="status status-2">'.rex_i18n::msg("no").'</span></td>';
 
-		if($this->user->isActive())  
-			$return .= '<td><span class="status status-1">'.rex_i18n::msg("yes").'</span></td>';
-		else 
-			$return .= '<td><span class="status status-2">'.rex_i18n::msg("no").'</span></td>';
 
 		if(pz::getUser()->isAdmin())
 		{
@@ -91,14 +92,26 @@ class pz_user_screen {
 	
 	static function getTableListView($users, $p = array())
 	{
-		$list = "";
 		
 		$paginate_screen = new pz_paginate_screen($users);
+		// $paginate_screen->setListAmount(1);
 		$paginate = $paginate_screen->getPlainView($p);
 		
+		$list = "";
 		foreach($paginate_screen->getCurrentElements() as $user) {
 			$ps = new pz_user_screen($user);
 			$list .= $ps->getTableView($p);
+		}
+		
+		$paginate_loader = $paginate_screen->setPaginateLoader($p, '#users_list');
+
+		if($paginate_screen->isScrollPage()) {
+		  		$content = '
+          <table class="users tbl1">
+          '.$list.'
+          </table>
+          '.$paginate_loader;
+        return $content;
 		}
 		
 		$content = $paginate.'
@@ -106,10 +119,9 @@ class pz_user_screen {
           <thead><tr>
               <th></th>
               <th>'.rex_i18n::msg("username").'</th>
-              <th>'.rex_i18n::msg("admin").'</th>
               <th>'.rex_i18n::msg("active").'</th>
+              <th>'.rex_i18n::msg("admin").'</th>
               ';
-		
 		if(pz::getUser()->isAdmin()) {
 			$content .= '
               <th>'.rex_i18n::msg("webdav").'</th>
@@ -120,13 +132,13 @@ class pz_user_screen {
 				';
 		}
 		
-        $content .= '
-          </tr></thead>
-          <tbody>
-            '.$list.'
-          </tbody>
-          </table>';
-		
+    $content .= '
+      </tr></thead>
+      <tbody>
+        '.$list.'
+      </tbody>
+      </table>'.$paginate_loader;
+				
 		if(isset($p["info"])) {
 			$content = $p["info"].$content;
 		}
@@ -140,36 +152,57 @@ class pz_user_screen {
 	
 	public function getProjectPermTableListView($p, $projects)
 	{
-		$list = "";
-		
+	  $content = '';
+	
+	  $p["layer"] = 'userperms_list';
+	
 		$paginate_screen = new pz_paginate_screen($projects);
 		$paginate = $paginate_screen->getPlainView($p);
 		
+		$list = "";
 		foreach($paginate_screen->getCurrentElements() as $project) {
 			$list .= $this->getProjectPermTableView($p, $project);
 		}
 		
+		$paginate_loader = $paginate_screen->setPaginateLoader($p, '#userperms_list');
+
+		if($paginate_screen->isScrollPage()) {
+		  $content = '
+        <table class="userperms tbl1">
+        <thead><tr>
+              <th></th>
+              <th>'.rex_i18n::msg("project_name").'</th>
+              <th>'.rex_i18n::msg("emails").'</th>
+              <th>'.rex_i18n::msg("calendar_events").'</th>
+              <th>'.rex_i18n::msg("calendar_jobs").'</th>
+              <th>'.rex_i18n::msg("calendar_caldav").'</th>
+              <th>'.rex_i18n::msg("calendar_jobs_caldav").'</th>
+              <th>'.rex_i18n::msg("files").'</th>
+          </tr></thead>
+        <tbody>
+          '.$list.'
+        </tbody>
+        </table>'.$paginate_loader;
+		  return $content;
+		}
+		
+		
 		$content = $paginate.'
-          <table class="userperm tbl1">
+          <table class="userperms tbl1">
           <thead><tr>
               <th></th>
-              ';
-              
-		$content .= '<th>'.rex_i18n::msg("project_name").'</th>';
-		$content .= '<th>'.rex_i18n::msg("emails").'</th>';
-		$content .= '<th>'.rex_i18n::msg("calendar_events").'</th>';
-		$content .= '<th>'.rex_i18n::msg("calendar_jobs").'</th>';
-		$content .= '<th>'.rex_i18n::msg("calendar_caldav").'</th>';
-		$content .= '<th>'.rex_i18n::msg("calendar_jobs_caldav").'</th>';
-		$content .= '<th>'.rex_i18n::msg("files").'</th>';
-		// $content .= '<th>'.rex_i18n::msg("wiki").'</th>';
-		
-        $content .= '
+              <th>'.rex_i18n::msg("project_name").'</th>
+              <th>'.rex_i18n::msg("emails").'</th>
+              <th>'.rex_i18n::msg("calendar_events").'</th>
+              <th>'.rex_i18n::msg("calendar_jobs").'</th>
+              <th>'.rex_i18n::msg("calendar_caldav").'</th>
+              <th>'.rex_i18n::msg("calendar_jobs_caldav").'</th>
+              <th>'.rex_i18n::msg("files").'</th>
           </tr></thead>
           <tbody>
             '.$list.'
           </tbody>
-          </table>';
+          </table>'.$paginate_loader;
 		
 		if(isset($p["info"])) {
 			$content = $p["info"].$content;
@@ -178,7 +211,7 @@ class pz_user_screen {
 		$f = new rex_fragment();
 		$f->setVar('title', $p["title"], false);
 		$f->setVar('content', $content , false);
-		return '<div id="userperm_list" class="design2col">'.$f->parse('pz_screen_list.tpl').'</div>';
+		return '<div id="userperms_list" class="design2col">'.$f->parse('pz_screen_list.tpl').'</div>';
 	
 	}
 	

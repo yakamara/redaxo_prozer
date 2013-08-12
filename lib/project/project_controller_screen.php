@@ -622,15 +622,12 @@ class pz_project_controller_screen extends pz_project_controller
 	
 			$jobs_list = pz_calendar_event_screen::getProjectJobsTableView($jobs,  $p);
 			
-			switch($mode)
-			{
+			switch($mode) {
 				case('export_excel'):
 					return pz_calendar_event_screen::getExcelExport($jobs);
+					
 				case('list'):
 					return $jobs_list;
-					break;
-				default:
-					break;
 			}
 		
 			$section_1 = $searchform;

@@ -50,40 +50,64 @@ class pz_user_perm_screen {
 	
 	static function getTableListView($user_perms, $p = array())
 	{
-		$list = "";
+
+  	$p["layer"] = 'projects_list';
 		
 		$paginate_screen = new pz_paginate_screen($user_perms);
 		$paginate = $paginate_screen->getPlainView($p);
 		
+		$list = '';
 		foreach($paginate_screen->getCurrentElements() as $user_perm) {
 			$up = new pz_user_perm_screen($user_perm);
 			$list .= $up->getTableView($p);
 		}
 		
+		$paginate_loader = $paginate_screen->setPaginateLoader($p, '#projects_list');
+
+		if($paginate_screen->isScrollPage()) {
+		  $content = '
+        <table class="users tbl1">
+        <tbody>
+          '.$list.'
+        </tbody>
+        </table>'.$paginate_loader;
+		  return $content;
+		}
+		
 		$content = $paginate.'
-          <table class="users tbl1">
-          <thead><tr>
-              <th></th>
-              <th>'.rex_i18n::msg("username").'</th>
-              <th>'.rex_i18n::msg("user_perm_calendar_read").'</th>
-              <th>'.rex_i18n::msg("user_perm_calendar_write").'</th>
-              <th>'.rex_i18n::msg("user_perm_email_read").'</th>
-              <th>'.rex_i18n::msg("user_perm_email_write").'</th>
-              <th>'.rex_i18n::msg("functions").'</th>
-          </tr></thead>
-          <tbody>
-            '.$list.'
-          </tbody>
-          </table>';
+        <table class="users tbl1">
+        <thead><tr>
+            <th></th>
+            <th>'.rex_i18n::msg("username").'</th>
+            <th>'.rex_i18n::msg("user_perm_calendar_read").'</th>
+            <th>'.rex_i18n::msg("user_perm_calendar_write").'</th>
+            <th>'.rex_i18n::msg("user_perm_email_read").'</th>
+            <th>'.rex_i18n::msg("user_perm_email_write").'</th>
+            <th>'.rex_i18n::msg("functions").'</th>
+        </tr></thead>
+        <tbody>
+          '.$list.'
+        </tbody>
+        </table>'.$paginate_loader;
+		
 		
 		if(isset($p["info"])) {
 			$content = $p["info"].$content;
 		}
 		
+		$link_refresh = pz::url("screen",$p["controll"],$p["function"],
+			array_merge(
+				$p["linkvars"],
+				array(
+					"mode"=>"list"	
+				)
+			)
+		);
+
 		$f = new rex_fragment();
 		$f->setVar('title', $p["title"], false);
 		$f->setVar('content', $content , false);
-		return '<div id="user_perms_list" class="design2col">'.$f->parse('pz_screen_list.tpl').'</div>';
+		return '<div id="user_perms_list" class="design2col" data-url="'.$link_refresh.'">'.$f->parse('pz_screen_list.tpl').'</div>';
 
 	}
 	

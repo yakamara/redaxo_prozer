@@ -1,5 +1,5 @@
 
-<p>Prozer ist eine Projektkommunikationsoftware für Agenturen. Optimiert für Agenturen bis ca. 50 Personen. </p>
+<p>PROZER ist eine Projektkommunikationsoftware für Agenturen. Optimiert für Agenturen bis ca. 50 Personen. </p>
 
 <h3>Installation</h3>
 <p>Es wird das AddOn <b>XForm</b> inklusive dem Plugin <b>Manager</b> benötigt. 

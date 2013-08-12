@@ -136,10 +136,19 @@ class pz_projects_controller_screen extends pz_projects_controller {
 		      </table>'
 		      .$paginate_loader;
 		
+		$link_refresh = pz::url("screen",$p["controll"],$p["function"],
+			array_merge(
+				$p["linkvars"],
+				array(
+					"mode"=>"list"	
+				)
+			)
+		);
+		
 		$f = new rex_fragment();
 		$f->setVar('title', $p["title"], false);
 		$f->setVar('content', $content , false);
-		return '<div id="projects_list" class="design2col">'.$f->parse('pz_screen_list.tpl').'</div>';
+		return '<div id="projects_list" class="design2col" data-url="'.$link_refresh.'">'.$f->parse('pz_screen_list.tpl').'</div>';
 	}
 
 	private function getProjectMatrixView($projects,$p = array())

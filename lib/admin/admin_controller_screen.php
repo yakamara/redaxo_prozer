@@ -280,6 +280,14 @@ class pz_admin_controller_screen extends pz_admin_controller {
 					$u = pz_user::get($user_id);
 					$u_screen = new pz_user_screen($u);
 					return $u_screen->getEditForm($p);
+
+        case("list"):
+          // $users = pz::getUser()->getUsers($filter);
+          $users = pz::getUsers($filter);
+          return pz_user_screen::getTableListView(
+						$users,
+						array_merge( $p, array("linkvars" => array( "mode" =>"list", "search_name" => $search_name) ) )
+					);
 				
 			}
 		}		
@@ -287,7 +295,8 @@ class pz_admin_controller_screen extends pz_admin_controller {
 		if(pz::getUser()->isAdmin())
 			$section_1.= pz_user_screen::getAddForm($p);
 
-		$users = pz::getUser()->getUsers($filter);
+		// $users = pz::getUser()->getUsers($filter);
+    $users = pz::getUsers($filter);
 		$section_2 = pz_user_screen::getTableListView(
 						$users,
 						array_merge( $p, array("linkvars" => array( "mode" =>"list", ) ) )

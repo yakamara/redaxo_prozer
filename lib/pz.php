@@ -38,10 +38,10 @@ class pz {
 			return "ERROR PCNE ".$class;
 		}
 		$ctr = new $class;
-		return $ctr->controller($func);
+		$return = $ctr->controller($func);
 
+    return $return;
 	}
-
 
 	// -------------------------------------------------------------------------
 
@@ -455,10 +455,10 @@ class pz {
 	    if($src) {
 
 	    	imagealphablending($src, true);
-			imagesavealpha($src, true);
+			  imagesavealpha($src, true);
 
-			$image_width = imagesx($src);
-			$image_height = imagesy($src);
+  			$image_width = imagesx($src);
+			  $image_height = imagesy($src);
 
 	    	$new_width = 25;
 	    	$new_height = 25;
