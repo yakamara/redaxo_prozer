@@ -26,18 +26,41 @@ class pz_email extends pz_model{
 		$body_html_element,
 		$body_text_element,
 		$attachments;
+		
+	private
+	  $setvars = true;
 
 
 	function __construct($vars = array())
 	{
+		$this->setVars($vars);
 		if(count($vars)>5) {
-			$this->setVars($vars);
 			$this->isEmail = TRUE;
+	    $this->setvars = false;
 			return TRUE;
 		}
 		return FALSE;
 	}
 
+
+  // tricky use
+  public function __call($m, $a) {
+
+    if($this->setvars) {
+      $email_sql = rex_sql::factory();
+      $emails_array = $email_sql->getArray('select * from pz_email where id = ? LIMIT 2', array($this->getId()));
+      foreach($emails_array as $email) {
+        $this->__construct($email);
+      }
+    }
+
+    $m = "__".$m;
+    if (is_object($this)) return call_user_func_array(array(&$this, $m), $a);
+    return true;
+  }
+
+
+  // ---------------- static
 
 	static function get($email_id = "")
 	{
@@ -50,7 +73,7 @@ class pz_email extends pz_model{
 	}
 
 
-	function getEmailsFromProjects($project_ids = array())
+	static function getEmailsFromProjects($project_ids = array())
 	{
 		$p_sql = array();
 		if(count($project_ids)>0)
@@ -63,7 +86,7 @@ class pz_email extends pz_model{
 		}
 		
 		$emails = rex_sql::factory();
-		$emails->setQuery('select * from pz_email as e where e.id = ?', $params);
+		$emails->setQuery('select id from pz_email as e where e.id = ?', $params);
 		$emails_array = $emails->getArray();
 		
 		$emails = array();
@@ -122,7 +145,7 @@ class pz_email extends pz_model{
     // $sql->debugsql = 1;
     // $sql->setQuery('SELECT * FROM pz_email '.$where_sql .' order by id desc LIMIT 5000', $params); // ORDER BY p.name
     // $emails_array = $sql->getArray();
-    $emails_array = $sql->getArray('SELECT * FROM pz_email '.$where_sql .' order by '.implode(',',$order_sql).' LIMIT 5000', $params);
+    $emails_array = $sql->getArray('SELECT id FROM pz_email '.$where_sql .' order by '.implode(',',$order_sql).' LIMIT 5000', $params);
     
     $emails = array();
     foreach($emails_array as $email)
@@ -135,7 +158,7 @@ class pz_email extends pz_model{
 
 	// ---------------- getter
 
-	public function getVars() {
+	public function __getVars() {
 		return $this->vars;	
 	}
 
@@ -143,65 +166,65 @@ class pz_email extends pz_model{
 		return intval($this->vars["id"]);
 	}
 
-	public function getProjectId() {
+	public function __getProjectId() {
 		return $this->vars["project_id"];
 	}
 
-	public function setProjectId($project_id) {
+	public function __setProjectId($project_id) {
 		$this->vars["project_id"] = $project_id;
 	}
 
-  public function getProject() {
+  public function __getProject() {
     if($this->vars["project_id"] == 0)
       return false;
     return pz_project::get($this->vars["project_id"]);
   }
 
-	public function getTo() {
+	public function __getTo() {
 		return $this->vars["to"];
 	}
 
-	public function getToEmails() {
+	public function __getToEmails() {
 		return $this->vars["to_emails"];
 	}
 
-	public function getCc() {
+	public function __getCc() {
 		return $this->vars["cc"];
 	}
 
-	public function getBcc() {
+	public function __getBcc() {
 		return $this->vars["bcc"];
 	}
 
-	public function getCcEmails() {
+	public function __getCcEmails() {
 		return $this->vars["cc_emails"];
 	}
 
-	public function getFrom() {
+	public function __getFrom() {
 		return $this->vars["from"];
 	}
 
-	public function getFromEmail() {
+	public function __getFromEmail() {
 		return $this->vars["from_emails"];
 	}
 
-	public function getFromAddress() {
+	public function __getFromAddress() {
 		if(!$this->from_address)
 			$this->from_address = pz_address::getByEmail($this->getFromEmail());
 		return $this->from_address;
 	}
 	
-	public function getCreateDate() 
+	public function __getCreateDate() 
 	{
 	  return $this->getDateTime()->format("Y-m-d");
 	}
 	
-	public function getDate() 
+	public function __getDate() 
 	{
 	  return $this->getDateTime()->format("Y-m-d");
 	}
 
-  public function getDateTime()
+  public function __getDateTime()
   {
     // DateTime::RFC822 ->  "Mon, 15 Aug 05 15:52:01 +0000"
     // DateTime::RFC1036 -> "Mon, 15 Aug 05 15:52:01 +0000"
@@ -230,7 +253,7 @@ class pz_email extends pz_model{
     return new DateTime();
   }
 
-	public function getSubject() {
+	public function __getSubject() {
 		$subject = $this->vars["subject"];
 		if($subject != "") {
 			return $subject;
@@ -238,7 +261,7 @@ class pz_email extends pz_model{
 		return rex_i18n::msg("no_subject_entered");
 	}
 
-	public function getEml() {
+	public function __getEml() {
 		if($this->eml == "")
 		{
 		  if($this->getId() != "")
@@ -249,115 +272,111 @@ class pz_email extends pz_model{
 		return $this->eml;
 	}
   
-  public function getProzerEml() 
+  public function __getProzerEml() 
   {
     if(!isset($this->pz_eml))
       $this->pz_eml = new pz_eml($this->getEml());
     return $this->pz_eml;
   }
 
-	public function getBody() 
+	public function __getBody() 
 	{
 		return $this->vars["body"];
 	}
 
-	public function getMessageHTML() 
+	public function __getMessageHTML() 
 	{
 		return $this->vars["body_html"];
 	}
 
-	public function getMessageId() 
+	public function __getMessageId() 
 	{
 		return $this->vars["message_id"];
 	}
 
-	public function getAccountId() 
+	public function __getAccountId() 
 	{
 		return $this->vars["account_id"];
 	}
 
-	public function getReplyId() 
+	public function __getReplyId() 
 	{
 		return $this->vars["reply_id"];
 	}
 
-	public function getForwardId() 
+	public function __getForwardId() 
 	{
 		return $this->vars["forward_id"];
 	}
 
-	public function getCreateUserId() 
+	public function __getCreateUserId() 
 	{
 		return $this->vars["create_user_id"];
 	}
 
-	public function getUserId() 
+	public function __getUserId() 
 	{
 		return $this->vars["user_id"];
 	}
 	
 	// only send mail
-	public function getClipIds() {
+	public function __getClipIds() {
 		return $this->vars["clip_ids"];
 	}
 	
-	public function getSend() {
+	public function __getSend() {
 		return $this->vars["send"];
 	}
 
 	// original mail
-	public function getRepliedId() {
+	public function __getRepliedId() {
 		return $this->vars["replied_id"];
 	}
 
-	public function getForwardedId() {
+	public function __getForwardedId() {
 		return $this->vars["forwarded_id"];
 	}
 
-	public function getStatus() {
+	public function __getStatus() {
 		$status = $this->vars["status"];
 		if($status != 1)
 			$status = 0;
 		return $status;
 	}
 
-	public function getReaded() {
+	public function __getReaded() {
 		$readed = $this->vars["readed"];
 		if($readed != 1)
 			$readed = 0;
 		return $readed;
 	}
 
-	public function getHeader() {
+	public function __getHeader() {
 		return $this->vars["header"];
 	}
 
-  public function getLabelId() {
+  public function __getLabelId() {
   
     // TODO
-    
-    
-    
-  
     return 3;
   
   }
 
-	public function isDraft() 
+	public function __isDraft() 
 	{
 		if($this->vars["draft"] == 1) 
 			return TRUE;
 		return FALSE;
 	}
 
-	public function isTrash() 
+	public function __isTrash() 
 	{
 		if($this->vars["trash"] == 1) 
 			return TRUE;
 		return FALSE;
 	}
 
-	public function hasProject() 
+	public function __hasProject() 
 	{
 		if($this->vars["project_id"] > 0) 
 			return TRUE;
@@ -365,7 +384,7 @@ class pz_email extends pz_model{
 	
 	}
 
-	public function hasAttachments() 
+	public function __hasAttachments() 
 	{
 		if($this->vars["has_attachments"] == 1)
 			return TRUE;
@@ -376,7 +395,7 @@ class pz_email extends pz_model{
 		// return $pz_eml->hasRealAttachments();
 	}
 
-  public function getAttachments()
+  public function __getAttachments()
   {
     $ignore_attachment_elements = array();
     if($this->hasBodyHTML() && $this->getBodyHTMLElement()->hasParent())
@@ -401,12 +420,12 @@ class pz_email extends pz_model{
   }
 
 
-  public function getRawHeader()
+  public function __getRawHeader()
   {
     return $this->header_raw;
   }
 
-  public function getRawBody()
+  public function __getRawBody()
   {
     return $this->body_raw;
   }
@@ -490,12 +509,10 @@ class pz_email extends pz_model{
 		$this->vars["updated"] = $updated;
 	}
 
+ 	// TODO: only because text/plain exists doesnt mean it is text part of mail
+ 	// TODO: only because text/html exists doesnt mean it is HTML part of mail
 
-
-   	// TODO: only because text/plain exists doesnt mean it is text part of mail
-   	// TODO: only because text/html exists doesnt mean it is HTML part of mail
-
-	public function hasBodyText()
+	public function __hasBodyText()
 	{
 		$pz_eml = new pz_eml($this->getEml());
     	$this->body_text_element = $pz_eml->getFirstContentTypeElement("text/plain",false);
@@ -504,7 +521,7 @@ class pz_email extends pz_model{
     	return false;
 	}
 
-	public function hasBodyHTML()
+	public function __hasBodyHTML()
 	{
     $this->body_html_element = $this->getProzerEml()->getFirstContentTypeElement("text/html",false);
     if($this->body_html_element)
@@ -512,12 +529,12 @@ class pz_email extends pz_model{
     return false;
 	}
 
-	public function getBodyTextElement()
+	public function __getBodyTextElement()
 	{
     return $this->getProzerEml()->getFirstContentTypeElement("text/plain",false);
 	}
 
-	public function getBodyHTMLElement()
+	public function __getBodyHTMLElement()
 	{
     return $this->getProzerEml()->getFirstContentTypeElement("text/html",false);
 	}
@@ -604,7 +621,7 @@ class pz_email extends pz_model{
 	}
 
 
-	public function sendDraft() 
+	public function __sendDraft() 
 	{
 
 		if($email_account = pz_email_account::get($this->getAccountId()))
@@ -642,6 +659,9 @@ class pz_email extends pz_model{
   
   			$mail->SetFrom($email_account->getEmail(), $email_account->getName());
   			$mail->Subject = $this->getSubject();
+  
+        $package = rex_package::get("prozer");
+        $mail->addCustomHeader('X-PROZER: '.$package->getVersion()); 
   
   			// TODO
   			// - richtig splitten, Cc, Bcc nach email und name..
@@ -802,7 +822,7 @@ class pz_email extends pz_model{
 		$this->saveToHistory('update','removefromproject');
 	}
 
-	public function update() 
+	public function __update() 
 	{
 		
 	}
@@ -838,7 +858,7 @@ class pz_email extends pz_model{
 
 	// --------------------------------------------------------------------------
 
-	public function refreshHeaderInfo() 
+	public function __refreshHeaderInfo() 
 	{
 
 		$headerinfo = pz_eml::parseHeaderToArray($this->getHeader());
