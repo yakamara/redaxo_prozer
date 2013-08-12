@@ -1,6 +1,6 @@
 <?php
 
-class pz_sabre_project_root_collection extends Sabre_DAV_SimpleCollection
+class pz_sabre_project_root_collection extends Sabre\DAV\SimpleCollection
 {
   private $childrenChecked = false;
 
@@ -30,11 +30,11 @@ class pz_sabre_project_root_collection extends Sabre_DAV_SimpleCollection
 
   public function createFile($name, $data = null)
   {
-    throw new Sabre_DAV_Exception('Permission denied to create file (filename ' . $name . ')');
+    throw new Sabre\DAV\Exception('Permission denied to create file (filename ' . $name . ')');
   }
 
   public function createDirectory($name)
   {
-    throw new Sabre_DAV_Exception('Permission denied to create directory');
+    throw new Sabre\DAV\Exception('Permission denied to create directory');
   }
 }

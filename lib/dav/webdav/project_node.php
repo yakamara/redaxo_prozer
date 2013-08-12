@@ -1,6 +1,6 @@
 <?php
 
-abstract class pz_sabre_project_node implements Sabre_DAV_INode
+abstract class pz_sabre_project_node implements Sabre\DAV\INode
 {
   protected $node;
 
