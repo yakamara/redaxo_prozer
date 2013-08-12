@@ -43,6 +43,7 @@ class pz_admin_controller_api extends pz_admin_controller
       	$return = $this->getRefreshPage();
       	break;
       case("cleanup"):
+        $format = rex_request("format", "string", "csv");
       	$return = $this->getCleanUpPage();
       	break;
 			default: 
@@ -106,18 +107,20 @@ class pz_admin_controller_api extends pz_admin_controller
 	  $filter[] = array("type"=>"=", "field"=>"trash", "value"=>1);
 		$emails = pz::getUser()->getTrashEmails($filter);
 
-    foreach($emails as $email)
-    {
-      if($email->getProjectId() >0)
-      {
-        $return[] = array("info" => 'EMail untrashed');
+    $deleted = 0;
+    $untrashed = 0;
+    foreach($emails as $email) {
+      if ($email->getProjectId() >0) {
+        $untrashed++;
         $email->untrash();  
-      }else 
-      {
-        $return[] = array("info" => 'EMail deleted');
+      } else {
+        $deleted++;
         $email->delete();
       }
     }  
+
+    $return[] = array("info" => $untrashed. ' emails untrashed');
+    $return[] = array("info" => $deleted.' emails deleted');
       
     // TODO:
     // - cleanup clips / alle die älter als 6 Monate versteckt und nicht verwendet sind - löschen
@@ -135,14 +138,14 @@ class pz_admin_controller_api extends pz_admin_controller
 		$filter[] = array("type"=>"<", "field"=>"stamp", "value"=>$date->format("Y-m-d 00:00"));
 		$entries = pz_history::get($filter);
 
-    foreach($entries as $entry)
-    {
-      $return[] = array("info" => 'Logentry deleted');
+    $deleted = 0;
+    foreach($entries as $entry) {
+      $deleted++;
       $entry->delete();
     }
-
+    $return[] = array("info" => $deleted.' logentries deleted');
     $return[] = array('info' => 'cleanup finished');
-	
+
 		return $return;
 	}
 
