@@ -11,20 +11,21 @@ class pz_email_screen{
 
 	// ------------------ LIST VIEWS
 
-	static function getInboxListView($emails, $p = array(), $orders = array())
+	static function getInboxListView($emails, $p = array(), $orders = array(), $pager_screen = "")
 	{
-		return pz_email_screen::getEmailsBlockView($emails, $p, $orders);
+  	return pz_email_screen::getPagedEmailsBlockView($emails, $p, $orders, $pager_screen);
 	}
 
-	static function getOutboxListView($emails, $p = array(), $orders = array())
+	static function getOutboxListView($emails, $p = array(), $orders = array(), $pager_screen = "")
 	{
-		return pz_email_screen::getEmailsBlockView($emails, $p, $orders);
+		return pz_email_screen::getPagedEmailsBlockView($emails, $p, $orders, $pager_screen);
 	}
 
-	static function getSearchListView($emails, $p = array(), $orders = array())
+	static function getSearchListView($emails, $p = array(), $orders = array(), $pager_screen = "")
 	{
-		return pz_email_screen::getEmailsBlockView($emails, $p, $orders);
+		return pz_email_screen::getPagedEmailsBlockView($emails, $p, $orders, $pager_screen);
 	}
+	
 	static function getDraftsListView($emails, $p = array(), $orders = array())
 	{
 		$p["title"] = rex_i18n::msg("email_drafts");
@@ -68,17 +69,17 @@ class pz_email_screen{
 		
 	}
 	
-	static function getSpamListView($emails, $p = array(), $orders = array())
+	static function getSpamListView($emails, $p = array(), $orders = array(), $pager_screen = "")
 	{
-		return pz_email_screen::getEmailsBlockView($emails,$p);
+		return pz_email_screen::getPagedEmailsBlockView($emails, $p, $orders, $pager_screen);
 	}
 
-	static function getTrashListView($emails, $p = array(), $orders = array())
+	static function getTrashListView($emails, $p = array(), $orders = array(), $pager_screen = "")
 	{
-		return pz_email_screen::getEmailsBlockView($emails, $p, $orders);
+		return pz_email_screen::getPagedEmailsBlockView($emails, $p, $orders, $pager_screen);
 	}
 
-	static function getEmailsBlockView($emails, $p = array(), $orders = array())
+	static function getEmailsBlockView($emails, $p = array(), $orders = array(), $pager_screen = "")
 	{
 		$p["layer"] = "emails_list";
 		$paginate_screen = new pz_paginate_screen($emails);
@@ -133,6 +134,65 @@ class pz_email_screen{
 		return '<div id="emails_list" class="design2col" data-url="'.$link_refresh.'">'.$return.'</div>';
 		
 	}
+
+  static function getPagedEmailsBlockView($emails, $p = array(), $orders = array(), $pager_screen)
+	{
+	
+	  // $paginate = $pager_screen->getPlainView($p);
+	
+	  $list = "";
+	  foreach($emails as $email) {
+  		if($e = new pz_email_screen($email)) {
+  			$list .= $e->getBlockView($p);
+  		}
+	  }	
+		
+		$list .= '<script>
+		$(document).ready(function() {
+		  pz_screen_select_event("#emails_list li.selected");
+		});
+		</script>';
+		
+		if(is_object($pager_screen)) {
+		
+  		if($pager_screen->isScrollPage()) {
+  		  return $pager_screen->getScrollView($p, $list);
+  		}
+  		
+  		$content = $pager_screen->getPlainView($p, $list);
+
+    } else {
+      $content = $list;
+    }
+
+
+		$f = new rex_fragment();
+		$f->setVar('title', $p["title"], false);
+		$f->setVar('content', $content , false);
+		
+		$link_refresh = pz::url("screen",$p["controll"],$p["function"],
+			array_merge(
+				$p["linkvars"],
+				array(
+					"mode"=>"list",
+					"email_project_ids" => "___value_ids___"	
+				)
+			)
+		);
+		
+		if(isset($p["list_links"]))
+			$f->setVar('links', $p["list_links"], false);
+		
+		$f->setVar("orders",$orders);
+		$return = $f->parse('pz_screen_list.tpl');
+		if(count($emails) == 0) {
+				$return .= '<div class="xform-warning">'.rex_i18n::msg("no_emails_found").'</div>';
+		}
+		
+		return '<div id="emails_list" class="design2col" data-url="'.$link_refresh.'">'.$return.'</div>';
+		
+	}
+
 
 	static function getEmailsMatrixView($emails, $p = array())
 	{

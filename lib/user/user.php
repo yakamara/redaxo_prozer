@@ -722,50 +722,50 @@ class pz_user extends rex_user
   	$filter[] = array("field" => "status", "value" => 0);
   	$filter[] = array("field" => "readed", "value" => 0);
 	  $projects = pz::getUser()->getEmailProjects();
-  	return count(pz_email::getAll($filter, $projects, array(pz::getUser())));
+  	return pz_email::countAll($filter, $projects, array(pz::getUser()));
   }
 
 
-  public function getInboxEmails(array $filter = array(), array $projects = array(), $orders = array())
+  public function getInboxEmails(array $filter = array(), array $projects = array(), $orders = array(), $pager = "")
   {
   	$filter[] = array("field" => "send", "value" => 0);
   	$filter[] = array("field" => "trash", "value" => 0);
   	$filter[] = array("field" => "draft", "value" => 0);
   	$filter[] = array("field" => "spam", "value" => 0);
-  	return pz_email::getAll($filter, $projects, array(pz::getUser()), $orders);
+  	return pz_email::getAll($filter, $projects, array(pz::getUser()), $orders, $pager);
   }
 
-  public function getOutboxEmails(array $filter = array(), array $projects = array(), $orders = array())
+  public function getOutboxEmails(array $filter = array(), array $projects = array(), $orders = array(), $pager = "")
   {
   	$filter[] = array("field" => "send", "value" => 1);
   	$filter[] = array("field" => "trash", "value" => 0);
-  	return pz_email::getAll($filter, $projects, array(pz::getUser()), $orders);
+  	return pz_email::getAll($filter, $projects, array(pz::getUser()), $orders, $pager);
   }
 
-  public function getSpamEmails(array $filter = array(), array $projects = array(), $orders = array())
+  public function getSpamEmails(array $filter = array(), array $projects = array(), $orders = array(), $pager = "")
   {
     $filter[] = array("field" => "spam", "value" => 1);
-    return pz_email::getAll($filter, $projects, array(pz::getUser()), $orders);
+    return pz_email::getAll($filter, $projects, array(pz::getUser()), $orders, $pager);
   }
 
-  public function getTrashEmails(array $filter = array(), array $projects = array(), $orders = array())
+  public function getTrashEmails(array $filter = array(), array $projects = array(), $orders = array(), $pager = "")
   {
     $filter[] = array("field" => "trash", "value" => 1);
-    return pz_email::getAll($filter, $projects, array(pz::getUser()), $orders);
+    return pz_email::getAll($filter, $projects, array(pz::getUser()), $orders, $pager);
   }
 
-  public function getDraftsEmails(array $filter = array(), array $projects = array(), $orders = array())
+  public function getDraftsEmails(array $filter = array(), array $projects = array(), $orders = array(), $pager = "")
   {
     $filter[] = array("field" => "draft", "value" => 1);
-    return pz_email::getAll($filter, $projects, array(pz::getUser()), $orders);
+    return pz_email::getAll($filter, $projects, array(pz::getUser()), $orders, $pager);
   }
 
-  public function getAllEmails(array $filter = array(), array $projects = array(), $orders = array())
+  public function getAllEmails(array $filter = array(), array $projects = array(), $orders = array(), $pager = "")
   {
     // $filter[] = array("field" => "trash", "value" => 0);
     // $filter[] = array("field" => "draft", "value" => 0);
     $filter[] = array("field" => "spam", "value" => 0);
-    return pz_email::getAll($filter, $projects, array(pz::getUser()), $orders);
+    return pz_email::getAll($filter, $projects, array(pz::getUser()), $orders, $pager);
   }
 
   public function getEmailById($email_id)

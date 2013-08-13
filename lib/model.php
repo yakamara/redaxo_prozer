@@ -2,7 +2,11 @@
 
 class pz_model {
 
-	public $vars = array();
+	public 
+	  $vars = array();
+
+  private 
+    $pager = "";
 
 	function __construct($vars = array())
 	{
@@ -58,6 +62,34 @@ class pz_model {
 		}
 		return $return;
 	}
+
+  static function query($query, $params, $pager = "") {
+    
+    if (is_object($pager)) {
+    
+      $query = preg_replace('/^SELECT/i', 'SELECT SQL_CALC_FOUND_ROWS', $query, 1);
+      $query .= ' LIMIT '.$pager->getCursor().', '.$pager->getRowsPerPage();
+      
+      $sql = rex_sql::factory();
+      $rows = $sql->getArray($query,$params);
+
+      $sql->setQuery('SELECT FOUND_ROWS() as rows;');
+      
+      $pager->setRowCount($sql->getValue("rows"));
+    
+      return $rows;
+    
+    } else {
+    
+      $sql = rex_sql::factory();
+      return $sql->getArray($query,$params);
+    
+    }
+    
+  }
+
+
+
 
 	public function update() {
 	}

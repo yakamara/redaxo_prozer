@@ -485,22 +485,15 @@ class pz_emails_controller_screen extends pz_emails_controller
     $current_order = $result['current_order'];
     $p = $result['p'];
 
-    $emails = pz::getUser()->getInboxEmails($filter, $projects, array($orders[$current_order]));
+    $pager = new pz_pager();
+    $pager_screen = new pz_pager_screen($pager, $p['layer_list']);
+    
+    $emails = pz::getUser()->getInboxEmails($filter, $projects, array($orders[$current_order]), $pager);
+    
+    $p['linkvars']['mode'] = 'list';
+    $return = pz_email_screen::getInboxListView($emails, $p, $orders, $pager_screen);
 
     $mode = rex_request('mode', 'string');
-    switch ($mode) {
-      case 'emails_search':
-        return pz_email_screen::getEmailsSearchForm($p, array('intrash'));
-
-      default:
-        break;
-
-    }
-
-    $p['linkvars']['mode'] = 'list';
-    $return = '';
-    $return .= pz_email_screen::getInboxListView($emails, $p, $orders);
-
     if ($mode == 'list') {
       return $return;
     }
@@ -515,6 +508,7 @@ class pz_emails_controller_screen extends pz_emails_controller
     $f->setVar('section_2', $s2_content, false);
 
     return $f->parse('pz_screen_main.tpl');
+      
   }
 
 
@@ -548,23 +542,21 @@ class pz_emails_controller_screen extends pz_emails_controller
     $current_order = $result['current_order'];
     $p = $result['p'];
 
-    $emails = pz::getUser()->getOutboxEmails($filter, $projects, array($orders[$current_order]));
-
-    $return = '';
+    $pager = new pz_pager();
+    $pager_screen = new pz_pager_screen($pager, $p['layer_list']);
+    
+    $emails = pz::getUser()->getOutboxEmails($filter, $projects, array($orders[$current_order]), $pager);
+    
+    $p['linkvars']['mode'] = 'list';
+    $return = pz_email_screen::getOutboxListView($emails, $p, $orders, $pager_screen);
 
     $mode = rex_request('mode', 'string');
-    switch ($mode) {
-
+    
+    /* switch ($mode) {
       case 'emails_search':
         return pz_email_screen::getEmailsSearchForm($p, array('intrash'));
-      default:
-        break;
-    }
-
-    $p['linkvars']['mode'] = 'list';
-
-    $return .= pz_email_screen::getOutboxListView($emails, $p, $orders);
-
+    } */
+    
     if ($mode == 'list') {
       return $return;
     }
@@ -579,6 +571,7 @@ class pz_emails_controller_screen extends pz_emails_controller
     $f->setVar('section_2', $s2_content, false);
 
     return $f->parse('pz_screen_main.tpl');
+    
   }
 
 
@@ -673,22 +666,22 @@ class pz_emails_controller_screen extends pz_emails_controller
     $current_order = $result['current_order'];
     $p = $result['p'];
 
-    $emails = pz::getUser()->getTrashEmails($filter, $projects, array($orders[$current_order]));
-
-    $return = '';
+    
+    $pager = new pz_pager();
+    $pager_screen = new pz_pager_screen($pager, $p['layer_list']);
+    
+    $emails = pz::getUser()->getTrashEmails($filter, $projects, array($orders[$current_order]), $pager);
+    
+    $p['linkvars']['mode'] = 'list';
+    $return = pz_email_screen::getTrashListView($emails, $p, $orders, $pager_screen);
 
     $mode = rex_request('mode', 'string');
-    switch ($mode) {
-
+    
+    /* switch ($mode) {
       case 'emails_search':
         return pz_email_screen::getEmailsSearchForm($p, array('intrash'));
-      default:
-        break;
-    }
-
-    $p['linkvars']['mode'] = 'list';
-    $return .= pz_email_screen::getTrashListView($emails, $p, $orders);
-
+    } */
+    
     if ($mode == 'list') {
       return $return;
     }
@@ -703,6 +696,7 @@ class pz_emails_controller_screen extends pz_emails_controller
     $f->setVar('section_2', $s2_content, false);
 
     return $f->parse('pz_screen_main.tpl');
+    
   }
 
 
@@ -724,11 +718,11 @@ class pz_emails_controller_screen extends pz_emails_controller
     // $filter[] = array("field"=>"trash", "value"=>0);
     $filter[] = array('field' => 'draft', 'value' => 0);
 
-    $result = self::getEmailListFilter($filter, $p['linkvars'], array());
+    $result = self::getEmailListFilter($filter, $p['linkvars'], array()); // array('intrash')
     $filter = $result['filter'];
     $p['linkvars'] = $result['linkvars'];
 
-    pz::debug('filter', $filter);
+    // pz::debug('filter', $filter);
 
     $orders = array();
     $result = self::getEmailListOrders($orders, $p);
@@ -736,28 +730,28 @@ class pz_emails_controller_screen extends pz_emails_controller
     $current_order = $result['current_order'];
     $p = $result['p'];
 
-    $return = '';
+    $projects = array();
+
+    $pager = new pz_pager();
+    $pager_screen = new pz_pager_screen($pager, $p['layer_list']);
+    
+    $emails = pz::getUser()->getAllEmails($filter, $projects, array($orders[$current_order]), $pager);
+    
+    $p['linkvars']['mode'] = 'list';
+    $return = pz_email_screen::getSearchListView($emails, $p, $orders, $pager_screen);
 
     $mode = rex_request('mode', 'string');
-    switch ($mode) {
-
+    
+    /* switch ($mode) {
       case 'emails_search':
-        return pz_email_screen::getEmailsSearchForm($p);
-      default:
-        break;
-    }
-
-    $p['linkvars']['mode'] = 'list';
-
-    $projects = array();
-    $emails = pz::getUser()->getAllEmails($filter, $projects, array($orders[$current_order]));
-    $return .= pz_email_screen::getSearchListView($emails, $p, $orders);
-
+        return pz_email_screen::getEmailsSearchForm($p, array('intrash'));
+    } */
+    
     if ($mode == 'list') {
       return $return;
     }
 
-    $s1_content .= pz_email_screen::getEmailsSearchForm($p);
+    $s1_content .= pz_email_screen::getEmailsSearchForm($p, array('intrash'));
     $s2_content .= $return;
 
     $f = new rex_fragment();
@@ -768,6 +762,7 @@ class pz_emails_controller_screen extends pz_emails_controller
 
     return $f->parse('pz_screen_main.tpl');
   }
+
 
   public function getEmailForm($p = array())
   {

@@ -692,27 +692,35 @@ class pz_project_controller_screen extends pz_project_controller
 		$current_order = $result["current_order"];
 		$p = $result["p"];
 		
-		$emails = pz_email::getAll($filter, array($this->project), array(), array($orders[$current_order]));
+		$pager = new pz_pager();
+    $pager_screen = new pz_pager_screen($pager, $p['layer_list']);
+    
+    $emails = pz_email::getAll($filter, array($this->project), array(), array($orders[$current_order]), $pager);
+    
+    $p['linkvars']['mode'] = 'list';
+    $return = pz_email_screen::getPagedEmailsBlockView($emails, $p, $orders, $pager_screen);
 
-		$list = pz_email_screen::getEmailsBlockView($emails, $p, $orders);
-		
-		$mode = rex_request("mode","string");
-		switch($mode) {
-			case("list"):
-				return $list;
-			default:
-				break;
-		}
+    $mode = rex_request('mode', 'string');
+    
+    /* switch ($mode) {
+      case 'emails_search':
+        return pz_email_screen::getEmailsSearchForm($p, array('intrash'));
+    } */
+    
+    if ($mode == 'list') {
+      return $return;
+    }
 
-		$section_1 = pz_email_screen::getEmailsSearchForm($p, $ignore_search_fields);
-		$section_2 = $list;
+    $s1_content .= pz_email_screen::getEmailsSearchForm($p, $ignore_search_fields);
+    $s2_content .= $return;
 
-		$f = new rex_fragment();
-		$f->setVar('header', pz_screen::getHeader(), false);
-		$f->setVar('function', $this->getNavigation() , false);
-		$f->setVar('section_1', $section_1, false);
-		$f->setVar('section_2', $section_2, false);
-		return $f->parse('pz_screen_main.tpl');
+    $f = new rex_fragment();
+    $f->setVar('header', pz_screen::getHeader($p), false);
+    $f->setVar('function', $this->getNavigation($p), false);
+    $f->setVar('section_1', $s1_content, false);
+    $f->setVar('section_2', $s2_content, false);
+
+    return $f->parse('pz_screen_main.tpl');
 	
 	}
 
