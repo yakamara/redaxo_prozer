@@ -94,26 +94,28 @@ class pz_address extends pz_model
 
   public function getName()
   {
-    return $this->vars['name'];
+    return $this->makeSingleLine($this->vars['name']);
   }
 
   public function getFirstName()
   {
-    return $this->vars['firstname'];
+    return $this->makeSingleLine($this->vars['firstname']);
   }
 
   public function getFullName()
   {
-    return implode(' ',
-          array_filter(
-            array( $this->vars['prefix'], $this->vars['firstname'], $this->vars['additional_names'], $this->vars['name'], $this->vars['suffix'] )
-            )
+    return $this->makeSingleLine(
+            implode(' ',
+              array_filter(
+                array( $this->vars['prefix'], $this->vars['firstname'], $this->vars['additional_names'], $this->vars['name'], $this->vars['suffix'] )
+                )
+              )
           );
   }
 
   public function getCompany()
   {
-    return str_replace(array("\n","\r"),array(" "," "),$this->vars['company']);
+    return $this->makeSingleLine($this->vars['company']);
   }
 
   public function isCompany()
@@ -123,7 +125,7 @@ class pz_address extends pz_model
 
   public function getNote()
   {
-    return $this->vars['note'];
+    return $this->checkMultiLine($this->vars['note']);
   }
 
   public function getInlineImage()
@@ -243,6 +245,14 @@ class pz_address extends pz_model
     if ($this->getVar('uri') == '')
       $sql->setRawValue('uri', 'CONCAT(UPPER(UUID()), ".vcf")');
     $sql->update();
+  }
+
+  public function makeSingleLine($value) {
+    return str_replace(array("\n","\r"),array(" ",""),$value);
+  }
+
+  public function checkMultiLine($value) {
+    return str_replace(array("\r"),array(""),$value);
   }
 
   public function create()

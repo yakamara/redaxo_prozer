@@ -2781,7 +2781,7 @@ public function getProjectjobListView($projects, $events, $p, $start, $end)
 		$xform->setObjectparams('form_showformafterupdate',1);
 
 		$xform->setValueField("checkbox",array("booked",rex_i18n::msg("calendar_event_booked"),1,1));
-		$xform->setValueField("textarea",array("title",rex_i18n::msg("calendar_event_title")));
+		$xform->setValueField("text",array("title",rex_i18n::msg("calendar_event_title")));
 
 		$projects = pz::getUser()->getCalendarProjects();
 		$xform->setValueField("pz_select_screen",array("project_id",rex_i18n::msg("project"),pz_project::getProjectsAsString($projects),"","",0,rex_i18n::msg("please_choose")));
@@ -3034,7 +3034,7 @@ $jquery .= '
 		{
 			$xform->setValueField("html",array("booked",'<div class="xform1 data xform-checkbox"><div class="flabel"><label>'.rex_i18n::msg("job").'</label></div><div class="felement">'.rex_i18n::msg("is_job").'</div></div>'));
 		}
-		$xform->setValueField("textarea",array("title",rex_i18n::msg("calendar_event_title")));
+		$xform->setValueField("text",array("title",rex_i18n::msg("calendar_event_title")));
 
     $projects = pz::getUser()->getCalendarProjects();
 		$xform->setValueField("pz_select_screen",array("project_id",rex_i18n::msg("project"),pz_project::getProjectsAsString($projects),"","",0,rex_i18n::msg("please_choose")));

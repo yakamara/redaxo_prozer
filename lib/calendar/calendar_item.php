@@ -57,12 +57,12 @@ abstract class pz_calendar_item extends pz_calendar_element
 
   public function getTitle()
   {
-    return $this->getValue('title');
+    return $this->makeSingleLine($this->getValue('title'));
   }
 
   public function getDescription()
   {
-    return $this->getValue('description');
+    return $this->checkMultiLine($this->getValue('description'));
   }
 
   /**
@@ -175,6 +175,14 @@ abstract class pz_calendar_item extends pz_calendar_element
   public function setAlarms(array $alarms)
   {
     return $this->setValue('alarms', $alarms);
+  }
+
+  public function makeSingleLine($value) {
+    return str_replace(array("\n","\r"),array(" ",""),$value);
+  }
+
+  public function checkMultiLine($value) {
+    return str_replace(array("\r"),array(""),$value);
   }
 
 }

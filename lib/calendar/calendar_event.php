@@ -34,13 +34,13 @@ class pz_calendar_event extends pz_calendar_item
     if (isset($params['e.clip_ids']))
       $this->clip_ids = $params['e.clip_ids'];
     if (isset($params['e.title']))
-      $this->title = $params['e.title'];
+      $this->title = $this->makeSingleLine($params['e.title']);
     if (isset($params['e.description']))
       $this->description = $params['e.description'];
     if (isset($params['e.url']))
-      $this->url = $params['e.url'];
+      $this->url = $this->makeSingleLine($params['e.url']);
     if (isset($params['e.location']))
-      $this->location = $params['e.location'];
+      $this->location = $this->makeSingleLine($params['e.location']);
     if (isset($params['e.booked']))
       $this->booked = (boolean) $params['e.booked'];
     if (isset($params['e.from']))
@@ -114,12 +114,12 @@ class pz_calendar_event extends pz_calendar_item
 
   public function getLocation()
   {
-    return $this->getValue('location');
+    return $this->makeSingleLine($this->getValue('location'));
   }
 
   public function getUrl()
   {
-    return $this->getValue('url');
+    return $this->makeSingleLine($this->getValue('url'));
   }
 
   public function setClipIds($clip_ids)
@@ -129,12 +129,12 @@ class pz_calendar_event extends pz_calendar_item
 
   public function setLocation($location)
   {
-    return $this->setValue('location', $location);
+    return $this->setValue('location', $this->makeSingleLine($location));
   }
 
   public function setUrl($url)
   {
-    return $this->setValue('url', $url);
+    return $this->setValue('url', $this->makeSingleLine($url));
   }
 
 
@@ -622,13 +622,12 @@ class pz_calendar_event extends pz_calendar_item
   }
 
   // ---------------------------
-
+  
   static function resetProjectSubs($project_sub_id)
   {
     $s = rex_sql::factory();
     $s->setQuery('update ' . self::TABLE . ' set project_sub_id = 0 where project_sub_id = ?', array($project_sub_id) );
   }
-
 
   public function copy2Job()
   {
