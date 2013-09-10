@@ -89,8 +89,12 @@ class pz_screen
 					$items[$k]["flyout"] = $controll->getMainFlyout();
 				$items[$k]["url"] = pz::url('screen',$controll->name);
 				
-				if($controll->name == "emails")
-					$items[$k]["span"] = pz::getUser()->countInboxEmails();
+				if($controll->name == "emails") {
+				  $email_count = pz::getUser()->countInboxEmails();
+				  if($email_count > 0) {
+					  $items[$k]["span"] = pz::getUser()->countInboxEmails();
+					}
+				}
 				
 				if($controll->name == "calendars")
 					$items[$k]["span"] = pz::getUser()->countAttendeeEvents();
