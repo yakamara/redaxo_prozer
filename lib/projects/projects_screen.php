@@ -92,7 +92,7 @@ class pz_projects_screen
     }
 
 		$return = '	<ul class="sl1 sl1b sl-r">
-						<li class="selected'.$project_selected.'"><span class="selected">'.$project_name.'</span>
+						<li class="selected'.$project_selected.'"><span class="selected"  onclick="pz_screen_select(this)">'.$project_name.'</span>
 							<div class="flyout">
 								<div class="content">'.$return.'</div>
 							</div>

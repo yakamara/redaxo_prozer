@@ -268,6 +268,9 @@ class pz_calendars_controller_screen extends pz_calendars_controller {
 		$p["layer_list"] = "calendar_events_day_list";
 		$p["layer_search"] = "calendar_events_day_search";
 
+    $p["headline"] = rex_i18n::msg("calendar_day_list");
+
+
 		$s1_content = "";
 		$s2_content = "";
 
@@ -363,6 +366,8 @@ class pz_calendars_controller_screen extends pz_calendars_controller {
 		$p["function"] = "week";
 		$p["layer_list"] = "calendar_events_week_list";
 		$p["layer_search"] = "calendar_events_week_search";
+
+    $p["headline"] = rex_i18n::msg("calendar_week_list");
 
     $days = 14;
 
@@ -493,6 +498,8 @@ class pz_calendars_controller_screen extends pz_calendars_controller {
 		$p["function"] = "customerplan";
 		$p["layer_list"] = "calendar_customerplan_list";
 		$p["layer_search"] = "calendar_customerplan_search";
+
+    $p["headline"] = rex_i18n::msg("calendar_customer_list");
 
 		$s1_content = "";
 		$s2_content = "";

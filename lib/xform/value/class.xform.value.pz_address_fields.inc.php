@@ -277,7 +277,7 @@ class rex_xform_value_pz_address_fields extends rex_xform_value_abstract
 		$field = '<a class="bt5" href="javascript:void(0);" onclick="
 						inp = $(\'#'.$this->getHTMLId("phone_hidden").'\').clone();
 						inp.attr({ id: \'\' });
-						$(\'#'.$this->getHTMLId("phone_hidden_div").'\').after(inp);		
+						$(\'#'.$this->getHTMLId("phone_hidden_div").'\').before(inp);		
 						">+ '.rex_i18n::msg("add_phonefield").'</a>';
 		$f = new rex_fragment();
 		$f->setVar('label', '<label></label>', false);
@@ -336,7 +336,7 @@ class rex_xform_value_pz_address_fields extends rex_xform_value_abstract
 		$field = '<a class="bt5" href="javascript:void(0);" onclick="
 						inp = $(\'#'.$this->getHTMLId("email_hidden").'\').clone();
 						inp.attr({ id: \'\' });
-						$(\'#'.$this->getHTMLId("email_hidden_div").'\').after(inp);		
+						$(\'#'.$this->getHTMLId("email_hidden_div").'\').before(inp);		
 						">+ '.rex_i18n::msg("add_emailfield").'</a>';
 		$f = new rex_fragment();
 		$f->setVar('label', '<label></label>', false);
@@ -424,7 +424,7 @@ class rex_xform_value_pz_address_fields extends rex_xform_value_abstract
 		$field = '<a class="bt5" href="javascript:void(0);" onclick="
 						inp = $(\'#'.$this->getHTMLId("postaddress_hidden").'\').clone();
 						inp.attr({ id: \'\' });
-						$(\'#'.$this->getHTMLId("postaddress_hidden_div").'\').after(inp);		
+						$(\'#'.$this->getHTMLId("postaddress_hidden_div").'\').before(inp);		
 						">+ '.rex_i18n::msg("add_postaddressfield").'</a>';
 		$f = new rex_fragment();
 		$f->setVar('label', '<label></label>', false);
@@ -477,7 +477,7 @@ class rex_xform_value_pz_address_fields extends rex_xform_value_abstract
 		$field = '<a class="bt5" href="javascript:void(0);" onclick="
 						inp = $(\'#'.$this->getHTMLId("url_hidden").'\').clone();
 						inp.attr({ id: \'\' });
-						$(\'#'.$this->getHTMLId("url_hidden_div").'\').after(inp);		
+						$(\'#'.$this->getHTMLId("url_hidden_div").'\').before(inp);		
 						">+ '.rex_i18n::msg("add_urlfield").'</a>';
 		$f = new rex_fragment();
 		$f->setVar('label', '<label></label>', false);
@@ -531,7 +531,7 @@ class rex_xform_value_pz_address_fields extends rex_xform_value_abstract
 		$field = '<a class="bt5" href="javascript:void(0);" onclick="
 						inp = $(\'#'.$this->getHTMLId("socialprofile_hidden").'\').clone();
 						inp.attr({ id: \'\' });
-						$(\'#'.$this->getHTMLId("socialprofile_hidden_div").'\').after(inp);		
+						$(\'#'.$this->getHTMLId("socialprofile_hidden_div").'\').before(inp);		
 						">+ '.rex_i18n::msg("add_socialprofile").'</a>';
 		$f = new rex_fragment();
 		$f->setVar('label', '<label></label>', false);
@@ -604,7 +604,7 @@ class rex_xform_value_pz_address_fields extends rex_xform_value_abstract
 		$field = '<a class="bt5" href="javascript:void(0);" onclick="
 						inp = $(\'#'.$this->getHTMLId("impp_hidden").'\').clone();
 						inp.attr({ id: \'\' });
-						$(\'#'.$this->getHTMLId("impp_hidden_div").'\').after(inp);		
+						$(\'#'.$this->getHTMLId("impp_hidden_div").'\').before(inp);		
 						">+ '.rex_i18n::msg("add_impp").'</a>';
 		$f = new rex_fragment();
 		$f->setVar('label', '<label></label>', false);

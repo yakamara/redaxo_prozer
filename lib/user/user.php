@@ -4,7 +4,7 @@ class pz_user extends rex_user
 {
 
 	static private $users;
-	private $perms,$config,$inline_image,$emails,$active_user = NULL;
+	private $perms,$config,$inline_image,$emails,$active_user = NULL,$cache = array();
 
 	public function __construct(rex_sql $sql)
 	{
@@ -19,6 +19,8 @@ class pz_user extends rex_user
 
 	  if(!is_array($this->config))
 	  	$this->config = array();
+
+    $this->cache["email_projects"] = array();
 
 	}
 
@@ -420,7 +422,7 @@ class pz_user extends rex_user
 
     // wenn der clip in einem event ist
     // - der ein Projekt hat, auf das man Zugreifen kann und rechte am kalender hat
-    $events = pz_calendar_event::getEventsByClip($clip);
+    $events = @pz_calendar_event::getEventsByClip($clip);
     foreach($events as $event)
     {
       if($this->getEventViewPerm($event))
@@ -636,11 +638,16 @@ class pz_user extends rex_user
   	return array();
   }
 
-  public function getEmailProjects($filter = array())
+  public function getEmailProjects($filter = array(), $refresh = true)
   {
-  	$filter[] = array("field" => "has_emails", "value" => 1);
-  	$filter[] = array("field" => "archived", "value" => 0);
-    return $this->_getProjects('(pu.emails = 1 OR pu.admin = 1)', true, $filter);
+    $serialized_filter = serialize($filter);
+    if($refresh && !isset($this->cache['email_projects'][$serialized_filter])) {
+      $filter[] = array("field" => "has_emails", "value" => 1);
+      $filter[] = array("field" => "archived", "value" => 0);
+      $this->cache['email_projects'][$serialized_filter] = $this->_getProjects('(pu.emails = 1 OR pu.admin = 1)', true, $filter);
+    }
+
+    return $this->cache['email_projects'][$serialized_filter];
   }
 
   public function getProjectById($project_id)
@@ -722,9 +729,12 @@ class pz_user extends rex_user
   	$filter[] = array("field" => "status", "value" => 0);
   	$filter[] = array("field" => "readed", "value" => 0);
 	  $projects = pz::getUser()->getEmailProjects();
-  	return pz_email::countAll($filter, $projects, array(pz::getUser()));
+	  
+	  $pager = new pz_pager();
+	  pz_email::getAll($filter, $projects, array(pz::getUser()), array(), $pager);
+	  // echo "*****".$pager->getRowCount();
+  	return $pager->getRowCount();
   }
-
 
   public function getInboxEmails(array $filter = array(), array $projects = array(), $orders = array(), $pager = "")
   {
@@ -739,11 +749,16 @@ class pz_user extends rex_user
   {
   	$filter[] = array("field" => "send", "value" => 1);
   	$filter[] = array("field" => "trash", "value" => 0);
+  	$filter[] = array("field" => "draft", "value" => 0);
+  	$filter[] = array("field" => "spam", "value" => 0);
   	return pz_email::getAll($filter, $projects, array(pz::getUser()), $orders, $pager);
   }
 
   public function getSpamEmails(array $filter = array(), array $projects = array(), $orders = array(), $pager = "")
   {
+  	$filter[] = array("field" => "send", "value" => 0);
+  	$filter[] = array("field" => "trash", "value" => 0);
+  	$filter[] = array("field" => "draft", "value" => 0);
     $filter[] = array("field" => "spam", "value" => 1);
     return pz_email::getAll($filter, $projects, array(pz::getUser()), $orders, $pager);
   }

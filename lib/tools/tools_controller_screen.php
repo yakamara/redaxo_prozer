@@ -69,8 +69,42 @@ class pz_tools_controller_screen extends pz_tools_controller {
 	{
 		$emails = pz::getUser()->countInboxEmails();
 		$attandees = pz::getUser()->countAttendeeEvents();
+		
 		$title = '['.$emails.'] '.pz_screen::getPageTitle();
-		$return = '<script>pz_updateInfocounter('.$emails.', '.$attandees.',"'.$title.'");</script>';
+		$return = '<script>
+		pz_updateInfocounter('.$emails.', '.$attandees.',"'.$title.'");
+		</script>';
+		
+		// Problem
+		
+		// Emails oder andere Dinge nachladen die ein neuerest Datum 
+		// als das aktuellste haben und diese an oberste Stelle der aktuellen 
+		// Liste stellen
+		
+		// Bsp. Inbox / Outbox / Müll / Projektemails / Kalendertermine / jobs / Adressen
+	  // immer in bestimmtem Kontext: Termine heute / 2 wochen ...
+	  
+	  // regelmaessige prüfung, nachladen und anzeigen
+		
+		// TODO: neue emails laden
+		// - im tracker die page mit übergeben
+		// -
+		/*
+		$filter = array();
+		$filter[] = array('type' => 'plain', 'value' => '( (project_id>0 AND status=0) || (project_id=0))');
+		$filter[] = array('type' => 'plain', 'value' => '( createdesc > )');
+		$emails = pz::getUser()->getInboxEmails($filter, array(), array('createdesc'), $pager);
+		*/      
+		
+		
+		
+		// - last trackingdate setzen
+		// - Datum vom letzten Trackeraufruf mit übergeben und im pz_tracker mit übergeben
+		// - prüfen ob auf email page
+		// - email/s nachladen
+		
+		
+		
 		return $return;
 	}
 
@@ -82,6 +116,7 @@ class pz_tools_controller_screen extends pz_tools_controller {
 		$p["controll"] = "tools";
 		$p["function"] = "jobs";
 		$p["layer"] = "jobs_list";
+		$p["layer_list"] = "jobs_list";
 		
 		$section_1 = '';
 		$section_2 = '';
@@ -359,11 +394,11 @@ class pz_tools_controller_screen extends pz_tools_controller {
 		$section_1 = $u_screen->getMyEditForm($p);
 		$section_1.= $u_screen->getMyPasswordEditForm($p);
 		
-		if(pz::getUser()->isAdmin())
-		{
-			$section_1 .= $u_screen->getApiView($p);
+		if(pz::getUser()->isAdmin()) {
 		}
-		
+
+    $section_1 .= $u_screen->getApiView($p);
+	
 		$projects = $user->getMyProjects();
 		$section_2 = $u_screen->getProjectPermTableListView($p,$projects);
 		

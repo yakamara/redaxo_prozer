@@ -10,6 +10,9 @@ class pz {
 
 	static function controller()
 	{
+    
+    $timer = new rex_timer();
+    // pz::xhprof_start();
 
 		// TODO UTF8 einstellen
 		// ini_set("mbstring.func_overload",7);
@@ -40,8 +43,28 @@ class pz {
 		$ctr = new $class;
 		$return = $ctr->controller($func);
 
+    // loggen wenn mehr als 1000 Millis
+    if(is_object(pz::getUser()) && pz::getUser()->getId() == 1 && $timer->getDelta()>700) {
+      // $xhprof_url = pz::xhprof_end();
+    }
+
     return $return;
 	}
+
+  static public function xhprof_start() {
+    include_once '/kunden/107405_60311/rp-hosting/1/1/xhprof/xhprof-0.9.3/xhprof_lib/utils/xhprof_lib.php';
+    include_once '/kunden/107405_60311/rp-hosting/1/1/xhprof/xhprof-0.9.3/xhprof_lib/utils/xhprof_runs.php';
+    xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
+  }
+  
+  static public function xhprof_end() {
+    $profiler_namespace = 'prozer';  // namespace for your application
+    $xhprof_data = xhprof_disable();  // stop function
+    $xhprof_runs = new XHProfRuns_Default();
+    $run_id = $xhprof_runs->save_run($xhprof_data, $profiler_namespace);  // save
+
+    return sprintf('http://xhprof.modulvier.com//index.php?run=%s&source=%s', $run_id, $profiler_namespace); //  
+  }
 
 	// -------------------------------------------------------------------------
 
@@ -390,8 +413,15 @@ class pz {
 
 	static function debug($message, $p = '', $type = 'log')
 	{
+	  // return;
+	
 	  switch($type)
 	  {
+      case('error'):
+      case('err'):
+        $type = 'error';
+        break;
+	    case('warning'):
 	    case('warn'):
 	      $type = 'warn';
 	      break;
@@ -416,7 +446,8 @@ class pz {
 
   static function debugArray($p, $type = "info", $level = 1)
   {
-  
+  	  return;
+
     FB::$type('array (');
     foreach($p as $k => $m) {
     	if(is_array($m))
@@ -549,13 +580,21 @@ class pz {
 
 	static function array2csv($as = array()) 
 	{
+
+    $search = array(",",'"',"\n","\r", " ");
+    $replace = array(";",'""',"","", "_");
+
     $h = array();
 	  foreach($as as $a) {
       foreach($a as $k => $v) {
+        $k = str_replace($search, $replace, $k);
       	$h[$k] = $k;
       }
-      break;
 	  }
+	  
+    $search = array(",",'"',"\n","\r");
+    $replace = array(";",'""',"","");
+
 	  $return = array();
 	  $return[] = implode(",",$h);
     
@@ -563,10 +602,9 @@ class pz {
       $data = array();
     	foreach($h as $t => $tt) {
     	
+        $t = str_replace($search, $replace, $t);
     	  $v = @$a[$t];
     	  if(!is_int($v)) {
-          $search = array(",",'"',"\n","\r");
-          $replace = array(";",'""',"","");
           $v = '"'.str_replace($search, $replace, $v).'"';
     	  }
     	  $data[] = $v;
@@ -781,12 +819,7 @@ class pz {
 
     // TODO: refresh contact fulltext
 
-
   }
-
-
-
-
 
 }
 

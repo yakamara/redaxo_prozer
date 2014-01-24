@@ -8,7 +8,7 @@ class pz_screen
 		
 		$f = new rex_fragment();
 		$f->setVar('content',$content);
-		return $f->parse('pz_screen_page.tpl');
+		return $f->parse('pz_screen_main.tpl');
 	}
 	*/
 
@@ -62,7 +62,8 @@ class pz_screen
   static function getThemes() {
     $themes = array(
       'blue_grey' => '/assets/addons/prozer/themes/blue_grey', 
-      'magneto_dark' => '/assets/addons/prozer/themes/magneto_dark'
+//      'magneto_dark' => '/assets/addons/prozer/themes/magneto_dark',
+      'mountain' => '/assets/addons/prozer/themes/mountain'
     );
     
     $themes = rex_extension::registerPoint(

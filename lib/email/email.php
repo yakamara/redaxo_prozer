@@ -37,7 +37,20 @@ class pz_email extends pz_model{
 		if(count($vars)>5) {
 			$this->isEmail = TRUE;
 			return TRUE;
+
+		} else if (isset($vars["id"]) &&  $vars["id"] != "") {
+
+      $email_sql = rex_sql::factory();
+  		$email_sql->setQuery('select * from pz_email where id = ?', array($vars["id"]));
+  		$emails = $email_sql->getArray();
+  		if(count($emails) != 1) return FALSE;
+  		$this->isEmail = TRUE;
+  		$vars = $emails[0];
+  		$this->setVars($vars);
+      return true;		
+
 		}
+		
 		return FALSE;
 	}
 
@@ -66,7 +79,7 @@ class pz_email extends pz_model{
 	{
 		if($email_id == "") return FALSE;
 		$email_sql = rex_sql::factory();
-		$email_sql->setQuery('select * from pz_email where id = ? LIMIT 2', array($email_id));
+		$email_sql->setQuery('select * from pz_email where id = ?', array($email_id));
 		$emails = $email_sql->getArray();
 		if(count($emails) != 1) return FALSE;
 		return new pz_email($emails[0]);
@@ -95,43 +108,12 @@ class pz_email extends pz_model{
 		return $emails;
 	}
 
+
   static function countAll(array $filter = array(), array $projects = array(), array $users = array(), array $orders = array(), $pager = "")
   {
-    $where = array();
-		$params = array(); 
-
-		$where_projects_users = "";
-		$where_projects = array();
-		foreach($projects as $p) {
-			$where_projects[] = $p->getId();
-		}
-
-		if(count($where_projects)>0) {
-			$where_projects_users = 'FIND_IN_SET(project_id,"'.implode(",",$where_projects).'")';
-		}
-
-		$where_users = array();
-		foreach($users as $u) {
-			$where_users[] = $u->getId();
-		}
-		if(count($where_users)>0) {
-			if($where_projects_users != "")
-				$where_projects_users .= " OR ";
-			$where_projects_users = '('.$where_projects_users.' FIND_IN_SET(user_id,"'.implode(",",$where_users).'")'.')';
-		}
-		
-		$where[] = $where_projects_users;
-  
-		$f = pz::getFilter($filter,$where,$params);
-		$where = $f["where"];
-		$params = $f["params"];
-		$where_sql = $f["where_sql"];
-	
-    $sql = rex_sql::factory();
-    $sql->setQuery('SELECT count(id) as rows FROM pz_email '.$where_sql, $params);
-
-    return $sql->getValue("rows");
-  
+    $pager = new pz_pager;
+    pz_email::getAll( $filter, $projects, $users, $orders, $pager);
+    return $pager->getRowCount();
   }
 
 
@@ -143,21 +125,26 @@ class pz_email extends pz_model{
 		$where_projects_users = "";
 		$where_projects = array();
 		foreach($projects as $p) {
-			$where_projects[] = $p->getId();
+			//$where_projects[] = $p->getId();
+			$where_projects[] = 'project_id='.$p->getId();
 		}
 
 		if(count($where_projects)>0) {
-			$where_projects_users = 'FIND_IN_SET(project_id,"'.implode(",",$where_projects).'")';
+			// $where_projects_users = 'FIND_IN_SET(project_id,"'.implode(",",$where_projects).'")';
+			$where_projects_users = '('.implode(" OR ",$where_projects).')';
+			
 		}
 
 		$where_users = array();
 		foreach($users as $u) {
-			$where_users[] = $u->getId();
+			$where_users[] = 'user_id='.$u->getId();
 		}
 		if(count($where_users)>0) {
 			if($where_projects_users != "")
 				$where_projects_users .= " OR ";
-			$where_projects_users = '('.$where_projects_users.' FIND_IN_SET(user_id,"'.implode(",",$where_users).'")'.')';
+			// $where_projects_users = '('.$where_projects_users.' FIND_IN_SET(user_id,"'.implode(",",$where_users).'")'.')';
+			$where_projects_users = '( '.$where_projects_users.' '.implode(" OR ",$where_users).')';
+			
 		}
 		$where[] = $where_projects_users;
 	
@@ -168,19 +155,23 @@ class pz_email extends pz_model{
 		$where_sql = $f["where_sql"];
 	
 		// ----- Orders
-		$orders[] = array("orderby" => "id", "sort" => "desc");
-		$order_sql = array();
+		// $orders[] = array("orderby" => "id", "sort" => "desc");
+		$order_array = array();
 		foreach($orders as $order) {
-			$order_sql[] = '`'.$order["orderby"].'` '.$order["sort"];
+			$order_array[] = '`'.$order["orderby"].'` '.$order["sort"];
 		}
 		
+		$order_sql = '';
+		if(count($order_array)>0) {
+		  $order_sql = ' order by '.implode(',',$order_array);
+		}
+
     $sql = rex_sql::factory();
-    
     if(is_object($pager)) {
-      $emails_array = pz_model::query('SELECT * FROM pz_email '.$where_sql .' order by '.implode(',',$order_sql).'', $params, $pager);
+      $emails_array = pz_model::query('SELECT id FROM pz_email '.$where_sql .' '.$order_sql.'', $params, $pager);
       
     } else {
-      $emails_array = $sql->getArray('SELECT * FROM pz_email '.$where_sql .' order by '.implode(',',$order_sql).' LIMIT 5000', $params);
+      $emails_array = $sql->getArray('SELECT id FROM pz_email '.$where_sql .' '.$order_sql.' LIMIT 2000', $params);
     
     }
     
@@ -609,8 +600,8 @@ class pz_email extends pz_model{
 			$this->setMessageId($message_id);
 		}
 		
-		$this->setCreated(date("Y-m-d H:i:s"));
-		$this->setUpdated(date("Y-m-d H:i:s"));
+		$this->setCreated(pz::getDateTime()->format("Y-m-d H:i:s"));
+		$this->setUpdated(pz::getDateTime()->format("Y-m-d H:i:s"));
 		
 		$get_email = rex_sql::factory();
 		// $get_email->debugsql = 1;

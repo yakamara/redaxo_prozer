@@ -208,6 +208,55 @@ class pz_emails_controller_screen extends pz_emails_controller
   {
     $mode = rex_request('mode', 'string', '');
     switch ($mode) {
+
+      case 'delete_current_emails':
+      
+        $return = '<script language="Javascript">';
+      
+        $filter = array();
+        $result = self::getEmailListFilter($filter, $p['linkvars'], array('intrash'));
+        $filter = $result['filter'];
+        $emails = pz::getUser()->getTrashEmails($filter);
+
+        $return .= 'alert("'.count($emails).'");';
+
+        foreach($emails as $email) {
+          // $email->trash();
+          $return .= 'pz_hide(".email-' . $email->getId() . '");';
+        }
+
+        $return .= '$(".emails-delete").removeClass("bt-loading");';
+        $return .= 'pz_init_tracker("global");';
+        $return .= '</script>';
+              
+        return $return;
+
+
+    
+      case 'trash_noprojectoutbox_emails':
+        $return = '<script language="Javascript">';
+        $emails = array();
+
+        $filter = array();
+        $filter[] = array('type' => '=', 'field' => 'user_id', 'value' => pz::getUser()->getId());
+        $filter[] = array('type' => '=', 'field' => 'project_id', 'value' => "0");
+
+        $result = self::getEmailListFilter($filter, array(), array('intrash'));
+        $filter = $result['filter'];
+
+        $emails = pz::getUser()->getOutboxEmails($filter);
+
+        foreach($emails as $email) {
+          $email->trash();
+          $return .= 'pz_hide(".email-' . $email->getId() . '");';
+        }
+
+        $return .= '$(".emails-trash").removeClass("bt-loading");';
+        $return .= 'pz_init_tracker("global");';
+        $return .= '</script>';
+
+        return $return;
+    
       case 'download_emails':
 
         $return = '<script language="Javascript">';
@@ -220,11 +269,11 @@ class pz_emails_controller_screen extends pz_emails_controller
         // $return.= 'alert("'.count($emails).' E-mails downloaded");';
 
         $return .= '$(".emails-download").removeClass("bt-loading");';
-        $return .= 'pz_tracker();';
+        $return .= 'pz_init_tracker("global");';
         $return .= '</script>';
 
         return $return;
-        break;
+
     }
 
   }
@@ -254,7 +303,7 @@ class pz_emails_controller_screen extends pz_emails_controller
         $return .= '<script language="Javascript">';
         $return .= '$(".email-' . $email->getId() . '").removeClass("email-unreaded");';
         $return .= '$(".email-' . $email->getId() . '").addClass("email-readed");';
-        $return .= 'pz_tracker();';
+        $return .= 'pz_init_tracker("global");';
         $return .= '</script>';
 
         return $return;
@@ -398,7 +447,7 @@ class pz_emails_controller_screen extends pz_emails_controller
         if ($status == 1 || !in_array($project->getId(), $project_ids)) {
             $return .= 'pz_hide(".email-' . $email->getId() . '");';
         }
-        $return .= 'pz_tracker();';
+        $return .= 'pz_init_tracker("global");';
         $return .= '</script>';
         return $return;
 
@@ -416,7 +465,7 @@ class pz_emails_controller_screen extends pz_emails_controller
         $email->trash();
         $return = '<script language="Javascript">';
         $return .= 'pz_hide(".email-' . $email->getId() . '");';
-        $return .= 'pz_tracker();';
+        $return .= 'pz_init_tracker("global");';
         $return .= '</script>';
         return $return;
 
@@ -424,7 +473,7 @@ class pz_emails_controller_screen extends pz_emails_controller
         $email->untrash();
         $return = '<script language="Javascript">';
         $return .= 'pz_hide(".email-' . $email->getId() . '");';
-        $return .= 'pz_tracker();';
+        $return .= 'pz_init_tracker("global");';
         $return .= '</script>';
         return $return;
 
@@ -432,7 +481,7 @@ class pz_emails_controller_screen extends pz_emails_controller
         $email->delete();
         $return = '<script language="Javascript">';
         $return .= 'pz_hide(".email-' . $email->getId() . '");';
-        $return .= 'pz_tracker();';
+        $return .= 'pz_init_tracker("global");';
         $return .= '</script>';
         return $return;
 
@@ -441,7 +490,7 @@ class pz_emails_controller_screen extends pz_emails_controller
         $return = '<script language="Javascript">';
         $return .= '$(".email-' . $email->getId() . '").removeClass("email-readed");';
         $return .= '$(".email-' . $email->getId() . '").addClass("email-unreaded");';
-        $return .= 'pz_tracker();';
+        $return .= 'pz_init_tracker("global");';
         $return .= '</script>';
         return $return;
 
@@ -475,6 +524,16 @@ class pz_emails_controller_screen extends pz_emails_controller
     $filter = array();
     $filter[] = array('type' => 'plain', 'value' => '( (project_id>0 AND status=0) || (project_id=0))');
 
+    $tracker_date = pz::getDateTime()->format('Y-m-d H:i:s');
+
+    // postload - new emails
+    $date = rex_request("date","string");
+    if($date != "") {
+      if( ($from_date = DateTime::createFromFormat('Y-m-d H:i:s', $date, pz::getDateTimeZone())) ) {
+        $filter[] = array('type' => 'plain', 'value' => '( created>"'.$from_date->format('Y-m-d H:i:s').'" and created <= "'.$tracker_date.'")');
+      }
+    }
+
     $result = self::getEmailListFilter($filter, $p['linkvars'], array('intrash'));
     $filter = $result['filter'];
     $p['linkvars'] = $result['linkvars'];
@@ -491,11 +550,28 @@ class pz_emails_controller_screen extends pz_emails_controller
     $emails = pz::getUser()->getInboxEmails($filter, $projects, array($orders[$current_order]), $pager);
     
     $p['linkvars']['mode'] = 'list';
+    $p['trackerlink'] = pz::url('screen', 'emails', 'inbox', array_merge($p['linkvars'], array('mode' => 'getnew', 'date' => $tracker_date)));
+    $p['javascript'] = 'pz_add_tracker("inbox_emails", "'.$p['trackerlink'].'", 5000, 0);';
+
     $return = pz_email_screen::getInboxListView($emails, $p, $orders, $pager_screen);
 
     $mode = rex_request('mode', 'string');
-    if ($mode == 'list') {
+    if ($mode == 'getnew') {
+      $emails_screen = '';
+      if(isset($from_date)) {
+        foreach($emails as $email) {
+          if($e = new pz_email_screen($email)) {
+          	$emails_screen .= $e->getBlockView($p);
+          }
+        }
+      }
+      
+      $return = '<script>'.$p['javascript'].'$("#emails_list article:first").before("'.str_replace(array("\n","\r",'"'),array("","",'\"'),$emails_screen).'");</script>';
       return $return;
+
+    } else if ($mode == 'list') {
+      return $return;
+
     }
 
     $s1_content .= pz_email_screen::getEmailsSearchForm($p, array('intrash'));
@@ -535,6 +611,9 @@ class pz_emails_controller_screen extends pz_emails_controller
     $result = self::getEmailListFilter($filter, $p['linkvars'], array('intrash'));
     $filter = $result['filter'];
     $p['linkvars'] = $result['linkvars'];
+
+    $p['list_links'] = array();
+    $p['list_links'][] = '<a class="emails-trash bt5 bt17" href="javascript:void(0);" onclick="if($(this).hasClass(\'bt-loading\')) return false; $(this).addClass(\'bt-loading\'); pz_exec_javascript(\'' . pz::url('screen', 'emails', 'emails', array_merge(array('mode' => 'trash_noprojectoutbox_emails'))) . '\');"><span>' . rex_i18n::msg('trash_noprojectoutbox_emails') . '</span></a>';
 
     $orders = array();
     $result = self::getEmailListOrders($orders, $p);
@@ -657,6 +736,11 @@ class pz_emails_controller_screen extends pz_emails_controller
     $result = self::getEmailListFilter($filter, $p['linkvars'], array('intrash'));
     $filter = $result['filter'];
     $p['linkvars'] = $result['linkvars'];
+
+
+    $p['list_links'] = array();
+    $p['list_links'][] = '<a class="emails-delete bt5 bt17" href="javascript:void(0);" onclick="if($(this).hasClass(\'bt-loading\')) return false; $(this).addClass(\'bt-loading\'); pz_exec_javascript(\'' . pz::url('screen', 'emails', 'emails', array_merge(array('mode' => 'delete_current_emails'),$p['linkvars'])) . '\');"><span>' . rex_i18n::msg('delete_current_emails') . '</span></a>';
+
 
     // search_intrash
 
@@ -894,7 +978,7 @@ class pz_emails_controller_screen extends pz_emails_controller
 
         $return = '<script language="Javascript">';
         $return .= 'pz_hide(".email-' . $email->getId() . '");';
-        $return .= 'pz_tracker();';
+        $return .= 'pz_init_tracker("global");';
         $return .= '</script>';
 
         return $return;
