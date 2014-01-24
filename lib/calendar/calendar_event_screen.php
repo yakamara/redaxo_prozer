@@ -876,8 +876,8 @@ class pz_calendar_event_screen{
 		$classes[] = 'event';
 		$classes[] = 'event-'.$this->calendar_event->getId();
 		$classes[] = 'label';
-		$classes[] = pz_label_screen::getBorderColorClass($this->label_id); // background color
-		$classes[] = pz_label_screen::getColorClass($this->label_id); // border color
+		// $classes[] = pz_label_screen::getBorderColorClass($this->label_id); // background color
+		// $classes[] = pz_label_screen::getColorClass($this->label_id); // border color
 		
 		$me = false;
 		if(pz::getUser()->getId() == $this->calendar_event->getUserId())
@@ -971,7 +971,7 @@ class pz_calendar_event_screen{
 		
 		$return = '
 		    <article class="'.implode(" ",$classes).'" '.implode(" ",$data_attr).' id="event-'.$this->calendar_event->getId().'">
-		      <div class="event-info labelb'.$this->label_id.'">
+		      <div class="event-info labelb'.$this->label_id.' labelc'.$this->label_id.'">
            <header>
              <hgroup>
                <h2 class="hl7"><a href="javascript:void(0);" onclick="'.$flyout_link.'">'.$editable.$attachments.implode(" ",$info).'</span></a></h2>
@@ -1113,7 +1113,7 @@ class pz_calendar_event_screen{
           <h1 class="hl1">'.
           pz::strftime(rex_i18n::msg("show_date_normal"), $day->getTimestamp()).' - '.
           pz::strftime(rex_i18n::msg("show_date_normal"), $day_last->getTimestamp()).
-          ' <span class="info">('.rex_i18n::msg("calendarweek").' '.pz::dateTime2dateFormat($day,"W").')</span></h1>
+          ' <span class="info">('.rex_i18n::msg("calendarweek").' '.pz::dateTime2dateFormat($day,"W").' / '.pz::dateTime2dateFormat($day_last,"W").')</span></h1>
         </div>
       </header>';
 
@@ -1567,7 +1567,7 @@ class pz_calendar_event_screen{
 			          </tr>';
 		}
 		
-		$paginate_loader = $paginate_screen->setPaginateLoader($p, '#userjobs_list');
+		$paginate_loader = $paginate_screen->setPaginateLoader($p, '#'.$p["layer_list"]);
 
 		if($paginate_screen->isScrollPage()) {
 		  $content = '
@@ -1599,7 +1599,7 @@ class pz_calendar_event_screen{
 		if(isset($p["list_links"]))
 			$f->setVar('links', $p["list_links"], false);
 		$f->setVar('content', $content , false);
-		return '<div id="userjobs_list" class="design2col">'.$f->parse('pz_screen_list.tpl').'</div>';
+		return '<div id="'.$p["layer_list"].'" class="design2col">'.$f->parse('pz_screen_list.tpl').'</div>';
 	}
 
 
@@ -1651,10 +1651,14 @@ class pz_calendar_event_screen{
 	static function getSearch($projects, $events, $p = array(), $day)
 	{
 		
+		if (!isset($p["headline"])) {
+		  $p["headline"] = rex_i18n::msg("calendar_day_list");
+		}
+		
 		$return = '
 	        <header>
 	          <div class="header">
-	            <h1 class="hl1">'.rex_i18n::msg("calendar_day_list").'</h1>
+	            <h1 class="hl1">'.$p["headline"].'</h1>
 	          </div>
 	        </header>';
 		
@@ -1924,7 +1928,7 @@ class pz_calendar_event_screen{
 	            </div>
 	            <div class="column last">
                 <ul class="sl1 view-layout">
-                <li class="first selected"><span class="selected">'.rex_i18n::msg("customer").': '.$customer_out.'</span>
+                <li class="first selected" onclick="pz_screen_select(this)"><span class="selected">'.rex_i18n::msg("customer").': '.$customer_out.'</span>
                   <div class="flyout">
                     <div class="content">
                       <ul class="entries sort">
@@ -1940,12 +1944,6 @@ class pz_calendar_event_screen{
 	  
     $return .= pz_calendar_event_screen::getCustomerplanAllviewslistView($customer, $customers, $projects, $events, $p, $start, $end);
 
-    $return .= '<script>
-		$(document).ready(function() {
-		  pz_screen_select_event("#calendar_customerplan_list li.selected");
-		});
-		</script>';
-  
     $link_refresh = pz::url("screen","calendars","customerplan",
 			array_merge(
 				$p["linkvars"],

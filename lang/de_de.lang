@@ -125,14 +125,14 @@ page_project_history = Logbuch
 
 dragdrop_files_for_upload = Dateien zum Upload auswählen / per Drag & Drop ablegen
 dragdrop_file_for_upload = Datei zum Upload auswählen / per Drag & Drop ablegen
-files_for_upload = per Drag & Drop ablegen
+file_for_upload = per Drag & Drop ablegen
 dragdrop_files_upload_failed = fehlgeschlagen
 dragdrop_files_exit = abbrechen
 dragdrop_files_remove_from_list = aus Liste entfernen
 
-page_calendars_day = Tag
-page_calendars_month = Monat
-page_calendars_week = Woche
+page_calendars_day = Tagesansicht
+page_calendars_month = Monatsansicht
+page_calendars_week = 2-Wochenansicht
 page_calendars_list = Liste
 page_calendars_usertime = Benutzer-/Zeitansicht
 page_calendars_projectjob = Projekt-/Jobzeitansicht
@@ -198,8 +198,7 @@ calendar_event_frequence = Frequenz
 calendar_event_interval = Häufigkeit
 
 calendar_projectevent_list = Projekt-/Terminansicht
-
-calendar_customerplan_list = Kundenterminansicht
+calendar_customerplan_list = Termine
 
 
 all_addresses = Alle Adressen
@@ -274,6 +273,8 @@ address_orderby_companydesc = Firma, absteigend
 address_orderby_companyasc = Firma, aufsteigend
 
 download_emails = E-Mails abrufen
+trash_noprojectoutbox_emails = E-Mails ohne Projekt in Müll
+delete_current_emails = Aktuelle E-Mail-Liste löschen
 
 customers = Kunden
 customer = Kunde
@@ -658,6 +659,7 @@ save_as_draft = Als Entwurf ablegen
 email_saved_in_drafts = E-Mail wurde in Entwürfe gespeichert
 email_send = E-Mail wurde abgeschickt
 email_send_failed = E-Mail-Versand ist fehlgeschlagen.
+email_send_failed_saved_in_drafts = E-Mail-Versand ist fehlgeschlagen. Email wurde in Drafts gepspeichert.
 
 email_show_header = Header anzeigen
 email_hide_header = Header verstecken
@@ -691,6 +693,8 @@ new_job = Neuen Job
 calendarweek = Kalenderwoche
 calendarweek_short = KW
 calendar_day_list = Tagesansicht
+calendar_week_list = 2-Wochenansicht
+calendar_customer_list = Kundenkalender
 
 user_add = Benutzer hinzufügen
 user_edit = Benutzer bearbeiten
@@ -729,7 +733,7 @@ error_calendar_event_not_added = Termin konnte nicht hinzugefügt werden
 error_calendar_event_project_id = Das Projekt existiert nicht. Bitte ein Projekt auswählen.
 error_calendar_job_project_id = Sie können auf dieses Projekt keinen Job buchen
 error_calendar_event_project_id = Sie können in diesem Projekt keinen Termin eintragen
-error_calendar_event_fromto_compare = Das "von" Datum muss vor dem "bis" Datum sein
+error_calendar_event_fromto_compare = Das "von"-Datum muss vor dem "bis"-Datum sein
 
 error_calendar_event_title_empty = Bitte die Bezeichnung eingeben
 error_login_empty = Login ist nicht eingetragen
