@@ -4,8 +4,25 @@ class pz_address extends pz_model
 {
   public $vars = array();
   private $fields = array();
-  static $addresses = array();
 
+  static 
+    $addresses = array(),
+    $sortlabels_phones = array(
+      "WORK",
+      "CELL",
+      "WORK,FAX",
+      "HOME",
+      "HOME,FAX"
+    ),
+    $sortlabels_emails = array(
+      "WORK",
+      "HOME",
+      "IPHONE"
+    ),
+    $sortlabels_addresses = array(
+      "WORK",
+      "HOME"
+    );
 
   function __construct($vars = array())
   {

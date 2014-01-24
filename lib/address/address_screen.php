@@ -99,8 +99,8 @@ class pz_address_screen{
 		$f->setVar('title', $p["title"], false);
 		$f->setVar('content', $content , false);
 		$f->setVar('orders', $orders);
-		return '<div id="addresses_list" class="design2col">'.$f->parse('pz_screen_list.tpl').'</div>
-		<script>pz_screen_select_event("#addresses_list li.selected");</script>';
+		$return = $f->parse('pz_screen_list.tpl');
+		return '<div id="addresses_list" class="design2col">'.$return.'</div>';
 	}
 
 
@@ -128,10 +128,10 @@ class pz_address_screen{
 					$addresses[] = ' '.htmlspecialchars($v).' ['.htmlspecialchars($field->getVar("label")).']';
 					break;	
 				case("TEL"):
-					$phones[] = ' <nobr>'.htmlspecialchars($field->getVar("value")).' ['.htmlspecialchars($field->getVar("label")).']</nobr>';	
+					$phones[] = ' '.htmlspecialchars($field->getVar("value")).' ['.htmlspecialchars($field->getVar("label")).']';	
 					break;
 				case("EMAIL"):
-					$emails[] = ' <nobr> '.htmlspecialchars($field->getVar("value")).' ['.htmlspecialchars($field->getVar("label")).']</nobr>';	
+					$emails[] = ' '.htmlspecialchars($field->getVar("value")).' ['.htmlspecialchars($field->getVar("label")).']';	
 					break;
 			}
 		}
@@ -145,8 +145,6 @@ class pz_address_screen{
                 <td class="label labelc'.$this->address->getVar('label_id').'"></td>
               </tr>            
         ';
-	
-		// <td>'.implode("<br />",$addresses).'</td>
 	
 		return $return;
 	}
@@ -178,8 +176,9 @@ class pz_address_screen{
 		$f->setVar('title', $p["title"], false);
 		$f->setVar('content', $content , false);
 		$f->setVar('orders', $orders);
-		return '<div id="addresses_list" class="design2col">'.$f->parse('pz_screen_list.tpl').'</div>
-		<script>pz_screen_select_event("#addresses_list li.selected");</script>';
+		$return = $f->parse('pz_screen_list.tpl');
+		
+		return '<div id="addresses_list" class="design2col">'.$return.'</div>';
 	}
 
 
@@ -197,32 +196,67 @@ class pz_address_screen{
 		$emails = array();
 		$phones = array();
 		$addresses = array();
-		foreach($this->address->getFields() as $field)
-		{
+		
+		foreach($this->address->getFields() as $field) {
 			switch($field->getVar("type")) {
-				case("ADR"):
-					$f = explode(";",$field->getVar("value"));
-					$strasse = $f[2];
-					$plz_ort = ", ".$f[5]." ".$f[3].", ".$f[6]." / ".$f[4];
-					$v = $strasse.$plz_ort;
-					$addresses[] = ' '.htmlspecialchars($v).' ['.htmlspecialchars($field->getVar("label")).']';
+				case("ADR"): 
+				  $addresses[] = $field;
 					break;	
-				case("TEL"):
-					$phones[] = ' <nobr>'.htmlspecialchars($field->getVar("value")).' <span class="info">['.htmlspecialchars($field->getVar("label")).']</span></nobr>';
+				case("TEL"): 
+				  $phones[] = $field;
 					break;
 				case("EMAIL"):
-					$emails[] = ' <nobr> '.htmlspecialchars($field->getVar("value")).' <span class="info">['.htmlspecialchars($field->getVar("label")).']</span></nobr>';
+					$emails[] = $field;
 					break;
 			}
+		}
+		
+		// Phones
+		usort($phones, function ($a, $b) {
+        $pa = array_search($a->getVar("label"), pz_address::$sortlabels_phones);
+        $pb = array_search($b->getVar("label"), pz_address::$sortlabels_phones);
+        if ($pa === false && $pb === false) { return 0;
+        } else if ($pa === false) { return 1;
+        } else if ($pb === false) { return -1;
+        } else { return $pa - $pb; }
+    });
+		
+		foreach($phones as $k => $phone) {
+		  $phones[$k] = ' '.htmlspecialchars($phone->getVar("value")).' <span class="info">['.htmlspecialchars($phone->getVar("label")).']</span>';
 		}
 		
     $phones_o = "";
 		if (count($phones) > 0)
 		  $phones_o = '<ul><li>'.implode('</li><li>',$phones).'</li></ul>';
-		  
+		
+		// Emails
+		usort($emails, function ($a, $b) {
+        $pa = array_search($a->getVar("label"), pz_address::$sortlabels_emails);
+        $pb = array_search($b->getVar("label"), pz_address::$sortlabels_emails);
+        if ($pa === false && $pb === false) { return 0;
+        } else if ($pa === false) { return 1;
+        } else if ($pb === false) { return -1;
+        } else { return $pa - $pb; }
+    });
+		
+		foreach($emails as $k => $email) {
+		  $emails[$k] = ' '.htmlspecialchars($email->getVar("value")).' <span class="info">['.htmlspecialchars($email->getVar("label")).']</span>';
+		}
+		
 		$emails_o = "";
 		if (count($emails) > 0)
 		  $emails_o = pz_email_screen::prepareOutput('<ul><li>'.implode('</li><li>',$emails).'</li></ul>', FALSE);
+
+    // Addresses
+    // $addresses
+    // not visible / not sorted
+    /*
+			$f = explode(";",$field->getVar("value"));
+			$strasse = $f[2];
+			$plz_ort = ", ".$f[5]." ".$f[3].", ".$f[6]." / ".$f[4];
+			$v = $strasse.$plz_ort;
+			$addresses[] = ' '.htmlspecialchars($v).' ['.htmlspecialchars($field->getVar("label")).']';
+		*/
 
 		$return = '
 		     <article class="address block image label">
