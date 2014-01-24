@@ -6,8 +6,7 @@ class rex_xform_value_pz_email_screen extends rex_xform_value_abstract
 	function enterObject()
 	{
 
-		if ($this->getValue() == '' && !$this->params['send'])
-		{
+		if ($this->getValue() == '' && !$this->params['send']) {
 			$this->setValue($this->getElement(3));
 		}
 
@@ -15,13 +14,11 @@ class rex_xform_value_pz_email_screen extends rex_xform_value_abstract
 		$class = $this->getHTMLClass();
 		$classes = $class;
 		
-		if ($this->getElement(5) != '')
-		{
+		if ($this->getElement(5) != '') {
   		$classes .= ' '.$this->getElement(5);
     }
 		
-		if (isset($this->params["warning"][$this->getId()]))
-		{
+		if (isset($this->params["warning"][$this->getId()])) {
 			$classes .= ' '.$this->params["warning"][$this->getId()];
 		}
 		
@@ -32,7 +29,6 @@ class rex_xform_value_pz_email_screen extends rex_xform_value_abstract
 			$disabled = ' disabled="disabled"';
 		}
 		
-		
     $before = '';
     $after = '';    
     $label = ($this->getElement(2) != '') ? '<label'.$classes.' for="' . $this->getFieldId() . '">' . rex_i18n::translate($this->getElement(2)) . '</label>' : '';	
@@ -40,7 +36,6 @@ class rex_xform_value_pz_email_screen extends rex_xform_value_abstract
 		$extra = '';
     $html_id = $this->getHTMLId();
     $name = $this->getName();
-    
     
 		$f = new rex_fragment();
 		$f->setVar('before', $before, false);
@@ -61,10 +56,8 @@ class rex_xform_value_pz_email_screen extends rex_xform_value_abstract
 		});
 		</script>';
 
-
 		$this->params["value_pool"]["email"][$this->getElement(1)] = stripslashes($this->getValue());
-		if ($this->getElement(4) != "no_db")
-		{
+		if ($this->getElement(4) != "no_db") {
 			$this->params["value_pool"]["sql"][$this->getElement(1)] = $this->getValue();
 		}
 	}

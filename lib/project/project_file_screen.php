@@ -171,8 +171,9 @@ class pz_project_file_screen
 		$f->setVar('paginate', "", false);
 	  $f->setVar("orders",$orders);
 	  $f->setVar("orders_flyout",true);
+	  $return = $f->parse('pz_screen_list.tpl');
 	  
-		return '<div id="project_files_list" class="design2col">'.$f->parse('pz_screen_list.tpl').'</div>';
+		return '<div id="project_files_list" class="design2col">'.$return.'</div>';
 
 	}
 
@@ -203,12 +204,9 @@ class pz_project_file_screen
 
     $list = '<script>
 		$(document).ready(function() {
-		  pz_hoverSelect("#project_files_list li.selected");
-		  
 		  $("#main select[name|=\"parent_id\"]").each(function(i,e){
 		    $(this).val('.$category->getId().');
 		  });
-
       pz_clipboard_init();
 		});
 		</script>';
@@ -222,8 +220,9 @@ class pz_project_file_screen
 		$f->setVar('content', $content , false);
 		$f->setVar('paginate', "", false);
 	  $f->setVar("orders",$orders);
+	  $return = $f->parse('pz_screen_list.tpl');
 	  
-		return '<div id="'.$p["layer_list"].'">'.$f->parse('pz_screen_list.tpl').'</div>';
+		return '<div id="'.$p["layer_list"].'">'.$return.'</div>';
 
 	}
 

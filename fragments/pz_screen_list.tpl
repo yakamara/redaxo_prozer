@@ -30,11 +30,17 @@
 		  }
 
 		  ?>
-          <li class="first selected <?php 
+          <?php 
           
-          if(isset($this->orders_flyout) && $this->orders_flyout) echo ' flyouthover'; 
+          if(isset($this->orders_flyout) && $this->orders_flyout) {
+            echo '<li class="first selected flyouthover"><span class="selected">';
+
+          } else {
+            echo '<li class="first selected"><span class="selected" onclick="pz_screen_select(this)">';
+
+          }
           
-          ?>"><span class="selected"><?php echo rex_i18n::msg("order_name").': '.$this->orders[$active]["name"]; ?></span>
+          ?><?php echo rex_i18n::msg("order_name").': '.$this->orders[$active]["name"]; ?></span>
             <div class="flyout">
               <div class="content">
                 <ul class="entries sort">

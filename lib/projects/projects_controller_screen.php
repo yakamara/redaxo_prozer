@@ -99,12 +99,6 @@ class pz_projects_controller_screen extends pz_projects_controller {
 		}
 		
 		// $content = $this->getSearchPaginatePlainView().$content;
-		
-		$list .= ''; /*<script>
-				$(document).ready(function() {
-				  pz_screen_select_event("#emails_list li.selected");
-				});
-				</script>';*/
 				
 		$paginate_loader = $paginate_screen->setPaginateLoader($p, '#projects_list');
 

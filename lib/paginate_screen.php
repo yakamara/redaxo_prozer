@@ -167,9 +167,9 @@ class pz_paginate_screen{
 
       $return .= '<script>
       $(document).ready(function() {
-        $("#'.$load_id.'").bind("enterviewport",function(){
+        $("#'.$load_id.'").on("enterviewport",function(){
           '.$link.'
-        }).bullseye().bind("click",function(){
+        }).bullseye().on("click",function(){
           $(this).trigger("enterviewport");
         });
       })

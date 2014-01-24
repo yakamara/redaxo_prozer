@@ -1,31 +1,15 @@
 
-
 /* ******************* Document Ready **************** */
 var pz_mouse_x = 0;
 var pz_mouse_y = 0;
 
-$(document).ready(function()
-{ 
-  // Kalender - Tag
-  // Scroll-Offset
-  // pz_set_calendarday_offset();
+$(document).ready(function() { 
   
-  // Kalender - Woche
-  // Termine richtig positionieren
-  // pz_set_calendarweek_events();
-  
-  // Init der Tages Kalender Verschiebung
-  // pz_set_calendarday_dragresize_init();
-
-  // $('<div id="hovery"></div>').prependTo(document.body);
-  
-	pz_screen_select_event('ul.sl1 li.selected');
-
-/*
-  $(window).bind('resize', function() {
-      $('#clipboard-list').height($(window).height()-124);    }
-  );
-*/
+  /*
+    $(window).on('resize', function() {
+        $('#clipboard-list').height($(window).height()-124);      }
+    );
+  */
 
   $("body").mousemove(function(e){
     pz_mouse_x = e.pageX;
@@ -34,119 +18,115 @@ $(document).ready(function()
   });
 
   $(window).scroll(function(){
-    
+
   });
+
+  pz_tracker();
 
 });
 
-function pz_screen_select_event(where)
-{
-	where = $(where).find("span.selected");
-	where.unbind('click');
-	where.bind('click', { selected: where }, function(e) 
-	{
-      // alle links innerhalb die nicht ein "nolink" haben mit bind belegen.
-	  main = $(this).parent(); // $(e.data.selected).parent();
 
-    if($(main).hasClass('hover'))
-    {
-      $(main).removeClass('hover');
-      $('#overlay').remove();
-      $(main).find("a").not(".noclick").unbind("click");
+
+function pz_screen_select(t) {
+
+  main = $(t).parent();
+
+  if($(main).hasClass('hover')) {
+  
+    $(main).removeClass('hover');
+    $('#overlay').remove();
+    $(main).find("a").not(".noclick").off("click");
+  
+  } else {
+  
+    if ($('#overlay').length == 0) { $("body").append('<div id="overlay">.</div>'); }
+    $("#overlay").on('click', { main: main }, function(e) { 
+      $(e.data.main).find("span.selected").trigger("click"); 
+    });
+
+    pz_setZIndex('#overlay');
+    $(main).addClass('hover');
+    pz_setZIndex(main);
     
-    }else 
-    {
-
-      // overlay - when clicked close overlay and selected
-	    if ($('#overlay').length == 0) { $("body").append('<div id="overlay">.</div>'); }
-      $("#overlay").bind('click', { main: main }, function(e) { $(e.data.main).find("span.selected").trigger("click"); });
-      pz_setZIndex('#overlay');
-      
-      $(main).addClass('hover');
-      pz_setZIndex(main);
-      
-      // clickbind on links
-      $(main).find("a").not(".noclick").bind('click', { main: main }, function(e) 
-      {
-        $(e.data.main).find("span.selected").trigger("click");
-      });            
-      
-    }
-
-  });
+    $(main).find("a").not(".noclick").on('click', { main: main }, function(e) {
+      $(e.data.main).find("span.selected").trigger("click");
+    });   
+    
+  }
 }
 
-
-function pz_hoverSelect(where)
-{
-  return;
-	where = $(where).find("span.selected");
-	where.unbind('mouseover');
-	where.bind('mouseover', { selected: where }, function(e) 
-	{
-      // alle links innerhalb die nicht ein "nolink" haben mit bind belegen.
-	  main = $(this).parent(); // $(e.data.selected).parent();
-
-    if($(main).hasClass('hover'))
-    {
-      $(main).removeClass('hover');
-      $(main).find("a").not(".noclick").unbind("mouseover");
-    
-    }else 
-    {
-      $(main).addClass('hover');
-      pz_setZIndex(main);
-      
-      $(main).find("a").not(".noclick").bind('mouseover', { main: main }, function(e) 
-      {
-        $(e.data.main).find("span.selected").trigger("mouseover");
-      });            
-      
-    }
-
-  });
-}
 
 
 /* ******************* Tracker **************** */
-var pz_timer;
-function pz_tracker()
-{
-	clearTimeout(pz_timer);
-	link = '/screen/tools/tracker/';
-	$.post(link, '', function(data) {
-	  if ($('#pz_tracker').length == 0)
-    {
-      $("body").append('<div id="pz_tracker"></div>');
+var pz_tracker_timer = 500;
+var pz_tracker_urls = [];
+var pz_tracker_timeout;
+
+function pz_tracker() {
+  clearTimeout(pz_tracker_timeout);
+  pz_tracker_urls.forEach(function(element, index, array) {
+    if(element.currenttime > element.interval || element.init == 1) {
+       element.currenttime = 0;
+       element.init = 0;
+       $.ajax({
+        	type: "POST",
+        	url: element.url,
+          // data: { pz_tracking_last: pz_tracking_last }
+      	}).done(function( data ) {
+          if ($('#pz_tracker').length == 0) { $("body").append('<div id="pz_tracker"></div>'); }
+          $("#pz_tracker").html(data);
+      	});
+    } else {
+       element.currenttime = element.currenttime + pz_tracker_timer;
     }
-		$("#pz_tracker").html(data);
-		pz_timer = window.setTimeout(pz_tracker, 30000);
-  });
+  });
+	pz_tracker_timeout = window.setTimeout(pz_tracker, pz_tracker_timer);
 }
+
+function pz_add_tracker(label, url, interval, init) {
+  pz_remove_tracker(label);
+  pz_tracker_urls.push( {'label': label, 'url':url, 'interval':interval, 'init': init, 'currenttime':0});
+}
+
+function pz_init_tracker(label) {
+  pz_tracker_urls.forEach(function(element, index, array) {
+    if(label == element.label) {
+        element.init = 1;
+    }
+  });
+}
+
+function pz_remove_tracker(label) {
+  pz_tracker_urls.forEach(function(element, index, array) {
+    if(label == element.label) {
+        pz_tracker_urls.splice(index, 1);
+    }
+  });
+}
+
+
+/* ******************* InfoCounter **************** */
 
 var pz_counter_emails = 0;
 var pz_counter_attandees = 0;
 
-function pz_updateInfocounter(emails, attandees, title)
-{
+function pz_updateInfocounter(emails, attandees, title) {
   pz_counter_emails = emails;
   pz_counter_attandees = attandees;
 
-  if(emails == 0)
-  {
+  if(emails == 0) {
     $("ul#navi-main li.emails span").remove();
+
   }else {
 		$("ul#navi-main li.emails span").remove().prepend('<span class="info1"><span class="inner">'+emails+'</span></span>');
 		$("ul#navi-main li.emails:not(:has(span))").prepend('<span class="info1"><span class="inner">'+emails+'</span></span>')
   }
 
-  if(attandees == 0)
-  {
+  if (attandees == 0) {
 	  $("ul#navi-main li.calendars span").remove();
 	  $("#calendar_event_attendee_view .info-relative span").remove();
 	  
-  }else
-  {
+  } else {
 		$("ul#navi-main li.calendars span").remove().prepend('<span class="info1"><span class="inner">'+attandees+'</span></span>');
 		$("ul#navi-main li.calendars:not(:has(span))").prepend('<span class="info1"><span class="inner">'+attandees+'</span></span>');
 
@@ -154,7 +134,7 @@ function pz_updateInfocounter(emails, attandees, title)
 		$("#calendar_event_attendee_view .info-relative:not(:has(span))").prepend('<span class="info1"><span class="inner">'+attandees+'</span></span>');
   
   }
-  $(document).attr("title",title);
+  $(document).prop("title",title);
 
 }
 
@@ -163,52 +143,46 @@ function pz_updateInfocounter(emails, attandees, title)
 
 var pz_login_refresh = true;
 
-function pz_isLoggedIn(data)
-{
+function pz_isLoggedIn(data) {
 	// data und "login" vergleichen
-	if(data == "relogin") 
-	{
+	if(data == "relogin") {
 		clearTimeout(pz_timer);
 		pz_login_refresh = false;
 		pz_getLoginForm()
 		return false;
+
 	}
 	return true;
 }
 
-function pz_logIn()
-{
+function pz_logIn() {
 	pz_loading_start("#loginbox");
-
-	$.post("/screen/login/form/", $("#login_form").serialize(), function(data) 
-	{
-		if(data == 1) 
-		{
+	$.post("/screen/login/form/", $("#login_form").serialize(), function(data) {
+		if (data == 1) {
 			// refresh nur auf der startseite
 			if(pz_login_refresh)
 				location.href = "/";
 			else
 			 	$("#loginbox").remove();
 			
-		}else
-		{
+		} else {
 			$("#loginbox").replaceWith(data);
+
 		}
   });
 	return;
 }
 
-function pz_getLogin()
-{
+function pz_getLogin() {
 
   if ($('#overlay').length > 0) { $('#overlay').trigger("click");  }
   $("body").append('<div id="overlay"></div>');
   pz_setZIndex('#overlay');
-  $("#overlay").bind('click', '', function(e) { $("#loginbox").remove(); $("#overlay").remove(); });
+  $("#overlay").on('click', '', function(e) { $("#loginbox").remove(); $("#overlay").remove(); });
 
-  if ($('#loginbox').length == 0)
-  {
+  if ($('#loginbox').length == 0) {
     $("body").append('<div id="loginbox" class="popbox"></div>');
+
   }
   pz_loadPage("#loginbox", "/screen/login/form/");
 
@@ -218,23 +192,21 @@ function pz_getLogin()
 /* ******************* LAYER LOADING, LOGIN **************** */
 
 pz_zIndex = 10000;
-function pz_setZIndex(layer) 
-{
+function pz_setZIndex(layer) {
 	pz_zIndex++;	
 	$(layer).css('zIndex',pz_zIndex);
+
 }
 
 function pz_hide(node) {
 	$(node).hide();
+
 }
 
-function pz_toggleClass(layer, toggleClass)
-{
-  if($(layer).hasClass(toggleClass))
-  {
+function pz_toggleClass(layer, toggleClass) {
+  if ($(layer).hasClass(toggleClass)) {
     $(layer).removeClass(toggleClass);
-  }else 
-  {
+  } else {
     $(layer).addClass(toggleClass);
   }
 }
@@ -295,9 +267,7 @@ function pz_loadPage(layer_id, link, funccall_ok, funccall_ok_params)
 	if(link.indexOf("?")) link += "&pz_login_refresh=1";
 	else link += "?pz_login_refresh=1";
 	$.post(link, '', function(data) {
-	
-		if(pz_isLoggedIn(data))
-		{
+		if(pz_isLoggedIn(data)) {
 			$(layer_id).replaceWith(data);
 		}
 		pz_loading_end(layer_id);
@@ -326,26 +296,21 @@ function pz_paginatePage(layer_id, link, loading_layer_id, remove_layer_id)
 
 }
 
-function pz_toggleSection(section)
-{
-  if(section === undefined)
-  {
+function pz_toggleSection(section) {
+  if(section === undefined) {
     section = 2;
-    if($(".section1").hasClass("hidden"))
-    {
+    if($(".section1").hasClass("hidden")) {
       section = 1;
     }
   }
 
-  if( section == 1 )
-  {
+  if( section == 1 ) {
     $(".section1").removeClass("hidden"); // css("display","block");
     $(".section2 .design3col").each(function(i) {
       $(this).removeClass("design3col").addClass("design2col");
     });
   
-  }else if (section == 2)
-  {
+  }else if (section == 2) {
   
     $(".section1").addClass("hidden");
     $(".section2 .design2col").each(function(i) {
@@ -356,14 +321,12 @@ function pz_toggleSection(section)
 
 }
 
-function pz_tooltipbox(t, url)
-{
+function pz_tooltipbox(t, url) {
 
   layer_id = '.tooltipbox[data-tooltipbox-url="'+url+'"]';
 
   // load tooltip
-  if ($(layer_id).length == 0)
-  {
+  if ($(layer_id).length == 0) {
     $('.tooltipbox').remove();
     
     ttop  = parseInt($(t).offset().top);
@@ -376,7 +339,7 @@ function pz_tooltipbox(t, url)
 
     // overlay - when clicked close overlay and selected
     if ($('#overlay').length == 0) { $("body").append('<div id="overlay">.</div>'); }
-    $("#overlay").bind('click', { t: t }, function(e) { pz_tooltipbox_close(); });
+    $("#overlay").on('click', { t: t }, function(e) { pz_tooltipbox_close(); });
 
     pz_setZIndex('#overlay');
     pz_setZIndex('.tooltipbox');
@@ -474,7 +437,7 @@ function pz_setEmailAutocomplete(layer)
 {
 	$(layer)
 		// don t navigate away from the field on tab when selecting an item
-		.bind( "keydown", function( event ) {
+		.on( "keydown", function( event ) {
 			if ( event.keyCode === $.ui.keyCode.TAB &&
 					$( this ).data( "autocomplete" ).menu.active ) {
 				event.preventDefault();
@@ -576,11 +539,10 @@ function pz_centerPopbox(popbox_width, popbox_height)
   if(typeof popbox_height == "undefined")
     var popbox_height = window_height - ( 2 * min_distance );
   if(typeof popbox_width == "undefined" || popbox_width == "")
-    var popbox_width  = $('.popbox').outerWidth();
-  
+    var popbox_width  = $('.popbox').outerWidth(true);
+
   $('.popbox').height(popbox_height).css('top', min_distance).css('left', ((window_width - popbox_width) / 2) );
-  $('.popbox-frame').height($('.popbox').height()-$('.popbox h1').outerHeight());
-  
+  $('.popbox-frame,.popbox-content').height($('.popbox').height()-$('.popbox h1').outerHeight(true));
   pz_setZIndex('.popbox');
 }
 
@@ -631,7 +593,7 @@ function pz_loadClipboard()
   if ($('#overlay').length > 0) { $('#overlay').trigger("click");  }
   $("body").append('<div id="overlay">.</div>');
   pz_setZIndex('#overlay');
-  $("#overlay").bind('click', '', function(e) { pz_closeClipboard(); });
+  $("#overlay").on('click', '', function(e) { pz_closeClipboard(); });
 
 	if($("#clipboard").hasClass("hidden"))
 	{
@@ -700,7 +662,7 @@ function pz_clip_select(clip_id, clip_name, clip_size)
 			'<span class="qq-upload-file"><a href="/screen/clipboard/get/?mode=download_clip&clip_id='+clip_id+'" target="_blank">'+clip_name+'</span>'+
 			'<span class="qq-upload-size">'+clip_size+
 				'<span class="clear_link">'+
-					'<a href="javascript:void(0);" onclick="pz_clip_deselect($(this).parents(\'li\').attr(\'data-clip_id\'),\''+pz_clipboard_field_layer+'\');">'+remove_text+'</a></span>'+
+					'<a href="javascript:void(0);" onclick="pz_clip_deselect($(this).parents(\'li\').prop(\'data-clip_id\'),\''+pz_clipboard_field_layer+'\');">'+remove_text+'</a></span>'+
 			'</span></li>');
 
 	$(pz_clipboard_field_layer).val($(pz_clipboard_field_layer).val()+clip_id+",");
@@ -735,10 +697,11 @@ function pz_calendarday_rearrange_events()
   {
     start_position = parseInt( ($(this).attr("data-event-hour-start") * 60) ) + parseInt($(this).attr("data-event-minute-start"));
     height = parseInt($(this).attr("data-event-minute-duration"));
-    $(this).css("top",start_position);
-    $(this).css("height",height);
-    $(this).css("left",465);
-    $(this).css("width",193);
+    
+    $(this).css("top", start_position);
+    $(this).css("height", height);
+    $(this).css("left", 465);
+    $(this).css("width", 193);
   });
 
   articles = $(".calendar.view-day").find('article[data-event-job="0"]');
@@ -746,10 +709,11 @@ function pz_calendarday_rearrange_events()
   articles.sort(function(a,b) {
     start_a = parseInt( ($(a).attr("data-event-hour-start") * 60) ) + parseInt($(a).attr("data-event-minute-start"));
     start_b = parseInt( ($(b).attr("data-event-hour-start") * 60) ) + parseInt($(b).attr("data-event-minute-start"));
+    
     if (start_a < start_b) return -1;
     if (start_a > start_b) return 1;
-    height_a = parseInt($(a).attr("data-event-minute-duration"));;
-    height_b = parseInt($(b).attr("data-event-minute-duration"));;
+    height_a = parseInt($(a).attr("data-event-minute-duration"));
+    height_b = parseInt($(b).attr("data-event-minute-duration"));
     if (height_a > height_b) return -1;
     if (height_a < height_b) return 1;
     
@@ -768,9 +732,9 @@ function pz_calendarday_rearrange_events()
     height = parseInt($(this).attr("data-event-minute-duration"));
     end_position = start_position + height -1;
 
-    $(this).css("top",start_position);
-    $(this).css("height",height);
-    $(this).attr("data-calc-end",end_position);
+    $(this).css("top", start_position);
+    $(this).css("height", height);
+    $(this).attr("data-calc-end", end_position);
     
   });
 
@@ -891,7 +855,7 @@ function pz_set_calendarday_dragresize_init() {
    		var calendar_event_move_minutes = (y.top - offsetY.top) - start_position;
    		var calendar_event_id = $(this).attr("id").replace("event-","");
 
-		  pz_loading_start("#"+$(this).attr("id"));
+		  pz_loading_start("#"+$(this).prop("id"));
    		$.get(pz_event_day_url, {
    		  mode: "move_event", 
    		  calendar_event_id: calendar_event_id, 
@@ -916,9 +880,9 @@ function pz_set_calendarday_dragresize_init() {
 		grid: [0, 15],
 		stop: function(e, ui) {
    		var calendar_event_id = $(this).attr("id").replace("event-","");
-   		var calendar_event_extend_minutes = parseInt($(this).outerHeight()) - parseInt($(this).attr("data-event-minute-duration"));
+   		var calendar_event_extend_minutes = parseInt($(this).outerHeight(true)) - parseInt($(this).attr("data-event-minute-duration"));
 
-		  pz_loading_start("#"+$(this).attr("id"));
+		  pz_loading_start("#"+$(this).prop("id"));
    		$.get(pz_event_day_url, {
 	   	  mode: "extend_event_by_minutes", 
 	   		calendar_event_id: calendar_event_id, 
@@ -960,7 +924,7 @@ function pz_set_calendarweek_init()
   pz_calendarweek_rearrange_events();
   pz_set_calendarweek_dragresize_init();
 
-  $(".calendar.view-week a.toggle").click(function() {
+  $(".calendar.view-week a.toggle").on('click', function() {
     pz_calendarweek_rearrange_events();
   });
 
@@ -990,8 +954,8 @@ function pz_calendarweek_rearrange_events()
   // weekdays
   
   $('li[data-grid="day"],li[data-grid="allday"]')
-    .css("width",box_width)
-    .attr("data-calc-offset",hour_width);
+    .css("width", box_width)
+    .attr("data-calc-offset", hour_width);
 
   // TODO
   // - allday block
@@ -1038,7 +1002,7 @@ function pz_calendarweek_rearrange_events()
     var c_position = i;
     
     $(d)
-      .attr("data-calc-left",c_offset_left);
+      .attr("data-calc-left", c_offset_left);
     
     articles = $(".calendar.view-week").find('article[data-event-isallday="0"][data-event-day-start="'+c_day+'"]');
 
@@ -1062,17 +1026,17 @@ function pz_calendarweek_rearrange_events()
         .removeAttr("data-calc-block")
         .removeAttr("data-calc-column")
         .removeAttr("data-calc-columns")
-        .attr("data-calc-position",c_position);
+        .attr("data-calc-position", c_position);
   
       start_position = parseInt( ($(this).attr("data-event-hour-start") * 60) ) + parseInt($(this).attr("data-event-minute-start"));
       height = parseInt($(this).attr("data-event-minute-duration"));
       end_position = start_position + height -1;
   
-      $(this).css("top",start_position);
-      $(this).css("height",height);
-      $(this).css("left",c_offset_left);
+      $(this).css("top", start_position);
+      $(this).css("height", height);
+      $(this).css("left", c_offset_left);
       
-      $(this).attr("data-calc-end",end_position);
+      $(this).attr("data-calc-end", end_position);
       $(this).show();
 
     });
@@ -1231,7 +1195,7 @@ function pz_set_calendarweek_dragresize_init() {
 		grid: [0, 15],
 		stop: function(e, ui) {
    		var calendar_event_id = $(this).attr("id").replace("event-","");
-   		var calendar_event_extend_minutes = parseInt($(this).outerHeight()) - parseInt($(this).attr("data-event-minute-duration"));
+   		var calendar_event_extend_minutes = parseInt($(this).outerHeight(true)) - parseInt($(this).attr("data-event-minute-duration"));
 
 		  pz_loading_start("#"+$(this).attr("id"));
 
@@ -1278,7 +1242,7 @@ function pz_set_customerplan_init()
 	   	  width = parseInt(c.css("width"))+1;
 	   	  height = parseInt(c.css("height"));
 	   	  $("#calendar_customerplan_list .draggable" ).draggable( "option", "grid", [width, height] );
-	   	  pz_setZIndex("#"+$(this).attr("id"));
+	   	  pz_setZIndex("#"+$(this).prop("id"));
 	   	  
 	   	},
 	   	drag: function(event, ui) 
@@ -1384,16 +1348,16 @@ function pz_customerplan_rearrange_projects()
   }
   
   $(".customerplan-project.has-subprojects .customerplan-project-name")
-    .unbind("click")
-    .bind("mouseenter",function(e) {
+    .off("click")
+    .on("mouseenter",function(e) {
       $(this).addClass("active");
 
     })
-    .bind('mouseleave',function(e) {
+    .on('mouseleave',function(e) {
       $(this).removeClass("active");
   
     })
-    .bind('click', function(e) {
+    .on('click', function(e) {
       t = $(this).closest(".customerplan-project");
       s = t.find(".customerplan-subproject-events");
       project_id = t.attr("data-project-id");
@@ -1457,7 +1421,7 @@ function pz_customerplan_rearrange_events()
 function pz_refresh_calendar_lists()
 {
   $("[data-list-type=calendar]").each(function(i,e) {
-    id = "#"+$(e).attr("id");
+    id = "#"+$(e).prop("id");
     url = $(e).attr("data-url");
     pz_loadPage(id,url);
   });

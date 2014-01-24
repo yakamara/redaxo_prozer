@@ -31,7 +31,7 @@
 
       <?php if(@$this->user != "") { ?>
 
-	      <li class="lev1 user selected"><span class="selected"><?php echo htmlspecialchars(pz::cutText($this->user,24)); ?></span>
+	      <li class="lev1 user selected"><span class="selected" onclick="pz_screen_select(this)"><?php echo htmlspecialchars(pz::cutText($this->user,24)); ?></span>
 		      <?php
 		      
 		      if(isset($this->user_navigation) && is_array($this->user_navigation))

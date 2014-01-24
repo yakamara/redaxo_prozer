@@ -223,8 +223,7 @@ class pz_email_account extends pz_model{
     $last_login_finished = $this->getLastLoginFinishedDate();    
 
     // emaildownload in progress and not longer than 10min.
-    if($this->getVar("login_failed") == 0 && $last_login->diff($now)->format('%i')<20)
-    {
+    if($this->getVar("login_failed") == 0 && $last_login->diff($now)->format('%i')<20) {
       return rex_i18n::msg("email_account_last_login_working");
     }
 
@@ -261,22 +260,19 @@ class pz_email_account extends pz_model{
 
 		$delete = array();
 
-		if ($mbox = @imap_open($authhost,$this->getLogin(),$this->getPassword()))
-		{
+		if ($mbox = @imap_open($authhost,$this->getLogin(),$this->getPassword())) {
 			$emails = imap_headers($mbox);
 			
-			if ($emails !== false)
-			{
+			if ($emails !== false) {
+
 				$email_id = 0;
-			  foreach ($emails as $email) 
-			  {
+			  foreach ($emails as $email) {
 
 					$email_id++;
 			    $email_header = imap_fetchheader($mbox,$email_id);
 					$email_body = imap_body($mbox,$email_id);
 
-					if($email_header != "") 
-					{
+					if($email_header != "") {
 						$email = new pz_email();
 						$email->setRawHeader($email_header);
 						$email->setRawBody($email_body);
@@ -318,11 +314,9 @@ class pz_email_account extends pz_model{
 						$email->setUserId($this->getUserId());
 						$email->setAccountId($this->getId());
 	
-						if(!$email->save($eml))
-						{
+						if (!$email->save($eml)) {
 							
-						}else
-						{
+						} else {
 							// $this->emails[] = $email;
 							if($this->getDeleteEmails()) {
 								imap_delete($mbox,$email_id);
@@ -332,8 +326,7 @@ class pz_email_account extends pz_model{
 						// if memory is to high . here 1/2 of memory limit 
 						// .. break and load next emails later
 
-            if( (memory_get_usage(true)*2) > pz::getIniGetInBytes(ini_get("memory_limit")))
-            {
+            if( (memory_get_usage(true)*3) > (pz::getIniGetInBytes(ini_get("memory_limit")/2))) {
               break;
             }
 						
@@ -346,8 +339,7 @@ class pz_email_account extends pz_model{
 
 				$return .= rex_i18n::msg("email_account_download_ok",$authhost);
 
-			}else
-			{
+			} else {
 				$return .= rex_i18n::msg("email_account_download_failed",$authhost);
 			}
 

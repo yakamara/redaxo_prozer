@@ -424,12 +424,12 @@ body:hover {
 ul.sl1 li.selected {
   background: #e7e7e7;
   background: #cbcbcb;
-  background: -moz-linear-gradient(top, #e7e7e7, #afafaf); /* Firefox */
-  background: -webkit-gradient(linear, left top, left bottom, from(#e7e7e7), to(#afafaf)); /* Safari, Chrome */
-  background: -webkit-linear-gradient(top, #e7e7e7, #afafaf); /* Safari, Chrome - neue Syntax! */
-  background: -o-linear-gradient(top, #e7e7e7, #afafaf); /* Opera */
-  background: -ms-linear-gradient(top, #e7e7e7, #afafaf); /* IE */
-  background: linear-gradient(top, #e7e7e7, #afafaf); /* W3C Standard */
+  background: -moz-linear-gradient(top, #e7e7e7, #d0d0d0); /* Firefox */
+  background: -webkit-gradient(linear, left top, left bottom, from(#e7e7e7), to(#d0d0d0)); /* Safari, Chrome */
+  background: -webkit-linear-gradient(top, #e7e7e7, #d0d0d0); /* Safari, Chrome - neue Syntax! */
+  background: -o-linear-gradient(top, #e7e7e7, #d0d0d0); /* Opera */
+  background: -ms-linear-gradient(top, #e7e7e7, #d0d0d0); /* IE */
+  background: linear-gradient(top, #e7e7e7, #d0d0d0); /* W3C Standard */
   color: #626d72;
   border:1px solid #aaa;
 }
@@ -1133,6 +1133,7 @@ a.bt7 {
   background-color: #f6f7f7;
   font-size: 13px;
   line-height: 21px;
+  border: 1px solid #cecece;
 }
 a.bt7:hover, 
 a.bt7.active {
@@ -1254,7 +1255,8 @@ a.bt17,
   line-height: 23px;
 }
 a.bt2, 
-a.bt5,
+a.bt5, 
+a.bt7,
 a.bt10, 
 a.bt11, 
 a.bt12, 
@@ -1468,9 +1470,17 @@ span.tooltip .inner {
 .file25i.doc, 
 .file40.doc { background-position: 0 -250px; }
 
+.file25.docx,
+.file25i.docx, 
+.file40.docx { background-position: 0 -250px; }
+
 .file25.xls, 
 .file25i.xls, 
 .file40.xls { background-position: 0 -300px; }
+
+.file25.xlsx, 
+.file25i.xlsx, 
+.file40.xlsx { background-position: 0 -300px; }
 
 .file25.eps, 
 .file25i.eps, 
@@ -1480,6 +1490,10 @@ span.tooltip .inner {
 .file25i.ppt, 
 .file40.ppt { background-position: 0 -400px; }
 
+.file25.pptx, 
+.file25i.pptx, 
+.file40.pptx { background-position: 0 -400px; }
+
 .file25.mp3, 
 .file25i.mp3, 
 .file40.mp3 { background-position: 0 -450px; }
@@ -1487,30 +1501,39 @@ span.tooltip .inner {
 .file25i:hover, 
 .active .file25i, 
 li.attachment:hover .file25 { background-position: -500px 0; }
+
 .file25i.mov:hover, 
-.active .file25i.move, 
+.active .file25i.mov, 
 li.attachment:hover .file25.mov { background-position: -500px -50px; }
-.file25i.pdf:hover, 
-.active .file25i.pdf, 
-li.attachment:hover .file25.pdf { background-position: -500px -100px; }
+
+.file25i.pdf:hover, .file25i.pdfx:hover, 
+.active .file25i.pdf, .active .file25i.pdfx, 
+li.attachment:hover .file25.pdf, li.attachment:hover .file25.pdfx { background-position: -500px -100px; }
+
 .file25i.zip:hover, 
 .active .file25i.zip, 
 li.attachment:hover .file25.zip { background-position: -500px -150px; }
+
 .file25i.jpg:hover, 
 .active .file25i.jpg, 
 li.attachment:hover .file25.jpg { background-position: -500px -200px; }
-.file25i.doc:hover, 
-.active .file25i.doc, 
-li.attachment:hover .file25.doc { background-position: -500px -250px; }
-.file25i.xls:hover, 
-.active .file25i.xls, 
-li.attachment:hover .file25.xls { background-position: -500px -300px; }
+
+.file25i.doc:hover, .file25i.docx:hover, 
+.active .file25i.doc, .active .file25i.docx, 
+li.attachment:hover .file25.doc, li.attachment:hover .file25.docx { background-position: -500px -250px; }
+
+.file25i.xls:hover, .file25i.xlsx:hover, 
+.active .file25i.xls, .active .file25i.xlsx, 
+li.attachment:hover .file25.xls, li.attachment:hover .file25.xlsx { background-position: -500px -300px; }
+
 .file25i.eps:hover, 
 .active .file25i.eps, 
 li.attachment:hover .file25.eps { background-position: -500px -350px; }
-.file25i.ppt:hover, 
-.active .file25i.ppt, 
-li.attachment:hover .file25.ppt { background-position: -500px -400px; }
+
+.file25i.ppt:hover, .file25i.pptx:hover, 
+.active .file25i.ppt, .active .file25i.pptx, 
+li.attachment:hover .file25.ppt, li.attachment:hover .file25.pptx { background-position: -500px -400px; }
+
 .file25i.mp3:hover, 
 .active .file25i.mp3, 
 li.attachment:hover .file25.mp3 { background-position: -500px -450px; }
@@ -1520,10 +1543,10 @@ a:hover .file40.mov { background-position: -40px -50px; }
 a:hover .file40.pdf { background-position: -40px -100px; }
 a:hover .file40.zip { background-position: -40px -150px; }
 a:hover .file40.jpg { background-position: -40px -200px; }
-a:hover .file40.doc { background-position: -40px -250px; }
-a:hover .file40.xls { background-position: -40px -300px; }
+a:hover .file40.doc, a:hover .file40.docx { background-position: -40px -250px; }
+a:hover .file40.xls, a:hover .file40.xlsx { background-position: -40px -300px; }
 a:hover .file40.eps { background-position: -40px -350px; }
-a:hover .file40.ppt { background-position: -40px -400px; }
+a:hover .file40.ppt, a:hover .file40.pptx { background-position: -40px -400px; }
 a:hover .file40.mp3 { background-position: -40px -450px; }
 
 /* Status  *********************************************************************

@@ -95,18 +95,20 @@ class pz_eml{
 
 	public function getFileName()
 	{
-		if($this->parent === NULL)
+		if ($this->parent === NULL) {
 			return $this->getMailFilename().".eml";
+		}
 		
 		$filename = $this->getContentTypeName();
-		if($filename == "")
+		if ($filename == "") {
 			$filename = $this->getContentDispositionFilename();
+    }
 
-		if($filename == "") 
-		{
+		if ($filename == "") {
 			$filename = rex_i18n::msg("no_filename");
-  		if($ext = pz::getExtensionByMimeType($this->getContentType()))
+  		if ($ext = pz::getExtensionByMimeType($this->getContentType())) {
   			$filename .= '.'.$ext;
+  		}
 		}
 
 		$filename = pz_eml::decodeCharset($filename);
@@ -116,8 +118,9 @@ class pz_eml{
 
 	public function getSize()
 	{
-		if($this->parent === NULL)
+		if($this->parent === NULL) {
 			return strlen($this->src);
+		}
 		return strlen($this->vars["body"]);
 	}
 
@@ -151,19 +154,17 @@ class pz_eml{
 
   public function extractBody($body, $content_transfer_encoding = "", $content_type_charset = "")
   {
-		if($content_transfer_encoding == "base64")
-		{
+		if ($content_transfer_encoding == "base64") {
 			$body = base64_decode($body);
 			
-		}elseif($content_transfer_encoding == "quoted-printable")
-		{
+		} else if($content_transfer_encoding == "quoted-printable"){
 			$body = quoted_printable_decode($body);
 
 		}
 
-		if($content_type_charset != "" && $content_type_charset != "utf-8")
-		{
+		if($content_type_charset != "" && $content_type_charset != "utf-8") {
 			$body = @mb_convert_encoding($body, "UTF-8", $content_type_charset);
+
 		}
 
     /*		
@@ -607,13 +608,14 @@ Content-Type: text/calendar; charset="utf-8"; method=REQUEST
 	static function parseHeaderType($header = "", $type = "", $decodeCharset = TRUE)
 	{
 		preg_match("#\n".$type.":(.*)((\n(\t| ))*(.*))*#im", $header, $type);
-		if(isset($type[0]) && trim($type[0]) != ""){
+		if (isset($type[0]) && trim($type[0]) != "") {
 			$type = trim(str_replace(array("\n")," ",$type[0]));
 			$type = str_replace(array("\t"),"",$type);
-			if($decodeCharset)
+			if ($decodeCharset) {
 				return pz_eml::decodeCharset($type);
-			else
+			} else {
 				return pz_eml::decodeCharset($type);
+			}
 		}
 		return FALSE;
 	}
@@ -622,15 +624,17 @@ Content-Type: text/calendar; charset="utf-8"; method=REQUEST
 	{
 		$elements = imap_mime_header_decode($value);
 		$value = "";
-		for($k=0;$k<count($elements);$k++)
-		{
+		
+		for ($k = 0; $k < count($elements); $k++) {
 			$v = $elements[$k]->text;
-			$c = $elements[$k]->charset;
-			if(strtolower($c) != "utf-8" && strtolower($c) != "default")
-			{
+			$c = $elements[$k]->charset; // is set to default if no charset detected
+			
+			if (strtolower($c) != "utf-8" && strtolower($c) != "default") {
 				// it happens sometimes but is wrong "iso8859-1"
 				// correct is "iso-8859-1"
-				$v = @mb_convert_encoding($v, "UTF-8", $c);
+				$v = mb_convert_encoding($v, "UTF-8", $c);
+			} else {
+			  $v = iconv(mb_detect_encoding($v, mb_detect_order(), true), "UTF-8", $v);
 			}
 			$value .= $v;
 		}
@@ -639,11 +643,6 @@ Content-Type: text/calendar; charset="utf-8"; method=REQUEST
 
 	static function parseAddressList($address)
 	{
-
-// echo "<br />###".htmlspecialchars($address)."###";
-// 	###Vieß, Alexander <Viess@boev.de>###
-// ###'Jan Kristinus' <jan.kristinus@yakamara.de>###
-// ###Vieß, Alexander <Viess@boev.de>
 	
 		$address_array  = imap_rfc822_parse_adrlist($address, "example.com");
 		if (!is_array($address_array) || count($address_array) < 1) {
@@ -654,8 +653,7 @@ Content-Type: text/calendar; charset="utf-8"; method=REQUEST
 		foreach ($address_array as $id => $val) {
 			// $val->personal
 			// $val->adl
-			if(isset($val->mailbox) && isset($val->host) && $val->host != ".SYNTAX-ERROR." && $val->host != "example.com")
-			{
+			if(isset($val->mailbox) && isset($val->host) && $val->host != ".SYNTAX-ERROR." && $val->host != "example.com") {
 				$return[] = strtolower($val->mailbox.'@'.$val->host);
 			}
 		}	

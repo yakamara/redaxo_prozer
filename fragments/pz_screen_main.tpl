@@ -15,24 +15,23 @@
 	$themes = pz_screen::getThemes();
 	$themepath = $themes[$theme];
 	
-?><link rel="stylesheet" type="text/css" href="/assets/addons/prozer/fonts/css_fonts.css" media="screen" />
+	?>
 	<link rel="stylesheet" type="text/css" href="/assets/addons/prozer/css/css_import.css" media="screen" />
-	<link rel="stylesheet" type="text/css" href="<?php echo $themepath; ?>/css_theme.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="/assets/addons/prozer/css/fileuploader.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="/assets/addons/prozer/labels_screen.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="/assets/addons/prozer/css/jquery_ui.css" media="screen" />
-  <link rel="shortcut icon" type="image/x-icon" href="<?php echo $themepath; ?>/faviconn.ico" />
-	
-  <!--[if IE]>
-    <link rel="stylesheet" type="text/css" href="<?php echo $themepath; ?>/css_ie.css" media="screen" />
-	<![endif]-->
+
+	<link rel="stylesheet" type="text/css" href="<?php echo $themepath; ?>/theme.css" media="screen" />
+	<link rel="shortcut icon" type="image/x-icon" href="<?php echo $themepath; ?>/favicon.ico" />
 	
 	<script type="text/javascript" src="/assets/addons/prozer/js/jquery.min.js"></script>
 	<script type="text/javascript" src="/assets/addons/prozer/js/jquery-ui.min.js"></script>
-	<script type="text/javascript" src="/assets/addons/prozer/js/prozer.js"></script>
 	<script type="text/javascript" src="/assets/addons/prozer/js/fileuploader.js"></script>
 	<script type="text/javascript" src="/assets/addons/prozer/js/jquery.bullseye-1.0.js"></script>
 	<script type="text/javascript" src="/assets/addons/prozer/js/chosen.jquery.js"></script>
+
+	<script type="text/javascript" src="/assets/addons/prozer/js/prozer.js"></script>
+	<script type="text/javascript" src="<?php echo $themepath; ?>/theme.js"></script>
 	
 </head>
 <body class="grid-a-bc<?php
@@ -88,15 +87,23 @@ if(isset($this->footer) && $this->footer != '')
 
 <?php 
 
-echo '<script type="text/javascript">';
+echo '<script type="text/javascript">
+
+$(document).ready(function() {
+
+';
 if(isset($this->javascript) && $this->javascript != "") {
 	echo $this->javascript;
 }
+if(pz::getUser()) {
+	echo 'pz_add_tracker("global", "/screen/tools/tracker/", 30000, 1);';
+}
+echo '
 
-if(pz::getUser())
-	echo 'pz_tracker();';
 
-echo '</script>';
+});
+
+</script>';
 
 ?>
 

@@ -286,7 +286,9 @@ Copyright (c) 2011 by Harvest
 
   $.fn.extend({
     chosen: function(options) {
-      if ($.browser.msie && ($.browser.version === "6.0" || ($.browser.version === "7.0" && document.documentMode === 7))) {
+      // if ($.browser.msie && ($.browser.version === "6.0" || ($.browser.version === "7.0" && document.documentMode === 7))) {
+      // jk: // old ie detection
+      if (navigator.userAgent.match(/msie/i)) {
         return this;
       }
       return this.each(function(input_field) {
@@ -555,7 +557,7 @@ Copyright (c) 2011 by Harvest
         visible_top = this.search_results.scrollTop();
         visible_bottom = maxHeight + visible_top;
         high_top = this.result_highlight.position().top + this.search_results.scrollTop();
-        high_bottom = high_top + this.result_highlight.outerHeight();
+        high_bottom = high_top + this.result_highlight.outerHeight(true);
         if (high_bottom >= visible_bottom) {
           return this.search_results.scrollTop((high_bottom - maxHeight) > 0 ? high_bottom - maxHeight : 0);
         } else if (high_top < visible_top) {
@@ -692,7 +694,7 @@ Copyright (c) 2011 by Harvest
     };
 
     Chosen.prototype.choice_destroy = function(link) {
-      if (this.result_deselect(link.attr("rel"))) {
+      if (this.result_deselect(link.prop("rel"))) {
         this.choices -= 1;
         this.show_search_field_default();
         if (this.is_multiple && this.choices > 0 && this.search_field.val().length < 1) {
@@ -721,7 +723,7 @@ Copyright (c) 2011 by Harvest
       var high, high_id, item, position;
       if (this.result_highlight) {
         high = this.result_highlight;
-        high_id = high.attr("id");
+        high_id = high.prop("id");
         this.result_clear_highlight();
         if (this.is_multiple) {
           this.result_deactivate(high);
@@ -834,7 +836,7 @@ Copyright (c) 2011 by Harvest
                 $("#" + this.results_data[option.group_array_index].dom_id).css('display', 'list-item');
               }
             } else {
-              if (this.result_highlight && result_id === this.result_highlight.attr('id')) {
+              if (this.result_highlight && result_id === this.result_highlight.prop('id')) {
                 this.result_clear_highlight();
               }
               this.result_deactivate(result);
@@ -1010,7 +1012,7 @@ Copyright (c) 2011 by Harvest
 
   get_side_border_padding = function(elmt) {
     var side_border_padding;
-    return side_border_padding = elmt.outerWidth() - elmt.width();
+    return side_border_padding = elmt.outerWidth(true) - elmt.width();
   };
 
   root.get_side_border_padding = get_side_border_padding;

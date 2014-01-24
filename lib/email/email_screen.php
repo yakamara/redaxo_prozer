@@ -37,8 +37,6 @@ class pz_email_screen{
 		$first = ' first';
 		foreach($paginate_screen->getCurrentElements() as $email) {		
 			if($e = new pz_email_screen($email)) {
-//			 $list .= $e->getDraftView($p);
-
 				$list .= '<li class="lev1 entry entry-email'.$first.'">'.$e->getDraftView($p).'</li>';
 				if($first == '')
 					$first = ' first';
@@ -49,7 +47,6 @@ class pz_email_screen{
 		}
 		
 		$content = $content.'<ul class="entries view-block clearfix">'.$list.'</ul>';
-//		$content = $content.$list;
 	
 		$f = new rex_fragment();
 		$f->setVar('title', $p["title"], false);
@@ -93,12 +90,6 @@ class pz_email_screen{
 				$list .= $e->getBlockView($p);
 			}
 		}
-		
-		$list .= '<script>
-		$(document).ready(function() {
-		  pz_screen_select_event("#emails_list li.selected");
-		});
-		</script>';
 		
 		$content = $content.$list;
 		$content .= $paginate_screen->setPaginateLoader($p, '#emails_list');
@@ -149,7 +140,11 @@ class pz_email_screen{
 		
 		$list .= '<script>
 		$(document).ready(function() {
-		  pz_screen_select_event("#emails_list li.selected");
+		';
+		if(isset($p['javascript'])) {
+		  $list .= $p['javascript'];
+		}
+		$list .= '
 		});
 		</script>';
 		
@@ -531,7 +526,7 @@ class pz_email_screen{
                 <div class="column last">
 
                   <ul class="sl1 sl1b sl-r">
-                    <li class="selected"><span class="email-project-name selected">'.$project_name.'</span>
+                    <li class="selected"><span class="email-project-name selected"  onclick="pz_screen_select(this)">'.$project_name.'</span>
                       <div class="flyout">
                         <div class="content">
                           <ul class="entries">
@@ -711,9 +706,11 @@ class pz_email_screen{
 		}
 
 		$attachments = array();
-		$as = array_merge(array($this->email->getProzerEml()),$this->email->getAttachments());
+		$as = array_merge(array($this->email->getProzerEml()), $this->email->getAttachments());
 		foreach($as as $k => $a)
 		{
+		
+		
 		
 				$a_download_link = pz::url("screen","emails","email",array("email_id"=>$this->email->getId(),"mode"=>"download","element_id"=>$a->getElementId()));
 				$a_clipboard_link = pz::url("screen","emails","email",array("email_id"=>$this->email->getId(),"mode"=>"element2clipboard","element_id"=>$a->getElementId()));
@@ -735,6 +732,12 @@ class pz_email_screen{
 				$attachment = '';
 				$attachment .= '<li class="attachment">';
 							// $attachment .= '<span class="preview"><img src="'.$a->getInlineImage().'" width="20" height="20" /></span>';
+
+
+		    // echo "<br />".$a->getFileName()."->".htmlspecialchars($a->getFileName())."**";
+
+
+
 				$attachment .= '<span class="piped">
 				                  <span class="link"><span class="file25 '.$extension.'"></span>'.$depth.'<a onclick="window.open(this.href); return false;" href="'.$a_view_link.'" title="'.htmlspecialchars($a->getFileName()).'">'.htmlspecialchars(pz::cutText($a->getFileName(),40)).'</a></span>
 				                  <span class="name" title="'.htmlspecialchars($a->getContentType()).'">'.htmlspecialchars(pz::cutText($a->getContentType())).'</span>

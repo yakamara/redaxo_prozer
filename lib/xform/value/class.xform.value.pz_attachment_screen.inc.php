@@ -42,7 +42,7 @@ class rex_xform_value_pz_attachment_screen extends rex_xform_value_abstract
 							
 							removeTemplate: \'<span class="clear_link"><a href="javascript:void(0);" onclick="\'+
 						\'	li_field = $(this).parents(\\\'li\\\'); \'+
-						\'	clip_id = li_field.attr(\\\'data-clip_id\\\'); \'+
+						\'	clip_id = li_field.prop(\\\'data-clip_id\\\'); \'+
 						\'	hidden_field = $(\\\'#'.$this->getFieldId().'\\\'); \'+
 						\'	hidden_field.val( hidden_field.val().replace(clip_id+\\\',\\\',\\\'\\\') ); \'+
 						\'	li_field.remove(); \'+
@@ -74,7 +74,7 @@ class rex_xform_value_pz_attachment_screen extends rex_xform_value_abstract
 					    			pz_hidden.val(pz_hidden.val()+result.clipdata.id+",");
 					    			l = $("#pz_multiupload_'.$this->getId().' .qq-upload-list").children().length - 1;
 					    			m = $("#pz_multiupload_'.$this->getId().' .qq-upload-list li:eq("+l+")");
-					    			l +" ##  "+m.attr("data-clip_id",result.clipdata.id);
+					    			l +" ##  "+m.prop("data-clip_id",result.clipdata.id);
 					    			n = m.find(".qq-upload-file");
 					    			n.html(\'<a href="/screen/clipboard/get/?mode=download_clip&clip_id=\'+result.clipdata.id+\'">\'+n.html()+\'</a>\');
 						    	}
@@ -108,7 +108,7 @@ class rex_xform_value_pz_attachment_screen extends rex_xform_value_abstract
 								\'<span class="qq-upload-size">\'+fileSize+\'\'+
 								\'<span class="clear_link"><a href="javascript:void(0);" onclick="\'+
 								\'	li_field = $(this).parents(\\\'li\\\'); \'+
-								\'	clip_id = li_field.attr(\\\'data-clip_id\\\'); \'+
+								\'	clip_id = li_field.prop(\\\'data-clip_id\\\'); \'+
 								\'	hidden_field = $(\\\'#'.$this->getFieldId().'\\\'); \'+
 								\'	hidden_field.val( hidden_field.val().replace(clip_id+\\\',\\\',\\\'\\\') ); \'+
 								\'	li_field.remove(); \'+
