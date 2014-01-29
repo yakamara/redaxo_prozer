@@ -218,10 +218,8 @@ class pz_emails_controller_screen extends pz_emails_controller
         $filter = $result['filter'];
         $emails = pz::getUser()->getTrashEmails($filter);
 
-        $return .= 'alert("'.count($emails).'");';
-
         foreach($emails as $email) {
-          // $email->trash();
+          $email->delete();
           $return .= 'pz_hide(".email-' . $email->getId() . '");';
         }
 
@@ -230,8 +228,6 @@ class pz_emails_controller_screen extends pz_emails_controller
         $return .= '</script>';
               
         return $return;
-
-
     
       case 'trash_noprojectoutbox_emails':
         $return = '<script language="Javascript">';
