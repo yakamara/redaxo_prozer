@@ -127,7 +127,7 @@ class rex_xform_value_pz_calendar_event_attendees extends rex_xform_value_abstra
 		$field = '<a class="bt5" href="javascript:void(0);" onclick="
 						inp = $(\'#'.$this->getHTMLId("attendee_hidden").'\').clone();
 						inp.attr({ id: \'\' });
-						$(\'#'.$this->getHTMLId("attendee_hidden_div").'\').after(inp);		
+						$(\'#'.$this->getHTMLId("attendee_hidden_div").'\').before(inp);		
 						">+ '.rex_i18n::msg("add_attendee").'</a>';
 		$f = new rex_fragment();
 		$f->setVar('label', '<label></label>', false);
