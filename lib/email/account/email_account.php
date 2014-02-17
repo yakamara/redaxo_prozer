@@ -326,7 +326,7 @@ class pz_email_account extends pz_model{
 						// if memory is to high . here 1/2 of memory limit 
 						// .. break and load next emails later
 
-            if( (memory_get_usage(true)*3) > (pz::getIniGetInBytes(ini_get("memory_limit")/2))) {
+            if( (memory_get_usage(true)*2) > pz::getIniGetInBytes(ini_get("memory_limit")) ) {
               break;
             }
 						
