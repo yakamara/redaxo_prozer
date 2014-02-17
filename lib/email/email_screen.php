@@ -1144,7 +1144,8 @@ class pz_email_screen{
   
   public function prepareQuotes($text, $quote = ">")
   {
-    preg_match_all("/^((?:\h*[".$quote."]+\h*)*)(.*)$/m", $text, $matches, PREG_SET_ORDER);
+    $regex = "/^((?:\h*(?:".preg_quote($quote, "/").")+\h*)*)(.*)$/m";
+    preg_match_all($regex, $text, $matches, PREG_SET_ORDER);
     $indent = 0;
     $text = '';
     foreach ($matches as $match) {
