@@ -219,14 +219,19 @@ class pz_email extends pz_model{
 		return $this->vars["cc"];
 	}
 
-	public function getBcc() {
-		return $this->vars["bcc"];
-	}
-
 	public function getCcEmails() {
 		return $this->vars["cc_emails"];
 	}
 
+	public function getBcc() {
+		return $this->vars["bcc"];
+	}
+
+	public function getBccEmails() {
+	  // because here are only sent emails
+		return $this->vars["bcc"];
+	}
+	
 	public function getFrom() {
 		return $this->vars["from"];
 	}

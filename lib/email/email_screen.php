@@ -779,6 +779,14 @@ class pz_email_screen{
                   <dd class="to">'.$this->prepareOutput(implode(", ",$cc)).'</dd>';
 		}
 
+    $bcc = "";
+		if($this->email->getBccEmails() != "") {
+			$bcc = explode(",",htmlspecialchars($this->email->getBccEmails()));
+			$bcc = '<dt class="to">Bcc:</dt>
+                  <dd class="bcc">'.$this->prepareOutput(implode(", ",$bcc)).'</dd>';
+		}
+
+
 		$email_header = "";
 		$header_show_link = pz::url("screen","emails","email",array("email_id"=>$this->email->getId(),"mode"=>"view_header"));
 		$email_header = '
@@ -810,6 +818,7 @@ class pz_email_screen{
               <dt class="to">To:</dt>
               <dd class="to">'.$this->prepareOutput(implode(", ",$to)).'</dd>
               '.$cc.'
+              '.$bcc.'
             </dl>
 			
           </header>
