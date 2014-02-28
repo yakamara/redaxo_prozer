@@ -359,8 +359,8 @@ function pz_tooltipbox(t, url) {
             $(this.layer_id).children().append('<p class="close"><a class="close bt5" href="javascript:void(0);" onclick="pz_tooltipbox_close()"><span class="icon"></span></a></p>');
             $(this.layer_id).addClass("tooltipbox-bottom");
       
-      			ttop = parseInt($(this.layer_id).css("top")) - parseInt($(this.layer_id).css("height")) - 10;
-      			tleft = parseInt($(this.layer_id).css("left")) - parseInt((parseInt($(this.layer_id).css("width"))/2));
+      			ttop = parseInt($(this.layer_id).css("top")) - $(this.layer_id).height() - 10;
+      			tleft = parseInt($(this.layer_id).css("left")) - parseInt(($(this.layer_id).width()/2));
       
             if(ttop < 0)
             {
@@ -368,8 +368,8 @@ function pz_tooltipbox(t, url) {
               $(this.layer_id).removeClass("tooltipbox-bottom");
               $(this.layer_id).addClass("tooltipbox-left");
 
-              ttop = pz_mouse_y - parseInt(parseInt($(this.layer_id).css("height")) / 2);
-              tleft = parseInt($(this.t).offset().left) - parseInt($(this.layer_id).css("width")) - 10;
+              ttop = pz_mouse_y - parseInt( $(this.layer_id).height() / 2);
+              tleft = parseInt($(this.t).offset().left) - $(this.layer_id).width() - 10;
             }
 
             if(tleft < 0)
@@ -379,7 +379,7 @@ function pz_tooltipbox(t, url) {
               $(this.layer_id).addClass("tooltipbox-top");
 
               ttop = parseInt($(layer_id).css("top")) + 20;
-              tleft = parseInt($(layer_id).css("left")) - parseInt((parseInt($(this.layer_id).css("width"))/2));
+              tleft = parseInt($(layer_id).css("left")) - parseInt(( $(this.layer_id).width()/2));
 
             }
       
@@ -699,9 +699,9 @@ function pz_calendarday_rearrange_events()
     height = parseInt($(this).attr("data-event-minute-duration"));
     
     $(this).css("top", start_position);
-    $(this).css("height", height);
+    $(this).height(height);
     $(this).css("left", 465);
-    $(this).css("width", 193);
+    $(this).width(193);
   });
 
   articles = $(".calendar.view-day").find('article[data-event-job="0"]');
@@ -733,7 +733,7 @@ function pz_calendarday_rearrange_events()
     end_position = start_position + height -1;
 
     $(this).css("top", start_position);
-    $(this).css("height", height);
+    $(this).height(height);
     $(this).attr("data-calc-end", end_position);
     
   });
@@ -820,7 +820,7 @@ function pz_calendarday_rearrange_events()
     width = parseInt(max / columns);
     left = parseInt(column * width) - width;
 
-    $(this).css("width", width);
+    $(this).width(width);
     $(this).css("left", left);
 
   });
@@ -928,7 +928,6 @@ function pz_set_calendarweek_init()
     pz_calendarweek_rearrange_events();
   });
 
-
 }
 
 function pz_set_calendarweek_offset()
@@ -946,59 +945,197 @@ function pz_calendarweek_rearrange_events()
 
   // var day_first = $(".calendar.view-week .weekdays:nth-child(2)");
   var days = $(".calendar.view-week").attr("data-days");
-  var wrapper_width = parseInt($(".view-week .wrapper").css("width"));
-  var hour_width = parseInt($(".view-week .hours li.hour").css("width"));
+  var wrapper_width = $(".view-week .wrapper").width();
+  var hour_width = $(".view-week .hours li.hour").width();
   var box_width = parseInt((wrapper_width-hour_width) / days)-3;
   
   // TODO: events über mehrere tage clonen, jedes event ist in jedem tag einzeln vorhanden
   // weekdays
   
   $('li[data-grid="day"],li[data-grid="allday"]')
-    .css("width", box_width)
+    .width(box_width)
     .attr("data-calc-offset", hour_width);
 
   // TODO
   // - allday block
-  // - breite automatisch anpassen onclick / onchange
-  // - wenn mehr als bis 24h - entsprechend clonen und d&d beachten
 
-  // allday
+  // ------- allday
   
   articles = $(".calendar.view-week").find('article[data-event-isallday="1"]');
-  articles.each(function(i)
-  {
+  
+
+  // Sort articles by longest !!!  
+  articles.sort(function(a,b) {
+    start_a = parseInt( $(a).attr("data-event-date-start") );
+    start_b = parseInt( $(b).attr("data-event-date-start") );
+    if (start_a < start_b) return -1;
+    if (start_a > start_b) return 1;
+    height_a = parseInt($(a).attr("data-event-minute-duration"));;
+    height_b = parseInt($(b).attr("data-event-minute-duration"));;
+    if (height_a > height_b) return -1;
+    if (height_a < height_b) return 1;
+    
+    return 0;
+  });
+  
+  
+  articles.each(function(i) {
+
+    $(this)
+      .removeAttr("data-calc-block")
+      .removeAttr("data-calc-column")
+      .removeAttr("data-calc-columns");
+
     var d_date_start = $(this).attr("data-event-date-start");
     var d_date_end = $(this).attr("data-event-date-end");
     var started = 0;
     var left = 0;
-    var width = 0;
+    var factor = 1;
     $('li[data-grid="day"]').each(function(i, d) {
       var c_date = $(d).attr("data-date");
+      
       if(started == 0 && ( d_date_start <= c_date) ) {
         started = 1;
-        left = box_width*i;
+        left = box_width * i;
       } else if (started == 1 && ( d_date_end >= c_date) ){
-        width++;
+        factor++;
       }
+      
     })
+    
+    width = (factor * box_width) - 1; 
+    end_position = left + width;
+    
     $(this)
       .prependTo('.allday')
-      .css("position","absolute")
-      .css("top",(i*20))
-      .css("left",(left-1))
-      .css("width",(((width+1)*box_width)))
-      .attr("data-calc-position", width)
+      .css("position", "absolute")
+      .css("top", (i*20))
+      .css("left", left)
+      .width( width )
+      .attr("data-calc-end", end_position )
       .show();
+
+        // $(this).find("h2").html("#"+current_block+"#row"+current_column+"#"+columns);
 
   });
 
-  $('.allday').css("height",(articles.length*20));
+  // calc article dependence position
+  
+  var current_block = 0;
+  var current_column = 1;
+  var columns = 0;
+  var max_columns = 0;
+
+  articles.each(function(i,e) {
+  
+    start_position = parseInt( $(this).css("left") );
+    end_position = parseInt( $(this).attr("data-calc-end") );
+
+    if (current_block == 0) {
+      
+      // the very first element
+      current_block = 1;
+      current_column = 1;
+      columns = 1;
+      
+    } else {
+
+      block_max_end_position = 0;
+      new_column = true;
+      
+      for (i = 1 ; i <= columns ; i++) {
+      
+        // columns max end postion
+        column_max_end_position = 0;
+        
+        block_articles = $(".calendar.view-week").find('article[data-event-isallday="1"][data-calc-block="'+current_block+'"][data-calc-column="'+i+'"]');
+
+        block_articles.each(function(ii){
+          
+          i_end = parseInt($(this).attr("data-calc-end"));
+
+          if(column_max_end_position < i_end) {
+            column_max_end_position = i_end;
+          }
+        });
+
+        // block max end position
+        if (column_max_end_position > block_max_end_position) {
+            block_max_end_position = column_max_end_position;
+        };
+
+        // fits under column
+        if (start_position > column_max_end_position && new_column) {
+          current_column = i;
+          new_column = false;
+        }
+
+      }
+
+      if (start_position > block_max_end_position) {
+      
+        current_block++;
+        current_column = 1;
+        columns = 1;
+
+      } else if (new_column) {
+
+        columns++;
+        current_column = columns;
+      }
+      
+    }
+
+    $(this).attr("data-calc-block", current_block);
+    $(this).attr("data-calc-column", current_column);
+    $(this).attr("data-calc-columns", columns);
+
+    // $(this).find("h2").html("#"+current_block+"#row"+current_column+"#"+columns);
+    
+    $(".calendar.view-week").find('article[data-event-isallday="1"][data-calc-block="'+current_block+'"]').each(function(){
+      $(this).attr("data-calc-columns", columns);
+    });
+
+  });
+
+  // set article dependence position
+  
+  max_columns = 0;
+  articles.each(function(i,e) {
+    column = parseInt($(this).attr("data-calc-column"));
+    columns = parseInt($(this).attr("data-calc-columns"));
+    $(this).css("top", (column-1) * 20);
+    if (columns > max_columns) {
+      max_columns = $(this).attr("data-calc-columns"); 
+    }
+  });
+
+  $('.allday').height( max_columns * 20 );
+
+  // ------ / allday
+
+
+
+
+
+
+
+  // ------ single days
+
+  // TODO
+  // - breite automatisch anpassen onclick / onchange
+  // - wenn mehr als bis 24h - entsprechend clonen und d&d beachten
+
+
+  // get all days / here: 2 weeks = 14 days
 
   $('li[data-grid="day"]').each(function(i, d) {
   
+    // articles in one day
+  
     var c_day = $(d).attr("data-day");
-    var c_offset_left = parseInt(i * parseInt($(d).css("width")));
-    var c_boxwidth = parseInt($(d).css("width"));
+    var c_offset_left = i * $(d).width();
+    var c_boxwidth = $(d).width();
     var c_position = i;
     
     $(d)
@@ -1019,9 +1156,10 @@ function pz_calendarweek_rearrange_events()
       return 0;
     });
 
-    // cleanup
-    articles.each(function(i,e)
-    {
+
+    // set article position
+
+    articles.each(function(i,e) {
       $(this)
         .removeAttr("data-calc-block")
         .removeAttr("data-calc-column")
@@ -1033,20 +1171,22 @@ function pz_calendarweek_rearrange_events()
       end_position = start_position + height -1;
   
       $(this).css("top", start_position);
-      $(this).css("height", height);
+      $(this).height(height);
       $(this).css("left", c_offset_left);
       
       $(this).attr("data-calc-end", end_position);
       $(this).show();
 
     });
+
+
+    // calc article dependence position
   
     var current_block = 0;
     var current_column = 1;
     var columns = 0;
      
-    articles.each(function(i,e)
-    {
+    articles.each(function(i,e) {
       start_position = parseInt( $(this).css("top") );
       end_position = parseInt( $(this).attr("data-calc-end") );
   
@@ -1057,12 +1197,11 @@ function pz_calendarweek_rearrange_events()
         current_column = 1;
         columns = 1;
         
-      }else {
+      } else {
   
         block_max_end_position = 0;
         new_column = true;
-        for(i=1;i<=columns;i++)
-        {
+        for (i=1;i<=columns;i++) {
           // columns max end postion
           column_max_end_position = 0;
           
@@ -1111,9 +1250,11 @@ function pz_calendarweek_rearrange_events()
   
     });
     
+    
+    // set article dependence position
   
-    articles.each(function(i,e)
-    {
+    articles.each(function(i,e) {
+
       block = parseInt($(this).attr("data-calc-block"));
       column = parseInt($(this).attr("data-calc-column"));
       columns = parseInt($(this).attr("data-calc-columns"));
@@ -1123,10 +1264,12 @@ function pz_calendarweek_rearrange_events()
       width = parseInt(max / columns);
       left = parseInt(column * width) - width;
   
-      $(this).css("width", width);
+      $(this).width(width);
       $(this).css("left", c_offset_left+left);
   
     });
+
+    // end of day
   
   }) 
   
@@ -1147,7 +1290,7 @@ function pz_set_calendarweek_dragresize_init() {
    		$(".draggable").css("z-index","auto");
    		$(this).css("z-index","10000");
 
-      box_width = parseInt($('li[data-grid="allday"]').css("width"));
+      box_width = $('li[data-grid="allday"]').width();
       box_height = 15;
    		$("#calendar_events_week_list .dragable" ).draggable( "option", "grid", [box_width, box_height] );
    		
@@ -1157,7 +1300,7 @@ function pz_set_calendarweek_dragresize_init() {
       var start_minutes = parseInt( ($(this).attr("data-event-hour-start") * 60) ) + parseInt($(this).attr("data-event-minute-start"));
     	var calendar_event_move_minutes = ui.position.top-start_minutes;
 
-      var box_width = parseInt($('li[data-grid="allday"]').css("width"));
+      var box_width = $('li[data-grid="allday"]').width();
       var start_position = parseInt($(this).attr("data-calc-position")) * box_width;
       dd = parseInt ( parseInt(ui.position.left) - start_position); //  - parseInt( box_width / 2 )
       if(dd < 0) {
@@ -1239,8 +1382,8 @@ function pz_set_customerplan_init()
   		start: function(event, ui) 
 	   	{
 	   	  c = $( this ).closest(".customerplan").find(".customerplan-days li:nth-child(2)");
-	   	  width = parseInt(c.css("width"))+1;
-	   	  height = parseInt(c.css("height"));
+	   	  width = c.width()+1;
+	   	  height = c.height();
 	   	  $("#calendar_customerplan_list .draggable" ).draggable( "option", "grid", [width, height] );
 	   	  pz_setZIndex("#"+$(this).prop("id"));
 	   	  
@@ -1255,7 +1398,7 @@ function pz_set_customerplan_init()
 
         old_position = $(this).attr("data-event-position-left");
         c = $( this ).closest(".customerplan").find(".customerplan-days li:nth-child(2)");
-	   	  width = parseInt(c.css("width"))+1;
+	   	  width = c.width() + 1;
 	   	  new_position = parseInt($(this).css("left")) / width;
 	   	  change_position = new_position - old_position;
 
@@ -1329,7 +1472,7 @@ function pz_set_customerplan_init()
 
 function pz_customerplan_reaarange_background()
 {
-  width = parseInt($(".customerplan .customerplan-months .customerplan-days li:nth-child(2)").css("width")) + 1;
+  width = $(".customerplan .customerplan-months .customerplan-days li:nth-child(2)").width() + 1;
   d = $(".customerplan.calendar").attr("data-customerplan-day-start")-1;
   d = -(d*width);
   $(".customerplan-subproject-events dd,.customerplan-project-events").css("background-position",d+"px 0px");
@@ -1396,8 +1539,8 @@ function pz_customerplan_rearrange_events()
   $(".customerplan-project-events .customerplan-project-events-wrapper,.customerplan-subproject-events .customerplan-project-events-wrapper").each(function() 
   {
     c = $( this ).closest(".customerplan").find(".customerplan-days li:nth-child(2)");
- 	  width = parseInt(c.css("width"))+1;
- 	  height = parseInt(c.css("height"));
+ 	  width = c.width() + 1;
+ 	  height = c.height();
     // events
     pz_customerplan_top_position = [];
     top_position = 0;
@@ -1412,7 +1555,7 @@ function pz_customerplan_rearrange_events()
     });
     max_position = max_position+1;
     // (sub)project area
-    $(this).parent().css("height",(max_position*height));
+    $(this).parent().height((max_position*height));
   });
 }
 
