@@ -831,7 +831,7 @@ class pz_emails_controller_screen extends pz_emails_controller
       return $return;
     }
 
-    $s1_content .= pz_email_screen::getEmailsSearchForm($p, array('intrash'));
+    $s1_content .= pz_email_screen::getEmailsSearchForm($p, array());
     $s2_content .= $return;
 
     $f = new rex_fragment();
