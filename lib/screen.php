@@ -165,7 +165,7 @@ class pz_screen
   {
 		$text = pz_screen::setLinks($text);
 		if($specialchars)
-			$text = htmlspecialchars($text);
+			$text = htmlspecialchars($text, ENT_SUBSTITUTE);
 		$text = pz_screen::replaceLinks($text);
 		return $text;
 	}
