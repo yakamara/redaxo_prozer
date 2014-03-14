@@ -421,19 +421,11 @@ $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_history` (
 PRIMARY KEY ( `id` )
 ) ENGINE = MYISAM DEFAULT CHARSET = utf8;');
 
-
-
-// indexe erstellen myisam -> InnoDB
-/*
-$c->setQuery('ALTER TABLE `pz_email` ENGINE = InnoDB;');
-$c->setQuery('ALTER TABLE `pz_email` CHANGE `from` `from` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;');
-$c->setQuery('ALTER TABLE `pz_email` CHANGE `date` `date` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;');
-$c->setQuery('ALTER TABLE `pz_email` CHANGE `content_type` `content_type` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;');
-$c->setQuery('ALTER TABLE `pz_email` CHANGE `from_emails` `from_emails` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;');
-$c->setQuery('ALTER TABLE `pz_email` ADD INDEX `box` (`user_id`,`project_id`,`status`,`send`,`trash`,`draft`,`spam`);');
+$c->setQuery('ALTER TABLE `pz_email` ADD INDEX `project_id` (`project_id`);');
+$c->setQuery('ALTER TABLE `pz_email` ADD INDEX `user_id` (`user_id`);');
 $c->setQuery('ALTER TABLE `pz_email` ADD INDEX `created` (`created`);');
-$c->setQuery('ALTER TABLE `pz_email` ADD INDEX `box2` (`user_id`,`project_id`,`status`,`send`,`trash`,`draft`,`spam`, `readed`);');
-*/
+$c->setQuery('ALTER TABLE `pz_email` ADD INDEX `project_user` (`user_id`,`project_id`);');
+
 
 // -------------------------------------------------- create admin user
 

@@ -518,7 +518,7 @@ class pz_emails_controller_screen extends pz_emails_controller
     $project_ids = pz_project::getProjectIds($projects);
 
     $filter = array();
-    $filter[] = array('type' => 'plain', 'value' => '( (project_id>0 AND status=0) || (project_id=0))');
+    $filter[] = array('type' => 'plain', 'value' => '( status=0 || project_id=0 )');
 
     $tracker_date = pz::getDateTime()->format('Y-m-d H:i:s');
 

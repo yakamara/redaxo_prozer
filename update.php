@@ -336,21 +336,14 @@ if(rex_string::versionCompare($version, '2.0 beta5', '<'))
 }
 
 
-// ------------------------------------------------- beta12
+// ------------------------------------------------- beta11
 
-if(rex_string::versionCompare($version, '2.0 beta12', '<'))
+if(rex_string::versionCompare($version, '2.0 beta11', '<'))
 {
-  /*
-  $sql = rex_sql::factory();
-  $sql->setQuery('ALTER TABLE `pz_email` ENGINE = InnoDB;');
-  $sql->setQuery('ALTER TABLE `pz_email` CHANGE `from` `from` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;');
-  $sql->setQuery('ALTER TABLE `pz_email` CHANGE `date` `date` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;');
-  $sql->setQuery('ALTER TABLE `pz_email` CHANGE `content_type` `content_type` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;');
-  $sql->setQuery('ALTER TABLE `pz_email` CHANGE `from_emails` `from_emails` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;');
-  $sql->setQuery('ALTER TABLE `pz_email` ADD INDEX `box` (`user_id`,`project_id`,`status`,`send`,`trash`,`draft`,`spam`);');
-  $sql->setQuery('ALTER TABLE `pz_email` ADD INDEX `created` (`created`);');
-  $sql->setQuery('ALTER TABLE `pz_email` ADD INDEX `box2` (`user_id`,`project_id`,`status`,`send`,`trash`,`draft`,`spam`, `readed`);');
-  */
+  $c->setQuery('ALTER TABLE `pz_email` ADD INDEX `project_id` (`project_id`);');
+  $c->setQuery('ALTER TABLE `pz_email` ADD INDEX `user_id` (`user_id`);');
+  $c->setQuery('ALTER TABLE `pz_email` ADD INDEX `created` (`created`);');
+  $c->setQuery('ALTER TABLE `pz_email` ADD INDEX `project_user` (`user_id`,`project_id`);');
 }
 
 
