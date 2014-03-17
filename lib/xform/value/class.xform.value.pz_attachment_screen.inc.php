@@ -1,10 +1,5 @@
 <?php
 
-/*
-	// TODO
-		- wenn Bild nicht übernommen wird, dann Clip löschen ?
-*/
-
 class rex_xform_value_pz_attachment_screen extends rex_xform_value_abstract
 {
 
@@ -17,7 +12,7 @@ class rex_xform_value_pz_attachment_screen extends rex_xform_value_abstract
 		foreach($value_ids as $value_id) 
 		{
 			$value_id = (int) $value_id;
-			if( ($clip = pz_clip::get($value_id)) && $clip->getUser()->getId() == pz::getLoginUser()->getId()) 
+			if( ($clip = pz_clip::get($value_id)) && $clip->getUser()->getId() == pz::getUser()->getId()) 
 			{
 				$clip_ids .= $clip->getId().',';
 				$clips[] = $clip;
