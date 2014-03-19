@@ -1928,7 +1928,7 @@ class pz_calendar_event_screen{
 	            </div>
 	            <div class="column last">
                 <ul class="sl1 view-layout">
-                <li class="first selected" onclick="pz_screen_select(this)"><span class="selected">'.rex_i18n::msg("customer").': '.$customer_out.'</span>
+                <li class="first selected"><span class="selected"  onclick="pz_screen_select(this)">'.rex_i18n::msg("customer").': '.$customer_out.'</span>
                   <div class="flyout">
                     <div class="content">
                       <ul class="entries sort">
