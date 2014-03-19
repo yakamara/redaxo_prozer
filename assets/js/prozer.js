@@ -678,6 +678,11 @@ function pz_clip_select(clip_id, clip_name, clip_size)
 
 /* ******************* Calendar **************** */
 
+// ----- form
+function pz_set_calendar_addform_date(formdate) {
+  $("#calendar_event_add_form input[name='from[date]']").val(formdate);
+  $("#calendar_event_add_form input[name='to[date]']").val(formdate);
+}
 
 
 // ----- day

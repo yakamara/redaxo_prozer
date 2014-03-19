@@ -853,6 +853,7 @@ class pz_calendar_event_screen{
 		
 		$return .= '<script language="Javascript"><!--	
 		pz_set_calendarday_init();
+		pz_set_calendar_addform_date("'.pz::dateTime2dateFormat($day,"Y-m-d").'");
 		--></script>';
 		
 		return '<div class="design2col" id="calendar_events_day_list" data-list-type="calendar" data-url="'.$link_refresh.'">'.$return.'</div>';
