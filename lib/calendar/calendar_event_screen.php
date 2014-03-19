@@ -2170,18 +2170,16 @@ class pz_calendar_event_screen{
     
     $link_event_add = "pz_loadPage('calendar_event_form','".pz::url("screen","calendars","event",array_merge($p["linkvars"],array("mode"=>"add_calendar_event","day"=>$start->format("Ymd"),"booked"=>0)))."')";
     
-    if($diff_days<15)
-    {
-      $info = strftime(rex_i18n::msg("show_date_normal"), $start->format("U")).' - '.strftime(rex_i18n::msg("show_date_normal"), $end->format("U"));
-    }else {
-      $info = strftime(rex_i18n::msg("show_month_long"), $start->format("U"));
+    if ($diff_days<15) {
+      $info = pz::strftime(rex_i18n::msg("show_date_normal"), $start->format("U")).' - '.pz::strftime(rex_i18n::msg("show_date_normal"), $end->format("U"));
+    } else {
+      $info = pz::strftime(rex_i18n::msg("show_month_long"), $start->format("U"));
     }
     
-    if($diff_days<15)
-    {
+    if ($diff_days<15) {
       $link_to_view = $link_to_monthview;
       $link_to_view_text = rex_i18n::msg("calendar_month_view");
-    }else {
+    } else {
       $link_to_view = $link_to_2weeksview;
       $link_to_view_text = rex_i18n::msg("calendar_2weeks_view");
     }
