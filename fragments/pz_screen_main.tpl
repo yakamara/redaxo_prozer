@@ -3,6 +3,7 @@
 <head>
 	<title><?php echo htmlspecialchars(pz_screen::getPageTitle()); ?></title>
 	<meta charset="utf-8">
+	<meta name="viewport" content="width=1200" />
 	<base href="<?php echo pz::getServerUrl(); ?>/" />
 	<?php 
 
