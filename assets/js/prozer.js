@@ -553,14 +553,16 @@ function pz_centerPopbox(popbox_width, popbox_height)
 // - current position
 var pz_clipboard_field_layer = "";
 var pz_clipboard_uploaded_list_layer = "";
+var pz_clipboard_upload_list_layer = "";
 var pz_clipboard_button_layer = "";
 
-function pz_clipboard_select(button_layer, uploaded_list_layer, field_layer) 
+function pz_clipboard_select(button_layer, uploaded_list_layer, field_layer, upload_list_layer) 
 {
 	if(pz_clipboard_button_layer != "")
 		$(pz_clipboard_button_layer).removeClass("current");
 	
 	pz_clipboard_field_layer = field_layer;
+	pz_clipboard_upload_list_layer = upload_list_layer;
 	pz_clipboard_uploaded_list_layer = uploaded_list_layer;
 	pz_clipboard_button_layer = button_layer;
 
@@ -575,6 +577,7 @@ function pz_closeClipboard()
   $('#clipboard').addClass("hidden");
   
   pz_clipboard_field_layer = "";
+  pz_clipboard_upload_list_layer = "";
   pz_clipboard_uploaded_list_layer = "";
   pz_clipboard_button_layer = "";
 
@@ -618,8 +621,12 @@ function pz_clipboard_init()
   {
     $(".function-clip-select a").show();
     $(".clips .clip").removeClass("checked");
-    $(pz_clipboard_uploaded_list_layer+" li").each(function()
-    {
+    $(pz_clipboard_uploaded_list_layer+" li").each(function() {
+      clip_id = $(this).attr("data-clip_id");
+      $(".clip-"+clip_id).addClass("checked");
+    });
+
+    $(pz_clipboard_upload_list_layer+" li").each(function() {
       clip_id = $(this).attr("data-clip_id");
       $(".clip-"+clip_id).addClass("checked");
     });
@@ -662,7 +669,7 @@ function pz_clip_select(clip_id, clip_name, clip_size)
 			'<span class="qq-upload-file"><a href="/screen/clipboard/get/?mode=download_clip&clip_id='+clip_id+'" target="_blank">'+clip_name+'</span>'+
 			'<span class="qq-upload-size">'+clip_size+
 				'<span class="clear_link">'+
-					'<a href="javascript:void(0);" onclick="pz_clip_deselect($(this).parents(\'li\').prop(\'data-clip_id\'),\''+pz_clipboard_field_layer+'\');">'+remove_text+'</a></span>'+
+					'<a href="javascript:void(0);" onclick="pz_clip_deselect($(this).parents(\'li\').attr(\'data-clip_id\'),\''+pz_clipboard_field_layer+'\');">'+remove_text+'</a></span>'+
 			'</span></li>');
 
 	$(pz_clipboard_field_layer).val($(pz_clipboard_field_layer).val()+clip_id+",");

@@ -36,13 +36,8 @@ class rex_xform_value_pz_attachment_screen extends rex_xform_value_abstract
 							fileTemplate: \'<li><span class="qq-upload-file"></span><span class="qq-upload-spinner"></span><span class="qq-upload-size"></span><a class="qq-upload-cancel" href="javascript:void(0);">'.rex_i18n::msg("dragdrop_files_exit").'</a><span class="qq-upload-failed-text">'.rex_i18n::msg("dragdrop_files_upload_failed").'</span></li>\',
 							
 							removeTemplate: \'<span class="clear_link"><a href="javascript:void(0);" onclick="\'+
-						\'	li_field = $(this).parents(\\\'li\\\'); \'+
-						\'	clip_id = li_field.prop(\\\'data-clip_id\\\'); \'+
-						\'	hidden_field = $(\\\'#'.$this->getFieldId().'\\\'); \'+
-						\'	hidden_field.val( hidden_field.val().replace(clip_id+\\\',\\\',\\\'\\\') ); \'+
-						\'	li_field.remove(); \'+
-						\'	 \'+
-						\'">'.rex_i18n::msg("dragdrop_files_remove_from_list").'</a></span>\',
+							\' pz_clip_deselect($(this).parents(\\\'li\\\').attr(\\\'data-clip_id\\\'),\\\'#'.$this->getFieldId().'\\\'); return; \'+
+						  \'">'.rex_i18n::msg("dragdrop_files_remove_from_list").'</a></span>\',
 							
 							// remove();
 							
@@ -69,9 +64,11 @@ class rex_xform_value_pz_attachment_screen extends rex_xform_value_abstract
 					    			pz_hidden.val(pz_hidden.val()+result.clipdata.id+",");
 					    			l = $("#pz_multiupload_'.$this->getId().' .qq-upload-list").children().length - 1;
 					    			m = $("#pz_multiupload_'.$this->getId().' .qq-upload-list li:eq("+l+")");
-					    			l +" ##  "+m.prop("data-clip_id",result.clipdata.id);
+					    			l +" ##  "+m.attr("data-clip_id",result.clipdata.id);
+					    			m.addClass("clip-"+result.clipdata.id);
 					    			n = m.find(".qq-upload-file");
 					    			n.html(\'<a href="/screen/clipboard/get/?mode=download_clip&clip_id=\'+result.clipdata.id+\'">\'+n.html()+\'</a>\');
+					    			pz_clipboard_init();
 						    	}
 							},
 							maxConnections: 4,
@@ -98,15 +95,11 @@ class rex_xform_value_pz_attachment_screen extends rex_xform_value_abstract
 							fileName = uploader._formatFileName("'.$file_name.'");
 							fileSize = uploader._formatSize('.$file_size.');
 								
-							li = (\'<li class="qq-upload-success" data-clip_id="'.$clip->getId().'">\'+
+							li = (\'<li class="qq-upload-success clip-'.$clip->getId().'" data-clip_id="'.$clip->getId().'">\'+
 								\'<span class="qq-upload-file"><a href="/screen/clipboard/get/?mode=download_clip&clip_id='.$clip->getId().'" target="_blank">\'+fileName+\'</a></span>\'+
 								\'<span class="qq-upload-size">\'+fileSize+\'\'+
 								\'<span class="clear_link"><a href="javascript:void(0);" onclick="\'+
-								\'	li_field = $(this).parents(\\\'li\\\'); \'+
-								\'	clip_id = li_field.prop(\\\'data-clip_id\\\'); \'+
-								\'	hidden_field = $(\\\'#'.$this->getFieldId().'\\\'); \'+
-								\'	hidden_field.val( hidden_field.val().replace(clip_id+\\\',\\\',\\\'\\\') ); \'+
-								\'	li_field.remove(); \'+
+							  \' pz_clip_deselect($(this).parents(\\\'li\\\').attr(\\\'data-clip_id\\\'),\\\'#'.$this->getFieldId().'\\\'); return; \'+
 								\'">'.rex_i18n::msg("dragdrop_files_remove_from_list").'</a></span></span></li>\');
 								
 							uploaded_list.append(li);								
@@ -128,7 +121,7 @@ class rex_xform_value_pz_attachment_screen extends rex_xform_value_abstract
 		if (isset($this->params["warning"][$this->getId()]))
 			$classes .= ' '.$this->params["warning"][$this->getId()];
 		
-		$after = '<a class="bt-upload" id="'.$this->getFieldId('clipboard_button').'" href="javascript:pz_clipboard_select(\'#'.$this->getFieldId('clipboard_button').'\',\'#pz_multiupload_'.$this->getId().' .qq-uploaded-list\',\'#'.$this->getFieldId().'\')">'.rex_i18n::msg("get_from_clipboard").'</a>';
+		$after = '<a class="bt-upload" id="'.$this->getFieldId('clipboard_button').'" href="javascript:pz_clipboard_select(\'#'.$this->getFieldId('clipboard_button').'\',\'#pz_multiupload_'.$this->getId().' .qq-uploaded-list\',\'#'.$this->getFieldId().'\', \'#pz_multiupload_'.$this->getId().' .qq-upload-list\' )">'.rex_i18n::msg("get_from_clipboard").'</a>';
 
 		$label = ($this->getElement(2) != '') ? '<label class="'.$classes.'" for="' . $this->getFieldId() . '">' . rex_i18n::translate($this->getElement(2)) . '</label>' : '';	
 		$field = '<input class="'.$classes.' clip-ids" id="'.$this->getFieldId().'" type="hidden" name="'.$this->getFieldName().'" value="'.htmlspecialchars(stripslashes($this->getValue())).'" />'.$output;
