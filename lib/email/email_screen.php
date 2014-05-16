@@ -113,8 +113,13 @@ class pz_email_screen{
 			)
 		);
 		
-		if(isset($p["list_links"]))
+		if(isset($p["list_links"])) {
 			$f->setVar('links', $p["list_links"], false);
+    }
+
+		if(isset($p["list_title_links"])) {
+			$f->setVar('title_links', $p["list_title_links"], false);
+		}
 		
 		$f->setVar("orders",$orders);
 		$return = $f->parse('pz_screen_list.tpl');
@@ -122,7 +127,7 @@ class pz_email_screen{
 				$return .= '<div class="xform-warning">'.rex_i18n::msg("no_emails_found").'</div>';
 		}
 		
-		return '<div id="emails_list" class="design2col" data-url="'.$link_refresh.'">'.$return.'</div>';
+		return '<div id="emails_list" class="design2col" data-url="'.$link_refresh.'">'.$return.'ddd</div>';
 		
 	}
 
@@ -175,8 +180,14 @@ class pz_email_screen{
 			)
 		);
 		
-		if(isset($p["list_links"]))
+		if(isset($p["list_links"])) {
 			$f->setVar('links', $p["list_links"], false);
+    }
+		
+		if(isset($p["list_title_links"])) {
+			$f->setVar('title_links', $p["list_title_links"], false);
+		
+		}
 		
 		$f->setVar("orders",$orders);
 		$return = $f->parse('pz_screen_list.tpl');

@@ -9,6 +9,8 @@ class pz_emails_controller_screen extends pz_emails_controller
   public $function_default = 'inbox';
   public $navigation = array('inbox', 'outbox', 'trash', 'search'); // "history", "spam", "search",
 
+  private $emails_modes = array("unread_current_emails", "read_current_emails", "trash_current_emails", "delete_current_emails");
+
   function controller($function = '')
   {
 
@@ -30,7 +32,7 @@ class pz_emails_controller_screen extends pz_emails_controller
       case 'create':  return $this->getEmailForm($p);
       case 'api':  return $this->controllerApi($p);
       case 'email':  return $this->getEmail($p);
-      case 'emails': return $this->getEmails($p);
+      case 'emails': return $this->getEmails(rex_request('mode', 'string', ''), $p);
     }
     return '';
   }
@@ -142,7 +144,7 @@ class pz_emails_controller_screen extends pz_emails_controller
 
     if (!in_array('noprojects', $ignore_fields) && rex_request('search_noprojects', 'int') != 0) {
       $filter[] = array('type' => '=', 'field' => 'project_id', 'value' => '0');
-      $linkvars['search_noprojects'] = '0';
+      $linkvars['search_noprojects'] = '1';
     }
 
     if (!in_array('intrash', $ignore_fields)) {
@@ -200,59 +202,101 @@ class pz_emails_controller_screen extends pz_emails_controller
     return array('orders' => $orders, 'p' => $p, 'current_order' => $current_order);
   }
 
+  public function getTitleFunctions($p, $ignore_fields = array()) {
+  
+    $return = array();
 
+    $return["read"] = '<li class="entry"><a href="javascript:void(0);" class="emails-read" onclick="if($(this).hasClass(\'bt-loading\')) return false; $(this).addClass(\'bt-loading\'); pz_exec_javascript(\'' . pz::url('screen', 'emails', $this->function, array_merge($p['linkvars'], array('mode' => 'read_current_emails'))) . '\');"><span class="title">' . rex_i18n::msg('read_current_emails') . '</span></a></li>';
 
-  // ------------------------------------------------------------------- Pages
+    $return["unread"] = '<li class="entry"><a href="javascript:void(0);" class="emails-unread" onclick="if($(this).hasClass(\'bt-loading\')) return false; $(this).addClass(\'bt-loading\'); pz_exec_javascript(\'' . pz::url('screen', 'emails', $this->function, array_merge($p['linkvars'], array('mode' => 'unread_current_emails'))) . '\');"><span class="title">' . rex_i18n::msg('unread_current_emails') . '</span></a></li>';
 
-  function getEmails($p = array())
-  {
-    $mode = rex_request('mode', 'string', '');
+    $return["delete"] = '<li class="entry"><a href="javascript:void(0);" class="emails-delete" onclick="if($(this).hasClass(\'bt-loading\')) return false; $(this).addClass(\'bt-loading\'); pz_exec_javascript(\'' . pz::url('screen', 'emails', $this->function, array_merge($p['linkvars'], array('mode' => 'delete_current_emails'))) . '\');"><span class="title">' . rex_i18n::msg('delete_current_emails') . '</span></a></li>';
+
+    $return["trash"] = '<li class="entry"><a href="javascript:void(0);" class="emails-trash" onclick="if($(this).hasClass(\'bt-loading\')) return false; $(this).addClass(\'bt-loading\'); pz_exec_javascript(\'' . pz::url('screen', 'emails', $this->function, array_merge($p['linkvars'], array('mode' => 'trash_current_emails'))) . '\');"><span class="title">' . rex_i18n::msg('trash_current_emails') . '</span></a></li>';
+
+    foreach($ignore_fields as $ignore_field) {
+      unset($return[$ignore_field]);
+    }
+
+    return '
+      <span class="headline-list"><ul class="sl2 selected"><li class="selected option"><span class="selected option" onclick="pz_screen_select(this);">Optionen</span>
+        <div class="flyout">
+          <div class="content">
+            <ul class="entries">
+              '.implode("", $return).'
+            </ul>
+          </div>
+        </div>
+      </li></ul>
+      </span>' ;
+
+  }
+
+  function executeEmailsFunction($mode = "", $emails = array()) {
+  
     switch ($mode) {
 
-      case 'delete_current_emails':
-      
+      case 'unread_current_emails':
         $return = '<script language="Javascript">';
-      
-        $filter = array();
-        $result = self::getEmailListFilter($filter, $p['linkvars'], array('intrash'));
-        $filter = $result['filter'];
-        $emails = pz::getUser()->getTrashEmails($filter);
-
         foreach($emails as $email) {
-          $email->delete();
-          $return .= 'pz_hide(".email-' . $email->getId() . '");';
+          // $email->unreaded();
+          $return .= '$(".email-' . $email->getId() . '").removeClass("email-readed").addClass("email-unreaded");';
         }
+        $return .= '$(".emails-unread").removeClass("bt-loading");';
+        $return .= 'pz_init_tracker("global");';
+        $return .= '</script>';
+        return $return;
 
+      case 'read_current_emails':
+        $return = '<script language="Javascript">';
+        foreach($emails as $email) {
+          // $email->readed();
+          $return .= '$(".email-' . $email->getId() . '").removeClass("email-unreaded").addClass("email-readed");';
+        }
+        $return .= '$(".emails-read").removeClass("bt-loading");';
+        $return .= 'pz_init_tracker("global");';
+        $return .= '</script>';
+        return $return;
+
+      case 'delete_current_emails':
+        $return = '<script language="Javascript">';
+        foreach($emails as $email) {
+          if ($email->isTrash()) {
+            $email->delete();
+            $return .= 'pz_hide(".email-' . $email->getId() . '");';
+          }
+        }
         $return .= '$(".emails-delete").removeClass("bt-loading");';
         $return .= 'pz_init_tracker("global");';
         $return .= '</script>';
-              
         return $return;
-    
-      case 'trash_noprojectoutbox_emails':
+
+      case 'trash_current_emails':
         $return = '<script language="Javascript">';
-        $emails = array();
-
-        $filter = array();
-        $filter[] = array('type' => '=', 'field' => 'user_id', 'value' => pz::getUser()->getId());
-        $filter[] = array('type' => '=', 'field' => 'project_id', 'value' => "0");
-
-        $result = self::getEmailListFilter($filter, array(), array('intrash'));
-        $filter = $result['filter'];
-
-        $emails = pz::getUser()->getOutboxEmails($filter);
-
         foreach($emails as $email) {
           $email->trash();
           $return .= 'pz_hide(".email-' . $email->getId() . '");';
         }
-
         $return .= '$(".emails-trash").removeClass("bt-loading");';
         $return .= 'pz_init_tracker("global");';
         $return .= '</script>';
-
         return $return;
-    
+
+    }
+  
+    return false;
+  
+  }
+
+
+
+
+  // ------------------------------------------------------------------- Pages
+
+  function getEmails($mode = "", $p = array())
+  {
+    switch ($mode) {
+
       case 'download_emails':
 
         $return = '<script language="Javascript">';
@@ -533,6 +577,7 @@ class pz_emails_controller_screen extends pz_emails_controller
     $result = self::getEmailListFilter($filter, $p['linkvars'], array('intrash'));
     $filter = $result['filter'];
     $p['linkvars'] = $result['linkvars'];
+    $p['linkvars']['mode'] = 'list';
 
     $orders = array();
     $result = self::getEmailListOrders($orders, $p);
@@ -540,18 +585,26 @@ class pz_emails_controller_screen extends pz_emails_controller
     $current_order = $result['current_order'];
     $p = $result['p'];
 
+    $mode = rex_request('mode', 'string');
+    if (in_array($mode, $this->emails_modes)) {
+        $pager = new pz_pager(2000);
+        $emails = pz::getUser()->getInboxEmails($filter, $projects, array(), $pager);
+        return $this->executeEmailsFunction($mode, $emails);
+    }
+
     $pager = new pz_pager();
     $pager_screen = new pz_pager_screen($pager, $p['layer_list']);
     
     $emails = pz::getUser()->getInboxEmails($filter, $projects, array($orders[$current_order]), $pager);
     
-    $p['linkvars']['mode'] = 'list';
     $p['trackerlink'] = pz::url('screen', 'emails', 'inbox', array_merge($p['linkvars'], array('mode' => 'getnew', 'date' => $tracker_date)));
     $p['javascript'] = 'pz_add_tracker("inbox_emails", "'.$p['trackerlink'].'", 5000, 0);';
 
+    $p['list_title_links'] = array();
+    $p['list_title_links'][] = $this->getTitleFunctions($p, array("delete"));
+
     $return = pz_email_screen::getInboxListView($emails, $p, $orders, $pager_screen);
 
-    $mode = rex_request('mode', 'string');
     if ($mode == 'getnew') {
       $emails_screen = '';
       if(isset($from_date)) {
@@ -608,30 +661,30 @@ class pz_emails_controller_screen extends pz_emails_controller
     $filter = $result['filter'];
     $p['linkvars'] = $result['linkvars'];
 
-    $p['list_links'] = array();
-    $p['list_links'][] = '<a class="emails-trash bt5 bt17" href="javascript:void(0);" onclick="if($(this).hasClass(\'bt-loading\')) return false; $(this).addClass(\'bt-loading\'); pz_exec_javascript(\'' . pz::url('screen', 'emails', 'emails', array_merge(array('mode' => 'trash_noprojectoutbox_emails'))) . '\');"><span>' . rex_i18n::msg('trash_noprojectoutbox_emails') . '</span></a>';
-
     $orders = array();
     $result = self::getEmailListOrders($orders, $p);
     $orders = $result['orders'];
     $current_order = $result['current_order'];
     $p = $result['p'];
 
+    $mode = rex_request('mode', 'string');
+    if (in_array($mode, $this->emails_modes)) {
+        $pager = new pz_pager(2000);
+        $emails = pz::getUser()->getOutboxEmails($filter, $projects, array(), $pager);
+        return $this->executeEmailsFunction($mode, $emails);
+    }
+
+    $p['list_title_links'] = array();
+    $p['list_title_links'][] = $this->getTitleFunctions($p, array("delete"));
+
     $pager = new pz_pager();
     $pager_screen = new pz_pager_screen($pager, $p['layer_list']);
     
     $emails = pz::getUser()->getOutboxEmails($filter, $projects, array($orders[$current_order]), $pager);
-    
+
     $p['linkvars']['mode'] = 'list';
     $return = pz_email_screen::getOutboxListView($emails, $p, $orders, $pager_screen);
 
-    $mode = rex_request('mode', 'string');
-    
-    /* switch ($mode) {
-      case 'emails_search':
-        return pz_email_screen::getEmailsSearchForm($p, array('intrash'));
-    } */
-    
     if ($mode == 'list') {
       return $return;
     }
@@ -733,19 +786,18 @@ class pz_emails_controller_screen extends pz_emails_controller
     $filter = $result['filter'];
     $p['linkvars'] = $result['linkvars'];
 
-
-    $p['list_links'] = array();
-    $p['list_links'][] = '<a class="emails-delete bt5 bt17" href="javascript:void(0);" onclick="if($(this).hasClass(\'bt-loading\')) return false; $(this).addClass(\'bt-loading\'); pz_exec_javascript(\'' . pz::url('screen', 'emails', 'emails', array_merge(array('mode' => 'delete_current_emails'),$p['linkvars'])) . '\');"><span>' . rex_i18n::msg('delete_current_emails') . '</span></a>';
-
-
-    // search_intrash
-
     $orders = array();
     $result = self::getEmailListOrders($orders, $p);
     $orders = $result['orders'];
     $current_order = $result['current_order'];
     $p = $result['p'];
 
+    $mode = rex_request('mode', 'string');
+    if (in_array($mode, $this->emails_modes)) {
+        $pager = new pz_pager(2000);
+        $emails = pz::getUser()->getTrashEmails($filter, $projects, array(), $pager);
+        return $this->executeEmailsFunction($mode, $emails);
+    }
     
     $pager = new pz_pager();
     $pager_screen = new pz_pager_screen($pager, $p['layer_list']);
@@ -753,6 +805,10 @@ class pz_emails_controller_screen extends pz_emails_controller
     $emails = pz::getUser()->getTrashEmails($filter, $projects, array($orders[$current_order]), $pager);
     
     $p['linkvars']['mode'] = 'list';
+    
+    $p['list_title_links'] = array();
+    $p['list_title_links'][] = $this->getTitleFunctions($p, array("trash"));
+    
     $return = pz_email_screen::getTrashListView($emails, $p, $orders, $pager_screen);
 
     $mode = rex_request('mode', 'string');
@@ -812,12 +868,24 @@ class pz_emails_controller_screen extends pz_emails_controller
 
     $projects = array();
 
+    $mode = rex_request('mode', 'string');
+    if (in_array($mode, $this->emails_modes)) {
+        $pager = new pz_pager(2000);
+        $emails = pz::getUser()->getInboxEmails($filter, $projects, array(), $pager);
+        return $this->executeEmailsFunction($mode, $emails);
+    }
+
+
     $pager = new pz_pager();
     $pager_screen = new pz_pager_screen($pager, $p['layer_list']);
     
     $emails = pz::getUser()->getAllEmails($filter, $projects, array($orders[$current_order]), $pager);
     
     $p['linkvars']['mode'] = 'list';
+    
+    $p['list_title_links'] = array();
+    $p['list_title_links'][] = $this->getTitleFunctions($p, array("delete"));
+    
     $return = pz_email_screen::getSearchListView($emails, $p, $orders, $pager_screen);
 
     $mode = rex_request('mode', 'string');

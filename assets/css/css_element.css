@@ -361,3 +361,13 @@ span.tooltip .inner {
 	overflow:hidden!important;
 	/*-moz-box-sizing:content-box!important;*/
 }
+
+
+
+.headline-list {
+    display: block;
+    float: right;
+}
+.headline-list + h1 {
+    margin-right: 40px;
+}

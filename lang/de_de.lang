@@ -273,8 +273,10 @@ address_orderby_companydesc = Firma, absteigend
 address_orderby_companyasc = Firma, aufsteigend
 
 download_emails = E-Mails abrufen
-trash_noprojectoutbox_emails = E-Mails ohne Projekt in Müll
-delete_current_emails = Aktuelle E-Mail-Liste löschen
+trash_current_emails = Aktuelle E-Mail-Liste in den Müll werfen
+delete_current_emails = Aktuelle E-Mail-Liste unwiderruflich löschen
+read_current_emails = Aktuelle E-Mail-Liste als gelesen markieren
+unread_current_emails = Aktuelle E-Mail-Liste als ungelesen markieren
 
 customers = Kunden
 customer = Kunde

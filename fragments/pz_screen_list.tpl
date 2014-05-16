@@ -4,15 +4,19 @@
 	<header>
 	
     <div class="grid2col header">
-      <?php 
-        if(isset($this->title) && $this->title != "") echo '
-        
       <div class="column first">
-          <h1 class="hl1">'.$this->title.'</h1>
-      </div>
+      <?php 
 
-        '; 
+        $title_links = "";
+        if(isset($this->title_links) && is_array($this->title_links) && count($this->title_links) > 0){ 
+            echo "".implode("",$this->title_links); 
+        }
+
+        if(isset($this->title) && $this->title != "") {
+            echo '<h1 class="hl1">'.$this->title.'</h1>';
+        }
       ?>
+      </div>
     
       <div class="column last">
 		    <?php if(isset($this->links) && is_array($this->links) && count($this->links) > 0){ echo implode(" &nbsp; ",$this->links); }?>
