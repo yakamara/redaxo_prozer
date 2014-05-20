@@ -293,6 +293,9 @@ ul.sl1 li.selected:hover {
 ul.sl1 li.selected span.selected {
   display: block;
   padding: 0 40px 0 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .clips ul.sl1 li.selected span.selected {
   padding-right: 30px;

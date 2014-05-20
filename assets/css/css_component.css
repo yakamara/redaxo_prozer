@@ -361,17 +361,17 @@ footer .setting .last > ul,
   border-right-width: 0;
   font-weight: bold !important;
 }
+.sl2b .flyout .entries .entry .wrapper .name {
+  display: block;
+  min-width: 400px;
+  margin-right: 10px;
+}
 .flyout .entries .entry .info {
   margin-right: 14px;
 }
 .flyout .entries .entry .title {
   white-space: nowrap;
 }
-
-
-
-
-
 
 
 

@@ -289,6 +289,7 @@ class pz_calendars_controller_screen extends pz_calendars_controller {
 		$job_project_ids = pz_project::getProjectIds($job_projects);
 
     $project_ids = array_merge($project_ids, $job_project_ids);
+//     $project_ids = $project_ids + $job_project_ids;
 	
 		$mode = rex_request("mode","string");
 		switch($mode)
@@ -301,21 +302,22 @@ class pz_calendars_controller_screen extends pz_calendars_controller {
 				$month_lastday->modify("+1 month");
 				$month_lastday->modify("last day of this month");
 				$events = pz::getUser()->getAllEvents($project_ids, $month_firstday, $month_lastday);
-				return pz_calendar_event_screen::getSearch(
+				$return = pz_calendar_event_screen::getSearch(
 							$project_ids, 
 							$events, 
 							array_merge( $p, array("linkvars" => array( "mode" =>"search", "project_ids" => implode(",",$project_ids) ) ) ), 
 							$day
 						);
+				return $return;
 				
 			case("list"):
 				$events = pz::getUser()->getAllEvents($project_ids, $day, clone $day);
-				
-				return pz_calendar_event_screen::getDayListView(
+				$return = pz_calendar_event_screen::getDayListView(
 							$events,
 							array_merge( $p, array("linkvars" => array( "mode" =>"list", "project_ids" => implode(",",$project_ids), "day" => $day->format('Ymd') ) ) ),
 							$day
 						);
+        return $return;
 
 			case(""):
 

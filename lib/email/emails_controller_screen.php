@@ -9,7 +9,7 @@ class pz_emails_controller_screen extends pz_emails_controller
   public $function_default = 'inbox';
   public $navigation = array('inbox', 'outbox', 'trash', 'search'); // "history", "spam", "search",
 
-  private $emails_modes = array("unread_current_emails", "read_current_emails", "trash_current_emails", "delete_current_emails");
+  private $emails_modes = array("unread_current_emails", "read_current_emails", "trash_current_emails", "delete_current_emails", "move_current_emails_to_project_id");
 
   function controller($function = '')
   {
@@ -218,8 +218,20 @@ class pz_emails_controller_screen extends pz_emails_controller
       unset($return[$ignore_field]);
     }
 
+    $projects = array();
+		foreach(pz::getUser()->getEmailProjects() as $project) {
+			$return['project_id-'.$project->getId()] = '<li class="entry">
+			   <a href="javascript:void(0);" class="wrapper emails-project_id-'.$project->getId().'" onclick="if($(this).hasClass(\'bt-loading\')) return false; $(this).addClass(\'bt-loading\'); pz_exec_javascript(\'' . pz::url('screen', 'emails', $this->function, array_merge($p['linkvars'], array('mode' => 'move_current_emails_to_project_id', "email_project_id" => $project->getId()))) . '\');">
+          <div class="links">
+  					<span class="title">'.rex_i18n::msg("move").'</span>
+	   		  </div>
+					<span class="name">'.htmlspecialchars($project->getName()).'</span>
+				</a>
+				</li>';
+		}
+
     return '
-      <span class="headline-list"><ul class="sl2 selected"><li class="selected option"><span class="selected option" onclick="pz_screen_select(this);">Optionen</span>
+      <span class="headline-list"><ul class="sl2 sl2b selected"><li class="selected option"><span class="selected option" onclick="pz_screen_select(this);">Optionen</span>
         <div class="flyout">
           <div class="content">
             <ul class="entries">
@@ -236,10 +248,38 @@ class pz_emails_controller_screen extends pz_emails_controller
   
     switch ($mode) {
 
+
+      case 'move_current_emails_to_project_id':
+
+        $email_project_id = rex_request('email_project_id', 'int', 0);
+        if (!($project = pz::getUser()->getProjectById($email_project_id))) {
+          return false;
+        }
+
+        $return = '<script language="Javascript">';
+        foreach($emails as $email) {
+          $email->moveToProjectId($project->getId());
+          $return .= '$(".email-' . $email->getId() . '").addClass("email-hasproject");';
+          
+          // rename project OR hide email
+          $return .= '$(".email-' . $email->getId() . ' .email-project-name").html("' . htmlspecialchars($project->getName()) . '");';
+          $return .= '$(".email-' . $email->getId() . ' .label").removeAttr("class").attr("class","label ' . pz_label_screen::getColorClass($project->getLabelId()) . '");';
+
+          // OR hide / in inbox fex
+          // $return .= 'pz_hide(".email-' . $email->getId() . '");';
+
+        }
+
+        $return .= '$(".emails-project_id-'.$project->getId().'").removeClass("bt-loading");';
+        $return .= 'pz_init_tracker("global");';
+        $return .= '</script>';
+
+        return $return;
+
       case 'unread_current_emails':
         $return = '<script language="Javascript">';
         foreach($emails as $email) {
-          // $email->unreaded();
+          $email->unreaded();
           $return .= '$(".email-' . $email->getId() . '").removeClass("email-readed").addClass("email-unreaded");';
         }
         $return .= '$(".emails-unread").removeClass("bt-loading");';
@@ -250,7 +290,7 @@ class pz_emails_controller_screen extends pz_emails_controller
       case 'read_current_emails':
         $return = '<script language="Javascript">';
         foreach($emails as $email) {
-          // $email->readed();
+          $email->readed();
           $return .= '$(".email-' . $email->getId() . '").removeClass("email-unreaded").addClass("email-readed");';
         }
         $return .= '$(".emails-read").removeClass("bt-loading");';
@@ -871,10 +911,9 @@ class pz_emails_controller_screen extends pz_emails_controller
     $mode = rex_request('mode', 'string');
     if (in_array($mode, $this->emails_modes)) {
         $pager = new pz_pager(2000);
-        $emails = pz::getUser()->getInboxEmails($filter, $projects, array(), $pager);
+        $emails = pz::getUser()->getAllEmails($filter, $projects, array(), $pager);
         return $this->executeEmailsFunction($mode, $emails);
     }
-
 
     $pager = new pz_pager();
     $pager_screen = new pz_pager_screen($pager, $p['layer_list']);
@@ -888,13 +927,6 @@ class pz_emails_controller_screen extends pz_emails_controller
     
     $return = pz_email_screen::getSearchListView($emails, $p, $orders, $pager_screen);
 
-    $mode = rex_request('mode', 'string');
-    
-    /* switch ($mode) {
-      case 'emails_search':
-        return pz_email_screen::getEmailsSearchForm($p, array('intrash'));
-    } */
-    
     if ($mode == 'list') {
       return $return;
     }
