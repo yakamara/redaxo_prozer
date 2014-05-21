@@ -259,6 +259,7 @@ class pz_emails_controller_screen extends pz_emails_controller
         $return = '<script language="Javascript">';
         foreach($emails as $email) {
           $email->moveToProjectId($project->getId());
+          $email->updateStatus(1); // mark as: not in inbox
           $return .= '$(".email-' . $email->getId() . '").addClass("email-hasproject");';
           
           // rename project OR hide email
