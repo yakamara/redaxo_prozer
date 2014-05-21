@@ -302,10 +302,9 @@ class pz_emails_controller_screen extends pz_emails_controller
       case 'delete_current_emails':
         $return = '<script language="Javascript">';
         foreach($emails as $email) {
-          if ($email->isTrash()) {
-            $email->delete();
-            $return .= 'pz_hide(".email-' . $email->getId() . '");';
-          }
+            if ($email->isTrash() && !$email->hasProject() && $email->delete()) {
+                $return .= 'pz_hide(".email-' . $email->getId() . '");';
+            }
         }
         $return .= '$(".emails-delete").removeClass("bt-loading");';
         $return .= 'pz_init_tracker("global");';
@@ -575,8 +574,6 @@ class pz_emails_controller_screen extends pz_emails_controller
         $return .= '</script>';
         return $return;
 
-      case 'delete':
-        return '';
     }
 
   }
