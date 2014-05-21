@@ -511,6 +511,23 @@ class pz_email_screen{
 
     $function_links["delete"] = '<li class="function delete">'.pz_screen::getTooltipView('<a class="delete" href="'.$link_delete.'"></a>',$text_delete).'</li>';
     
+    
+    /*
+    $function_links["options"] =
+    <li class="last selected option split-v"><span class="selected option">'.rex_i18n::msg("options").'</span>
+                      <div class="flyout">
+                        <div class="content">
+                          <ul class="entries">
+                            <li class="entry first"><a href=""><span class="title">'.rex_i18n::msg("spam").'</span></a></li>
+                            <li class="entry"><a href=""><span class="title">'.rex_i18n::msg("ham").'</span></a></li>
+                          </ul>
+                        </div>
+                      </div>
+                    </li>
+    */
+    
+    
+    
     if($this->email->isTrash())
     {
       unset($function_links["trash"]);
@@ -550,16 +567,6 @@ class pz_email_screen{
                 
                   <ul class="sl2 functions">
                     '.implode("",$function_links).'
-                    <li class="last selected option split-v"><span class="selected option">'.rex_i18n::msg("options").'</span>
-                      <div class="flyout">
-                        <div class="content">
-                          <ul class="entries">
-                            <li class="entry first"><a href=""><span class="title">'.rex_i18n::msg("spam").'</span></a></li>
-                            <li class="entry"><a href=""><span class="title">'.rex_i18n::msg("ham").'</span></a></li>
-                          </ul>
-                        </div>
-                      </div>
-                    </li>
                   </ul>
                 </div>
               </div>
