@@ -5,6 +5,8 @@ $error = '';
 // bisher installierte Version:
 $version = $this->getVersion();
 
+$sql = rex_sql::factory();
+
 
 // ------------------------------------------------- alpha5
 
@@ -46,8 +48,6 @@ if(rex_string::versionCompare($version, '2.0 alpha8', '<'))
 
 if(rex_string::versionCompare($version, '2.0 alpha10', '<'))
 {
-    $sql = rex_sql::factory();
-
     // project files
 
     $sql->setQuery('ALTER TABLE `pz_project_file` ADD `filename` VARCHAR(255) NOT NULL;',array());
@@ -340,10 +340,10 @@ if(rex_string::versionCompare($version, '2.0 beta5', '<'))
 
 if(rex_string::versionCompare($version, '2.0 beta11', '<'))
 {
-  $c->setQuery('ALTER TABLE `pz_email` ADD INDEX `project_id` (`project_id`);');
-  $c->setQuery('ALTER TABLE `pz_email` ADD INDEX `user_id` (`user_id`);');
-  $c->setQuery('ALTER TABLE `pz_email` ADD INDEX `created` (`created`);');
-  $c->setQuery('ALTER TABLE `pz_email` ADD INDEX `project_user` (`user_id`,`project_id`);');
+  rex_sql::factory()->setQuery('ALTER TABLE `pz_email` ADD INDEX `project_id` (`project_id`);');
+  rex_sql::factory()->setQuery('ALTER TABLE `pz_email` ADD INDEX `user_id` (`user_id`);');
+  rex_sql::factory()->setQuery('ALTER TABLE `pz_email` ADD INDEX `created` (`created`);');
+  rex_sql::factory()->setQuery('ALTER TABLE `pz_email` ADD INDEX `project_user` (`user_id`,`project_id`);');
 }
 
 
