@@ -825,3 +825,11 @@ page_title = Bezeichnung (Title)
 page_theme = Theme
 system_info_updated = Systemdaten wurden aktualisiert
 
+password = Passwort
+logout = ausloggen
+search = suchen
+
+label_title = Suchen
+edit = editieren
+delete = löschen
+user = Benutzer
