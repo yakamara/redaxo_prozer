@@ -1,6 +1,6 @@
 <?php
 
-class rex_xform_value_pz_repeat_screen extends rex_xform_value_abstract
+class rex_xform_pz_repeat_screen extends rex_xform_abstract
 {
 
 	function enterObject()
@@ -44,7 +44,7 @@ class rex_xform_value_pz_repeat_screen extends rex_xform_value_abstract
     $tpl_entries[4]['attributes']['rel'] = 'angepasst';
     
     // Dropdown aufbauen
-    $f = new rex_fragment();
+    $f = new pz_fragment();
     $f->setVar('class_ul', $ul_classes, false);
     $f->setVar('class_selected', $this->getFieldId() .'-'. $id_counter .'-selected', false);
     $f->setVar('selected', $tpl_selected_text, false);
@@ -56,13 +56,13 @@ class rex_xform_value_pz_repeat_screen extends rex_xform_value_abstract
     // XForm Fragment aufbauen
     $before = '';
     $after = '';
-		$label = '<label'.$classes.' for="' . $this->getFieldId() . '-'. $id_counter .'">' . rex_i18n::translate('Wiederholung') . '</label>';
+		$label = '<label'.$classes.' for="' . $this->getFieldId() . '-'. $id_counter .'">' . pz_i18n::translate('Wiederholung') . '</label>';
 		$field = $repeat_dropdown;
 		$extra = '';
     $html_id = $this->getHTMLId();
     $name = $this->getName();
     
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('before', $before, false);
 		$f->setVar('after', $after, false);
 		$f->setVar('label', $label, false);
@@ -101,7 +101,7 @@ class rex_xform_value_pz_repeat_screen extends rex_xform_value_abstract
     
     $fragment_ul_classes = $ul_classes.' w5';
     // Dropdown aufbauen
-    $f = new rex_fragment();
+    $f = new pz_fragment();
     $f->setVar('class_ul', $fragment_ul_classes, false);
     $f->setVar('class_selected', $this->getFieldId() .'-'. $id_counter .'-selected', false);
     $f->setVar('selected', $tpl_selected_text, false);
@@ -116,10 +116,10 @@ class rex_xform_value_pz_repeat_screen extends rex_xform_value_abstract
     // XForm Fragment aufbauen
     $before = '';
     $after = '';
-		$label = '<label'.$classes.' for="' . $this->getFieldId() . '-'. $id_counter .'">' . rex_i18n::translate('Ende') . '</label>';
+		$label = '<label'.$classes.' for="' . $this->getFieldId() . '-'. $id_counter .'">' . pz_i18n::translate('Ende') . '</label>';
 		$field = $dropdown;
 		// Auswahl = nach X Mal
-		$field .= '<div id="'.$this->getFieldId().'-repeat-end-after" class="'.$this->getFieldId().'-repeat-end"><input type="number" value="" name="" max="10" min="1" class="xform-number" /><span class="fwording1">'.rex_i18n::translate('Mal').'</span></div>';
+		$field .= '<div id="'.$this->getFieldId().'-repeat-end-after" class="'.$this->getFieldId().'-repeat-end"><input type="number" value="" name="" max="10" min="1" class="xform-number" /><span class="fwording1">'.pz_i18n::translate('Mal').'</span></div>';
 		// Auswahl = Datum
 		$field .= '<div id="'.$this->getFieldId().'-repeat-end-date" class="'.$this->getFieldId().'-repeat-end">'.$calendar.'</div>';
 		$extra = '<script type="text/javascript">hide(\'.'.$this->getFieldId().'-repeat-end\');</script>';
@@ -127,7 +127,7 @@ class rex_xform_value_pz_repeat_screen extends rex_xform_value_abstract
     $name = $this->getName();
 		$fragment_class = $class.' data-indent xform-number xform-date sl1-fnumber1-fwording1 sl1-fdate1-sl3';
     
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('before', $before, false);
 		$f->setVar('after', $after, false);
 		$f->setVar('label', $label, false);
@@ -173,7 +173,7 @@ class rex_xform_value_pz_repeat_screen extends rex_xform_value_abstract
     $tpl_entries[3]['attributes']['onclick'] = 'hide(\'.'.$this->getFieldId().'-custom-repeat\'); show(\'#'.$this->getFieldId().'-custom-repeat-yearly\');';
     
     // Dropdown aufbauen
-    $f = new rex_fragment();
+    $f = new pz_fragment();
     $f->setVar('class_ul', $ul_classes, false);
     $f->setVar('class_selected', $this->getFieldId() .'-'. $id_counter .'-selected', false);
     $f->setVar('selected', $tpl_selected_text, false);
@@ -185,7 +185,7 @@ class rex_xform_value_pz_repeat_screen extends rex_xform_value_abstract
     // XForm Fragment aufbauen
     $before = '';
     $after = '';
-		$label = '<label'.$classes.' for="' . $this->getFieldId() . '-'. $id_counter .'">' . rex_i18n::translate('Häufigkeit') . '</label>';
+		$label = '<label'.$classes.' for="' . $this->getFieldId() . '-'. $id_counter .'">' . pz_i18n::translate('Häufigkeit') . '</label>';
 		$field = $custom_repeat_dropdown;
 		$extra = '<script type="text/javascript">
 		            $(document).ready(function()
@@ -196,7 +196,7 @@ class rex_xform_value_pz_repeat_screen extends rex_xform_value_abstract
     $html_id = $this->getHTMLId();
     $name = $this->getName();
     
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('before', $before, false);
 		$f->setVar('after', $after, false);
 		$f->setVar('label', $label, false);
@@ -218,14 +218,14 @@ class rex_xform_value_pz_repeat_screen extends rex_xform_value_abstract
     $wrapper = '<div id="'.$this->getFieldId().'-custom-repeat-daily" class="'.$this->getFieldId().'-custom-repeat">###</div>';
     $before = '';
     $after = '';
-		$label = '<label'.$classes.' for="' . $this->getFieldId() . '-'. $id_counter .'">' . rex_i18n::translate('Alle') . '</label>';
-		$field = '<input type="number" value="" name="" max="10" min="1" class="xform-number" /><span class="fwording1">'.rex_i18n::translate('Tag(e)').'</span>';
+		$label = '<label'.$classes.' for="' . $this->getFieldId() . '-'. $id_counter .'">' . pz_i18n::translate('Alle') . '</label>';
+		$field = '<input type="number" value="" name="" max="10" min="1" class="xform-number" /><span class="fwording1">'.pz_i18n::translate('Tag(e)').'</span>';
 		$extra = '';
     $html_id = $this->getHTMLId();
     $name = $this->getName();
 		$fragment_class = $class.' data-indent xform-number fnumber1-fwording1';
     
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('wrapper', $wrapper, false);
 		$f->setVar('before', $before, false);
 		$f->setVar('after', $after, false);
@@ -280,5 +280,3 @@ class rex_xform_value_pz_repeat_screen extends rex_xform_value_abstract
 
 	}
 }
-
-?>

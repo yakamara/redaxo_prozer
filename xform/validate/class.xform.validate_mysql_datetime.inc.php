@@ -36,4 +36,3 @@ class rex_xform_validate_mysql_datetime extends rex_xform_validate_abstract
 		return "mysql_datetime|field|errormsg";
 	}
 }
-?>

@@ -38,7 +38,7 @@ class rex_xform_validate_pz_auth extends rex_xform_validate_abstract
 				$msg = $this->getElement(6);
 			
 			}else {
-			
+
 				$pz_login = new pz_login();
 				$pz_login->setLogin($login, $psw);
 				if($stay == 1) 

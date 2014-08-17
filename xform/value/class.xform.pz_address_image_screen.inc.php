@@ -6,12 +6,17 @@
 
 */
 
-class rex_xform_value_pz_image_screen extends rex_xform_value_abstract
+class rex_xform_pz_address_image_screen extends rex_xform_abstract
 {
 
 	function enterObject()
 	{
+		$value_ids = explode(",",$this->getValue());
+		
 		$default_image_path = $this->getElement(3);
+		
+		$clip_ids = "";
+		$clips = array();
 		
 		$output = '	<div class="rex-form-row">
 						<label></label>
@@ -23,9 +28,9 @@ class rex_xform_value_pz_image_screen extends rex_xform_value_abstract
 							element: document.getElementById(\'pz_multiupload_'.$this->getId().'\'),
 							action: \''.pz::url("screen", "clipboard", "upload", array( "mode"=>"file" ) ).'\',
 							
-							template: \'<div class="qq-uploader"><div class="qq-upload-drop-area"><span>'.rex_i18n::msg("file_for_upload").'</span></div><div class="qq-upload-button">'.rex_i18n::msg("dragdrop_file_for_upload").'</div><ul class="qq-uploaded-list"></ul><ul class="qq-upload-list"></ul></div>\',
+							template: \'<div class="qq-uploader"><div class="qq-upload-drop-area"><span>'.pz_i18n::msg("file_for_upload").'</span></div><div class="qq-upload-button">'.pz_i18n::msg("dragdrop_file_for_upload").'</div><ul class="qq-uploaded-list"></ul><ul class="qq-upload-list"></ul></div>\',
 							
-							fileTemplate: \'<li><span class="qq-upload-file"></span><span class="qq-upload-spinner"></span><span class="qq-upload-size"></span><a class="qq-upload-cancel" href="javascript:void(0);">'.rex_i18n::msg("dragdrop_file_exit").'</a><span class="qq-upload-failed-text">'.rex_i18n::msg("dragdrop_files_upload_failed").'</span></li>\',
+							fileTemplate: \'<li><span class="qq-upload-file"></span><span class="qq-upload-spinner"></span><span class="qq-upload-size"></span><a class="qq-upload-cancel" href="javascript:void(0);">'.pz_i18n::msg("dragdrop_file_exit").'</a><span class="qq-upload-failed-text">'.pz_i18n::msg("dragdrop_files_upload_failed").'</span></li>\',
 							
 							removeTemplate: \'\',
 							
@@ -51,13 +56,19 @@ class rex_xform_value_pz_image_screen extends rex_xform_value_abstract
 								pz_hidden = $("#'.$this->getHTMLId().' #'.$this->getFieldId().'");
 								pz_image = $("#'.$this->getHTMLId().' label img");
 								if(result.clipdata.id) {
-					    			link = "'.pz::url("screen", "clipboard", "get", array( "mode"=>"image_src" )).'"+"&clip_id="+result.clipdata.id;
+					    			link = "'.pz::url("screen", "clipboard", "get", array( "mode"=>"image_src_raw", "image_size" => "xl", "image_type" => "image/jpg" )).'"+"&clip_id="+result.clipdata.id;
 					    			$.post(link, "", function(data) {
-					    				if(data == "") {
+					    				if(data != "") {
+					    					pz_hidden.val("PHOTO;ENCODING=b;TYPE=JPEG:"+data);
+											
+											link = "'.pz::url("screen", "clipboard", "get", array( "mode"=>"image_inline", "image_size" => "m")).'"+"&clip_id="+result.clipdata.id;
 
-					    				}else {
-					    					pz_hidden.val(data);
-					    					pz_image.attr("src",data);
+											$.post(link, "", function(data) {
+												if(data != "")
+													pz_image.attr("src",data);		
+											});
+					    					
+					    					
 					    				}
 								     });
 					    			
@@ -89,17 +100,19 @@ class rex_xform_value_pz_image_screen extends rex_xform_value_abstract
 		$img = $this->getValue();
 		if($img == "") 
 			$img = $default_image_path;
+		else
+			$img = pz_address::makeInlineImage($img);
 		
 		$classes = (trim($classes) != '') ? ' class="'.trim($classes).'"' : '';
 		$label = ($this->getElement(2) != '') ? '<label'.$classes.' for="' . $this->getFieldId() . '">'.
-			'<img src="'.$img.'" title="' . rex_i18n::translate($this->getElement(2)) . '" width=40 height=40 />'.
+			'<img src="'.$img.'" title="' . pz_i18n::translate($this->getElement(2)) . '" width=40 height=40 />'.
 			'</label>' : '';	
-		$field = '<input id="'.$this->getFieldId().'" type="hidden" name="'.$this->getFieldName().'" value="'.htmlspecialchars(stripslashes($this->getValue())).'" />'.$output;
+		$field = '<input id="'.$this->getFieldId().'" type="hidden" style="height:100px" name="'.$this->getFieldName().'" value="'.htmlspecialchars(stripslashes($this->getValue())).'" />'.$output;
 		$html_id = $this->getHTMLId();
 		$name = $this->getName();
 		
 		
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('label', $label, false);
 		$f->setVar('field', $field, false);
 		$f->setVar('html_id', $html_id, false);
@@ -122,5 +135,3 @@ class rex_xform_value_pz_image_screen extends rex_xform_value_abstract
 	}
 
 }
-
-?>

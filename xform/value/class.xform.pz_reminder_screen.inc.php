@@ -1,6 +1,6 @@
 <?php
 
-class rex_xform_value_pz_reminder_screen extends rex_xform_value_abstract
+class rex_xform_pz_reminder_screen extends rex_xform_abstract
 {
 
 	function enterObject()
@@ -38,7 +38,7 @@ class rex_xform_value_pz_reminder_screen extends rex_xform_value_abstract
     $tpl_entries[2]['attributes']['rel'] = 'email';
     
     // Dropdown aufbauen
-    $f = new rex_fragment();
+    $f = new pz_fragment();
     $f->setVar('class_ul', $ul_classes, false);
     $f->setVar('class_selected', $this->getFieldId() .'-'. $id_counter .'-selected', false);
     $f->setVar('selected', $tpl_selected_text, false);
@@ -50,13 +50,13 @@ class rex_xform_value_pz_reminder_screen extends rex_xform_value_abstract
     // XForm Fragment aufbauen
     $before = '';
     $after = '';
-		$label = '<label'.$classes.' for="' . $this->getFieldId() . '-'. $id_counter .'">' . rex_i18n::translate('Erinnerung') . '</label>';
+		$label = '<label'.$classes.' for="' . $this->getFieldId() . '-'. $id_counter .'">' . pz_i18n::translate('Erinnerung') . '</label>';
 		$field = $reminder_dropdown;
 		$extra = '';
     $html_id = $this->getHTMLId();
     $name = $this->getName();
     
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('before', $before, false);
 		$f->setVar('after', $after, false);
 		$f->setVar('label', $label, false);
@@ -105,7 +105,7 @@ class rex_xform_value_pz_reminder_screen extends rex_xform_value_abstract
     
     $fragment_ul_classes = $ul_classes.' w5 w6';
     // Dropdown aufbauen
-    $f = new rex_fragment();
+    $f = new pz_fragment();
     $f->setVar('class_ul', $fragment_ul_classes, false);
     $f->setVar('class_selected', $this->getFieldId() .'-'. $id_counter .'-selected', false);
     $f->setVar('selected', $tpl_selected_text, false);
@@ -117,7 +117,7 @@ class rex_xform_value_pz_reminder_screen extends rex_xform_value_abstract
     // XForm Fragment aufbauen
     $before = '';
     $after = '';
-		$label = '<label'.$classes.' for="' . $this->getFieldId() . '-'. $id_counter .'">' . rex_i18n::translate('Zeit') . '</label>';
+		$label = '<label'.$classes.' for="' . $this->getFieldId() . '-'. $id_counter .'">' . pz_i18n::translate('Zeit') . '</label>';
 		$field = '<input type="number" value="" name="" min="1" class="xform-number" />';
 		$field .= $popup_dropdown;
 		$extra = '';
@@ -125,7 +125,7 @@ class rex_xform_value_pz_reminder_screen extends rex_xform_value_abstract
     $name = $this->getName();
 		$fragment_class = $class.' data-indent xform-number fnumber1-sl1';
     
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('before', $before, false);
 		$f->setVar('after', $after, false);
 		$f->setVar('label', $label, false);
@@ -174,7 +174,7 @@ class rex_xform_value_pz_reminder_screen extends rex_xform_value_abstract
     
     $fragment_ul_classes = $ul_classes.' w5 w6';
     // Dropdown aufbauen
-    $f = new rex_fragment();
+    $f = new pz_fragment();
     $f->setVar('class_ul', $fragment_ul_classes, false);
     $f->setVar('class_selected', $this->getFieldId() .'-'. $id_counter .'-selected', false);
     $f->setVar('selected', $tpl_selected_text, false);
@@ -191,7 +191,7 @@ class rex_xform_value_pz_reminder_screen extends rex_xform_value_abstract
     // XForm Fragment aufbauen
     $before = '';
     $after = '';
-		$label = '<label'.$classes.' for="' . $this->getFieldId() . '-'. $id_counter .'">' . rex_i18n::translate('Zeit') . '</label>';
+		$label = '<label'.$classes.' for="' . $this->getFieldId() . '-'. $id_counter .'">' . pz_i18n::translate('Zeit') . '</label>';
 		$field = $popup_dropdown;
 		$field .= $calendar;
 		$extra = '';
@@ -199,7 +199,7 @@ class rex_xform_value_pz_reminder_screen extends rex_xform_value_abstract
     $name = $this->getName();
 		$fragment_class = $class.' data-indent xform-date sl1-fdate1-sl3';
     
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('before', $before, false);
 		$f->setVar('after', $after, false);
 		$f->setVar('label', $label, false);
@@ -232,7 +232,7 @@ class rex_xform_value_pz_reminder_screen extends rex_xform_value_abstract
     $tpl_entries[2]['attributes']['rel'] = 'uggachuckka';
     
     // Dropdown aufbauen
-    $f = new rex_fragment();
+    $f = new pz_fragment();
     $f->setVar('class_ul', $ul_classes, false);
     $f->setVar('class_selected', $this->getFieldId() .'-'. $id_counter .'-selected', false);
     $f->setVar('selected', $tpl_selected_text, false);
@@ -244,14 +244,14 @@ class rex_xform_value_pz_reminder_screen extends rex_xform_value_abstract
     // XForm Fragment aufbauen
     $before = '';
     $after = '';
-		$label = '<label'.$classes.' for="' . $this->getFieldId() . '-'. $id_counter .'">' . rex_i18n::translate('Ton') . '</label>';
+		$label = '<label'.$classes.' for="' . $this->getFieldId() . '-'. $id_counter .'">' . pz_i18n::translate('Ton') . '</label>';
 		$field = $sound_dropdown;
 		$extra = '';
     $html_id = $this->getHTMLId();
     $name = $this->getName();
 		$fragment_class = $class.' data-indent';
     
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('before', $before, false);
 		$f->setVar('after', $after, false);
 		$f->setVar('label', $label, false);
@@ -283,7 +283,7 @@ class rex_xform_value_pz_reminder_screen extends rex_xform_value_abstract
     $tpl_entries[2]['attributes']['rel'] = 'ralph@';
     
     // Dropdown aufbauen
-    $f = new rex_fragment();
+    $f = new pz_fragment();
     $f->setVar('class_ul', $ul_classes, false);
     $f->setVar('class_selected', $this->getFieldId() .'-'. $id_counter .'-selected', false);
     $f->setVar('selected', $tpl_selected_text, false);
@@ -295,14 +295,14 @@ class rex_xform_value_pz_reminder_screen extends rex_xform_value_abstract
     // XForm Fragment aufbauen
     $before = '';
     $after = '';
-		$label = '<label'.$classes.' for="' . $this->getFieldId() . '-'. $id_counter .'">' . rex_i18n::translate('E-Mail') . '</label>';
+		$label = '<label'.$classes.' for="' . $this->getFieldId() . '-'. $id_counter .'">' . pz_i18n::translate('E-Mail') . '</label>';
 		$field = $email_dropdown;
 		$extra = '';
     $html_id = $this->getHTMLId();
     $name = $this->getName();
 		$fragment_class = $class.' data-indent';
     
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('before', $before, false);
 		$f->setVar('after', $after, false);
 		$f->setVar('label', $label, false);
@@ -355,5 +355,3 @@ class rex_xform_value_pz_reminder_screen extends rex_xform_value_abstract
 
 	}
 }
-
-?>

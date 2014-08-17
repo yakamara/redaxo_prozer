@@ -1,6 +1,6 @@
 <?php
 
-class rex_xform_value_pz_recommend_text extends rex_xform_value_abstract
+class rex_xform_pz_recommend_text extends rex_xform_abstract
 {
 
 	function enterObject()
@@ -33,7 +33,7 @@ class rex_xform_value_pz_recommend_text extends rex_xform_value_abstract
 		$label = '<label>' . $select->get() . '</label>';	
 		$field = '<input id="'.$this->getFieldId().'" class="'.$this->getHTMLClass().'" type="text" name="'.$this->getFieldName().'" value="'.htmlspecialchars(stripslashes($this->getValue())).'" />';
 
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('html_id', $html_id, false);
 		$f->setVar('name', $name, false);
 		$f->setVar('class', $classes, false);
@@ -75,5 +75,3 @@ class rex_xform_value_pz_recommend_text extends rex_xform_value_abstract
 
 
 }
-
-?>

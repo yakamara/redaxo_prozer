@@ -1,6 +1,6 @@
 <?php
 
-class rex_xform_value_pz_attachment_screen extends rex_xform_value_abstract
+class rex_xform_pz_attachment_screen extends rex_xform_abstract
 {
 
 	function enterObject()
@@ -31,13 +31,13 @@ class rex_xform_value_pz_attachment_screen extends rex_xform_value_abstract
 							element: document.getElementById(\'pz_multiupload_'.$this->getId().'\'),
 							action: \''.pz::url("screen", "clipboard", "upload", array( "mode"=>"file" ) ).'\',
 							
-							template: \'<div class="qq-uploader"><div class="qq-upload-drop-area"><span>'.rex_i18n::msg("files_for_upload").'</span></div><div class="qq-upload-button">'.rex_i18n::msg("dragdrop_files_for_upload").'</div><ul class="qq-uploaded-list"></ul><ul class="qq-upload-list"></ul></div>\',
+							template: \'<div class="qq-uploader"><div class="qq-upload-drop-area"><span>'.pz_i18n::msg("files_for_upload").'</span></div><div class="qq-upload-button">'.pz_i18n::msg("dragdrop_files_for_upload").'</div><ul class="qq-uploaded-list"></ul><ul class="qq-upload-list"></ul></div>\',
 							
-							fileTemplate: \'<li><span class="qq-upload-file"></span><span class="qq-upload-spinner"></span><span class="qq-upload-size"></span><a class="qq-upload-cancel" href="javascript:void(0);">'.rex_i18n::msg("dragdrop_files_exit").'</a><span class="qq-upload-failed-text">'.rex_i18n::msg("dragdrop_files_upload_failed").'</span></li>\',
+							fileTemplate: \'<li><span class="qq-upload-file"></span><span class="qq-upload-spinner"></span><span class="qq-upload-size"></span><a class="qq-upload-cancel" href="javascript:void(0);">'.pz_i18n::msg("dragdrop_files_exit").'</a><span class="qq-upload-failed-text">'.pz_i18n::msg("dragdrop_files_upload_failed").'</span></li>\',
 							
 							removeTemplate: \'<span class="clear_link"><a href="javascript:void(0);" onclick="\'+
 							\' pz_clip_deselect($(this).parents(\\\'li\\\').attr(\\\'data-clip_id\\\'),\\\'#'.$this->getFieldId().'\\\'); return; \'+
-						  \'">'.rex_i18n::msg("dragdrop_files_remove_from_list").'</a></span>\',
+						  \'">'.pz_i18n::msg("dragdrop_files_remove_from_list").'</a></span>\',
 							
 							// remove();
 							
@@ -100,7 +100,7 @@ class rex_xform_value_pz_attachment_screen extends rex_xform_value_abstract
 								\'<span class="qq-upload-size">\'+fileSize+\'\'+
 								\'<span class="clear_link"><a href="javascript:void(0);" onclick="\'+
 							  \' pz_clip_deselect($(this).parents(\\\'li\\\').attr(\\\'data-clip_id\\\'),\\\'#'.$this->getFieldId().'\\\'); return; \'+
-								\'">'.rex_i18n::msg("dragdrop_files_remove_from_list").'</a></span></span></li>\');
+								\'">'.pz_i18n::msg("dragdrop_files_remove_from_list").'</a></span></span></li>\');
 								
 							uploaded_list.append(li);								
 							';
@@ -121,14 +121,14 @@ class rex_xform_value_pz_attachment_screen extends rex_xform_value_abstract
 		if (isset($this->params["warning"][$this->getId()]))
 			$classes .= ' '.$this->params["warning"][$this->getId()];
 		
-		$after = '<a class="bt-upload" id="'.$this->getFieldId('clipboard_button').'" href="javascript:pz_clipboard_select(\'#'.$this->getFieldId('clipboard_button').'\',\'#pz_multiupload_'.$this->getId().' .qq-uploaded-list\',\'#'.$this->getFieldId().'\', \'#pz_multiupload_'.$this->getId().' .qq-upload-list\' )">'.rex_i18n::msg("get_from_clipboard").'</a>';
+		$after = '<a class="bt-upload" id="'.$this->getFieldId('clipboard_button').'" href="javascript:pz_clipboard_select(\'#'.$this->getFieldId('clipboard_button').'\',\'#pz_multiupload_'.$this->getId().' .qq-uploaded-list\',\'#'.$this->getFieldId().'\', \'#pz_multiupload_'.$this->getId().' .qq-upload-list\' )">'.pz_i18n::msg("get_from_clipboard").'</a>';
 
-		$label = ($this->getElement(2) != '') ? '<label class="'.$classes.'" for="' . $this->getFieldId() . '">' . rex_i18n::translate($this->getElement(2)) . '</label>' : '';	
+		$label = ($this->getElement(2) != '') ? '<label class="'.$classes.'" for="' . $this->getFieldId() . '">' . pz_i18n::translate($this->getElement(2)) . '</label>' : '';
 		$field = '<input class="'.$classes.' clip-ids" id="'.$this->getFieldId().'" type="hidden" name="'.$this->getFieldName().'" value="'.htmlspecialchars(stripslashes($this->getValue())).'" />'.$output;
 		$html_id = $this->getHTMLId();
 		$name = $this->getName();
 		
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('after', $after, false);
 		$f->setVar('label', $label, false);
 		$f->setVar('field', $field, false);
@@ -152,5 +152,3 @@ class rex_xform_value_pz_attachment_screen extends rex_xform_value_abstract
 	}
 
 }
-
-?>

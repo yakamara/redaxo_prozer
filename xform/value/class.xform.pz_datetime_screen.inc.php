@@ -1,6 +1,6 @@
 <?php
 
-class rex_xform_value_pz_datetime_screen extends rex_xform_value_abstract
+class rex_xform_pz_datetime_screen extends rex_xform_abstract
 {
 
 	function preValidateAction()
@@ -94,7 +94,7 @@ class rex_xform_value_pz_datetime_screen extends rex_xform_value_abstract
 		$calendar = '<input id="'.$this->getHtmlId('date').'" class="xform-date" type="text" name="'.$this->getFieldName('date').'" value="'.$date.'"  />
     
                 <ul class="sl3 fsl3">
-                  <li class="first last selected"><a class="selected tooltip calendar bt2" href="javascript:void(0);" onclick="$(\'#'.$this->getHtmlId('date').'\').focus();"><span class="icon"></span><span class="tooltip"><span class="inner">'.rex_i18n::msg("calendar").'</span></span></a>
+                  <li class="first last selected"><a class="selected tooltip calendar bt2" href="javascript:void(0);" onclick="$(\'#'.$this->getHtmlId('date').'\').focus();"><span class="icon"></span><span class="tooltip"><span class="inner">'.pz_i18n::msg("calendar").'</span></span></a>
                     <div class="calendar view-flyout">
 					</div>
                   </li>
@@ -102,17 +102,17 @@ class rex_xform_value_pz_datetime_screen extends rex_xform_value_abstract
                 <script language="Javascript">
                 $(document).ready(function(){
 					   
-					$.datepicker.regional["'.rex_i18n::msg("locale").'"] = { 
-						closeText: "'.rex_i18n::msg("close").'", // Display text for close link
-						prevText: "'.rex_i18n::msg("previous").'", // Display text for previous month link
-						nextText: "'.rex_i18n::msg("next").'", // Display text for next month link
-						currentText: "'.rex_i18n::msg("today").'", // Display text for current month link
-						monthNames: ["'.rex_i18n::msg("january").'","'.rex_i18n::msg("february").'","'.rex_i18n::msg("march").'","'.rex_i18n::msg("april").'","'.rex_i18n::msg("may").'","'.rex_i18n::msg("june").'", "'.rex_i18n::msg("july").'", "'.rex_i18n::msg("august").'", "'.rex_i18n::msg("september").'", "'.rex_i18n::msg("october").'", "'.rex_i18n::msg("november").'", "'.rex_i18n::msg("december").'"], 
-						monthNamesShort: ["'.rex_i18n::msg("january_short").'","'.rex_i18n::msg("february_short").'","'.rex_i18n::msg("march_short").'","'.rex_i18n::msg("april_short").'","'.rex_i18n::msg("may_short").'","'.rex_i18n::msg("june_short").'", "'.rex_i18n::msg("july_short").'", "'.rex_i18n::msg("august_short").'", "'.rex_i18n::msg("september_short").'", "'.rex_i18n::msg("october_short").'", "'.rex_i18n::msg("november_short").'", "'.rex_i18n::msg("december_short").'"],
-						dayNames: ["'.rex_i18n::msg("sunday").'", "'.rex_i18n::msg("monday").'", "'.rex_i18n::msg("tuesday").'", "'.rex_i18n::msg("wednesday").'", "'.rex_i18n::msg("thursday").'", "'.rex_i18n::msg("friday").'", "'.rex_i18n::msg("saturday").'"],
-						dayNamesShort: ["'.rex_i18n::msg("sunday_short").'", "'.rex_i18n::msg("monday_short").'", "'.rex_i18n::msg("tuesday_short").'", "'.rex_i18n::msg("wednesday_short").'", "'.rex_i18n::msg("thursday_short").'", "'.rex_i18n::msg("friday_short").'", "'.rex_i18n::msg("saturday_short").'"], // For formatting
-						dayNamesMin: ["'.rex_i18n::msg("sunday_short").'", "'.rex_i18n::msg("monday_short").'", "'.rex_i18n::msg("tuesday_short").'", "'.rex_i18n::msg("wednesday_short").'", "'.rex_i18n::msg("thursday_short").'", "'.rex_i18n::msg("friday_short").'", "'.rex_i18n::msg("saturday_short").'"], // Column headings for days starting at Sunday
-						weekHeader: "'.rex_i18n::msg("calendarweek_short").'", // Column header for week of the year
+					$.datepicker.regional["'.pz_i18n::msg("locale").'"] = {
+						closeText: "'.pz_i18n::msg("close").'", // Display text for close link
+						prevText: "'.pz_i18n::msg("previous").'", // Display text for previous month link
+						nextText: "'.pz_i18n::msg("next").'", // Display text for next month link
+						currentText: "'.pz_i18n::msg("today").'", // Display text for current month link
+						monthNames: ["'.pz_i18n::msg("january").'","'.pz_i18n::msg("february").'","'.pz_i18n::msg("march").'","'.pz_i18n::msg("april").'","'.pz_i18n::msg("may").'","'.pz_i18n::msg("june").'", "'.pz_i18n::msg("july").'", "'.pz_i18n::msg("august").'", "'.pz_i18n::msg("september").'", "'.pz_i18n::msg("october").'", "'.pz_i18n::msg("november").'", "'.pz_i18n::msg("december").'"],
+						monthNamesShort: ["'.pz_i18n::msg("january_short").'","'.pz_i18n::msg("february_short").'","'.pz_i18n::msg("march_short").'","'.pz_i18n::msg("april_short").'","'.pz_i18n::msg("may_short").'","'.pz_i18n::msg("june_short").'", "'.pz_i18n::msg("july_short").'", "'.pz_i18n::msg("august_short").'", "'.pz_i18n::msg("september_short").'", "'.pz_i18n::msg("october_short").'", "'.pz_i18n::msg("november_short").'", "'.pz_i18n::msg("december_short").'"],
+						dayNames: ["'.pz_i18n::msg("sunday").'", "'.pz_i18n::msg("monday").'", "'.pz_i18n::msg("tuesday").'", "'.pz_i18n::msg("wednesday").'", "'.pz_i18n::msg("thursday").'", "'.pz_i18n::msg("friday").'", "'.pz_i18n::msg("saturday").'"],
+						dayNamesShort: ["'.pz_i18n::msg("sunday_short").'", "'.pz_i18n::msg("monday_short").'", "'.pz_i18n::msg("tuesday_short").'", "'.pz_i18n::msg("wednesday_short").'", "'.pz_i18n::msg("thursday_short").'", "'.pz_i18n::msg("friday_short").'", "'.pz_i18n::msg("saturday_short").'"], // For formatting
+						dayNamesMin: ["'.pz_i18n::msg("sunday_short").'", "'.pz_i18n::msg("monday_short").'", "'.pz_i18n::msg("tuesday_short").'", "'.pz_i18n::msg("wednesday_short").'", "'.pz_i18n::msg("thursday_short").'", "'.pz_i18n::msg("friday_short").'", "'.pz_i18n::msg("saturday_short").'"], // Column headings for days starting at Sunday
+						weekHeader: "'.pz_i18n::msg("calendarweek_short").'", // Column header for week of the year
 						dateFormat: "yy-mm-dd", 
 						firstDay: 1, // The first day of the week, Sun = 0, Mon = 1, ...
 						isRTL: false, // True if right-to-left language, false if left-to-right
@@ -121,7 +121,7 @@ class rex_xform_value_pz_datetime_screen extends rex_xform_value_abstract
 						showWeek: true
 					};
 					   
-                	$.datepicker.setDefaults( $.datepicker.regional["'.rex_i18n::msg("locale").'"] );
+                	$.datepicker.setDefaults( $.datepicker.regional["'.pz_i18n::msg("locale").'"] );
 					$(\'#'.$this->getHtmlId('date').'\').datepicker();
 
 				});
@@ -172,7 +172,7 @@ class rex_xform_value_pz_datetime_screen extends rex_xform_value_abstract
 		
 		}
 		
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('entries', $tpl_entries, false);
 		$butler = '
 		<input id="' . $this->getFieldId('hours') .'" type="hidden" name="'.$this->getFieldName('hours').'" value="'.$hours.'" />
@@ -185,14 +185,14 @@ class rex_xform_value_pz_datetime_screen extends rex_xform_value_abstract
 	    // ---------------------------------------------------------------- Form Element
 		$before = '';
 		$after = $butler2;
-		$label = ($this->getElement(2) != '') ? '<label'.$classes.' for="' . $this->getFieldId() . '">' . rex_i18n::translate($this->getElement(2)) . '</label>' : '';
+		$label = ($this->getElement(2) != '') ? '<label'.$classes.' for="' . $this->getFieldId() . '">' . pz_i18n::translate($this->getElement(2)) . '</label>' : '';
 		$field = $calendar.$butler;
 		$extra = '';
 		$html_id = $this->getHTMLId();
 		$name = $this->getName();
 		$fragment_class = $class.' xform-date fdate1-sl3-sl1-navi-butler';
 		
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('before', $before, false);
 		$f->setVar('after', $after, false);
 		$f->setVar('label', $label, false);
@@ -238,5 +238,3 @@ class rex_xform_value_pz_datetime_screen extends rex_xform_value_abstract
 
 	}
 }
-
-?>

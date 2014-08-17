@@ -1,6 +1,6 @@
 <?php
 
-class rex_xform_value_pz_email_textarea extends rex_xform_value_abstract
+class rex_xform_pz_email_textarea extends rex_xform_abstract
 {
 
 	function enterObject()
@@ -32,13 +32,13 @@ class rex_xform_value_pz_email_textarea extends rex_xform_value_abstract
 		
 		$before = '';
 		$after = '';
-		$label = ($this->getElement(2) != '') ? '<label'.$classes.' for="' . $this->getFieldId() . '">' . rex_i18n::translate($this->getElement(2)) . '</label>' : '';
+		$label = ($this->getElement(2) != '') ? '<label'.$classes.' for="' . $this->getFieldId() . '">' . pz_i18n::translate($this->getElement(2)) . '</label>' : '';
 		$field = '<textarea'.$classes.'" id="'.$this->getFieldId().'" name="'.$this->getFieldName().'" cols="1" rows="1"'.$disabled.' style="height:250px">' . htmlspecialchars(stripslashes($this->getValue())) . '</textarea>';
 		$extra = '';
 		$html_id = $this->getHTMLId();
 		$name = $this->getName();
     
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('before', $before, false);
 		$f->setVar('after', $after, false);
 		$f->setVar('label', $label, false);
@@ -59,5 +59,3 @@ class rex_xform_value_pz_email_textarea extends rex_xform_value_abstract
 	}
 
 }
-
-?>

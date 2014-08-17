@@ -1,6 +1,6 @@
 <?php
 
-class rex_xform_value_pz_address_fields extends rex_xform_value_abstract
+class rex_xform_pz_address_fields extends rex_xform_abstract
 {
 
 	public
@@ -41,13 +41,13 @@ class rex_xform_value_pz_address_fields extends rex_xform_value_abstract
 		$email_labels = array("WORK","HOME","iPhone","MobileMe");
 		$postaddress_labels = array("WORK","HOME");
 		$postaddress_fields = array(
-			2 => rex_i18n::msg("street"), 
-			0 => rex_i18n::msg("address_extra1"), 
-			1 => rex_i18n::msg("address_extra2"), 
-			5 => rex_i18n::msg("zip"),
-			3 => rex_i18n::msg("city"),
-			4 => rex_i18n::msg("region"),
-			6 => rex_i18n::msg("country")
+			2 => pz_i18n::msg("street"),
+			0 => pz_i18n::msg("address_extra1"),
+			1 => pz_i18n::msg("address_extra2"),
+			5 => pz_i18n::msg("zip"),
+			3 => pz_i18n::msg("city"),
+			4 => pz_i18n::msg("region"),
+			6 => pz_i18n::msg("country")
 			);		
 		$url_labels = array("WORK","HOME",'_$!<HomePage>!$_',"MobileMe");
 		
@@ -234,14 +234,14 @@ class rex_xform_value_pz_address_fields extends rex_xform_value_abstract
 
 		// Phone
 
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('before', "", false);
 		$f->setVar('after', "", false);
 		$f->setVar('extra', "", false);
 		$f->setVar('name', $name, false);
 		$f->setVar('class', "phone_field", false);
 
-		$phones_output = '<h2 class="hl2">' . rex_i18n::msg("address_phone") . '</h2>';
+		$phones_output = '<h2 class="hl2">' . pz_i18n::msg("address_phone") . '</h2>';
 		foreach($phones as $phone) 
 		{
 			$select = new rex_select();
@@ -278,8 +278,8 @@ class rex_xform_value_pz_address_fields extends rex_xform_value_abstract
 						inp = $(\'#'.$this->getHTMLId("phone_hidden").'\').clone();
 						inp.attr({ id: \'\' });
 						$(\'#'.$this->getHTMLId("phone_hidden_div").'\').before(inp);		
-						">+ '.rex_i18n::msg("add_phonefield").'</a>';
-		$f = new rex_fragment();
+						">+ '.pz_i18n::msg("add_phonefield").'</a>';
+		$f = new pz_fragment();
 		$f->setVar('label', '<label></label>', false);
 		$f->setVar('field', $field, false);
 		$phones_output .= $f->parse($fragment);
@@ -296,11 +296,11 @@ class rex_xform_value_pz_address_fields extends rex_xform_value_abstract
 		
 		// Email
 		
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('name', $name, false);
 		$f->setVar('class', "email_field", false);
 
-		$emails_output = '<h2 class="hl2">' . rex_i18n::msg("address_email") . '</h2>';
+		$emails_output = '<h2 class="hl2">' . pz_i18n::msg("address_email") . '</h2>';
 		foreach($emails as $email) 
 		{
 			$select = new rex_select();
@@ -337,8 +337,8 @@ class rex_xform_value_pz_address_fields extends rex_xform_value_abstract
 						inp = $(\'#'.$this->getHTMLId("email_hidden").'\').clone();
 						inp.attr({ id: \'\' });
 						$(\'#'.$this->getHTMLId("email_hidden_div").'\').before(inp);		
-						">+ '.rex_i18n::msg("add_emailfield").'</a>';
-		$f = new rex_fragment();
+						">+ '.pz_i18n::msg("add_emailfield").'</a>';
+		$f = new pz_fragment();
 		$f->setVar('label', '<label></label>', false);
 		$f->setVar('field', $field, false);
 		$emails_output .= $f->parse($fragment);
@@ -351,7 +351,7 @@ class rex_xform_value_pz_address_fields extends rex_xform_value_abstract
 		
 		// postaddresse
 
-		$postaddresses_output = '<h2 class="hl2">' . rex_i18n::msg("address_postaddress") . '</h2>';
+		$postaddresses_output = '<h2 class="hl2">' . pz_i18n::msg("address_postaddress") . '</h2>';
 		foreach($postaddresses as $postaddress) 
 		{
 			$select = new rex_select();
@@ -364,10 +364,10 @@ class rex_xform_value_pz_address_fields extends rex_xform_value_abstract
 				$select->addOption($postaddress["label"],$postaddress["label"]);
 			$select->setSelected($postaddress["label"]);
 
-			$f = new rex_fragment();
+			$f = new pz_fragment();
 			$f->setVar('name', $name, false);
 			$f->setVar('class', "postaddress_field", false);
-			$label = '<label class="'.$this->getHTMLClass().'">' . rex_i18n::msg("address_type") . '</label>';
+			$label = '<label class="'.$this->getHTMLClass().'">' . pz_i18n::msg("address_type") . '</label>';
 			$field = $select->get();
 			$f->setVar('label', $label, false);
 			$f->setVar('field', $field, false);
@@ -377,7 +377,7 @@ class rex_xform_value_pz_address_fields extends rex_xform_value_abstract
 			$val = explode(";",$postaddress["value"]);
 			foreach($postaddress_fields as $k => $af) {
 
-				$f = new rex_fragment();
+				$f = new pz_fragment();
 				$f->setVar('name', $name, false);
 				$f->setVar('class', "postaddress_field", false);
 				$label = '<label class="'.$this->getHTMLClass().'">' . $af . '</label>';
@@ -396,10 +396,10 @@ class rex_xform_value_pz_address_fields extends rex_xform_value_abstract
 		$select->setStyle("width:80px;");
 		$select->setName("address_field_postaddress_label[]");
 		foreach($postaddress_labels as $label) $select->addOption($label,$label);
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('name', $name, false);
 		$f->setVar('class', "postaddress_field", false);
-		$label = '<label class="'.$this->getHTMLClass().'">' . rex_i18n::msg("address_type") . '</label>';
+		$label = '<label class="'.$this->getHTMLClass().'">' . pz_i18n::msg("address_type") . '</label>';
 		$field = $select->get();
 		$f->setVar('label', $label, false);
 		$f->setVar('field', $field, false);
@@ -407,7 +407,7 @@ class rex_xform_value_pz_address_fields extends rex_xform_value_abstract
 		$postaddress_output .= $f->parse($fragment);
 
 		foreach($postaddress_fields as $k => $af) {
-			$f = new rex_fragment();
+			$f = new pz_fragment();
 			$f->setVar('name', $name, false);
 			$f->setVar('class', "postaddress_field", false);
 			$label = '<label class="'.$this->getHTMLClass().'">' . $af . '</label>';
@@ -425,8 +425,8 @@ class rex_xform_value_pz_address_fields extends rex_xform_value_abstract
 						inp = $(\'#'.$this->getHTMLId("postaddress_hidden").'\').clone();
 						inp.attr({ id: \'\' });
 						$(\'#'.$this->getHTMLId("postaddress_hidden_div").'\').before(inp);		
-						">+ '.rex_i18n::msg("add_postaddressfield").'</a>';
-		$f = new rex_fragment();
+						">+ '.pz_i18n::msg("add_postaddressfield").'</a>';
+		$f = new pz_fragment();
 		$f->setVar('label', '<label></label>', false);
 		$f->setVar('field', $field, false);
 		$postaddresses_output .= $f->parse($fragment);
@@ -437,11 +437,11 @@ class rex_xform_value_pz_address_fields extends rex_xform_value_abstract
 		
 		// Url
 		
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('name', $name, false);
 		$f->setVar('class', "url_field", false);
 
-		$urls_output = '<h2 class="hl2">' . rex_i18n::msg("address_url") . '</h2>';
+		$urls_output = '<h2 class="hl2">' . pz_i18n::msg("address_url") . '</h2>';
 		foreach($urls as $url) 
 		{
 			$select = new rex_select();
@@ -478,8 +478,8 @@ class rex_xform_value_pz_address_fields extends rex_xform_value_abstract
 						inp = $(\'#'.$this->getHTMLId("url_hidden").'\').clone();
 						inp.attr({ id: \'\' });
 						$(\'#'.$this->getHTMLId("url_hidden_div").'\').before(inp);		
-						">+ '.rex_i18n::msg("add_urlfield").'</a>';
-		$f = new rex_fragment();
+						">+ '.pz_i18n::msg("add_urlfield").'</a>';
+		$f = new pz_fragment();
 		$f->setVar('label', '<label></label>', false);
 		$f->setVar('field', $field, false);
 		$urls_output .= $f->parse($fragment);
@@ -491,11 +491,11 @@ class rex_xform_value_pz_address_fields extends rex_xform_value_abstract
 		
 		// X-SOCIALPROFILE $socialprofile_value_types
 		
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('name', $name, false);
 		$f->setVar('class', "socialprofile_field", false);
 
-		$socialprofiles_output = '<h2 class="hl2">' . rex_i18n::msg("address_socialprofile") . '</h2>';
+		$socialprofiles_output = '<h2 class="hl2">' . pz_i18n::msg("address_socialprofile") . '</h2>';
 		foreach($socialprofiles as $socialprofile) 
 		{
 			$select = new rex_select();
@@ -532,8 +532,8 @@ class rex_xform_value_pz_address_fields extends rex_xform_value_abstract
 						inp = $(\'#'.$this->getHTMLId("socialprofile_hidden").'\').clone();
 						inp.attr({ id: \'\' });
 						$(\'#'.$this->getHTMLId("socialprofile_hidden_div").'\').before(inp);		
-						">+ '.rex_i18n::msg("add_socialprofile").'</a>';
-		$f = new rex_fragment();
+						">+ '.pz_i18n::msg("add_socialprofile").'</a>';
+		$f = new pz_fragment();
 		$f->setVar('label', '<label></label>', false);
 		$f->setVar('field', $field, false);
 		$socialprofiles_output .= $f->parse($fragment);
@@ -546,11 +546,11 @@ class rex_xform_value_pz_address_fields extends rex_xform_value_abstract
 		
 		// IMPP $impp_value_types
 		
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('name', $name, false);
 		$f->setVar('class', "xform1b impp_field", false);
 
-		$impps_output = '<h2 class="hl2">' . rex_i18n::msg("address_impp") . '</h2>';
+		$impps_output = '<h2 class="hl2">' . pz_i18n::msg("address_impp") . '</h2>';
 		foreach($impps as $impp) 
 		{
 			$lselect = new rex_select();
@@ -605,8 +605,8 @@ class rex_xform_value_pz_address_fields extends rex_xform_value_abstract
 						inp = $(\'#'.$this->getHTMLId("impp_hidden").'\').clone();
 						inp.attr({ id: \'\' });
 						$(\'#'.$this->getHTMLId("impp_hidden_div").'\').before(inp);		
-						">+ '.rex_i18n::msg("add_impp").'</a>';
-		$f = new rex_fragment();
+						">+ '.pz_i18n::msg("add_impp").'</a>';
+		$f = new pz_fragment();
 		$f->setVar('label', '<label></label>', false);
 		$f->setVar('field', $field, false);
 		$impps_output .= $f->parse($fragment);
@@ -649,12 +649,12 @@ class rex_xform_value_pz_address_fields extends rex_xform_value_abstract
 			foreach($this->pz_address_fields as $type => $datas)
 			{
 				// delete
-				$d = rex_sql::factory();
+				$d = pz_sql::factory();
 				// $d->debugsql = 1;
 				$d->setQuery('delete from pz_address_field where type = ? and address_id = ? ', array($type,$address_id));
 			
 				foreach($datas as $data) {
-					$d = rex_sql::factory();
+					$d = pz_sql::factory();
 					// $d->debugsql = 1;
 					$d->setTable("pz_address_field");
 					$d->setValue("address_id",$address_id);
@@ -673,5 +673,3 @@ class rex_xform_value_pz_address_fields extends rex_xform_value_abstract
 	}
 
 }
-
-?>
