@@ -61,7 +61,7 @@ class pz_admin_controller_api extends pz_admin_controller
     $return = array();
   
     // Files have filesize and mimetype
-    $gf = rex_sql::factory();
+    $gf = pz_sql::factory();
     $files = $gf->getArray('select * from pz_project_file where is_directory = 0 and filesize = 0 and mimetype = ""');
     foreach($files as $file)
     {

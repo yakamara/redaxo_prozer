@@ -36,7 +36,7 @@ class pz_project extends pz_model
       return $projects[$id];
     }
 
-    $sql = rex_sql::factory();
+    $sql = pz_sql::factory();
     $sql->setQuery('SELECT * FROM pz_project WHERE id = ? LIMIT 2', array($id));
     $project = null;
     if($sql->getRows() == 1)
@@ -194,7 +194,7 @@ class pz_project extends pz_model
     if(isset($this->subprojects) && is_array($this->subprojects))
       return $this->subprojects;
 
-    $s = rex_sql::factory();
+    $s = pz_sql::factory();
 		$subprojects = $s->getArray('select * from pz_project_sub where project_id = ? ', array($this->getId()));
 
     $this->subprojects = array();
@@ -225,7 +225,7 @@ class pz_project extends pz_model
 			return $this->users;
 		}
 
-		$s = rex_sql::factory();
+		$s = pz_sql::factory();
 		$projectusers = $s->getArray('select * from pz_project_user as pu where pu.project_id='.$this->getId());
 
 		foreach($projectusers as $projectuser)
@@ -238,7 +238,7 @@ class pz_project extends pz_model
 
 	public function getProjectuserById($puser_id = 0) {
 
-		$s = rex_sql::factory();
+		$s = pz_sql::factory();
 		$projectusers = $s->getArray('select * from pz_project_user as pu where pu.project_id='.$this->getId().' and pu.id='.$puser_id);
 
 		if(count($projectusers) == 1) {
@@ -251,7 +251,7 @@ class pz_project extends pz_model
 
 	public function getProjectuserByUserId($user_id = 0) {
 
-		$s = rex_sql::factory();
+		$s = pz_sql::factory();
 		$projectusers = $s->getArray('select * from pz_project_user as pu where pu.project_id='.$this->getId().' and pu.user_id='.$user_id);
 
 		if(count($projectusers) == 1) {
@@ -275,7 +275,7 @@ class pz_project extends pz_model
 
 	public function addUser($user_id,$admin = 0, $perm = array()) {
 
-		$a = rex_sql::factory();
+		$a = pz_sql::factory();
 		// $a->debugsql = 1;
 		$a->setTable('pz_project_user');
 		$a->setValue("user_id",$user_id);
@@ -348,7 +348,7 @@ class pz_project extends pz_model
 
   public function saveToHistory($mode = 'update')
 	{
-	  $sql = rex_sql::factory();
+	  $sql = pz_sql::factory();
 	  $sql->setTable('pz_history')
 	    ->setValue('control', 'project')
 	    ->setValue('data_id', $this->getId())

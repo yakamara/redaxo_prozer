@@ -29,10 +29,12 @@ class pz_login_controller_screen extends pz_login_controller{
 		$xform->setValueField('objparams',array('form_action', 'javascript:pz_logIn()'));
 		
 		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
-		$xform->setValueField("text",array("login",rex_i18n::msg("login")));
-		$xform->setValueField("password",array("password",rex_i18n::msg("password")));
-		$xform->setValueField("checkbox",array("stay",rex_i18n::msg("stay")));
-		$xform->setValidateField("pz_auth",array("login","password","stay",rex_i18n::msg("pz_login_please"),rex_i18n::msg("pz_login_enterloginpsw"),rex_i18n::msg("pz_login_failed")));
+		$xform->setValueField("text",array("login",pz_i18n::msg("login")));
+		$xform->setValueField("password",array("password",pz_i18n::msg("password")));
+		$xform->setValueField("checkbox",array("stay",pz_i18n::msg("stay")));
+
+		$xform->setValidateField("pz_auth",array("login","password","stay",pz_i18n::msg("pz_login_please"),pz_i18n::msg("pz_login_enterloginpsw"),pz_i18n::msg("pz_login_failed")));
+
 		$return = '<div id="pz_login" >'.$xform->getForm().'</div>'; // style="display:none;"
 	
 		if($xform->getObjectparams("actions_executed")) {
@@ -87,7 +89,7 @@ class pz_login_controller_screen extends pz_login_controller{
               </div>
             </div>';
 		
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('header', pz_screen::getHeader($p), false);
 		$f->setVar('function', $function , false);
 		$f->setVar('section_1', $section1 , false); // $this->getLoginForm($p)

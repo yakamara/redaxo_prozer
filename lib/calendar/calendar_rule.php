@@ -246,7 +246,7 @@ class pz_calendar_rule extends pz_calendar_element
   {
     $base = $this->getBase();
     $column = $base instanceof pz_calendar_todo ? 'todo_id' : 'event_id';
-    $sql = rex_sql::factory()
+    $sql = pz_sql::factory()
       ->setTable(self::TABLE);
     foreach(array_keys($this->changed) as $key)
     {
@@ -293,7 +293,7 @@ class pz_calendar_rule extends pz_calendar_element
 
   public function delete()
   {
-    rex_sql::factory()
+    pz_sql::factory()
       ->setTable(self::TABLE)
       ->setWhere(array('id' => $this->id))
       ->delete();
@@ -309,7 +309,7 @@ class pz_calendar_rule extends pz_calendar_element
   static public function get(pz_calendar_item $base)
   {
     $column = $base instanceof pz_calendar_todo ? 'todo_id' : 'event_id';
-    $sql = rex_sql::factory();
+    $sql = pz_sql::factory();
     $sql->prepareQuery('
       SELECT *
       FROM '. self::TABLE .' r
@@ -326,7 +326,7 @@ class pz_calendar_rule extends pz_calendar_element
     $params = $projects;
     $params[] = pz::getUser()->getId();
     $inClause = implode(',', array_pad(array(), count($projects), '?'));
-    $sql = rex_sql::factory();
+    $sql = pz_sql::factory();
     $sql->setQuery('
       SELECT *
       FROM '. self::TABLE .' r

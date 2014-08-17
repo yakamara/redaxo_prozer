@@ -79,7 +79,7 @@ class pz_calendars_controller_screen extends pz_calendars_controller {
 					$cs = new pz_calendar_event_screen($event);
 					return $cs->getEditForm($p);
 				}
-				return '<div id="calendar_event_form"><p class="xform-warning">'.rex_i18n::msg("calendar_event_not_exists").'</p></div>';
+				return '<div id="calendar_event_form"><p class="xform-warning">'.pz_i18n::msg("calendar_event_not_exists").'</p></div>';
 
 		
 		  // inside functions
@@ -127,7 +127,7 @@ class pz_calendars_controller_screen extends pz_calendars_controller {
 		      $return["function_status"] = 1;
 		      $return["calendar_event_id"] = $event->getId();
 				}
-        return json_encode($return);;		  
+        return json_encode($return);
 		
 			case("set_attandee_status"):
 				$return = "";
@@ -160,7 +160,7 @@ class pz_calendars_controller_screen extends pz_calendars_controller {
 					$return .= '<script>pz_tracker();</script>';
 				}else 
 				{
-					$return .= '<p class="xform-warning">'.rex_i18n::msg("calendar_event_not_exists").'</p>';
+					$return .= '<p class="xform-warning">'.pz_i18n::msg("calendar_event_not_exists").'</p>';
 				}
 				return $return;
 			
@@ -173,7 +173,7 @@ class pz_calendars_controller_screen extends pz_calendars_controller {
 					$event->delete();
 					return $return;
 				}
-				return '<div id="calendar_event_form"><p class="xform-warning">'.rex_i18n::msg("calendar_event_not_exists").'</p></div>';
+				return '<div id="calendar_event_form"><p class="xform-warning">'.pz_i18n::msg("calendar_event_not_exists").'</p></div>';
 		  
       case("copy2job_calendar_event"):
       	$calendar_event_id = rex_request("calendar_event_id","string");
@@ -183,7 +183,7 @@ class pz_calendars_controller_screen extends pz_calendars_controller {
       		$event->copy2Job();
       		return $return;
       	}
-      	return '<div id="calendar_event_form"><p class="xform-warning">'.rex_i18n::msg("calendar_event_not_exists").'</p></div>';
+      	return '<div id="calendar_event_form"><p class="xform-warning">'.pz_i18n::msg("calendar_event_not_exists").'</p></div>';
 		  
 		  case("get_flyout_calendar_event"):
 				$return = "";
@@ -195,7 +195,7 @@ class pz_calendars_controller_screen extends pz_calendars_controller {
 					$return .= '<script>$("#calendar_event_view .flyout").css("display","block");</script>';
 				}else
 				{
-					$return .= '<div id="calendar_event_view" class="design1col"><p class="xform-warning">'.rex_i18n::msg("calendar_event_not_exists").'</p></div>';
+					$return .= '<div id="calendar_event_view" class="design1col"><p class="xform-warning">'.pz_i18n::msg("calendar_event_not_exists").'</p></div>';
 				}
 				return $return;
 					
@@ -221,7 +221,7 @@ class pz_calendars_controller_screen extends pz_calendars_controller {
 					$content = $event_screen->getEventView($from, $p);
 					$return["calendar_event_dayview"] = $content;
 				}
-        return json_encode($return);;		  
+        return json_encode($return);
 
 			
 			case("extend_event_by_minutes"):
@@ -268,7 +268,7 @@ class pz_calendars_controller_screen extends pz_calendars_controller {
 		$p["layer_list"] = "calendar_events_day_list";
 		$p["layer_search"] = "calendar_events_day_search";
 
-    $p["headline"] = rex_i18n::msg("calendar_day_list");
+    $p["headline"] = pz_i18n::msg("calendar_day_list");
 
 
 		$s1_content = "";
@@ -351,7 +351,7 @@ class pz_calendars_controller_screen extends pz_calendars_controller {
 
 		}
 
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('header', pz_screen::getHeader($p), false);
 		$f->setVar('function', $this->getNavigation($p), false);
 		$f->setVar('section_1', $s1_content, false);
@@ -369,7 +369,7 @@ class pz_calendars_controller_screen extends pz_calendars_controller {
 		$p["layer_list"] = "calendar_events_week_list";
 		$p["layer_search"] = "calendar_events_week_search";
 
-    $p["headline"] = rex_i18n::msg("calendar_week_list");
+    $p["headline"] = pz_i18n::msg("calendar_week_list");
 
     $days = 14;
 
@@ -478,7 +478,7 @@ class pz_calendars_controller_screen extends pz_calendars_controller {
 				
 		}
 
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('header', pz_screen::getHeader($p), false);
 		$f->setVar('function', $this->getNavigation($p), false);
 		$f->setVar('section_1', $s1_content, false);
@@ -501,7 +501,7 @@ class pz_calendars_controller_screen extends pz_calendars_controller {
 		$p["layer_list"] = "calendar_customerplan_list";
 		$p["layer_search"] = "calendar_customerplan_search";
 
-    $p["headline"] = rex_i18n::msg("calendar_customer_list");
+    $p["headline"] = pz_i18n::msg("calendar_customer_list");
 
 		$s1_content = "";
 		$s2_content = "";
@@ -640,7 +640,7 @@ class pz_calendars_controller_screen extends pz_calendars_controller {
 
 		}
 
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('header', pz_screen::getHeader($p), false);
 		$f->setVar('function', $this->getNavigation($p), false);
 		$f->setVar('section_1', $s1_content, false);
@@ -738,7 +738,7 @@ class pz_calendars_controller_screen extends pz_calendars_controller {
 				break;
 		}
 
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('header', pz_screen::getHeader($p), false);
 		$f->setVar('function', $this->getNavigation($p), false);
 		$f->setVar('section_1', $s1_content, false);
@@ -822,7 +822,7 @@ public function getProjectJobPage($p = array())
 				break;
 		}
 
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('header', pz_screen::getHeader($p), false);
 		$f->setVar('function', $this->getNavigation($p), false);
 		$f->setVar('section_1', $s1_content, false);
@@ -877,7 +877,7 @@ public function getProjectJobPage($p = array())
 		$events = pz::getUser()->getAllEvents($project_ids, $from,$to);
 		$s2_content = pz_calendar_event_screen::getMonthListView($events, $p, $from);
 
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('header', pz_screen::getHeader($p), false);
 		$f->setVar('function', $this->getNavigation($p), false);
 		$f->setVar('section_1', $s1_content, false);

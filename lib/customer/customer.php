@@ -25,7 +25,7 @@ class pz_customer extends pz_model{
 		
 		$class = get_called_class();
 
-		$sql = rex_sql::factory();
+		$sql = pz_sql::factory();
 		
 		$customers = $sql->getArray('select * from pz_customer where id = ? LIMIT 2', array($id));
 		if(count($customers) != 1) return FALSE;
@@ -68,7 +68,7 @@ class pz_customer extends pz_model{
 	
 	public function hasProjects() 
 	{
-		$sql = rex_sql::factory();
+		$sql = pz_sql::factory();
 		$customers = $sql->getArray('select * from pz_project where customer_id = ? LIMIT 2',array($this->getId()));
 		if(count($customers)>0)
 			return true;
@@ -86,7 +86,7 @@ class pz_customer extends pz_model{
 	}
 
 	public function delete() {
-		$sql = rex_sql::factory();
+		$sql = pz_sql::factory();
 		$sql->setQuery('delete from pz_customer where id = ?',array($this->getId()));
 		return true;
 	}
@@ -95,5 +95,3 @@ class pz_customer extends pz_model{
 
 
 }
-
-?>

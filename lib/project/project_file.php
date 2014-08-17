@@ -22,7 +22,7 @@ class pz_project_file extends pz_project_node
     $mimetype = $this->getMimeType();
     $this->setVar('mimetype', $mimetype);
 
-    rex_sql::factory()->setQuery('UPDATE pz_project_file SET filename = ?, filesize = ?, mimetype = ?, updated = NOW(), updated_user_id = ? WHERE id = ?', array($filename, $filesize, $mimetype, pz::getUser()->getId(), $this->getId()));
+    pz_sql::factory()->setQuery('UPDATE pz_project_file SET filename = ?, filesize = ?, mimetype = ?, updated = NOW(), updated_user_id = ? WHERE id = ?', array($filename, $filesize, $mimetype, pz::getUser()->getId(), $this->getId()));
 
     if($saveToHistory)
       $this->saveToHistory('update');
@@ -46,7 +46,7 @@ class pz_project_file extends pz_project_node
   // only for update.inc.php
   public function updateFilesizeAndMimetype()
   {
-    rex_sql::factory()->setQuery(
+    pz_sql::factory()->setQuery(
       'UPDATE pz_project_file SET filesize = ?, mimetype = ? WHERE id = ?', 
       array($this->getSize(), $this->getMimeType(), $this->getId() )
     );

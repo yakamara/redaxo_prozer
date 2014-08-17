@@ -27,9 +27,9 @@ class pz_labels_screen
 		$content = '<ul class="entries view-list">'.$content.'</ul>';
 
 		// $content = $this->getSearchPaginatePlainView().$content;
-		// $content = '<a href="'.pz::url('screen','tools','labels',array("mode"=>"add")).'">'.rex_i18n::msg("label_add").'</a>'.$content;
+		// $content = '<a href="'.pz::url('screen','tools','labels',array("mode"=>"add")).'">'.pz_i18n::msg("label_add").'</a>'.$content;
 
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('design', $design, false);
 		$f->setVar('title', $p["title"], false);
 		$f->setVar('content', $content , false);

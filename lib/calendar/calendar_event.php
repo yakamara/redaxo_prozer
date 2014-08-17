@@ -99,7 +99,7 @@ class pz_calendar_event extends pz_calendar_item
 
   public function getEventsByClip($clip)
   {
-    $sql = rex_sql::factory();
+    $sql = pz_sql::factory();
     $sql->setQuery('SELECT * FROM ' . self::TABLE . ' e WHERE FIND_IN_SET( ? , e.clip_ids )', array($clip->getId()));
 
     $events = array();
@@ -245,7 +245,7 @@ class pz_calendar_event extends pz_calendar_item
 
   public function save()
   {
-    $sql = rex_sql::factory()
+    $sql = pz_sql::factory()
       ->setTable(self::TABLE);
     $ignore = array('attendees', 'alarms');
     foreach (array_keys($this->changed) as $key) {
@@ -315,7 +315,7 @@ class pz_calendar_event extends pz_calendar_item
   {
     $data = array();
     if ($mode != 'delete') {
-      $sql = rex_sql::factory();
+      $sql = pz_sql::factory();
       $sql->setQuery('SELECT * FROM ' . self::TABLE . ' WHERE id = ?', array($this->id));
       $arr = $sql->getArray();
       $data = $arr[0];
@@ -331,7 +331,7 @@ class pz_calendar_event extends pz_calendar_item
         $data['rule']['exception_events'] = $sql->getArray();
       }
     }
-    rex_sql::factory()
+    pz_sql::factory()
       ->setTable('pz_history')
       ->setValue('control', 'calendar_event')
       ->setValue('project_id', $this->getProjectId())
@@ -345,7 +345,7 @@ class pz_calendar_event extends pz_calendar_item
 
   static protected function _delete($where, array $params)
   {
-    rex_sql::factory()->setQuery('
+    pz_sql::factory()->setQuery('
       DELETE e, at, al
       FROM ' . self::TABLE . ' e
       LEFT JOIN ' . pz_calendar_attendee::TABLE . ' at
@@ -373,7 +373,7 @@ class pz_calendar_event extends pz_calendar_item
 
     static $sql = null;
     if (!$sql) {
-      $sql = rex_sql::factory();
+      $sql = pz_sql::factory();
       $sql->prepareQuery('
         SELECT *
         FROM ' . self::TABLE . ' e
@@ -391,7 +391,7 @@ class pz_calendar_event extends pz_calendar_item
   {
     static $sql = null;
     if (!$sql) {
-      $sql = rex_sql::factory();
+      $sql = pz_sql::factory();
       $sql->prepareQuery('
         SELECT *
         FROM ' . self::TABLE . ' e
@@ -483,7 +483,7 @@ class pz_calendar_event extends pz_calendar_item
       $wFulltext = ' AND vt LIKE ? ';
     }
 
-    $sql = rex_sql::factory();
+    $sql = pz_sql::factory();
     // $sql->debugsql = 1;
     $sql->setQuery('
       SELECT *
@@ -547,7 +547,7 @@ class pz_calendar_event extends pz_calendar_item
       $wIgnore = 'NOT IN (' . implode(',', array_pad(array(), count($ignore), '?')) . ')';
     }
 
-    $sql = rex_sql::factory();
+    $sql = pz_sql::factory();
     // $sql->debugsql = 1;
     $sql->setQuery('
       SELECT *
@@ -582,7 +582,7 @@ class pz_calendar_event extends pz_calendar_item
     }
     $params[] = $user_id;
 
-    $sql = rex_sql::factory();
+    $sql = pz_sql::factory();
     $sql->setQuery('
       SELECT TIME_FORMAT(SEC_TO_TIME(SUM(UNIX_TIMESTAMP(`to`) - UNIX_TIMESTAMP(`from`))), "PT%HH%iM%sS") AS time
       FROM ' . self::TABLE . '
@@ -607,7 +607,7 @@ class pz_calendar_event extends pz_calendar_item
       $params[] = pz::getUser()->getId();
       $params[] = pz::getUser()->getId();
     }
-    $sql = rex_sql::factory();
+    $sql = pz_sql::factory();
     $sql->setQuery('
       SELECT *
       FROM ' . self::TABLE . ' e
@@ -625,7 +625,7 @@ class pz_calendar_event extends pz_calendar_item
   
   static function resetProjectSubs($project_sub_id)
   {
-    $s = rex_sql::factory();
+    $s = pz_sql::factory();
     $s->setQuery('update ' . self::TABLE . ' set project_sub_id = 0 where project_sub_id = ?', array($project_sub_id) );
   }
 

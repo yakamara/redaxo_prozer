@@ -1,14 +1,117 @@
 <?php
 
-class pz_user extends rex_user
+class pz_user
 {
 
 	static private $users;
 	private $perms,$config,$inline_image,$emails,$active_user = NULL,$cache = array();
 
-	public function __construct(rex_sql $sql)
+
+  /**
+   * SQL instance
+   *
+   * @var pz_sql
+   */
+  protected $sql;
+
+  /**
+   * User role instance
+   *
+   * @var rex_user_role_interface
+   */
+  protected $role;
+
+  /**
+   * Class name for user roles
+   *
+   * @var string
+   */
+  protected static $roleClass;
+
+  /**
+   * Returns the value for the given key
+   *
+   * @param string $key Key
+   * @return string value
+   */
+  public function getValue($key)
+  {
+    return $this->sql->getValue($key);
+  }
+
+  /**
+   * Returns the name
+   *
+   * @return string Name
+   */
+  public function getName()
+  {
+    return $this->sql->getValue('name');
+  }
+
+  /**
+   * Returns if the user is an admin
+   *
+   * @return boolean
+   */
+  public function isAdmin()
+  {
+    return (boolean) $this->sql->getValue('admin');
+  }
+
+  /**
+   * Returns the language
+   *
+   * @return string Language
+   */
+  public function getLanguage()
+  {
+    return $this->sql->getValue('language');
+  }
+
+  /**
+   * Returns if the user has a role
+   *
+   * @return boolean
+   */
+  public function hasRole()
+  {
+    if (self::$roleClass && !is_object($this->role) && ($role = $this->sql->getValue('role'))) {
+      $class = self::$roleClass;
+      $this->role = $class::get($role);
+    }
+    return is_object($this->role);
+  }
+
+  /**
+   * Returns the complex perm for the user
+   *
+   * @param string $key Complex perm key
+   * @return rex_complex_perm Complex perm
+   */
+  public function getComplexPerm($key)
+  {
+    if ($this->hasRole()) {
+      return $this->role->getComplexPerm($this, $key);
+    }
+    return rex_complex_perm::get($this, $key);
+  }
+
+  /**
+   * Sets the role class
+   *
+   * @param string $class Class name
+   */
+  public static function setRoleClass($class)
+  {
+    self::$roleClass = $class;
+  }
+
+
+
+	public function __construct(pz_sql $sql)
 	{
-	  parent::__construct($sql);
+    $this->sql = $sql;
 	  $this->setRoleClass('pz_user_role');
 
 	  $this->perms = @unserialize($this->getValue("perms"));
@@ -127,7 +230,7 @@ class pz_user extends rex_user
       return pz_user::$users[$id];
     }
 
-    $sql = rex_sql::factory();
+    $sql = pz_sql::factory();
     $sql->setQuery('SELECT * FROM pz_user WHERE id = ? LIMIT 2', array($id));
     $user = null;
     if($sql->getRows() == 1)
@@ -161,7 +264,7 @@ class pz_user extends rex_user
 
     $fields = array("id", "name", "status", "login", "login_tries", "lasttrydate", "last_login", "session_id", "cookiekey", "admin", "created", "updated", "address_id", "email", "account_id", "config", "perms", "comment");
 
-    $sql = rex_sql::factory();
+    $sql = pz_sql::factory();
     $sql->setTable('pz_history')
       ->setValue('control', 'user')
       ->setValue('func', $func)
@@ -198,14 +301,14 @@ class pz_user extends rex_user
   }
 
 
-	public function update()
+	public function update($successMessage = NULL)
 	{
 		$this->saveToHistory('update');
 	}
 
   public function passwordHash($password) {
     $password = rex_login::passwordHash($password);
-    $u = rex_sql::factory();
+    $u = pz_sql::factory();
   	// $u->debugsql = 1;
   	$u->setTable('pz_user');
   	$u->setWhere( array( 'id' => $this->getId() ) );
@@ -220,7 +323,7 @@ class pz_user extends rex_user
 	  $this->saveToHistory('create');
 	}
 
-  public function delete()
+  public function delete($successMessage = NULL)
   {
     $this->saveToHistory('delete');
   }
@@ -296,7 +399,7 @@ class pz_user extends rex_user
 			}
 		}
 
-		$u = rex_sql::factory();
+		$u = pz_sql::factory();
 		// $u->debugsql = 1;
 		$u->setTable('pz_user');
 		$u->setWhere(array('id'=>$this->getId()));
@@ -320,7 +423,7 @@ class pz_user extends rex_user
 
 	public function saveConfig()
 	{
-		$u = rex_sql::factory();
+		$u = pz_sql::factory();
 		// $u->debugsql = 1;
 		$u->setTable('pz_user');
 		$u->setWhere(array('id'=>$this->getId()));
@@ -385,7 +488,7 @@ class pz_user extends rex_user
 
     $filter_return = pz::getFilter($nfilter, $where, $params);
 
-  	$sql = rex_sql::factory();
+  	$sql = pz_sql::factory();
   	// $sql->debugsql = 1;
     $sql->setQuery('SELECT c.* FROM pz_customer c '.$filter_return['where_sql'].' ORDER BY c.name',$filter_return['params']);
 
@@ -542,7 +645,7 @@ class pz_user extends rex_user
 
   // -------------------------------------------------------------------- Users
 
-  public function getUsers($filter = array())
+  static public function getUsers($filter = array())
   {
     $filter[] = array("field"=>"status", "type" => "=", "value"=>1);
     return $users = pz::getUsers($filter);
@@ -705,7 +808,7 @@ class pz_user extends rex_user
   	$params = $f["params"];
   	$where_sql = $f["where_sql"];
 
-    $sql = rex_sql::factory();
+    $sql = pz_sql::factory();
     $sql->setQuery('SELECT p.* FROM pz_project p'. $join .' '. $where_sql .' ORDER BY '.$orderby, $params);
     $projects = array();
     foreach($sql->getArray() as $row)

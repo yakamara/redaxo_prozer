@@ -14,7 +14,7 @@ class pz_project_wiki_screen
 
 	// ------------------------------------------------------------------ Navigation
 
-	public function getArticlelist($p = array(), $project)
+	static public function getArticlelist($p = array(), $project)
 	{
 		$return = '
 		  <div class="design1col">
@@ -43,7 +43,7 @@ class pz_project_wiki_screen
 
 	// ------------------------------------------------------------------ Navigation
 
-	public function getArticle($p = array(), $project)
+	static public function getArticle($p = array(), $project)
 	{
 		$return = '
 		  <div class="design2col wiki article">
@@ -109,7 +109,7 @@ class pz_project_wiki_screen
 		$return = '
 	        <header>
 	          <div class="header">
-	            <h1 class="hl1">'.rex_i18n::msg("add_project_wiki").'</h1>
+	            <h1 class="hl1">'.pz_i18n::msg("add_project_wiki").'</h1>
 	          </div>
 	        </header>';
 	
@@ -119,7 +119,7 @@ class pz_project_wiki_screen
 		$xform->setObjectparams("real_field_names",TRUE);
 
 		$xform->setValueField('objparams', array('fragment', 'pz_screen_xform.tpl'));
-		$xform->setValueField('text', array('name', rex_i18n::msg('article_name')));
+		$xform->setValueField('text', array('name', pz_i18n::msg('article_name')));
 		$return .= $xform->getForm();
 
 		// $xform->setObjectparams("form_showformafterupdate", TRUE);
@@ -140,42 +140,42 @@ class pz_project_wiki_screen
 		
 		
 		
-		$xform->setValueField('pz_select_screen',array('user_id', rex_i18n::msg('user'), pz_users::getAsString(),"","",1,rex_i18n::msg("please_choose")));
+		$xform->setValueField('pz_select_screen',array('user_id', pz_i18n::msg('user'), pz_users::getAsString(),"","",1,pz_i18n::msg("please_choose")));
 		$xform->setValueField("stamp",array("created","created","mysql_datetime","0","1","","","",""));
 		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0","","","",""));
 		
 		if($project->hasEmails() == 1) {
-			$xform->setValueField("checkbox",array("emails",rex_i18n::msg("emails_access"),"1","1","0","","","",""));
+			$xform->setValueField("checkbox",array("emails",pz_i18n::msg("emails_access"),"1","1","0","","","",""));
 		}else {
 			$xform->setValueField("hidden",array("emails","0"));
 		}
 		
 		if($project->hasCalendar() == 1) {
-			$xform->setValueField("checkbox",array("calendar",rex_i18n::msg("calendar_access"),"1","1","0","","","",""));
+			$xform->setValueField("checkbox",array("calendar",pz_i18n::msg("calendar_access"),"1","1","0","","","",""));
 		}else {
 			$xform->setValueField("hidden",array("calendar","0"));
 		}
 
 		if($project->hasFiles() == 1) {
-			$xform->setValueField("checkbox",array("files",rex_i18n::msg("files_access"),"1","1","0","","","",""));
+			$xform->setValueField("checkbox",array("files",pz_i18n::msg("files_access"),"1","1","0","","","",""));
 		}else {
 			$xform->setValueField("hidden",array("files","0"));
 		}
 
 		if($project->hasWiki() == 1) {
-			$xform->setValueField("checkbox",array("wiki",rex_i18n::msg("wiki_access"),"1","1","0","","","",""));
+			$xform->setValueField("checkbox",array("wiki",pz_i18n::msg("wiki_access"),"1","1","0","","","",""));
 		}else {
 			$xform->setValueField("hidden",array("wiki","0"));
 		}
 
-		$xform->setValueField("checkbox",array("admin",rex_i18n::msg("admin_access"),"1","1","0","","","",""));
+		$xform->setValueField("checkbox",array("admin",pz_i18n::msg("admin_access"),"1","1","0","","","",""));
 
 		$xform->setActionField("db",array());
 		$return .= $xform->getForm();
 		
 		if($xform->getObjectparams("actions_executed")) {
 			
-			$return .= '<p class="xform-info">'.rex_i18n::msg("projectuser_added").'</p>';
+			$return .= '<p class="xform-info">'.pz_i18n::msg("projectuser_added").'</p>';
 		}
 */
 		$return = '<div id="project_wiki_add" class="design1col xform-add">'.$return.'</div>';

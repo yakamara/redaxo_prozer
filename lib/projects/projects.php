@@ -12,7 +12,7 @@ class pz_projects extends pz_search {
 			return self::$projects;
 		}
 		
-		$sql = rex_sql::factory();
+		$sql = pz_sql::factory();
 		$sql->setQuery('select * from pz_project order by id');
 		
 		foreach($sql->getArray() as $l)

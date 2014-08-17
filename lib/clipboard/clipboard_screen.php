@@ -20,8 +20,8 @@ class pz_clipboard_screen
 		$xform->setObjectparams('form_showformafterupdate',1);
 		$xform->setObjectparams("real_field_names",TRUE);
 		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
-		$xform->setValueField('text',array('search_name',rex_i18n::msg('label_title')));
-		$xform->setValueField('submit',array('submit',rex_i18n::msg('ok')));
+		$xform->setValueField('text',array('search_name',pz_i18n::msg('label_title')));
+		$xform->setValueField('submit',array('submit',pz_i18n::msg('ok')));
 		$xform_search = $xform->getForm();
 		
 		return $xform_search;
@@ -62,7 +62,7 @@ class pz_clipboard_screen
 
     $return = '<div id="clipboard_list">';
     if(!isset($p["hide_counter"]) || !$p["hide_counter"])
-		  $return .= '<h3 class="hl3">'.rex_i18n::msg('clips_exist',count($clips)).'</h2>';
+		  $return .= '<h3 class="hl3">'.pz_i18n::msg('clips_exist',count($clips)).'</h2>';
 		$return .= $content;
 		$return .= '</div>';
 		
@@ -73,7 +73,7 @@ class pz_clipboard_screen
 	public function getMultiuploadView($p = array())
 	{
 
-    $return = ""; // '<h2 class="hl2">'.rex_i18n::msg("clipboard_upload").'</h2>';
+    $return = ""; // '<h2 class="hl2">'.pz_i18n::msg("clipboard_upload").'</h2>';
 
 	  $user_id = $this->clipboard->user->getId();
 	  $field_id = "123".$this->clipboard->user->getId();
@@ -89,9 +89,9 @@ class pz_clipboard_screen
 							element: document.getElementById(\''.$layer.'\'),
 							action: \''.pz::url("screen", "clipboard", "upload", array( "mode"=>"file" ) ).'\',
 							
-							template: \'<div class="qq-uploader"><div class="qq-upload-drop-area"><span>'.rex_i18n::msg("files_for_upload").'</span></div><div class="qq-upload-button">'.rex_i18n::msg("dragdrop_files_for_upload").'</div><ul class="qq-uploaded-list"></ul><ul class="qq-upload-list"></ul></div>\',
+							template: \'<div class="qq-uploader"><div class="qq-upload-drop-area"><span>'.pz_i18n::msg("files_for_upload").'</span></div><div class="qq-upload-button">'.pz_i18n::msg("dragdrop_files_for_upload").'</div><ul class="qq-uploaded-list"></ul><ul class="qq-upload-list"></ul></div>\',
 							
-							fileTemplate: \'<li><span class="qq-upload-file"></span><span class="qq-upload-spinner"></span><span class="qq-upload-size"></span><a class="qq-upload-cancel" href="javascript:void(0);">'.rex_i18n::msg("dragdrop_files_exit").'</a><span class="qq-upload-failed-text">'.rex_i18n::msg("dragdrop_files_upload_failed").'</span></li>\',
+							fileTemplate: \'<li><span class="qq-upload-file"></span><span class="qq-upload-spinner"></span><span class="qq-upload-size"></span><a class="qq-upload-cancel" href="javascript:void(0);">'.pz_i18n::msg("dragdrop_files_exit").'</a><span class="qq-upload-failed-text">'.pz_i18n::msg("dragdrop_files_upload_failed").'</span></li>\',
 							
 							classes: {
 					            button: "qq-upload-button",

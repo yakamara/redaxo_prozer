@@ -184,10 +184,10 @@ class pz_clipboard_controller_screen extends pz_clipboard_controller
 	{
 
     $navigation = array(
-      "my" => rex_i18n::msg("clipboard_my"), 
-      "released" => rex_i18n::msg("clipboard_releasedlist"), 
-      "upload" => rex_i18n::msg("clipboard_upload"), 
-      "upload_project" => rex_i18n::msg("clipboard_project_files")
+      "my" => pz_i18n::msg("clipboard_my"),
+      "released" => pz_i18n::msg("clipboard_releasedlist"),
+      "upload" => pz_i18n::msg("clipboard_upload"),
+      "upload_project" => pz_i18n::msg("clipboard_project_files")
     );
     
     // ----- navi
@@ -271,7 +271,7 @@ class pz_clipboard_controller_screen extends pz_clipboard_controller
         break;
 
       case("upload"):
-        // $return_content .= '<h3 class="hl3">'.rex_i18n::msg('clip_upload').'</h2>';
+        // $return_content .= '<h3 class="hl3">'.pz_i18n::msg('clip_upload').'</h2>';
         $return_content .= $cb_screen->getMultiuploadView($p);
 				if($mode == "list")
 				  return $return_content;
@@ -294,7 +294,7 @@ class pz_clipboard_controller_screen extends pz_clipboard_controller
     }
     
 		$return = '<div id="clipboard" class="popbox">
-		            <h1 class="hl1">'.rex_i18n::msg("clipboard").': '.$navigation[$n].'</h1>
+		            <h1 class="hl1">'.pz_i18n::msg("clipboard").': '.$navigation[$n].'</h1>
 		            <div class="popbox-frame">
 		              '.$return_navi.'
 		              <div class="popbox-content">

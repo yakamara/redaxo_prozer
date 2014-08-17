@@ -37,21 +37,21 @@ class pz_project_sub_screen{
                 </a>
               </header>
               <footer>
-  	            <!-- <a class="bt2" href="'.$edit_link.'">'.rex_i18n::msg("label_edit").'</a> -->
+  	            <!-- <a class="bt2" href="'.$edit_link.'">'.pz_i18n::msg("label_edit").'</a> -->
               </footer>
             </article>
             </li>';
 	
-		  // <a class="bt2" href="'.pz::url("screen","projects","tools",array("mode"=>"delete","label_id"=>$this->label->getId())).'">'.rex_i18n::msg("label_delete").'</a>
+		  // <a class="bt2" href="'.pz::url("screen","projects","tools",array("mode"=>"delete","label_id"=>$this->label->getId())).'">'.pz_i18n::msg("label_delete").'</a>
 	
 	  }
 	
 		$content = '<ul class="entries view-list">'.implode("",$lis).'</ul>';
 
 		// $content = $this->getSearchPaginatePlainView().$content;
-		// $content = '<a href="'.pz::url('screen','tools','labels',array("mode"=>"add")).'">'.rex_i18n::msg("label_add").'</a>'.$content;
+		// $content = '<a href="'.pz::url('screen','tools','labels',array("mode"=>"add")).'">'.pz_i18n::msg("label_add").'</a>'.$content;
 
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('design', $design, false);
 		$f->setVar('title', $p["title"], false);
 		$f->setVar('content', $content , false);
@@ -67,11 +67,11 @@ class pz_project_sub_screen{
 		$header = '
 	        <header>
 	          <div class="header">
-	            <h1 class="hl1">'.rex_i18n::msg("delete_project_sub").'</h1>
+	            <h1 class="hl1">'.pz_i18n::msg("delete_project_sub").'</h1>
 	          </div>
 	        </header>';
 		
-		$return = $header.'<p class="xform-info">'.rex_i18n::msg("project_sub_deleted", htmlspecialchars($p["project_sub_name"])).'</p>';
+		$return = $header.'<p class="xform-info">'.pz_i18n::msg("project_sub_deleted", htmlspecialchars($p["project_sub_name"])).'</p>';
 		$return .= pz_screen::getJSLoadFormPage('project_subs_list','labels_search_form',pz::url('screen','project',$p["function"],array("project_id"=>$project->getId(),"mode"=>'list')));
 		$return = '<div id="project_sub_form"><div id="project_sub_delete" class="design1col xform-delete">'.$return.'</div></div>';
 
@@ -85,7 +85,7 @@ class pz_project_sub_screen{
 		$header = '
 	        <header>
 	          <div class="header">
-	            <h1 class="hl1">'.rex_i18n::msg("project_sub_edit").': '.$this->project_sub->getName().'</h1>
+	            <h1 class="hl1">'.pz_i18n::msg("project_sub_edit").': '.$this->project_sub->getName().'</h1>
 	          </div>
 	        </header>';
 	
@@ -104,8 +104,8 @@ class pz_project_sub_screen{
 		$xform->setHiddenField("project_id",$this->project_sub->getProject()->getId());
 		$xform->setObjectparams('form_showformafterupdate',1);
 
-		$xform->setValueField("text",array("name",rex_i18n::msg("project_sub_name")));
-		$xform->setValidateField("empty",array("name",rex_i18n::msg("error_project_sub_name_empty")));
+		$xform->setValueField("text",array("name",pz_i18n::msg("project_sub_name")));
+		$xform->setValidateField("empty",array("name",pz_i18n::msg("error_project_sub_name_empty")));
 
 		$xform->setActionField("db",array('pz_project_sub','id='.$this->project_sub->getId())); // array("id"=>$this->label->getId())
 
@@ -113,7 +113,7 @@ class pz_project_sub_screen{
 
 		if($xform->getObjectparams("actions_executed")) 
 		{
-			$return = $header.'<p class="xform-info">'.rex_i18n::msg("project_sub_updated").'</p>'.$return;
+			$return = $header.'<p class="xform-info">'.pz_i18n::msg("project_sub_updated").'</p>'.$return;
 			$return .= pz_screen::getJSUpdateLayer('labels_list',pz::url('screen','project','project_sub',array("mode"=>'list')));
 
 		}else
@@ -126,9 +126,9 @@ class pz_project_sub_screen{
 			$delete_link = pz::url("screen","project","project_sub",array("project_id" => $this->project_sub->getProject()->getid(), "project_sub_id"=>$this->project_sub->getId(),"mode"=>"delete_project_sub"));
 			$return .= '<div class="xform">
 				<p><a class="bt17" onclick="check = confirm(\''.
-				rex_i18n::msg("project_sub_confirm_delete",htmlspecialchars($this->project_sub->getName())).
+				pz_i18n::msg("project_sub_confirm_delete",htmlspecialchars($this->project_sub->getName())).
 				'\'); if (check == true) pz_loadPage(\'project_sub_form\',\''.
-				$delete_link.'\')" href="javascript:void(0);">- '.rex_i18n::msg("delete_project_sub").'</a></p>
+				$delete_link.'\')" href="javascript:void(0);">- '.pz_i18n::msg("delete_project_sub").'</a></p>
 				</div>';
 		}
 
@@ -144,7 +144,7 @@ class pz_project_sub_screen{
 		$header = '
 	        <header>
 	          <div class="header">
-	            <h1 class="hl1">'.rex_i18n::msg("add_project_sub").'</h1>
+	            <h1 class="hl1">'.pz_i18n::msg("add_project_sub").'</h1>
 	          </div>
 	        </header>';
 
@@ -159,14 +159,14 @@ class pz_project_sub_screen{
 		
 		$xform->setValueField('hidden',array('project_id', $project->getId()));
 		
-		$xform->setValueField("text",array("name",rex_i18n::msg("project_sub_name")));
-		$xform->setValidateField("empty",array("name",rex_i18n::msg("error_project_sub_name_empty")));
+		$xform->setValueField("text",array("name",pz_i18n::msg("project_sub_name")));
+		$xform->setValidateField("empty",array("name",pz_i18n::msg("error_project_sub_name_empty")));
 		$xform->setActionField("db",array()); // array("id"=>$label_id)
 		$return = $xform->getForm();
 
 		if($xform->getObjectparams("actions_executed")) 
 		{
-			$return = $header.'<p class="xform-info">'.rex_i18n::msg("project_sub_added").'</p>'.$return;
+			$return = $header.'<p class="xform-info">'.pz_i18n::msg("project_sub_added").'</p>'.$return;
 			$return .= pz_screen::getJSUpdateLayer('project_subs_list',pz::url('screen','project','project_sub',array("mode"=>'list','project_id'=>$project->getId())));
 		}else
 		{
@@ -179,12 +179,4 @@ class pz_project_sub_screen{
 		
 	}
 
-
-
-
-
-
 }
-
-
-?>

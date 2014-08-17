@@ -29,7 +29,7 @@ class pz_customer_screen{
               </a>
             </header>
             <footer>
-              <a class="bt2" href="'.$edit_link.'">'.rex_i18n::msg("customer_edit").'</a>
+              <a class="bt2" href="'.$edit_link.'">'.pz_i18n::msg("customer_edit").'</a>
             </footer>
           </article>
         ';
@@ -52,11 +52,11 @@ class pz_customer_screen{
 		$header = '
 	        <header>
 	          <div class="header">
-	            <h1 class="hl1">'.rex_i18n::msg("delete_customer").'</h1>
+	            <h1 class="hl1">'.pz_i18n::msg("delete_customer").'</h1>
 	          </div>
 	        </header>';
 		
-		$return = $header.'<p class="xform-info">'.rex_i18n::msg("customer_deleted", htmlspecialchars($p["customer_name"])).'</p>';
+		$return = $header.'<p class="xform-info">'.pz_i18n::msg("customer_deleted", htmlspecialchars($p["customer_name"])).'</p>';
 		$return .= pz_screen::getJSLoadFormPage('customers_list','customers_search_form',pz::url('screen','projects','customers',array("mode"=>'list')));
 		$return = '<div id="customer_form"><div id="customer_delete" class="design1col xform-delete">'.$return.'</div></div>';
 
@@ -71,7 +71,7 @@ class pz_customer_screen{
     	$header = '
         <header>
           <div class="header">
-            <h1 class="hl1">'.rex_i18n::msg("customer_edit").': '.$this->customer->getName().'</h1>
+            <h1 class="hl1">'.pz_i18n::msg("customer_edit").': '.$this->customer->getName().'</h1>
           </div>
         </header>';
 
@@ -88,13 +88,13 @@ class pz_customer_screen{
 		$xform->setHiddenField("customer_id",$this->customer->getId());
 		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
 		
-		$xform->setValueField("pz_image_screen",array("image_inline",rex_i18n::msg("photo"),pz_customer::getDefaultImage()));
+		$xform->setValueField("pz_image_screen",array("image_inline",pz_i18n::msg("photo"),pz_customer::getDefaultImage()));
 		
-		$xform->setValueField("text",array("name",rex_i18n::msg("customer_name"),"","0"));
-		$xform->setValueField("textarea",array("description",rex_i18n::msg("customer_description"),"","0"));
+		$xform->setValueField("text",array("name",pz_i18n::msg("customer_name"),"","0"));
+		$xform->setValueField("textarea",array("description",pz_i18n::msg("customer_description"),"","0"));
 		$xform->setValueField("stamp",array("created","created","mysql_datetime","0","1","","","",""));
-		$xform->setValueField("checkbox",array("archived",rex_i18n::msg("customer_archived"),"1","0","0"));
-		$xform->setValidateField("empty",array("name",rex_i18n::msg("error_customer_name_empty")));
+		$xform->setValueField("checkbox",array("archived",pz_i18n::msg("customer_archived"),"1","0","0"));
+		$xform->setValidateField("empty",array("name",pz_i18n::msg("error_customer_name_empty")));
 		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0"));
 
 		$xform->setActionField("db",array('pz_customer','id='.$this->customer->getId()));
@@ -104,7 +104,7 @@ class pz_customer_screen{
 		if($xform->getObjectparams("actions_executed")) {
 		
 			$this->customer->update();
-			$return = $header.'<p class="xform-info">'.rex_i18n::msg("customer_updated").'</p>'.$return;
+			$return = $header.'<p class="xform-info">'.pz_i18n::msg("customer_updated").'</p>'.$return;
 			$return .= pz_screen::getJSLoadFormPage('customers_list','customer_search_form',pz::url('screen','projects','customers',array("mode"=>'list')));
 		}else
 		{
@@ -116,9 +116,9 @@ class pz_customer_screen{
 			$delete_link = pz::url("screen","projects","customers",array("customer_id"=>$this->customer->getId(),"mode"=>"delete_customer"));
 			$return .= '<div class="xform">
 				<p><a class="bt17" onclick="check = confirm(\''.
-				str_replace(array("'","\n","\r"),array("","",""),rex_i18n::msg("customer_confirm_delete",htmlspecialchars($this->customer->getName()))).
+				str_replace(array("'","\n","\r"),array("","",""),pz_i18n::msg("customer_confirm_delete",htmlspecialchars($this->customer->getName()))).
 				'\'); if (check == true) pz_loadPage(\'customer_form\',\''.
-				$delete_link.'\')" href="javascript:void(0);">- '.rex_i18n::msg("delete_customer").'</a></p>
+				$delete_link.'\')" href="javascript:void(0);">- '.pz_i18n::msg("delete_customer").'</a></p>
 				</div>';
 		}
 		
@@ -133,7 +133,7 @@ class pz_customer_screen{
 		$return = '
 	        <header>
 	          <div class="header">
-	            <h1 class="hl1">'.rex_i18n::msg("customer_add").'</h1>
+	            <h1 class="hl1">'.pz_i18n::msg("customer_add").'</h1>
 	          </div>
 	        </header>';
 
@@ -146,13 +146,13 @@ class pz_customer_screen{
 		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
 		foreach($p["linkvars"] as $k => $v) { $xform->setHiddenField($k,$v); }
 		
-		$xform->setValueField("pz_image_screen",array("image_inline",rex_i18n::msg("photo"),pz_customer::getDefaultImage()));
+		$xform->setValueField("pz_image_screen",array("image_inline",pz_i18n::msg("photo"),pz_customer::getDefaultImage()));
 		
-		$xform->setValueField("text",array("name",rex_i18n::msg("customer_name"),"","0"));
-		$xform->setValueField("textarea",array("description",rex_i18n::msg("customer_description"),"","0"));
+		$xform->setValueField("text",array("name",pz_i18n::msg("customer_name"),"","0"));
+		$xform->setValueField("textarea",array("description",pz_i18n::msg("customer_description"),"","0"));
 		$xform->setValueField("stamp",array("created","created","mysql_datetime","0","1","","","",""));
-		$xform->setValueField("checkbox",array("archived",rex_i18n::msg("customer_archived"),"1","0","0"));
-		$xform->setValidateField("empty",array("name",rex_i18n::msg("error_customer_name_empty")));
+		$xform->setValueField("checkbox",array("archived",pz_i18n::msg("customer_archived"),"1","0","0"));
+		$xform->setValidateField("empty",array("name",pz_i18n::msg("error_customer_name_empty")));
 		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0","","","",""));
 		$xform->setActionField("db",array());
 		$return .= $xform->getForm();
@@ -162,7 +162,7 @@ class pz_customer_screen{
 			if($customer = pz_customer::get($customer_id)) {
 				$customer->create();
 			}
-			$return .= '<p class="xform-info">'.rex_i18n::msg("customer_added").'</p>';
+			$return .= '<p class="xform-info">'.pz_i18n::msg("customer_added").'</p>';
 			$return .= pz_screen::getJSLoadFormPage('customers_list','customer_search_form',pz::url('screen','projects','customers',array("mode"=>'list')));
 			
 		}
@@ -174,6 +174,3 @@ class pz_customer_screen{
 
 
 }
-
-
-?>

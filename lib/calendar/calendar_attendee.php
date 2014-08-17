@@ -125,14 +125,14 @@ class pz_calendar_attendee extends pz_calendar_element
       	}
       
       }
-      rex_sql::factory()->setQuery('
+      pz_sql::factory()->setQuery('
         INSERT INTO '. self::TABLE .' (event_id, user_id, email, name, status, timestamp)
         VALUES '. rtrim($values, ',') .'
         ON DUPLICATE KEY UPDATE name = VALUES(name), status = VALUES(status), timestamp = VALUES(timestamp)
       ', $params);
       $and = ' AND timestamp < '. $time;
     }
-    rex_sql::factory()->setQuery('
+    pz_sql::factory()->setQuery('
       DELETE FROM '. self::TABLE .'
       WHERE event_id = ?'. $and .'
     ', array($id));
@@ -146,7 +146,7 @@ class pz_calendar_attendee extends pz_calendar_element
     static $sql = null;
     if(!$sql)
     {
-      $sql = rex_sql::factory();
+      $sql = pz_sql::factory();
       $sql->prepareQuery('
       	SELECT *
       	FROM '. self::TABLE .' a
@@ -167,7 +167,7 @@ class pz_calendar_attendee extends pz_calendar_element
     static $sql = null;
     if(!$sql)
     {
-      $sql = rex_sql::factory();
+      $sql = pz_sql::factory();
       $sql->prepareQuery('
       	SELECT *
       	FROM '. self::TABLE .' a

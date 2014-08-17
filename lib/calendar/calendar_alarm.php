@@ -271,14 +271,14 @@ class pz_calendar_alarm extends pz_calendar_element
         $emails = is_array($alarm->emails) && count($alarm->emails) > 0 ? implode(',', $alarm->emails) : '';
         array_push($params, $id, pz::getUser()->getId(), $alarm->action, $alarm->getTriggerString(), $alarm->description, $alarm->summary, $emails, $alarm->attachment, $alarm->location, $alarm->structured_location, $alarm->proximity, self::sqlValue($alarm->acknowledged), $alarm->related_id, $time);
       }
-      rex_sql::factory()->setQuery('
+      pz_sql::factory()->setQuery('
         INSERT INTO '. self::TABLE .' (uid, `'. $column .'`, user_id, `action`, `trigger`, description, summary, emails, attachment, location, structured_location, proximity, acknowledged, related_id, timestamp)
         VALUES '. rtrim($values, ',') .'
         ON DUPLICATE KEY UPDATE `'. $column .'` = VALUES(`'. $column .'`), user_id = VALUES(user_id), `action` = VALUES(`action`), `trigger` = VALUES(`trigger`), description = VALUES(description), summary = VALUES(summary), emails = VALUES(emails), attachment = VALUES(attachment), location = VALUES(location), structured_location = VALUES(structured_location), proximity = VALUES(proximity), acknowledged = VALUES(acknowledged), related_id = VALUES(related_id), timestamp = VALUES(timestamp)
       ', $params);
       $and = ' AND timestamp < '. $time;
     }
-    rex_sql::factory()->setQuery('
+    pz_sql::factory()->setQuery('
       DELETE FROM '. self::TABLE .'
       WHERE `'. $column .'` = ? AND user_id = ?'. $and .'
     ', array($id, pz::getUser()->getId()));
@@ -289,7 +289,7 @@ class pz_calendar_alarm extends pz_calendar_element
     static $sql = null;
     if(!$sql)
     {
-      $sql = rex_sql::factory();
+      $sql = pz_sql::factory();
       $sql->prepareQuery('
       	SELECT *
       	FROM '. self::TABLE .' a
@@ -305,7 +305,7 @@ class pz_calendar_alarm extends pz_calendar_element
     static $sql = null;
     if(!$sql)
     {
-      $sql = rex_sql::factory();
+      $sql = pz_sql::factory();
       $sql->prepareQuery('
       	SELECT *
       	FROM '. self::TABLE .' a
@@ -319,7 +319,7 @@ class pz_calendar_alarm extends pz_calendar_element
   static public function getAll(pz_calendar_item $item)
   {
     $column = $item instanceof pz_calendar_todo ? 'todo_id' : 'event_id';
-    $sql = rex_sql::factory();
+    $sql = pz_sql::factory();
     $sql->prepareQuery('
       SELECT *
       FROM '. self::TABLE .' a

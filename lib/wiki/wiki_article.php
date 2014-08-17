@@ -82,7 +82,7 @@ class pz_wiki_article extends pz_model
   public function getVersions()
   {
     $versions = array($this);
-    $sql = rex_sql::factory();
+    $sql = pz_sql::factory();
     $sql->setQuery('SELECT * FROM pz_wiki_history WHERE wiki_id = ? ORDER BY stamp DESC', array($this->getId()));
     foreach($sql->getArray() as $row)
     {
@@ -95,7 +95,7 @@ class pz_wiki_article extends pz_model
 
   static public function get($id)
   {
-    $sql = rex_sql::factory();
+    $sql = pz_sql::factory();
     $sql->setQuery('SELECT * FROM pz_wiki WHERE id = ? LIMIT 2', array($id));
     if($sql->getRows() != 1)
       return false;
@@ -105,7 +105,7 @@ class pz_wiki_article extends pz_model
 
   static public function getStart($project_id)
   {
-    $sql = rex_sql::factory();
+    $sql = pz_sql::factory();
     $sql->setQuery('SELECT * FROM pz_wiki WHERE project_id = ? ORDER BY stamp LIMIT 1', array($project_id));
     if($sql->getRows() != 1)
       return false;
@@ -115,7 +115,7 @@ class pz_wiki_article extends pz_model
 
   static public function getAll($project_id)
   {
-    $sql = rex_sql::factory();
+    $sql = pz_sql::factory();
     $sql->setQuery('SELECT * FROM pz_wiki WHERE project_id = ? ORDER BY title', array($project_id));
     $articles = array();
     foreach($sql->getArray() as $row)
@@ -127,7 +127,7 @@ class pz_wiki_article extends pz_model
 
   public function saveToHistory($mode = 'update')
   {
-    $sql = rex_sql::factory();
+    $sql = pz_sql::factory();
     $sql->setTable('pz_history')
       ->setValue('control', 'wiki')
       ->setValue('data_id', $this->getId())
@@ -149,7 +149,7 @@ class pz_wiki_article extends pz_model
     $vt = array();
     $vt[] = $this->getTitle();
     $vt[] = $this->getRawText();
-    $sql = rex_sql::factory();
+    $sql = pz_sql::factory();
     $sql->setTable('pz_wiki')
       ->setWhere(array('id' => $this->getId()))
       ->setValue('vt', implode(' ', $vt))
@@ -172,7 +172,7 @@ class pz_wiki_article extends pz_model
   {
     $this->saveToHistory('delete');
 
-    rex_sql::factory()->setQuery('
+    pz_sql::factory()->setQuery('
     	DELETE
     	FROM pz_wiki
 			WHERE id = ?

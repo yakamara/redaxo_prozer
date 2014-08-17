@@ -21,7 +21,7 @@ class pz_controller
 
 	function getName() 
 	{
-		return rex_i18n::translate($this->name);
+		return pz_i18n::translate($this->name);
 	}
 
 	function checkPerm() 

@@ -54,7 +54,7 @@ class pz_tools_controller_screen extends pz_tools_controller {
 		$section_2 = "...";
 
 		$p = array();
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('header', pz_screen::getHeader(), false);
 		$f->setVar('function', "" , false); // $this->getNavigation()
 		$f->setVar('section_1', $section_1 , false);
@@ -111,7 +111,7 @@ class pz_tools_controller_screen extends pz_tools_controller {
 
 	private function getJobsPage($p = array())
 	{
-		$p["title"] = rex_i18n::msg("jobs");
+		$p["title"] = pz_i18n::msg("jobs");
 		$p["mediaview"] = "screen";
 		$p["controll"] = "tools";
 		$p["function"] = "jobs";
@@ -157,7 +157,7 @@ class pz_tools_controller_screen extends pz_tools_controller {
 		$searchform = '
         <header>
           <div class="header">
-            <h1 class="hl1">'.rex_i18n::msg("search_for_jobs").'</h1>
+            <h1 class="hl1">'.pz_i18n::msg("search_for_jobs").'</h1>
           </div>
         </header>';
 		
@@ -168,15 +168,15 @@ class pz_tools_controller_screen extends pz_tools_controller {
 			"javascript:pz_loadFormPage('jobs_list','job_search_form','".pz::url('screen','tools',$this->function)."')");
 		$xform->setObjectparams("form_id", "job_search_form");
 		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl', 'runtime'));
-		$xform->setValueField("text",array("search_title",rex_i18n::msg("title")));
+		$xform->setValueField("text",array("search_title",pz_i18n::msg("title")));
 		
-		$xform->setValueField("pz_date_screen",array("search_date_from",rex_i18n::msg("search_date_from")));
-		$xform->setValueField("pz_date_screen",array("search_date_to",rex_i18n::msg("search_date_to")));
+		$xform->setValueField("pz_date_screen",array("search_date_from",pz_i18n::msg("search_date_from")));
+		$xform->setValueField("pz_date_screen",array("search_date_to",pz_i18n::msg("search_date_to")));
 		
 		$projects = pz::getUser()->getCalendarProjects();
-		$xform->setValueField("pz_select_screen",array("search_project_id",rex_i18n::msg("project"),pz_project::getProjectsAsString($projects),"","",0,rex_i18n::msg("please_choose")));
+		$xform->setValueField("pz_select_screen",array("search_project_id",pz_i18n::msg("project"),pz_project::getProjectsAsString($projects),"","",0,pz_i18n::msg("please_choose")));
 		
-		$xform->setValueField("submit",array('submit',rex_i18n::msg('search'), '', 'search'));
+		$xform->setValueField("submit",array('submit',pz_i18n::msg('search'), '', 'search'));
 		$xform->setValueField("hidden",array("mode","list"));
 		$searchform .= $xform->getForm();
 		
@@ -206,14 +206,14 @@ class pz_tools_controller_screen extends pz_tools_controller {
 
 
 		$p["list_links"] = array();
-		$p["list_links"][] = rex_i18n::msg('jobtime_total').' '.$hours.' '.$minutes.'';
+		$p["list_links"][] = pz_i18n::msg('jobtime_total').' '.$hours.' '.$minutes.'';
 		$p["list_links"][] = '<a href="'.pz::url('screen','tools',$this->function,array(
 						"mode" =>"export_excel",
 						"search_title" => rex_request("search_title"),
 						"search_date_from" => rex_request("search_date_from"),
 						"search_date_to" => rex_request("search_date_to"),
 						"search_project_id" => rex_request("search_project_id"),
-					)).'">'.rex_i18n::msg('excel_export').'</a>';
+					)).'">'.pz_i18n::msg('excel_export').'</a>';
 
     $p["linkvars"]["mode"] = "list";
 		$jobs_list = pz_calendar_event_screen::getUserJobsTableView($jobs, $p);
@@ -233,7 +233,7 @@ class pz_tools_controller_screen extends pz_tools_controller {
 		$section_2 = $jobs_list;
 	
 		$p = array();
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('header', pz_screen::getHeader(), false);
 		$f->setVar('function', $this->getNavigation() , false);
 		$f->setVar('section_1', $section_1 , false);
@@ -244,7 +244,7 @@ class pz_tools_controller_screen extends pz_tools_controller {
 
   public function getEmailSetupPage($p = array()) 
   	{
-  		$p["title"] = rex_i18n::msg("email_setup");
+  		$p["title"] = pz_i18n::msg("email_setup");
   		$p["mediaview"] = "screen";
   		$p["controll"] = "tools";
   		$p["function"] = "emailsetup";
@@ -265,9 +265,9 @@ class pz_tools_controller_screen extends pz_tools_controller {
   				if($email_account_id > 0 && $email_account = pz_email_account::get($email_account_id,pz::getUser()->getId())) 
   				{
   					$email_account->delete();
-  					$p["info"] = '<p class="xform-info">'.rex_i18n::msg("email_account_delete").'</p>';
+  					$p["info"] = '<p class="xform-info">'.pz_i18n::msg("email_account_delete").'</p>';
   				}else {
-  					$p["info"] = '<p class="xform-warning">'.rex_i18n::msg("email_account_not_exists").'</p>';
+  					$p["info"] = '<p class="xform-warning">'.pz_i18n::msg("email_account_not_exists").'</p>';
   				}
   				
   			case("list"):
@@ -284,7 +284,7 @@ class pz_tools_controller_screen extends pz_tools_controller {
   					$cs = new pz_email_account_screen($email_account);
   					return $cs->getEditForm($p);
   				}else {
-  					return '<p class="xform-warning">'.rex_i18n::msg("email_account_not_exists").'</p>';
+  					return '<p class="xform-warning">'.pz_i18n::msg("email_account_not_exists").'</p>';
   				}
   				break;
   			case(""):
@@ -300,7 +300,7 @@ class pz_tools_controller_screen extends pz_tools_controller {
   				break;
   		}
   
-  		$f = new rex_fragment();
+  		$f = new pz_fragment();
   		$f->setVar('header', pz_screen::getHeader($p), false);
   		$f->setVar('function', $this->getNavigation($p), false);
   		$f->setVar('section_1', $s1_content, false);
@@ -313,7 +313,7 @@ class pz_tools_controller_screen extends pz_tools_controller {
 	function getProfilePage($p = array()) 
 	{
 
-		$p["title"] = rex_i18n::msg("userperm_list");
+		$p["title"] = pz_i18n::msg("userperm_list");
 		$p["layer"] = "userperm_list";
 		$p["linkvars"] = array();
 		$p["linkvars"]["mode"] = "list";
@@ -404,7 +404,7 @@ class pz_tools_controller_screen extends pz_tools_controller {
 		
 		$section_3 = ""; // Userrechte an andere geben";
 		
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('header', pz_screen::getHeader(), false);
 		$f->setVar('function', pz_screen::getNavigation($p,$this->navigation, $this->function, $this->name) , false);
 		$f->setVar('section_1', $section_1 , false);
@@ -416,7 +416,7 @@ class pz_tools_controller_screen extends pz_tools_controller {
 
 	public function getPermsPage($p = array())
 	{
-		$p["title"] = rex_i18n::msg("user_perms");
+		$p["title"] = pz_i18n::msg("user_perms");
 		$p["mediaview"] = "screen";
 		$p["controll"] = "tools";
 		$p["function"] = "perms";
@@ -429,7 +429,7 @@ class pz_tools_controller_screen extends pz_tools_controller {
 		switch($mode) {
 
 			case("add_user_perm"):
-				return pz_user_perm_screen::getAddForm($p);;
+				return pz_user_perm_screen::getAddForm($p);
 		
 			case("edit_user_perm"):
 				$user_perms = pz::getUser()->getUserPerms();
@@ -466,7 +466,7 @@ class pz_tools_controller_screen extends pz_tools_controller {
 					);
 		
 		$p = array();
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('header', pz_screen::getHeader(), false);
 		$f->setVar('function', $this->getNavigation() , false);
 		$f->setVar('section_1', $section_1 , false);

@@ -42,7 +42,7 @@ class pz_project_sub extends pz_model
 		if($id == "") return FALSE;
 		$id = (int) $id;
 
-		$sql = rex_sql::factory();
+		$sql = pz_sql::factory();
 		$sql->setQuery('select * from pz_project_sub where id = '.$id.' LIMIT 2');
 
 		$project_subs = $sql->getArray();
@@ -65,12 +65,10 @@ class pz_project_sub extends pz_model
 	public function delete() 
 	{
 	  pz_calendar_event::resetProjectSubs($this->getId());
-		$sql = rex_sql::factory();
+		$sql = pz_sql::factory();
 		$sql->setQuery('delete from pz_project_sub where id = ?',array($this->getId()));
 
 	}
 
 
 }
-
-?>

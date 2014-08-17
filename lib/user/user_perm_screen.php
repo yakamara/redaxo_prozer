@@ -20,26 +20,26 @@ class pz_user_perm_screen {
        	$return .= '<td><a href="javascript:pz_loadPage(\'user_perm_form\',\''.$edit_link.'\')"><span class="title">'.$this->user_perm->getToUser()->getName().'</span></a></td>';
 
 		if($this->user_perm->hasCalendarReadPerm())  
-			$return .= '<td><span class="status status-1">'.rex_i18n::msg("yes").'</span></td>';
+			$return .= '<td><span class="status status-1">'.pz_i18n::msg("yes").'</span></td>';
 		else 
-			$return .= '<td><span class="status status-2">'.rex_i18n::msg("no").'</span></td>';
+			$return .= '<td><span class="status status-2">'.pz_i18n::msg("no").'</span></td>';
 
 		if($this->user_perm->hasCalendarWritePerm())  
-			$return .= '<td><span class="status status-1">'.rex_i18n::msg("yes").'</span></td>';
+			$return .= '<td><span class="status status-1">'.pz_i18n::msg("yes").'</span></td>';
 		else 
-			$return .= '<td><span class="status status-2">'.rex_i18n::msg("no").'</span></td>';
+			$return .= '<td><span class="status status-2">'.pz_i18n::msg("no").'</span></td>';
 
 		if($this->user_perm->hasEmailReadPerm())  
-			$return .= '<td><span class="status status-1">'.rex_i18n::msg("yes").'</span></td>';
+			$return .= '<td><span class="status status-1">'.pz_i18n::msg("yes").'</span></td>';
 		else 
-			$return .= '<td><span class="status status-2">'.rex_i18n::msg("no").'</span></td>';
+			$return .= '<td><span class="status status-2">'.pz_i18n::msg("no").'</span></td>';
 
 		if($this->user_perm->hasEmailWritePerm())  
-			$return .= '<td><span class="status status-1">'.rex_i18n::msg("yes").'</span></td>';
+			$return .= '<td><span class="status status-1">'.pz_i18n::msg("yes").'</span></td>';
 		else 
-			$return .= '<td><span class="status status-2">'.rex_i18n::msg("no").'</span></td>';
+			$return .= '<td><span class="status status-2">'.pz_i18n::msg("no").'</span></td>';
 
-   		$return .= '<td><a class="bt2" href="javascript:pz_loadPage(\'user_perms_list\',\''.$delete_link.'\')"><span class="title">'.rex_i18n::msg("delete").'</span></a></td>';
+   		$return .= '<td><a class="bt2" href="javascript:pz_loadPage(\'user_perms_list\',\''.$delete_link.'\')"><span class="title">'.pz_i18n::msg("delete").'</span></a></td>';
         
         $return .= '</tr>';
         
@@ -78,12 +78,12 @@ class pz_user_perm_screen {
         <table class="users tbl1">
         <thead><tr>
             <th></th>
-            <th>'.rex_i18n::msg("username").'</th>
-            <th>'.rex_i18n::msg("user_perm_calendar_read").'</th>
-            <th>'.rex_i18n::msg("user_perm_calendar_write").'</th>
-            <th>'.rex_i18n::msg("user_perm_email_read").'</th>
-            <th>'.rex_i18n::msg("user_perm_email_write").'</th>
-            <th>'.rex_i18n::msg("functions").'</th>
+            <th>'.pz_i18n::msg("username").'</th>
+            <th>'.pz_i18n::msg("user_perm_calendar_read").'</th>
+            <th>'.pz_i18n::msg("user_perm_calendar_write").'</th>
+            <th>'.pz_i18n::msg("user_perm_email_read").'</th>
+            <th>'.pz_i18n::msg("user_perm_email_write").'</th>
+            <th>'.pz_i18n::msg("functions").'</th>
         </tr></thead>
         <tbody>
           '.$list.'
@@ -104,7 +104,7 @@ class pz_user_perm_screen {
 			)
 		);
 
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('title', $p["title"], false);
 		$f->setVar('content', $content , false);
 		return '<div id="user_perms_list" class="design2col" data-url="'.$link_refresh.'">'.$f->parse('pz_screen_list.tpl').'</div>';
@@ -120,7 +120,7 @@ class pz_user_perm_screen {
 		$header = '
         <header>
           <div class="header">
-            <h1 class="hl1">'.rex_i18n::msg("user_perm_add").'</h1>
+            <h1 class="hl1">'.pz_i18n::msg("user_perm_add").'</h1>
           </div>
         </header>';
 
@@ -133,8 +133,8 @@ class pz_user_perm_screen {
 
 		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
 
-		$xform->setValidateField("unique", array("user_id,to_user_id",rex_i18n::msg("user_perm_user_exists")));
-		$xform->setValueField('pz_select_screen',array('to_user_id', rex_i18n::msg('user'), pz::getUsersAsString(),"","",0));
+		$xform->setValidateField("unique", array("user_id,to_user_id",pz_i18n::msg("user_perm_user_exists")));
+		$xform->setValueField('pz_select_screen',array('to_user_id', pz_i18n::msg('user'), pz::getUsersAsString(),"","",0));
 
 		function pz_checkIsMe($label,$user_id,$me_id) {
 			if($user_id == $me_id)
@@ -142,14 +142,14 @@ class pz_user_perm_screen {
 			return FALSE;
 		}
 
-		$xform->setValidateField("customfunction", array("to_user_id","pz_checkIsMe",pz::getUser()->getId(),rex_i18n::msg("user_perm_user_isme")));
+		$xform->setValidateField("customfunction", array("to_user_id","pz_checkIsMe",pz::getUser()->getId(),pz_i18n::msg("user_perm_user_isme")));
 
 
-		$xform->setValueField("checkbox",array("calendar_read",rex_i18n::msg("user_perm_calendar_read"),"1","0","0"));
-		$xform->setValueField("checkbox",array("calendar_write",rex_i18n::msg("user_perm_calendar_write"),"1","0","0"));
+		$xform->setValueField("checkbox",array("calendar_read",pz_i18n::msg("user_perm_calendar_read"),"1","0","0"));
+		$xform->setValueField("checkbox",array("calendar_write",pz_i18n::msg("user_perm_calendar_write"),"1","0","0"));
 
-		$xform->setValueField("checkbox",array("email_read",rex_i18n::msg("user_perm_email_read"),"1","0","0"));
-		$xform->setValueField("checkbox",array("email_write",rex_i18n::msg("user_perm_email_write"),"1","0","0"));
+		$xform->setValueField("checkbox",array("email_read",pz_i18n::msg("user_perm_email_read"),"1","0","0"));
+		$xform->setValueField("checkbox",array("email_write",pz_i18n::msg("user_perm_email_write"),"1","0","0"));
 
 		$xform->setValueField("hidden", array("user_id",pz::getUser()->getId()));
 
@@ -164,7 +164,7 @@ class pz_user_perm_screen {
 		if($xform->getObjectparams("actions_executed")) 
 		{
 			$user_id = $xform->getObjectparams("main_id");
-			$return = $header.'<p class="xform-info">'.rex_i18n::msg("user_perm_added").'</p>'.$return;
+			$return = $header.'<p class="xform-info">'.pz_i18n::msg("user_perm_added").'</p>'.$return;
 			$return .= pz_screen::getJSUpdateLayer('user_perms_list',pz::url('screen','tools','perms',array("mode"=>'list_user_perms')));
 		}else
 		{
@@ -183,7 +183,7 @@ class pz_user_perm_screen {
     	$header = '
         <header>
           <div class="header">
-            <h1 class="hl1">'.rex_i18n::msg("user_perm_edit").': '.$this->user_perm->getToUser()->getName().'</h1>
+            <h1 class="hl1">'.pz_i18n::msg("user_perm_edit").': '.$this->user_perm->getToUser()->getName().'</h1>
           </div>
         </header>';
 
@@ -203,21 +203,21 @@ class pz_user_perm_screen {
 
 		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
 
-		$xform->setValidateField("unique", array("user_id,to_user_id",rex_i18n::msg("user_perm_user_exists")));
-		$xform->setValueField('pz_select_screen',array('to_user_id', rex_i18n::msg('user'), pz::getUsersAsString(),"","",0));
+		$xform->setValidateField("unique", array("user_id,to_user_id",pz_i18n::msg("user_perm_user_exists")));
+		$xform->setValueField('pz_select_screen',array('to_user_id', pz_i18n::msg('user'), pz::getUsersAsString(),"","",0));
 		function pz_checkIsMe($label,$user_id,$me_id) {
 			if($user_id == $me_id)
 				return TRUE;
 			return FALSE;
 		}
-		$xform->setValidateField("customfunction", array("to_user_id","pz_checkIsMe",pz::getUser()->getId(),rex_i18n::msg("user_perm_user_isme")));
+		$xform->setValidateField("customfunction", array("to_user_id","pz_checkIsMe",pz::getUser()->getId(),pz_i18n::msg("user_perm_user_isme")));
 
 
-		$xform->setValueField("checkbox",array("calendar_read",rex_i18n::msg("user_perm_calendar_read"),"1","0","0"));
-		$xform->setValueField("checkbox",array("calendar_write",rex_i18n::msg("user_perm_calendar_write"),"1","0","0"));
+		$xform->setValueField("checkbox",array("calendar_read",pz_i18n::msg("user_perm_calendar_read"),"1","0","0"));
+		$xform->setValueField("checkbox",array("calendar_write",pz_i18n::msg("user_perm_calendar_write"),"1","0","0"));
 
-		$xform->setValueField("checkbox",array("email_read",rex_i18n::msg("user_perm_email_read"),"1","0","0"));
-		$xform->setValueField("checkbox",array("email_write",rex_i18n::msg("user_perm_email_write"),"1","0","0"));
+		$xform->setValueField("checkbox",array("email_read",pz_i18n::msg("user_perm_email_read"),"1","0","0"));
+		$xform->setValueField("checkbox",array("email_write",pz_i18n::msg("user_perm_email_write"),"1","0","0"));
 
 		$xform->setValueField("hidden", array("user_id",pz::getUser()->getId()));
 
@@ -231,7 +231,7 @@ class pz_user_perm_screen {
 		if($xform->getObjectparams("actions_executed")) 
 		{
 
-			$return = $header.'<p class="xform-info">'.rex_i18n::msg("user_perm_updated").'</p>'.$return;
+			$return = $header.'<p class="xform-info">'.pz_i18n::msg("user_perm_updated").'</p>'.$return;
 			$return .= pz_screen::getJSUpdateLayer('user_perms_list',pz::url('screen','tools','perms',array("mode"=>'list_user_perms')));
 			
 		}else

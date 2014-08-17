@@ -13,7 +13,7 @@ class pz_address_screen{
 	function getMatrixView($p = array()) 
 	{
     
-		$customer_name = rex_i18n::msg("no_customer");
+		$customer_name = pz_i18n::msg("no_customer");
     
 		$return = '
 		      <article>
@@ -84,9 +84,9 @@ class pz_address_screen{
 		      <table class="addresses tbl1">
 		      <thead><tr>
 		          <th></th>
-		          <th>'.rex_i18n::msg("address_name").'</th>
-		          <th>'.rex_i18n::msg("address_telephone").'</th>
-		          <th>'.rex_i18n::msg("address_emails").'</th>
+		          <th>'.pz_i18n::msg("address_name").'</th>
+		          <th>'.pz_i18n::msg("address_telephone").'</th>
+		          <th>'.pz_i18n::msg("address_emails").'</th>
 		          <th class="label"></th>
 		      </tr></thead>
 		      <tbody>
@@ -95,7 +95,7 @@ class pz_address_screen{
 		      </table>'
 		      .$paginate_loader;
 		
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('title', $p["title"], false);
 		$f->setVar('content', $content , false);
 		$f->setVar('orders', $orders);
@@ -172,7 +172,7 @@ class pz_address_screen{
 		
 		$content = $paginate.$list.$paginate_loader;
 		
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('title', $p["title"], false);
 		$f->setVar('content', $content , false);
 		$f->setVar('orders', $orders);
@@ -391,7 +391,7 @@ class pz_address_screen{
     $return = '
         <header>
           <div class="header">
-            <h1 class="hl1">'.rex_i18n::msg("search_for_addresses").'</h1>
+            <h1 class="hl1">'.pz_i18n::msg("search_for_addresses").'</h1>
           </div>
         </header>';
 		
@@ -403,8 +403,8 @@ class pz_address_screen{
 		$xform->setObjectparams("form_action", "javascript:pz_loadFormPage('addresses_list','addresses_search_form','".pz::url('screen','addresses',$p["function"],array("mode"=>'list'))."')");
 		$xform->setObjectparams("form_id", "addresses_search_form");
 		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl', 'runtime'));
-		$xform->setValueField("text",array("search_name",rex_i18n::msg("project_name")));
-		$xform->setValueField("submit",array('submit',rex_i18n::msg('search'), '', 'search'));
+		$xform->setValueField("text",array("search_name",pz_i18n::msg("project_name")));
+		$xform->setValueField("submit",array('submit',pz_i18n::msg('search'), '', 'search'));
 		$return .= $xform->getForm();
 		
 		$return = '<div id="addresses_search" class="design1col xform-search">'.$return.'</div>';
@@ -418,7 +418,7 @@ class pz_address_screen{
 		$header = '
 	        <header>
 	          <div class="header">
-	            <h1 class="hl1">'.rex_i18n::msg("add_address").'</h1>
+	            <h1 class="hl1">'.pz_i18n::msg("add_address").'</h1>
 	          </div>
 	        </header>';
 	
@@ -431,11 +431,11 @@ class pz_address_screen{
 		$xform->setObjectparams("form_id", "address_add_form");
 		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
 		
-		$xform->setValueField("pz_address_image_screen",array("photo",rex_i18n::msg("photo"),pz_address::getDefaultImage()));
-		$xform->setValueField("pz_recommend_text",array("prefix",rex_i18n::msg("address_prefix"),'options' => rex_i18n::msg('address_suffix_labels') ));
-		$xform->setValueField("text",array("firstname",rex_i18n::msg("address_firstname")));
-		$xform->setValueField("text",array("name",rex_i18n::msg("address_name")));
-		$xform->setValueField("text",array("suffix",rex_i18n::msg("address_suffix")));
+		$xform->setValueField("pz_address_image_screen",array("photo",pz_i18n::msg("photo"),pz_address::getDefaultImage()));
+		$xform->setValueField("pz_recommend_text",array("prefix",pz_i18n::msg("address_prefix"),'options' => pz_i18n::msg('address_suffix_labels') ));
+		$xform->setValueField("text",array("firstname",pz_i18n::msg("address_firstname")));
+		$xform->setValueField("text",array("name",pz_i18n::msg("address_name")));
+		$xform->setValueField("text",array("suffix",pz_i18n::msg("address_suffix")));
 
 		/*
 			_ TODO
@@ -444,15 +444,15 @@ class pz_address_screen{
 			birthname
 		*/
 
-		$xform->setValueField("text",array("company",rex_i18n::msg("address_company")));
-		$xform->setValueField("checkbox",array("is_company",rex_i18n::msg("address_is_company")));
-		$xform->setValueField("text",array("title",rex_i18n::msg("address_title")));
-		$xform->setValueField("text",array("department",rex_i18n::msg("address_department")));
-		$xform->setValueField("date",array("birthday",rex_i18n::msg("address_birthday"),"","","","","","",rex_i18n::msg("error_address_enter_birthday")));
-		$xform->setValueField('pz_select_screen',array('responsible_user_id', rex_i18n::msg('responsible_user'), pz::getUsersAsString(),"",pz::getUser()->getId(),0));
+		$xform->setValueField("text",array("company",pz_i18n::msg("address_company")));
+		$xform->setValueField("checkbox",array("is_company",pz_i18n::msg("address_is_company")));
+		$xform->setValueField("text",array("title",pz_i18n::msg("address_title")));
+		$xform->setValueField("text",array("department",pz_i18n::msg("address_department")));
+		$xform->setValueField("date",array("birthday",pz_i18n::msg("address_birthday"),"","","","","","",pz_i18n::msg("error_address_enter_birthday")));
+		$xform->setValueField('pz_select_screen',array('responsible_user_id', pz_i18n::msg('responsible_user'), pz::getUsersAsString(),"",pz::getUser()->getId(),0));
 
 		$xform->setValueField("pz_address_fields",array("fields"));
-		$xform->setValueField("textarea",array("note",rex_i18n::msg("address_note")));
+		$xform->setValueField("textarea",array("note",pz_i18n::msg("address_note")));
 
 		$xform->setValueField("stamp",array("created","created","mysql_datetime","0","1","","","",""));
 		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0","","","",""));
@@ -460,7 +460,7 @@ class pz_address_screen{
     $xform->setValueField("hidden",array("created_user_id",pz::getUser()->getId()));
 		$xform->setValueField("hidden",array("updated_user_id",pz::getUser()->getId()));
 
-		$xform->setValidateField("empty",array("name",rex_i18n::msg("error_address_enter_name")));
+		$xform->setValidateField("empty",array("name",pz_i18n::msg("error_address_enter_name")));
 
 		$xform->setActionField("db",array());
 
@@ -472,7 +472,7 @@ class pz_address_screen{
 			if($address = pz_address::get($address_id)) 
 			{
 				$address->create();
-				// $return = $header.'<p class="xform-info">'.rex_i18n::msg("address_added").'</p>';
+				// $return = $header.'<p class="xform-info">'.pz_i18n::msg("address_added").'</p>';
 				$return .= pz_screen::getJSUpdateLayer('addresses_list',pz::url('screen','addresses',$p["function"],array("mode"=>'list')));
 				
 				$r = new pz_address_screen($address);
@@ -480,7 +480,7 @@ class pz_address_screen{
 				
 			}else
 			{
-				$return = $header.'<p class="xform-warning">'.rex_i18n::msg("error_address_added_failed").'</p>';
+				$return = $header.'<p class="xform-warning">'.pz_i18n::msg("error_address_added_failed").'</p>';
 			}
 		}else
 		{
@@ -498,13 +498,13 @@ class pz_address_screen{
 		$header = '
 	        <header>
 	          <div class="header">
-	            <h1 class="hl1">'.rex_i18n::msg("delete_address").'</h1>
+	            <h1 class="hl1">'.pz_i18n::msg("delete_address").'</h1>
 	          </div>
 	        </header>';
 
 		$fullname = $this->address->getFullName();
 		
-		$return = $header.'<p class="xform-info">'.str_replace(array("'","\n","\r"),array("","",""),rex_i18n::msg("address_deleted", htmlspecialchars($fullname))).'</p>';
+		$return = $header.'<p class="xform-info">'.str_replace(array("'","\n","\r"),array("","",""),pz_i18n::msg("address_deleted", htmlspecialchars($fullname))).'</p>';
 		$return .= pz_screen::getJSLoadFormPage('addresses_list','addresses_search_form',pz::url('screen','addresses',$p["function"],array("mode"=>'list')));
 		$return = '<div id="address_form"><div id="address_delete" class="design1col xform-delete">'.$return.'</div></div>';
 
@@ -518,7 +518,7 @@ class pz_address_screen{
 		$header = '
 	        <header>
 	          <div class="header">
-	            <h1 class="hl1">'.rex_i18n::msg("edit_address").'</h1>
+	            <h1 class="hl1">'.pz_i18n::msg("edit_address").'</h1>
 	          </div>
 	        </header>';
 
@@ -536,21 +536,21 @@ class pz_address_screen{
 				
 		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
 		
-		$xform->setValueField("pz_address_image_screen",array("photo",rex_i18n::msg("photo"),pz_address::getDefaultImage()));
+		$xform->setValueField("pz_address_image_screen",array("photo",pz_i18n::msg("photo"),pz_address::getDefaultImage()));
 		
-		$xform->setValueField("pz_recommend_text",array("prefix",rex_i18n::msg("address_prefix"),'options' => rex_i18n::msg('address_suffix_labels')));
-		$xform->setValueField("text",array("firstname",rex_i18n::msg("address_firstname")));
-		$xform->setValueField("text",array("name",rex_i18n::msg("address_name")));
-		$xform->setValueField("text",array("suffix",rex_i18n::msg("address_suffix")));
-		$xform->setValueField("text",array("company",rex_i18n::msg("address_company")));
+		$xform->setValueField("pz_recommend_text",array("prefix",pz_i18n::msg("address_prefix"),'options' => pz_i18n::msg('address_suffix_labels')));
+		$xform->setValueField("text",array("firstname",pz_i18n::msg("address_firstname")));
+		$xform->setValueField("text",array("name",pz_i18n::msg("address_name")));
+		$xform->setValueField("text",array("suffix",pz_i18n::msg("address_suffix")));
+		$xform->setValueField("text",array("company",pz_i18n::msg("address_company")));
 		
-		$xform->setValueField("checkbox",array("is_company",rex_i18n::msg("address_is_company")));
-		$xform->setValueField("text",array("title",rex_i18n::msg("address_title")));
-		$xform->setValueField("text",array("department",rex_i18n::msg("address_department")));
-		$xform->setValueField("date",array("birthday",rex_i18n::msg("address_birthday"),"","","","","","",rex_i18n::msg("error_address_enter_birthday")));
-		$xform->setValueField('pz_select_screen',array('responsible_user_id', rex_i18n::msg('responsible_user'), pz::getUsersAsString(),"",pz::getUser()->getId(),0));
+		$xform->setValueField("checkbox",array("is_company",pz_i18n::msg("address_is_company")));
+		$xform->setValueField("text",array("title",pz_i18n::msg("address_title")));
+		$xform->setValueField("text",array("department",pz_i18n::msg("address_department")));
+		$xform->setValueField("date",array("birthday",pz_i18n::msg("address_birthday"),"","","","","","",pz_i18n::msg("error_address_enter_birthday")));
+		$xform->setValueField('pz_select_screen',array('responsible_user_id', pz_i18n::msg('responsible_user'), pz::getUsersAsString(),"",pz::getUser()->getId(),0));
 		$xform->setValueField("pz_address_fields",array("fields"));
-		$xform->setValueField("textarea",array("note",rex_i18n::msg("address_note")));
+		$xform->setValueField("textarea",array("note",pz_i18n::msg("address_note")));
 		
 		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0"));
 		$xform->setValueField("hidden",array("updated_user_id",pz::getUser()->getId()));
@@ -560,9 +560,9 @@ class pz_address_screen{
       $show = pz_user::get($this->address->getVar("created_user_id"))->getName();
 
       $d = DateTime::createFromFormat('Y-m-d H:i:s', $this->address->getVar("created"), pz::getDateTimeZone());
-      $show .= ' ('.strftime(rex_i18n::msg("show_datetime_normal"),pz_user::getDateTime($d)->format("U")).')';
+      $show .= ' ('.strftime(pz_i18n::msg("show_datetime_normal"),pz_user::getDateTime($d)->format("U")).')';
       
-		  $xform->setValueField("pz_show_screen",array("created_user_id",rex_i18n::msg("created_by_user"), $show));
+		  $xform->setValueField("pz_show_screen",array("created_user_id",pz_i18n::msg("created_by_user"), $show));
     } 
 
     if(pz_user::get($this->address->getVar("updated_user_id")))
@@ -570,12 +570,12 @@ class pz_address_screen{
       $show = pz_user::get($this->address->getVar("updated_user_id"))->getName();
 
       $d = DateTime::createFromFormat('Y-m-d H:i:s', $this->address->getVar("updated"), pz::getDateTimeZone());
-      $show .= ' ('.strftime(rex_i18n::msg("show_datetime_normal"),pz_user::getDateTime($d)->format("U")).')';
+      $show .= ' ('.strftime(pz_i18n::msg("show_datetime_normal"),pz_user::getDateTime($d)->format("U")).')';
 
-		  $xform->setValueField("pz_show_screen",array("updated_user_id",rex_i18n::msg("updated_by_user"), $show));
+		  $xform->setValueField("pz_show_screen",array("updated_user_id",pz_i18n::msg("updated_by_user"), $show));
     } 
 
-		$xform->setValidateField("empty",array("name",rex_i18n::msg("error_address_enter_name")));
+		$xform->setValidateField("empty",array("name",pz_i18n::msg("error_address_enter_name")));
 		$xform->setActionField("db",array('pz_address','id='.$this->address->getId()));
 		$return = $xform->getForm();
 		
@@ -584,7 +584,7 @@ class pz_address_screen{
 			$this->address = pz_address::get($this->address->getId());
 			$this->address->update();
 
-			$return = $header.'<p class="xform-info">'.rex_i18n::msg("address_updated").'</p>'.$return;
+			$return = $header.'<p class="xform-info">'.pz_i18n::msg("address_updated").'</p>'.$return;
 			$return .= pz_screen::getJSLoadFormPage('addresses_list','addresses_search_form',pz::url('screen','addresses',$p["function"],array("mode"=>'list')));
 
 		}else
@@ -595,7 +595,7 @@ class pz_address_screen{
 		$delete_link = pz::url("screen","addresses",$p["function"],array("address_id"=>$this->address->getId(),"mode"=>"delete_address"));
 
 		$return .= '<div class="xform">
-				<p><a class="bt17" onclick="check = confirm(\''.rex_i18n::msg("address_confirm_delete",htmlspecialchars($this->address->getFullName())).'\'); if (check == true) pz_loadPage(\'address_form\',\''.$delete_link.'\')" href="javascript:void(0);">- '.rex_i18n::msg("delete_address").'</a></p>
+				<p><a class="bt17" onclick="check = confirm(\''.pz_i18n::msg("address_confirm_delete",htmlspecialchars($this->address->getFullName())).'\'); if (check == true) pz_loadPage(\'address_form\',\''.$delete_link.'\')" href="javascript:void(0);">- '.pz_i18n::msg("delete_address").'</a></p>
 				</div>';
 
 		$return = '<div id="address_form"><div id="address_edit" class="design1col xform-edit">'.$return.'</div></div>';

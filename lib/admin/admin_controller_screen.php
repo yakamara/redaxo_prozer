@@ -40,7 +40,7 @@ class pz_admin_controller_screen extends pz_admin_controller {
 
 	private function getJobsPage($p = array())
 	{
-		$p["title"] = rex_i18n::msg("jobs");
+		$p["title"] = pz_i18n::msg("jobs");
 		$p["layer"] = "jobs_list";
 		$p["layer_list"] = "jobs_list";
 		
@@ -91,7 +91,7 @@ class pz_admin_controller_screen extends pz_admin_controller {
 		$searchform = '
         <header>
           <div class="header">
-            <h1 class="hl1">'.rex_i18n::msg("search_for_jobs").'</h1>
+            <h1 class="hl1">'.pz_i18n::msg("search_for_jobs").'</h1>
           </div>
         </header>';
 		
@@ -102,19 +102,19 @@ class pz_admin_controller_screen extends pz_admin_controller {
 			"javascript:pz_loadFormPage('jobs_list','job_search_form','".pz::url($p["mediaview"],$p["controll"],$this->function)."')");
 		$xform->setObjectparams("form_id", "job_search_form");
 		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl', 'runtime'));
-		$xform->setValueField("text",array("search_title",rex_i18n::msg("title")));
+		$xform->setValueField("text",array("search_title",pz_i18n::msg("title")));
 		
-		$xform->setValueField("pz_date_screen",array("search_date_from",rex_i18n::msg("search_date_from")));
-		$xform->setValueField("pz_date_screen",array("search_date_to",rex_i18n::msg("search_date_to")));
+		$xform->setValueField("pz_date_screen",array("search_date_from",pz_i18n::msg("search_date_from")));
+		$xform->setValueField("pz_date_screen",array("search_date_to",pz_i18n::msg("search_date_to")));
 		
 		$projects = pz::getUser()->getCalendarProjects();
-		$xform->setValueField("pz_select_screen",array("search_project_id",rex_i18n::msg("project"),pz_project::getProjectsAsString($projects),"","",0,rex_i18n::msg("please_choose")));
+		$xform->setValueField("pz_select_screen",array("search_project_id",pz_i18n::msg("project"),pz_project::getProjectsAsString($projects),"","",0,pz_i18n::msg("please_choose")));
 		
     if(pz::getUser()->isAdmin()) {
-      $xform->setValueField('pz_select_screen',array('search_user_id', rex_i18n::msg('user'), pz::getUsersAsArray(pz::getUser()->getUsers()),"","",0,rex_i18n::msg("please_choose")));
+      $xform->setValueField('pz_select_screen',array('search_user_id', pz_i18n::msg('user'), pz::getUsersAsArray(pz::getUser()->getUsers()),"","",0,pz_i18n::msg("please_choose")));
     }
 		
-		$xform->setValueField("submit",array('submit',rex_i18n::msg('search'), '', 'search'));
+		$xform->setValueField("submit",array('submit',pz_i18n::msg('search'), '', 'search'));
 		$xform->setValueField("hidden",array("mode","list"));
 		$searchform .= $xform->getForm();
 		
@@ -144,7 +144,7 @@ class pz_admin_controller_screen extends pz_admin_controller {
 
 
 		$p["list_links"] = array();
-		$p["list_links"][] = rex_i18n::msg('jobtime_total').' '.$hours.' '.$minutes.'';
+		$p["list_links"][] = pz_i18n::msg('jobtime_total').' '.$hours.' '.$minutes.'';
 		$p["list_links"][] = '<a href="'.pz::url($p["mediaview"],$p["controll"],$this->function,array(
 						"mode" =>"export_excel",
 						"search_title" => rex_request("search_title"),
@@ -152,7 +152,7 @@ class pz_admin_controller_screen extends pz_admin_controller {
 						"search_date_to" => rex_request("search_date_to"),
 						"search_project_id" => rex_request("search_project_id"),
 						"search_user_id" => rex_request("search_user_id"),
-					)).'">'.rex_i18n::msg('excel_export').'</a>';
+					)).'">'.pz_i18n::msg('excel_export').'</a>';
 
     $p["linkvars"]["mode"] = "list";
 		$jobs_list = pz_calendar_event_screen::getUserJobsTableView($jobs, $p);
@@ -172,7 +172,7 @@ class pz_admin_controller_screen extends pz_admin_controller {
 		$section_2 = $jobs_list;
 	
 		$p = array();
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('header', pz_screen::getHeader(), false);
 		$f->setVar('function', $this->getNavigation() , false);
 		$f->setVar('section_1', $section_1 , false);
@@ -187,7 +187,7 @@ class pz_admin_controller_screen extends pz_admin_controller {
 	private function getProfilesPage($p = array()) 
 	{
 
-		$p["title"] = rex_i18n::msg("userperm_list");
+		$p["title"] = pz_i18n::msg("userperm_list");
 		$p["layer"] = "userperm_list";
 		$p["linkvars"] = array();
 
@@ -213,7 +213,7 @@ class pz_admin_controller_screen extends pz_admin_controller {
 		$searchform = '
         <header>
           <div class="header">
-            <h1 class="hl1">'.rex_i18n::msg("search_for_userperms").'</h1>
+            <h1 class="hl1">'.pz_i18n::msg("search_for_userperms").'</h1>
           </div>
         </header>';
 		
@@ -225,9 +225,9 @@ class pz_admin_controller_screen extends pz_admin_controller {
 		$xform->setObjectparams("form_id", "userperm_search_form");
 		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl', 'runtime'));
 		
-    $xform->setValueField('pz_select_screen',array('search_user_id', rex_i18n::msg('user'), pz::getUsersAsArray(pz::getUser()->getUsers()),"",$user->getId(),0));
+    $xform->setValueField('pz_select_screen',array('search_user_id', pz_i18n::msg('user'), pz::getUsersAsArray(pz::getUser()->getUsers()),"",$user->getId(),0));
 		
-		$xform->setValueField("submit",array('submit',rex_i18n::msg('search'), '', 'search'));
+		$xform->setValueField("submit",array('submit',pz_i18n::msg('search'), '', 'search'));
 		$xform->setValueField("hidden",array("mode","list"));
 
 		$searchform .= '<div id="userperm_search" class="design1col xform-search">'.$xform->getForm().'</form>';
@@ -244,7 +244,7 @@ class pz_admin_controller_screen extends pz_admin_controller {
 
 		$section_2 = $u_screen->getProjectPermTableListView($p, $projects);
 
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('header', pz_screen::getHeader(), false);
 		$f->setVar('function', pz_screen::getNavigation($p,$this->navigation, $this->function, $this->name) , false);
 		$f->setVar('section_1', $section_1 , false);
@@ -256,7 +256,7 @@ class pz_admin_controller_screen extends pz_admin_controller {
 
   public function getUsersPage($p = array())
 	{
-		$p["title"] = rex_i18n::msg("users");
+		$p["title"] = pz_i18n::msg("users");
 		$p["layer"] = "users_list";
 		
 		$section_1 = '';
@@ -273,7 +273,7 @@ class pz_admin_controller_screen extends pz_admin_controller {
 			switch($mode) {
 				
 				case("add_user"):
-					return pz_user_screen::getAddForm($p);;
+					return pz_user_screen::getAddForm($p);
 			
 				case("edit_user"):
 					$user_id = rex_request("user_id","int");
@@ -312,7 +312,7 @@ class pz_admin_controller_screen extends pz_admin_controller {
 		}
 	
 		$p = array();
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('header', pz_screen::getHeader(), false);
 		$f->setVar('function', $this->getNavigation() , false);
 		$f->setVar('section_1', $section_1 , false);
@@ -323,7 +323,7 @@ class pz_admin_controller_screen extends pz_admin_controller {
 
 	public function getSystemPage($p = array())
 	{
-		$p["title"] = rex_i18n::msg("system");
+		$p["title"] = pz_i18n::msg("system");
 		$p["mediaview"] = "screen";
 		$p["controll"] = "tools";
 		$p["function"] = "system";
@@ -360,12 +360,12 @@ class pz_admin_controller_screen extends pz_admin_controller {
         		</header>
         		<div class="xform">
         			Domain: <b>'.pz::getServerUrl().'</b>
-        			<br /><br />REDAXO Version: <b>'.rex::getVersion().'</b>
-        			<br />Prozer Version: <b>'.rex_package::get("prozer")->getProperty("version").'</b>
+        			<br /><br />REDAXO Version: <b>'.pz::getProperty('redaxo_version').'</b>
+        			<br />Prozer Version: <b>'.pz::getProperty('version').'</b>
 					    <br /><br />Disk Total Space: <b>'.pz::readableFilesize(disk_total_space("/")).'</b>
 					    <br />Disk Free Space: <b>'.pz::readableFilesize(disk_free_space("/")).'</b>
 					    <br />memory_get_usage: <b>'.pz::readableFilesize(memory_get_usage()).'</b>
-		    			<br /><br />Sprache: <b>'.rex::getProperty('lang').'</b>
+		    			<br /><br />Sprache: <b>'.pz::getProperty('lang').'</b>
 			    		<br /><br /><a href="'.pz::url('screen','admin','system',array('mode'=>'show_phpinfo')).'" target="_blank">phpinfo</a>
 					
     					<!-- check .. mbstring.func_overload -- must be 0 -->
@@ -399,7 +399,7 @@ class pz_admin_controller_screen extends pz_admin_controller {
 		$section_2 = $this->getSystemEditPage($p);
 		
 		$p = array();
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('header', pz_screen::getHeader(), false);
 		$f->setVar('function', $this->getNavigation() , false);
 		$f->setVar('section_1', $section_1 , false);
@@ -421,7 +421,7 @@ class pz_admin_controller_screen extends pz_admin_controller {
     $header = '
         <header>
           <div class="header">
-            <h1 class="hl1">'.rex_i18n::msg("system_edit").'</h1>
+            <h1 class="hl1">'.pz_i18n::msg("system_edit").'</h1>
           </div>
         </header>';
     
@@ -430,12 +430,12 @@ class pz_admin_controller_screen extends pz_admin_controller {
 		$xform->setObjectparams("form_id", "system_edit_form");
 		$xform->setObjectparams('form_showformafterupdate',1);
 		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
-		$xform->setValueField("text",array("system_page_title",rex_i18n::msg("page_title"),pz::getConfig("page_title")));
+		$xform->setValueField("text",array("system_page_title",pz_i18n::msg("page_title"),pz::getConfig("page_title")));
 		
 		$themes = array();
 		foreach(pz_screen::getThemes() as $theme => $path) { $themes[] = $theme; }
 		
-		$xform->setValueField("pz_select_screen",array("system_page_theme",rex_i18n::msg("page_theme"),implode(",",$themes),"",pz_screen::getTheme(),0));
+		$xform->setValueField("pz_select_screen",array("system_page_theme",pz_i18n::msg("page_theme"),implode(",",$themes),"",pz_screen::getTheme(),0));
 
 		$return = $xform->getForm();
 
@@ -444,7 +444,7 @@ class pz_admin_controller_screen extends pz_admin_controller {
 		  pz::setConfig("page_title", $xform->objparams["value_pool"]["email"]["system_page_title"]);
 		  pz::setConfig("page_theme", $xform->objparams["value_pool"]["email"]["system_page_theme"]);
 		  
-			$return = $header.'<p class="xform-info">'.rex_i18n::msg("system_info_updated").'</p>'.$return;
+			$return = $header.'<p class="xform-info">'.pz_i18n::msg("system_info_updated").'</p>'.$return;
 
 		}else {
 			$return = $header.$return;	
@@ -459,7 +459,7 @@ class pz_admin_controller_screen extends pz_admin_controller {
 
   public function getHistoryPage($p = array())
 	{
-		$p["title"] = rex_i18n::msg("history");
+		$p["title"] = pz_i18n::msg("history");
 		$p["layer"] = "history_list";
 		$p["layer_list"] = "history_list";
 		
@@ -521,7 +521,7 @@ class pz_admin_controller_screen extends pz_admin_controller {
 		}
 	
 		$p = array();
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('header', pz_screen::getHeader(), false);
 		$f->setVar('function', $this->getNavigation() , false);
 		$f->setVar('section_1', $section_1 , false);

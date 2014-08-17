@@ -6,7 +6,7 @@ class pz_screen
 	/*
 	static function initPage($content) {
 		
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('content',$content);
 		return $f->parse('pz_screen_main.tpl');
 	}
@@ -14,18 +14,18 @@ class pz_screen
 
 	static function getPageTitle() 
 	{
-	  $package = rex_package::get("prozer");
+    global $REX;
 
 	  $page_title = pz::getConfig("page_title");
 	  if($page_title != "") {
-	    return $page_title.' - PROZER '.$package->getVersion();
+	    return $page_title.' - PROZER '.$REX['ADDON']['version']['prozer'];
 	  }
-		return 'PROZER '.$package->getVersion();
+		return 'PROZER '.$REX['ADDON']['version']['prozer'];
 	}
 
 	static function getHeader($p = array()) 
 	{
-		$fragment = new rex_fragment();
+		$fragment = new pz_fragment();
 		$fragment->setVar('navigation', self::getMainNavigation($p), false);
 		if(pz::getUser())
 		{
@@ -65,11 +65,9 @@ class pz_screen
 //      'magneto_dark' => '/assets/addons/prozer/themes/magneto_dark',
       'mountain' => '/assets/addons/prozer/themes/mountain'
     );
-    
-    $themes = rex_extension::registerPoint(
-      new rex_extension_point('PROZER_THEMES', $themes, array() )
-    );
-    
+
+    $themes = rex_register_extension_point('PROZER_THEMES', $themes, array() );
+
     return $themes;
   }
 
@@ -106,7 +104,7 @@ class pz_screen
 		}
 		if($temp_k != "") $items[$temp_k]["classes"] = $k." last";
 	
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->items = $items;
 		$f->item_active = pz_screen_controller::$controll;
 		return $f->parse('pz_screen_main_navigation.tpl');
@@ -127,13 +125,13 @@ class pz_screen
 			if($function == $k) $active = " active";
 			$items[$k] = array();
 			$items[$k]["classes"] = 'subnavi-'.$k.$active;
-			$items[$k]["name"] = rex_i18n::msg("page_".$name."_".$k);
+			$items[$k]["name"] = pz_i18n::msg("page_".$name."_".$k);
 			$items[$k]["url"] = pz::url('screen',$name, $k, array());
 			$first = "";
 			$temp_k = $k;
 		}
 		if($temp_k != "") $items[$temp_k]["classes"] = 'subnavi-'.$k." last";
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->items = $items;
 		$f->item_active = $function;
 		$f->flyout = $flyout;

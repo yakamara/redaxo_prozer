@@ -47,7 +47,7 @@ class pz_project_screen
 	    $return = '
 	        <header>
 	          <div class="header">
-	            <h1 class="hl1">'.rex_i18n::msg("search_for_projects").'</h1>
+	            <h1 class="hl1">'.pz_i18n::msg("search_for_projects").'</h1>
 	          </div>
 	        </header>';
 		
@@ -60,16 +60,16 @@ class pz_project_screen
 		$xform->setObjectparams("form_name", "project_search_form");
 		
 		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl', 'runtime'));
-		$xform->setValueField("text",array("search_name",rex_i18n::msg("project_name")));
-		$xform->setValueField('pz_select_screen',array('search_label', rex_i18n::msg('project_label'), pz_labels::getAsString(),"","",0,rex_i18n::msg("please_choose")));
-		$xform->setValueField('pz_select_screen',array('search_customer', rex_i18n::msg('customer'), pz_customers::getAsString(),"","",0,rex_i18n::msg("please_choose")));
+		$xform->setValueField("text",array("search_name",pz_i18n::msg("project_name")));
+		$xform->setValueField('pz_select_screen',array('search_label', pz_i18n::msg('project_label'), pz_labels::getAsString(),"","",0,pz_i18n::msg("please_choose")));
+		$xform->setValueField('pz_select_screen',array('search_customer', pz_i18n::msg('customer'), pz_customers::getAsString(),"","",0,pz_i18n::msg("please_choose")));
 		
 		if(!in_array("myprojects",$ignore_fields))
-  		$xform->setValueField('checkbox',array('search_myprojects', rex_i18n::msg('myprojects')));
+  		$xform->setValueField('checkbox',array('search_myprojects', pz_i18n::msg('myprojects')));
 		
 		
-		// $xform->setValueField('pz_date_screen',array('search_datetime', rex_i18n::msg('createdate')));
-		$xform->setValueField("submit",array('submit',rex_i18n::msg('search'), '', 'search'));
+		// $xform->setValueField('pz_date_screen',array('search_datetime', pz_i18n::msg('createdate')));
+		$xform->setValueField("submit",array('submit',pz_i18n::msg('search'), '', 'search'));
 		$return .= $xform->getForm();
 		
 		$return = '<div id="project_search" class="design1col xform-search">'.$return.'</div>';
@@ -93,7 +93,7 @@ class pz_project_screen
 	public function getBlockView($p = array()) 
 	{
     
-		$customer_name = rex_i18n::msg("no_customer");
+		$customer_name = pz_i18n::msg("no_customer");
     	if($this->project->hasCustomer()){
     		$customer_name = $this->project->customer->getName();
     	}
@@ -143,7 +143,7 @@ class pz_project_screen
 
 	function getTableView($p = array())
 	{
-		$customer_name = rex_i18n::msg("no_customer");
+		$customer_name = pz_i18n::msg("no_customer");
     	if($this->project->hasCustomer()){
     		$customer_name = $this->project->customer->getName();
     	}
@@ -175,7 +175,7 @@ class pz_project_screen
 		$header = '
 	        <header>
 	          <div class="header">
-	            <h1 class="hl1">'.rex_i18n::msg("add_project").'</h1>
+	            <h1 class="hl1">'.pz_i18n::msg("add_project").'</h1>
 	          </div>
 	        </header>';
 	
@@ -192,21 +192,21 @@ class pz_project_screen
 		$customer_string = pz::getUser()->getCustomersAsString($filter);
 		
 		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
-		$xform->setValueField("text",array("name",rex_i18n::msg("project_name"),"","0"));
-		$xform->setValidateField("empty",array("name",rex_i18n::msg("error_project_enter_name")));
-		$xform->setValueField("textarea",array("description",rex_i18n::msg("project_description"),"","0"));
-		$xform->setValueField("pz_select_screen",array("label_id",rex_i18n::msg("project_label"),pz_labels::getAsString(), '', '', 0));
+		$xform->setValueField("text",array("name",pz_i18n::msg("project_name"),"","0"));
+		$xform->setValidateField("empty",array("name",pz_i18n::msg("error_project_enter_name")));
+		$xform->setValueField("textarea",array("description",pz_i18n::msg("project_description"),"","0"));
+		$xform->setValueField("pz_select_screen",array("label_id",pz_i18n::msg("project_label"),pz_labels::getAsString(), '', '', 0));
 		$xform->setValueField("stamp",array("created","created","mysql_datetime","0","1"));
 		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0"));
-		$xform->setValueField("pz_select_screen",array("customer_id",rex_i18n::msg("project_customer"),$customer_string,"","",0, rex_i18n::msg("please_choose")));
+		$xform->setValueField("pz_select_screen",array("customer_id",pz_i18n::msg("project_customer"),$customer_string,"","",0, pz_i18n::msg("please_choose")));
 		$xform->setValueField("hidden",array("create_user_id",pz::getUser()->getId()));
 		$xform->setValueField("hidden",array("update_user_id",pz::getUser()->getId()));
 		$xform->setValueField("hidden",array("archived",0));
-		$xform->setValueField("checkbox",array("has_emails",rex_i18n::msg("emails"),"1","1","0"));
-		$xform->setValueField("checkbox",array("has_calendar",rex_i18n::msg("calendar_events"),"1","1","0"));
-		$xform->setValueField("checkbox",array("has_calendar_jobs",rex_i18n::msg("calendar_jobs"),"1","1","0"));
-		// $xform->setValueField("checkbox",array("has_wiki",rex_i18n::msg("wiki"),"1","1","0"));
-		$xform->setValueField("checkbox",array("has_files",rex_i18n::msg("files"),"1","1","0"));
+		$xform->setValueField("checkbox",array("has_emails",pz_i18n::msg("emails"),"1","1","0"));
+		$xform->setValueField("checkbox",array("has_calendar",pz_i18n::msg("calendar_events"),"1","1","0"));
+		$xform->setValueField("checkbox",array("has_calendar_jobs",pz_i18n::msg("calendar_jobs"),"1","1","0"));
+		// $xform->setValueField("checkbox",array("has_wiki",pz_i18n::msg("wiki"),"1","1","0"));
+		$xform->setValueField("checkbox",array("has_files",pz_i18n::msg("files"),"1","1","0"));
 
 		$xform->setActionField("db",array());
 		$return = $xform->getForm();
@@ -217,7 +217,7 @@ class pz_project_screen
 			if($project = pz_project::get($project_id)) {
 				$project->create();
 			}
-			$return = $header.'<p class="xform-info">'.rex_i18n::msg("project_added").'</p>'.$return;
+			$return = $header.'<p class="xform-info">'.pz_i18n::msg("project_added").'</p>'.$return;
 		}else
 		{
 			$return = $header.$return;
@@ -235,7 +235,7 @@ class pz_project_screen
 		$header = '
 	        <header>
 	          <div class="header">
-	            <h1 class="hl1">'.rex_i18n::msg("edit_project").'</h1>
+	            <h1 class="hl1">'.pz_i18n::msg("edit_project").'</h1>
 	          </div>
 	        </header>';
 	
@@ -254,20 +254,20 @@ class pz_project_screen
 		$xform->setObjectparams('form_showformafterupdate',1);
 				
 		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
-		$xform->setValueField("text",array("name",rex_i18n::msg("project_name"),"","0","","","","",""));
-		$xform->setValidateField("empty",array("name",rex_i18n::msg("error_project_enter_name")));
-		$xform->setValueField("textarea",array("description",rex_i18n::msg("project_description"),"","0","","","","",""));
-		$xform->setValueField("pz_select_screen",array("label_id",rex_i18n::msg("project_label"),pz_labels::getAsString(), '', '', '0'));
+		$xform->setValueField("text",array("name",pz_i18n::msg("project_name"),"","0","","","","",""));
+		$xform->setValidateField("empty",array("name",pz_i18n::msg("error_project_enter_name")));
+		$xform->setValueField("textarea",array("description",pz_i18n::msg("project_description"),"","0","","","","",""));
+		$xform->setValueField("pz_select_screen",array("label_id",pz_i18n::msg("project_label"),pz_labels::getAsString(), '', '', '0'));
 		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0","","","",""));
-		$xform->setValueField("pz_select_screen",array("customer_id",rex_i18n::msg("project_customer"),pz_customers::getAsString(),"","",0,rex_i18n::msg("please_choose")));
+		$xform->setValueField("pz_select_screen",array("customer_id",pz_i18n::msg("project_customer"),pz_customers::getAsString(),"","",0,pz_i18n::msg("please_choose")));
 		$xform->setValueField("hidden",array("update_user_id",pz::getUser()->getId()));
-		$xform->setValueField("checkbox",array("has_emails",rex_i18n::msg("emails"),"1","1","0","","","",""));
-		$xform->setValueField("checkbox",array("has_calendar",rex_i18n::msg("calendar_events"),"1","1","0","","","",""));
-		$xform->setValueField("checkbox",array("has_calendar_jobs",rex_i18n::msg("calendar_jobs"),"1","1","0","","","",""));
-		// $xform->setValueField("checkbox",array("has_wiki",rex_i18n::msg("wiki"),"1","1","0","","","",""));
-		$xform->setValueField("checkbox",array("has_files",rex_i18n::msg("files"),"1","1","0","","","",""));
+		$xform->setValueField("checkbox",array("has_emails",pz_i18n::msg("emails"),"1","1","0","","","",""));
+		$xform->setValueField("checkbox",array("has_calendar",pz_i18n::msg("calendar_events"),"1","1","0","","","",""));
+		$xform->setValueField("checkbox",array("has_calendar_jobs",pz_i18n::msg("calendar_jobs"),"1","1","0","","","",""));
+		// $xform->setValueField("checkbox",array("has_wiki",pz_i18n::msg("wiki"),"1","1","0","","","",""));
+		$xform->setValueField("checkbox",array("has_files",pz_i18n::msg("files"),"1","1","0","","","",""));
 
-		$xform->setValueField("checkbox",array("archived",rex_i18n::msg("archived"),"1","1","0","","","",""));
+		$xform->setValueField("checkbox",array("archived",pz_i18n::msg("archived"),"1","1","0","","","",""));
 
 		$xform->setActionField("db",array('pz_project','id='.$this->project->getId()));
 
@@ -275,7 +275,7 @@ class pz_project_screen
 		
 		if($xform->getObjectparams("actions_executed")) {
 			$this->project->update();
-			$return = $header.'<p class="xform-info">'.rex_i18n::msg("project_updated").'</p>'.$return;
+			$return = $header.'<p class="xform-info">'.pz_i18n::msg("project_updated").'</p>'.$return;
 		}else
 		{
 			$return = $header.$return;
@@ -293,7 +293,7 @@ class pz_project_screen
 		$header = '
 	        <header>
 	          <div class="header">
-	            <h1 class="hl1">'.rex_i18n::msg("view_project").'</h1>
+	            <h1 class="hl1">'.pz_i18n::msg("view_project").'</h1>
 	          </div>
 	        </header>';
 	
@@ -306,19 +306,19 @@ class pz_project_screen
 		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
 		$xform->setValueField('objparams',array('submit_btn_show', FALSE));
 		
-		$xform->setValueField("text",array("name",rex_i18n::msg("project_name"),"","0",'disabled'=>TRUE));
-		$xform->setValueField("textarea",array("description",rex_i18n::msg("project_description"),"","0",'disabled'=>TRUE));
+		$xform->setValueField("text",array("name",pz_i18n::msg("project_name"),"","0",'disabled'=>TRUE));
+		$xform->setValueField("textarea",array("description",pz_i18n::msg("project_description"),"","0",'disabled'=>TRUE));
 
 /*
-		// $xform->setValueField("pz_select_screen",array("label_id",rex_i18n::msg("project_label"),pz_labels::getAsString(), '', '', '0','disabled'=>TRUE));
-		// $xform->setValueField("pz_select_screen",array("customer_id",rex_i18n::msg("project_customer"),pz_customers::getAsString(),"","",1,rex_i18n::msg("please_choose"),'disabled'=>TRUE));
+		// $xform->setValueField("pz_select_screen",array("label_id",pz_i18n::msg("project_label"),pz_labels::getAsString(), '', '', '0','disabled'=>TRUE));
+		// $xform->setValueField("pz_select_screen",array("customer_id",pz_i18n::msg("project_customer"),pz_customers::getAsString(),"","",1,pz_i18n::msg("please_choose"),'disabled'=>TRUE));
 
 
-		$xform->setValueField("checkbox",array("has_calendar",rex_i18n::msg("calendar"),"1","1","0",'disabled'=>TRUE));
-		$xform->setValueField("checkbox",array("has_wiki",rex_i18n::msg("wiki"),"1","1","0",'disabled'=>TRUE));
-		$xform->setValueField("checkbox",array("has_files",rex_i18n::msg("files"),"1","1","0",'disabled'=>TRUE));
-		$xform->setValueField("checkbox",array("has_emails",rex_i18n::msg("emails"),"1","1","0",'disabled'=>TRUE));
-		$xform->setValueField("checkbox",array("archived",rex_i18n::msg("archived"),"1","1","0",'disabled'=>TRUE));
+		$xform->setValueField("checkbox",array("has_calendar",pz_i18n::msg("calendar"),"1","1","0",'disabled'=>TRUE));
+		$xform->setValueField("checkbox",array("has_wiki",pz_i18n::msg("wiki"),"1","1","0",'disabled'=>TRUE));
+		$xform->setValueField("checkbox",array("has_files",pz_i18n::msg("files"),"1","1","0",'disabled'=>TRUE));
+		$xform->setValueField("checkbox",array("has_emails",pz_i18n::msg("emails"),"1","1","0",'disabled'=>TRUE));
+		$xform->setValueField("checkbox",array("archived",pz_i18n::msg("archived"),"1","1","0",'disabled'=>TRUE));
 */
 
 		$return = $header.$xform->getForm();

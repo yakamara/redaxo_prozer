@@ -21,7 +21,7 @@ class pz_email_account extends pz_model{
 			$where .= ' and user_id = '.$user_id;
 		}
 		
-		$sql = rex_sql::factory();
+		$sql = pz_sql::factory();
 		// $sql->debugsql = 1;
 		$sql->setQuery('select * from pz_email_account '.$where.' LIMIT 2');
 		
@@ -180,7 +180,7 @@ class pz_email_account extends pz_model{
 		if(count($params)>0)
 			$sql_where = ' where '.implode(" AND ",$where);
 
-		$sql = rex_sql::factory();
+		$sql = pz_sql::factory();
 		// $sql->debugsql = 1;
 		$es = $sql->getArray('select * from pz_email_account '.$sql_where, $params);
 		
@@ -206,7 +206,7 @@ class pz_email_account extends pz_model{
 
 	public function delete() {
 	
-		$d = rex_sql::factory();
+		$d = pz_sql::factory();
 		$d->setTable("pz_email_account");
 		$d->setWhere(array("id"=>$this->getid()));
 		$d->delete();	
@@ -224,10 +224,10 @@ class pz_email_account extends pz_model{
 
     // emaildownload in progress and not longer than 10min.
     if($this->getVar("login_failed") == 0 && $last_login->diff($now)->format('%i')<20) {
-      return rex_i18n::msg("email_account_last_login_working");
+      return pz_i18n::msg("email_account_last_login_working");
     }
 
-		$u = rex_sql::factory();
+		$u = pz_sql::factory();
 		$u->setTable('pz_email_account');
 		$u->setWhere(array('id'=>$this->getId()));
 		$u->setValue("last_login",date("Y-m-d H:i:s"));
@@ -337,17 +337,17 @@ class pz_email_account extends pz_model{
 					imap_expunge ($mbox);
 				}
 
-				$return .= rex_i18n::msg("email_account_download_ok",$authhost);
+				$return .= pz_i18n::msg("email_account_download_ok",$authhost);
 
 			} else {
-				$return .= rex_i18n::msg("email_account_download_failed",$authhost);
+				$return .= pz_i18n::msg("email_account_download_failed",$authhost);
 			}
 
 			imap_close($mbox);
 
 			$login_failed = -1;
 
-  		$u = rex_sql::factory();
+  		$u = pz_sql::factory();
   		$u->setTable('pz_email_account');
   		$u->setWhere(array('id'=>$this->getId()));
   		$u->setValue("last_login_finished",date("Y-m-d H:i:s"));
@@ -359,7 +359,7 @@ class pz_email_account extends pz_model{
 		{
 			$login_failed = 1;
 
-  		$u = rex_sql::factory();
+  		$u = pz_sql::factory();
   		$u->setTable('pz_email_account');
   		$u->setWhere(array('id'=>$this->getId()));
   		$u->setValue("login_failed",$login_failed);
@@ -372,5 +372,3 @@ class pz_email_account extends pz_model{
 	}
 
 }
-
-?>

@@ -13,11 +13,11 @@ class pz_api_controller extends pz_controller
 		$digest = rex_request('apitoken','string',-1);
 
    	$pz_login = new pz_login;
-   	$pz_login->setSystemId('pz_api_'. rex::getProperty('instname'));
+   	$pz_login->setSystemId('pz_api_'. pz::getProperty('instname'));
 		$pz_login->setLogin($login, $digest);
   	// $pz_login->checkLogin();
 
-    $check_query = rex_sql::factory();
+    $check_query = pz_sql::factory();
     $check_query->setQuery('select * from pz_user where login = ? and digest = ?', array($login, $digest));
 
     if($check_query->getRows() == 1) {

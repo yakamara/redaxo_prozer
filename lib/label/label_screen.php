@@ -41,11 +41,11 @@ class pz_label_screen{
               </a>
             </header>
             <footer>
-	            <a class="bt2" href="'.$edit_link.'">'.rex_i18n::msg("label_edit").'</a>
+	            <a class="bt2" href="'.$edit_link.'">'.pz_i18n::msg("label_edit").'</a>
             </footer>
           </article>';
 	
-		// <a class="bt2" href="'.pz::url("screen","projects","tools",array("mode"=>"delete","label_id"=>$this->label->getId())).'">'.rex_i18n::msg("label_delete").'</a>
+		// <a class="bt2" href="'.pz::url("screen","projects","tools",array("mode"=>"delete","label_id"=>$this->label->getId())).'">'.pz_i18n::msg("label_delete").'</a>
 	
 		return $return;
 	}
@@ -56,11 +56,11 @@ class pz_label_screen{
 		$header = '
 	        <header>
 	          <div class="header">
-	            <h1 class="hl1">'.rex_i18n::msg("delete_address").'</h1>
+	            <h1 class="hl1">'.pz_i18n::msg("delete_address").'</h1>
 	          </div>
 	        </header>';
 		
-		$return = $header.'<p class="xform-info">'.rex_i18n::msg("label_deleted", htmlspecialchars($p["label_name"])).'</p>';
+		$return = $header.'<p class="xform-info">'.pz_i18n::msg("label_deleted", htmlspecialchars($p["label_name"])).'</p>';
 		$return .= pz_screen::getJSLoadFormPage('labels_list','labels_search_form',pz::url('screen','projects',$p["function"],array("mode"=>'list')));
 		$return = '<div id="label_form"><div id="label_delete" class="design1col xform-delete">'.$return.'</div></div>';
 
@@ -74,7 +74,7 @@ class pz_label_screen{
 		$header = '
 	        <header>
 	          <div class="header">
-	            <h1 class="hl1">'.rex_i18n::msg("label_edit").': '.$this->label->getName().'</h1>
+	            <h1 class="hl1">'.pz_i18n::msg("label_edit").': '.$this->label->getName().'</h1>
 	          </div>
 	        </header>';
 	
@@ -92,14 +92,14 @@ class pz_label_screen{
 		$xform->setHiddenField("label_id",$this->label->getId());
 		$xform->setObjectparams('form_showformafterupdate',1);
 
-		$xform->setValueField("text",array("name",rex_i18n::msg("label_name")));
-		$xform->setValidateField("empty",array("name",rex_i18n::msg("error_label_name_empty")));
+		$xform->setValueField("text",array("name",pz_i18n::msg("label_name")));
+		$xform->setValidateField("empty",array("name",pz_i18n::msg("error_label_name_empty")));
 
-		$xform->setValueField("text",array("color",rex_i18n::msg("label_color")));
-		$xform->setValidateField("empty",array("color",rex_i18n::msg("error_label_color_empty")));
+		$xform->setValueField("text",array("color",pz_i18n::msg("label_color")));
+		$xform->setValidateField("empty",array("color",pz_i18n::msg("error_label_color_empty")));
 
-		$xform->setValueField("text",array('border',rex_i18n::msg('label_border')));
-		$xform->setValidateField("empty",array('border',rex_i18n::msg("error_label_bordercolor_empty")));
+		$xform->setValueField("text",array('border',pz_i18n::msg('label_border')));
+		$xform->setValidateField("empty",array('border',pz_i18n::msg("error_label_bordercolor_empty")));
 
 		$xform->setActionField("db",array('pz_label','id='.$this->label->getId())); // array("id"=>$this->label->getId())
 
@@ -107,7 +107,7 @@ class pz_label_screen{
 
 		if($xform->getObjectparams("actions_executed")) {
 			$this->label->update();
-			$return = $header.'<p class="xform-info">'.rex_i18n::msg("label_updated").'</p>'.$return;
+			$return = $header.'<p class="xform-info">'.pz_i18n::msg("label_updated").'</p>'.$return;
 			$return .= pz_screen::getJSUpdateLayer('labels_list',pz::url('screen','projects','labels',array("mode"=>'list')));
 		}else
 		{
@@ -119,9 +119,9 @@ class pz_label_screen{
 			$delete_link = pz::url("screen","projects","labels",array("label_id"=>$this->label->getId(),"mode"=>"delete_label"));
 			$return .= '<div class="xform">
 				<p><a class="bt17" onclick="check = confirm(\''.
-				rex_i18n::msg("label_confirm_delete",htmlspecialchars($this->label->getName())).
+				pz_i18n::msg("label_confirm_delete",htmlspecialchars($this->label->getName())).
 				'\'); if (check == true) pz_loadPage(\'label_form\',\''.
-				$delete_link.'\')" href="javascript:void(0);">- '.rex_i18n::msg("delete_label").'</a></p>
+				$delete_link.'\')" href="javascript:void(0);">- '.pz_i18n::msg("delete_label").'</a></p>
 				</div>';
 		}
 
@@ -137,7 +137,7 @@ class pz_label_screen{
 		$header = '
 	        <header>
 	          <div class="header">
-	            <h1 class="hl1">'.rex_i18n::msg("add_label").'</h1>
+	            <h1 class="hl1">'.pz_i18n::msg("add_label").'</h1>
 	          </div>
 	        </header>';
 
@@ -149,12 +149,12 @@ class pz_label_screen{
 		$xform->setObjectparams("form_id", "label_add_form");
 		
 		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
-		$xform->setValueField("text",array("name",rex_i18n::msg("label_name")));
-		$xform->setValidateField("empty",array("name",rex_i18n::msg("error_label_name_empty")));
-		$xform->setValueField("text",array("color",rex_i18n::msg("label_color")));
-		$xform->setValidateField("empty",array("color",rex_i18n::msg("error_label_color_empty")));
-		$xform->setValueField("text",array('border',rex_i18n::msg('label_border')));
-		$xform->setValidateField("empty",array('border',rex_i18n::msg("error_label_bordercolor_empty")));
+		$xform->setValueField("text",array("name",pz_i18n::msg("label_name")));
+		$xform->setValidateField("empty",array("name",pz_i18n::msg("error_label_name_empty")));
+		$xform->setValueField("text",array("color",pz_i18n::msg("label_color")));
+		$xform->setValidateField("empty",array("color",pz_i18n::msg("error_label_color_empty")));
+		$xform->setValueField("text",array('border',pz_i18n::msg('label_border')));
+		$xform->setValidateField("empty",array('border',pz_i18n::msg("error_label_bordercolor_empty")));
 		$xform->setActionField("db",array()); // array("id"=>$label_id)
 		$return = $xform->getForm();
 
@@ -164,7 +164,7 @@ class pz_label_screen{
 			if($label = pz_label::get($label_id)) {
 				$label->create();
 			}
-			$return = $header.'<p class="xform-info">'.rex_i18n::msg("label_added").'</p>'.$return;
+			$return = $header.'<p class="xform-info">'.pz_i18n::msg("label_added").'</p>'.$return;
 			$return .= pz_screen::getJSUpdateLayer('labels_list',pz::url('screen','projects','labels',array("mode"=>'list')));
 		}else
 		{
@@ -177,12 +177,4 @@ class pz_label_screen{
 		
 	}
 
-
-
-
-
-
 }
-
-
-?>

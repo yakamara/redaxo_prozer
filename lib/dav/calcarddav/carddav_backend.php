@@ -75,13 +75,13 @@ class pz_sabre_carddav_backend extends AbstractBackend
         $card->version = '3.0';
         $card->prodid = '-//prozer 2.0//';
         $card->__set('X-ADDRESSBOOKSERVER-KIND', 'group');
-        $card->n = rex_i18n::msg('mycontacts');
-        $card->fn = rex_i18n::msg('mycontacts');
+        $card->n = pz_i18n::msg('mycontacts');
+        $card->fn = pz_i18n::msg('mycontacts');
         $card->rev = new Property\DateTime('rev');
         $card->rev->setDateTime(new DateTime(null, new DateTimeZone('UTC')), Property\DateTime::UTC);
         unset($card->rev['value']);
         $card->uid = self::GROUP;
-        $sql = rex_sql::factory();
+        $sql = pz_sql::factory();
         $sql->setQuery('SELECT uri FROM pz_address WHERE created_user_id = ?', array(pz::getUser()->getId()));
         foreach ($sql as $row) {
             $card->add(new Property('X-ADDRESSBOOKSERVER-MEMBER', 'urn:uuid:' . str_replace('.vcf', '', $sql->getValue('uri'))));
@@ -117,7 +117,7 @@ class pz_sabre_carddav_backend extends AbstractBackend
             $card->bday['value'] = 'date';
         }
 
-        $sql = rex_sql::factory();
+        $sql = pz_sql::factory();
         $fields = $sql->getArray('SELECT * FROM pz_address_field WHERE address_id = ? ORDER BY type ASC, preferred DESC', array($address->getId()));
         $add = array();
         foreach ($fields as $row) {
@@ -238,7 +238,7 @@ class pz_sabre_carddav_backend extends AbstractBackend
     {
         list($name, $firstname, $additional_names, $prefix, $suffix) = explode(';', $card->n);
         list($company, $department) = array_pad(explode(';', (string) $card->org, 2), 2, '');
-        $sql = rex_sql::factory()
+        $sql = pz_sql::factory()
             ->setTable('pz_address')
             ->setValue('name', $name)
             ->setValue('firstname', $firstname)
@@ -271,7 +271,7 @@ class pz_sabre_carddav_backend extends AbstractBackend
     private function insertFields($card, pz_address $address)
     {
         $addressId = $address->getId();
-        $sql = rex_sql::factory();
+        $sql = pz_sql::factory();
         $sql->setQuery('DELETE FROM pz_address_field WHERE address_id = ?', array($addressId));
 
         $count = 0;
@@ -369,7 +369,7 @@ class pz_sabre_carddav_backend extends AbstractBackend
         $backend = new self;
         if (preg_match('/^(?:X-AB)?UID:(.*)(?::ABPerson)?\s?$/Umi', $cardData, $matches)) {
             $uri = $matches[1] . '.vcf';
-            $sql = rex_sql::factory();
+            $sql = pz_sql::factory();
             $sql->setQuery('SELECT id FROM pz_address WHERE uri = ?', array($uri));
             if ($sql->getRows() == 0) {
                 $backend->createCard(1, $uri, $cardData);
@@ -377,7 +377,7 @@ class pz_sabre_carddav_backend extends AbstractBackend
                 $backend->updateCard(1, $uri, $cardData);
             }
         } else {
-            $sql = rex_sql::factory();
+            $sql = pz_sql::factory();
             $sql->setQuery('SELECT UUID() as uid');
             $backend->createCard(1, $sql->getValue('uid') . '.vcf', $cardData);
         }

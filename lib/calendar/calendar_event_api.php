@@ -36,5 +36,3 @@ class pz_calendar_event_api{
   }
 
 }
-
-?>

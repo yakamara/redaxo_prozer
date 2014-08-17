@@ -40,7 +40,7 @@ class pz_clip_screen
 		$return .= '<td class="clipname">';
 		$return .= '<a class="file25i '.$ext.'" href="'.$download_link.'" title="'.htmlspecialchars($this->clip->getFilename()).'"><span>'.htmlspecialchars(pz::cutText($this->clip->getFilename(),30, '…', 'center')).'</span></a>';
 		$return .= '<span class="filesize">'.pz::readableFilesize($this->clip->getContentLength()).'</span>';
-		$return .= '<span class="datetime">'.$this->clip->getCreateDate()->format(rex_i18n::msg("format_datetime")).'</span>';
+		$return .= '<span class="datetime">'.$this->clip->getCreateDate()->format(pz_i18n::msg("format_datetime")).'</span>';
 		$return .= '</td>';
     
     $td_release = '';
@@ -50,13 +50,13 @@ class pz_clip_screen
 		{
 		
 		  $unrelease_link = "pz_exec_javascript('".pz::url("screen","clipboard","get",array_merge($p["linkvars"],array("mode"=>"unrelease_clip")))."')";
-   		$td_release .= '<td class="function-unrelease"><a class="bt5" href="javascript:void(0);" onclick="'.$unrelease_link.'">'.rex_i18n::msg('clip_unrelease').'</a></td>';
+   		$td_release .= '<td class="function-unrelease"><a class="bt5" href="javascript:void(0);" onclick="'.$unrelease_link.'">'.pz_i18n::msg('clip_unrelease').'</a></td>';
 
       $tr_release .= '</tr>';
       $tr_release .= '<tr class="clipinfo">';
       
       $tr_release .= '<td>';
-      $tr_release .= '<b class="url">'.rex_i18n::msg('clip_url').':</b> '.$this->clip->getUri().'';
+      $tr_release .= '<b class="url">'.pz_i18n::msg('clip_url').':</b> '.$this->clip->getUri().'';
 		  $tr_release .= '</td>';
 		  
       
@@ -70,14 +70,14 @@ class pz_clip_screen
       $tr_release .= '
                   <ul class="sl1 light">
                     <li class="selected flyouthover">
-                      <span class="selected"><span class="datetime"><b>'.rex_i18n::msg('clip_released_until').':</b> '.$this->clip->getOfflineDate()->format(rex_i18n::msg("format_datetime")).'</span></span>
+                      <span class="selected"><span class="datetime"><b>'.pz_i18n::msg('clip_released_until').':</b> '.$this->clip->getOfflineDate()->format(pz_i18n::msg("format_datetime")).'</span></span>
                       <div class="flyout">
                         <div class="content">
                           <ul class="entries">
-                            <li class="entry"><a href="javascript:void(0);" onclick="'.$release_link_today.'"><span class="title">'.rex_i18n::msg("clip_release_duration_today").'</span></a></li>
-                            <li class="entry"><a href="javascript:void(0);" onclick="'.$release_link_week.'"><span class="title">'.rex_i18n::msg("clip_release_duration_week").'</span></a></li>
-                            <li class="entry"><a href="javascript:void(0);" onclick="'.$release_link_month.'"><span class="title">'.rex_i18n::msg("clip_release_duration_month").'</span></a></li>
-                            <li class="entry"><a href="javascript:void(0);" onclick="'.$release_link_month_3.'"><span class="title">'.rex_i18n::msg("clip_release_duration_month_3").'</span></a></li>
+                            <li class="entry"><a href="javascript:void(0);" onclick="'.$release_link_today.'"><span class="title">'.pz_i18n::msg("clip_release_duration_today").'</span></a></li>
+                            <li class="entry"><a href="javascript:void(0);" onclick="'.$release_link_week.'"><span class="title">'.pz_i18n::msg("clip_release_duration_week").'</span></a></li>
+                            <li class="entry"><a href="javascript:void(0);" onclick="'.$release_link_month.'"><span class="title">'.pz_i18n::msg("clip_release_duration_month").'</span></a></li>
+                            <li class="entry"><a href="javascript:void(0);" onclick="'.$release_link_month_3.'"><span class="title">'.pz_i18n::msg("clip_release_duration_month_3").'</span></a></li>
                           </ul>			
                         </div>
                       </div>
@@ -90,13 +90,13 @@ class pz_clip_screen
     }else 
     {
   		$release_link = "pz_exec_javascript('".pz::url("screen","clipboard","get",array_merge($p["linkvars"],array("mode"=>"release_clip")))."')";
-   		$td_release .= '<td class="function-clip-release"><a class="bt5" href="javascript:void(0);" onclick="'.$release_link.'">'.rex_i18n::msg('clip_release').'</a></td>';
+   		$td_release .= '<td class="function-clip-release"><a class="bt5" href="javascript:void(0);" onclick="'.$release_link.'">'.pz_i18n::msg('clip_release').'</a></td>';
       
 		}
 		
-		$return .= '<td class="function-clip-select"><a class="bt5" href="javascript:void(0);" onclick="'.$select_link.'">'.rex_i18n::msg('clip_select').'</a></td>';
+		$return .= '<td class="function-clip-select"><a class="bt5" href="javascript:void(0);" onclick="'.$select_link.'">'.pz_i18n::msg('clip_select').'</a></td>';
   	$return .= $td_release;
-		$return .= '<td class="function-clip-delete"><a class="bt17 flright" href="javascript:void(0);" onclick="'.$delete_link.'">'.rex_i18n::msg('clip_delete').'</a></td>';
+		$return .= '<td class="function-clip-delete"><a class="bt17 flright" href="javascript:void(0);" onclick="'.$delete_link.'">'.pz_i18n::msg('clip_delete').'</a></td>';
 
 		$return .= '</tr>';
   	$return .= $tr_release;

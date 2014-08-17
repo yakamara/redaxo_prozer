@@ -1,6 +1,6 @@
 <ul id="navi-main">
   
-  <li class="lev1 logo"><a href="/"><?php echo rex_i18n::msg('startpage'); ?></a></li>
+  <li class="lev1 logo"><a href="/"><?php echo pz_i18n::msg('startpage'); ?></a></li>
 	<?php foreach($this->items as $key => $item):
 		$active = '';
 		if($this->item_active == $key) {

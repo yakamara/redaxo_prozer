@@ -31,13 +31,13 @@ class pz_projectuser_screen{
               <th></th>
               ';
               
-		$content .= '<th>'.rex_i18n::msg("username").'</th>';
-		if($project->hasEmails() == 1) $content .= '<th>'.rex_i18n::msg("emails").'</th>';
-		if($project->hasCalendar() == 1) $content .= '<th>'.rex_i18n::msg("calendar_events").'</th>';
-		if($project->hasCalendarJobs() == 1) $content .= '<th>'.rex_i18n::msg("calendar_jobs").'</th>';
-		if($project->hasFiles() == 1) $content .= '<th>'.rex_i18n::msg("files").'</th>';
-		$content .= '<th>'.rex_i18n::msg("project_admin").'</th>';
-		if($my_projectuser->isAdmin()) $content .= '<th>'.rex_i18n::msg("functions").'</th>';
+		$content .= '<th>'.pz_i18n::msg("username").'</th>';
+		if($project->hasEmails() == 1) $content .= '<th>'.pz_i18n::msg("emails").'</th>';
+		if($project->hasCalendar() == 1) $content .= '<th>'.pz_i18n::msg("calendar_events").'</th>';
+		if($project->hasCalendarJobs() == 1) $content .= '<th>'.pz_i18n::msg("calendar_jobs").'</th>';
+		if($project->hasFiles() == 1) $content .= '<th>'.pz_i18n::msg("files").'</th>';
+		$content .= '<th>'.pz_i18n::msg("project_admin").'</th>';
+		if($my_projectuser->isAdmin()) $content .= '<th>'.pz_i18n::msg("functions").'</th>';
 		
         $content .= '
           </tr></thead>
@@ -50,7 +50,7 @@ class pz_projectuser_screen{
 			$content = $p["info"].$content;
 		}
 		
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('title', $p["title"], false);
 		$f->setVar('content', $content , false);
 		return '<div id="projectusers_list" class="design2col">'.$f->parse('pz_screen_list.tpl').'</div>';
@@ -108,7 +108,7 @@ class pz_projectuser_screen{
       $del_link = pz::url("screen","project","user",array("project_id"=>$this->projectuser->getProject()->getId(),"projectuser_id"=>$this->projectuser->getVar("id"),"mode"=>"delete"));
 
 			if($projectuser->getId() != $this->projectuser->getId()) {
-        $td[] = '<td><a class="bt2" href="javascript:void(0);" onclick="pz_loadPage(\'projectusers_list\',\''.$del_link.'\')"><span class="title">'.rex_i18n::msg("delete").'</span></a></td>';
+        $td[] = '<td><a class="bt2" href="javascript:void(0);" onclick="pz_loadPage(\'projectusers_list\',\''.$del_link.'\')"><span class="title">'.pz_i18n::msg("delete").'</span></a></td>';
 			} else {
 	      $td[] = '<td><span class="title"></span></td>';
 			}
@@ -135,7 +135,7 @@ class pz_projectuser_screen{
 
 	  if($status == 2) {
 	    $classes[] = "inactive";
-	    return '<td id="'.$td_id.'" class="'.implode(" ",$classes).'"><span class="status status-2">'.rex_i18n::msg("not_available").'</span></td>';
+	    return '<td id="'.$td_id.'" class="'.implode(" ",$classes).'"><span class="status status-2">'.pz_i18n::msg("not_available").'</span></td>';
 
 	  } else {
 	  
@@ -151,16 +151,16 @@ class pz_projectuser_screen{
   	      
   	    ) {
   	    if($status == 1) {
-  	      return '<td id="'.$td_id.'" class="'.implode(" ",$classes).'"><a href="javascript:void(0);" onclick="'.$link.'" ><span class="status status-changeable status-'.$status.'">'.rex_i18n::msg("yes").'</span></a></td>';
+  	      return '<td id="'.$td_id.'" class="'.implode(" ",$classes).'"><a href="javascript:void(0);" onclick="'.$link.'" ><span class="status status-changeable status-'.$status.'">'.pz_i18n::msg("yes").'</span></a></td>';
   	    } else {
-          return '<td id="'.$td_id.'" class="'.implode(" ",$classes).'"><a href="javascript:void(0);" onclick="'.$link.'"><span class="status status-changeable status-'.$status.'">'.rex_i18n::msg("yes").'</span></a></td>';
+          return '<td id="'.$td_id.'" class="'.implode(" ",$classes).'"><a href="javascript:void(0);" onclick="'.$link.'"><span class="status status-changeable status-'.$status.'">'.pz_i18n::msg("yes").'</span></a></td>';
   	    }
   	  } else {
 	      $classes[] = "inactive";
   	    if ($status == 1) {
-  	      return '<td id="'.$td_id.'" class="'.implode(" ",$classes).'"><span class="status status-1">'.rex_i18n::msg("yes").'</span></td>';
+  	      return '<td id="'.$td_id.'" class="'.implode(" ",$classes).'"><span class="status status-1">'.pz_i18n::msg("yes").'</span></td>';
   	    } else {
-  	      return '<td id="'.$td_id.'" class="'.implode(" ",$classes).'"><span class="status status-0">'.rex_i18n::msg("no").'</span></td>';
+  	      return '<td id="'.$td_id.'" class="'.implode(" ",$classes).'"><span class="status status-0">'.pz_i18n::msg("no").'</span></td>';
   	    }
   	  
   	  }
@@ -175,7 +175,7 @@ class pz_projectuser_screen{
 		$header = '
 	        <header>
 	          <div class="header">
-	            <h1 class="hl1">'.rex_i18n::msg("add_projectuser").'</h1>
+	            <h1 class="hl1">'.pz_i18n::msg("add_projectuser").'</h1>
 	          </div>
 	        </header>';
 	
@@ -192,35 +192,35 @@ class pz_projectuser_screen{
 		
 		$xform->setValidateField("pz_projectuser",array("pu",$project));
 		$xform->setValueField("hidden",array("project_id",$project->getId()));
-		$xform->setValueField('pz_select_screen',array('user_id', rex_i18n::msg('user'), pz::getUsersAsArray(pz::getUser()->getUsers()),"","",0,rex_i18n::msg("please_choose")));
+		$xform->setValueField('pz_select_screen',array('user_id', pz_i18n::msg('user'), pz::getUsersAsArray(pz::getUser()->getUsers()),"","",0,pz_i18n::msg("please_choose")));
 		$xform->setValueField("stamp",array("created","created","mysql_datetime","0","1","","","",""));
 		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0","","","",""));
 		
 		if($project->hasEmails() == 1) {
-			$xform->setValueField("checkbox",array("emails",rex_i18n::msg("emails"),"1","1","0","","","",""));
+			$xform->setValueField("checkbox",array("emails",pz_i18n::msg("emails"),"1","1","0","","","",""));
 		}else {
 			$xform->setValueField("hidden",array("emails","0"));
 		}
 		
     if($project->hasCalendar() == 1) {
-    	$xform->setValueField("checkbox",array("calendar",rex_i18n::msg("calendar_events"),"1","1","0","","","",""));
+    	$xform->setValueField("checkbox",array("calendar",pz_i18n::msg("calendar_events"),"1","1","0","","","",""));
     }else {
     	$xform->setValueField("hidden",array("calendar","0"));
     }
     
     if($project->hasCalendarJobs() == 1) {
-    	$xform->setValueField("checkbox",array("calendar_jobs",rex_i18n::msg("calendar_jobs"),"1","1","0"));
+    	$xform->setValueField("checkbox",array("calendar_jobs",pz_i18n::msg("calendar_jobs"),"1","1","0"));
     }else {
     	$xform->setValueField("hidden",array("calendar_jobs","0"));
     }
 
 		if($project->hasFiles() == 1) {
-			$xform->setValueField("checkbox",array("files",rex_i18n::msg("files"),"1","1","0","","","",""));
+			$xform->setValueField("checkbox",array("files",pz_i18n::msg("files"),"1","1","0","","","",""));
 		}else {
 			$xform->setValueField("hidden",array("files","0"));
 		}
 
-		$xform->setValueField("checkbox",array("admin",rex_i18n::msg("admin"),"1","0","0","","","",""));
+		$xform->setValueField("checkbox",array("admin",pz_i18n::msg("admin"),"1","0","0","","","",""));
 
 		$xform->setActionField("db",array());
 		$return = $xform->getForm();
@@ -235,7 +235,7 @@ class pz_projectuser_screen{
         $projectuser->create();
 			}
 			
-			$return = $header.'<p class="xform-info">'.rex_i18n::msg("projectuser_added").'</p>'.$return;
+			$return = $header.'<p class="xform-info">'.pz_i18n::msg("projectuser_added").'</p>'.$return;
 			$return .= pz_screen::getJSUpdateLayer('projectusers_list',pz::url('screen','project','user',array("project_id"=>$project->getId(),"mode"=>'list')));
 
 		}else

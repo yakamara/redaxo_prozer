@@ -4,7 +4,7 @@ class pz_wiki_article_version extends pz_wiki_article
 {
   public function revert()
   {
-    $sql = rex_sql::factory();
+    $sql = pz_sql::factory();
     $sql->setTable('pz_wiki')
       ->setWhere(array('id' => $this->getId()))
       ->setTitle('title', $this->getTitle())

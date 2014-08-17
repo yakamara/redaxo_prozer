@@ -7,12 +7,13 @@ class pz {
 	static $users = NULL;
 	static $mediaviews = array('screen', 'calcarddav', 'caldav', 'webdav', 'carddav', 'api'); // 'mobile'
 	static $mediaview = 'screen';
+  protected static $properties = [];
+  const CONFIG_NAMESPACE = 'prozer';
 
 	static function controller()
 	{
-    
+
     $timer = new rex_timer();
-    // pz::xhprof_start();
 
 		// TODO UTF8 einstellen
 		// ini_set("mbstring.func_overload",7);
@@ -24,47 +25,30 @@ class pz {
 		// ini_set("display_errors",1);
 		// ob_start();
 
-		setlocale (LC_ALL, rex_i18n::msg("locale"));
+		setlocale (LC_ALL, pz_i18n::msg("locale"));
     date_default_timezone_set(pz::getDateTimeZone()->getName());
 
 		$func = rex_request('func');
 
 		self::$mediaview = rex_request('mediaview');
-		if(!in_array(self::$mediaview,self::$mediaviews))
-		{
+		if(!in_array(self::$mediaview,self::$mediaviews)) {
 			self::$mediaview = 'screen';
 		}
 
 		$class = 'pz_'.pz::$mediaview.'_controller';
-		if(!class_exists($class))
-		{
+
+		if(!class_exists($class)) {
 			return "ERROR PCNE ".$class;
 		}
 		$ctr = new $class;
 		$return = $ctr->controller($func);
 
-    // loggen wenn mehr als 1000 Millis
+    // debug - if page needs more than xxx seconds
     if(is_object(pz::getUser()) && pz::getUser()->getId() == 1 && $timer->getDelta()>700) {
-      // $xhprof_url = pz::xhprof_end();
     }
 
     return $return;
 	}
-
-  static public function xhprof_start() {
-    include_once '/kunden/107405_60311/rp-hosting/1/1/xhprof/xhprof-0.9.3/xhprof_lib/utils/xhprof_lib.php';
-    include_once '/kunden/107405_60311/rp-hosting/1/1/xhprof/xhprof-0.9.3/xhprof_lib/utils/xhprof_runs.php';
-    xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
-  }
-  
-  static public function xhprof_end() {
-    $profiler_namespace = 'prozer';  // namespace for your application
-    $xhprof_data = xhprof_disable();  // stop function
-    $xhprof_runs = new XHProfRuns_Default();
-    $run_id = $xhprof_runs->save_run($xhprof_data, $profiler_namespace);  // save
-
-    return sprintf('http://xhprof.modulvier.com//index.php?run=%s&source=%s', $run_id, $profiler_namespace); //  
-  }
 
 	// -------------------------------------------------------------------------
 
@@ -253,7 +237,7 @@ class pz {
 		$params = $f["params"];
 		$where_sql = $f["where_sql"];
 
-		$sql = rex_sql::factory();
+		$sql = pz_sql::factory();
     $sql->setQuery('SELECT u.* FROM pz_user u '.$where_sql.' ORDER BY u.name',$params);
     $users = array();
     foreach($sql->getArray() as $row)
@@ -308,7 +292,7 @@ class pz {
   static function getServer()
   {
     return $_SERVER["HTTP_HOST"];
-    // return rex::getProperty('server');
+    // return pz::getProperty('server');
   }
 
   static function getServerUrl()
@@ -320,25 +304,73 @@ class pz {
     return 'http'.$protocolSecure.'://'.pz::getServer();
   }
 
-	static public function setConfig($key, $value)
-	{
-	  rex_config::set('prozer', $key, $value);
-	}
 
-	static public function hasConfig($key)
-	{
-	  return rex_config::has('prozer', $key);
-	}
+  public static function setConfig($key, $value = null)
+  {
+    return pz_config::set(self::CONFIG_NAMESPACE, $key, $value);
+  }
 
-	static public function getConfig($key, $default = null)
-	{
-	  return rex_config::get('prozer', $key, $default);
-	}
+  /**
+   * @see rex_config::get()
+   */
+  public static function getConfig($key = null, $default = null)
+  {
+    return pz_config::get(self::CONFIG_NAMESPACE, $key, $default);
+  }
 
-	static public function removeConfig($key)
-	{
-	  rex_config::remove('prozer', $key);
-	}
+  /**
+   * @see rex_config::has()
+   */
+  public static function hasConfig($key)
+  {
+    return pz_config::has(self::CONFIG_NAMESPACE, $key);
+  }
+
+  /**
+   * @see rex_config::remove()
+   */
+  public static function removeConfig($key)
+  {
+    return pz_config::remove(self::CONFIG_NAMESPACE, $key);
+  }
+
+
+  public static function setProperty($key, $value)
+  {
+    if (!is_string($key)) {
+      throw new InvalidArgumentException('Expecting $key to be string, but ' . gettype($key) . ' given!');
+    }
+    $exists = isset(self::$properties[$key]);
+    self::$properties[$key] = $value;
+    return $exists;
+  }
+
+  public static function getProperty($key, $default = null)
+  {
+    if (!is_string($key)) {
+      throw new InvalidArgumentException('Expecting $key to be string, but ' . gettype($key) . ' given!');
+    }
+    if (isset(self::$properties[$key])) {
+      return self::$properties[$key];
+    }
+    return $default;
+  }
+
+  public static function hasProperty($key)
+  {
+    return is_string($key) && isset(self::$properties[$key]);
+  }
+
+  public static function removeProperty($key)
+  {
+    if (!is_string($key)) {
+      throw new InvalidArgumentException('Expecting $key to be string, but ' . gettype($key) . ' given!');
+    }
+    $exists = isset(self::$properties[$key]);
+    unset(self::$properties[$key]);
+    return $exists;
+  }
+
 
 
 	// ----------- date
@@ -654,7 +686,6 @@ class pz {
     header("Content-Length: ".$file_size);
 
 		return $return;
-		exit;
 	}
 
 	public static function dateTime2dateFormat($datetime, $dateFormat) {
@@ -809,6 +840,7 @@ class pz {
 		echo $content;
 		exit;
 	}
+
 
   // ---------------------------------------------------------------
 

@@ -18,7 +18,7 @@ class pz_label extends pz_model{
 		if($id == "") return FALSE;
 		$id = (int) $id;
 
-		$sql = rex_sql::factory();
+		$sql = pz_sql::factory();
 		$labels = $sql->getArray('select * from pz_label where id = ? LIMIT 2', array($id));
 
 		if(count($labels) != 1) return FALSE;
@@ -56,7 +56,7 @@ class pz_label extends pz_model{
 
 	public function hasProjects() 
 	{
-		$sql = rex_sql::factory();
+		$sql = pz_sql::factory();
 		$projects = $sql->getArray('select * from pz_project where label_id = ? LIMIT 2',array($this->getId()));
 		if(count($projects)>0)
 			return true;
@@ -65,7 +65,7 @@ class pz_label extends pz_model{
 
 	public function delete() 
 	{
-		$sql = rex_sql::factory();
+		$sql = pz_sql::factory();
 		$sql->setQuery('delete from pz_label where id = ?',array($this->getId()));
 		pz_labels::update();
 
@@ -73,5 +73,3 @@ class pz_label extends pz_model{
 
 
 }
-
-?>

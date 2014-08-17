@@ -118,10 +118,10 @@ class pz_projects_controller_screen extends pz_projects_controller {
 		      <table class="projects tbl1">
 		      <thead><tr>
 		          <th></th>
-		          <th>'.rex_i18n::msg("customer").'</th>
-		          <th>'.rex_i18n::msg("project_name").'</th>
-		          <th>'.rex_i18n::msg("project_createdate").'</th>
-		          <th>'.rex_i18n::msg("project_admins").'</th>
+		          <th>'.pz_i18n::msg("customer").'</th>
+		          <th>'.pz_i18n::msg("project_name").'</th>
+		          <th>'.pz_i18n::msg("project_createdate").'</th>
+		          <th>'.pz_i18n::msg("project_admins").'</th>
 		          <th class="label"></th>
 		      </tr></thead>
 		      <tbody class="projects_table_list">
@@ -139,7 +139,7 @@ class pz_projects_controller_screen extends pz_projects_controller {
 			)
 		);
 		
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('title', $p["title"], false);
 		$f->setVar('content', $content , false);
 		return '<div id="projects_list" class="design2col" data-url="'.$link_refresh.'">'.$f->parse('pz_screen_list.tpl').'</div>';
@@ -163,7 +163,7 @@ class pz_projects_controller_screen extends pz_projects_controller {
 		}
 		$content = $paginate.'<ul class="entries view-matrix clearfix">'.$content.'</ul>';
 		// $content = $this->getSearchPaginatePlainView().$content;
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('title', $p["title"], false);
 		$f->setVar('content', $content , false);
 		
@@ -187,7 +187,7 @@ class pz_projects_controller_screen extends pz_projects_controller {
 		$content = '<ul class="entries view-block">'.$content.'</ul>';
 		$paginate = "";
 
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('design', $design, false);
 		$f->setVar('title', $p["title"], false);
 		$f->setVar('content', $content , false);
@@ -216,7 +216,7 @@ class pz_projects_controller_screen extends pz_projects_controller {
 
 	function getAllProjectsPage($p = array())
 	{
-		$p["title"] = rex_i18n::msg("all_projects");
+		$p["title"] = pz_i18n::msg("all_projects");
 		
 		$s1_content = "";
 		$s2_content = "";
@@ -262,7 +262,7 @@ class pz_projects_controller_screen extends pz_projects_controller {
 				}
 		}
 
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('header', pz_screen::getHeader($p), false);
 		$f->setVar('function', $this->getNavigation($p), false);
 		$f->setVar('section_1', $s1_content, false);
@@ -274,7 +274,7 @@ class pz_projects_controller_screen extends pz_projects_controller {
 	
 	function getArchiveProjectsPage($p = array())
 	{
-		$p["title"] = rex_i18n::msg("archived_projects");
+		$p["title"] = pz_i18n::msg("archived_projects");
 
 		$p["linkvars"]["mode"] = "list";
 		$p["linkvars"]["search_name"] = rex_request("search_name");
@@ -295,7 +295,7 @@ class pz_projects_controller_screen extends pz_projects_controller {
 		$section_1 = pz_project_screen::getProjectsSearchForm($p, array("myprojects"));
 		$section_2 = $this->getProjectTableView($projects,$p);
 
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('header', pz_screen::getHeader($p), false);
 		$f->setVar('function', $this->getNavigation($p), false);
 		$f->setVar('section_1', $section_1 , false);
@@ -309,7 +309,7 @@ class pz_projects_controller_screen extends pz_projects_controller {
 
 	function getCustomersPage($p = array())
 	{
-		$p["title"] = rex_i18n::msg("customers");
+		$p["title"] = pz_i18n::msg("customers");
 
 		$s1_content = "";
 		$s2_content = "";
@@ -373,7 +373,7 @@ class pz_projects_controller_screen extends pz_projects_controller {
 						$p["show_delete"] = true;
 					return $cs->getEditForm($p);
 				}else {
-					return '<p class="xform-warning">'.rex_i18n::msg("customer_not_exists").'</p>';
+					return '<p class="xform-warning">'.pz_i18n::msg("customer_not_exists").'</p>';
 				}
 				break;
 			case(""):
@@ -398,7 +398,7 @@ class pz_projects_controller_screen extends pz_projects_controller {
 				break;
 		}
 
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('header', pz_screen::getHeader($p), false);
 		$f->setVar('function', $this->getNavigation($p), false);
 		$f->setVar('section_1', $s1_content, false);
@@ -410,7 +410,7 @@ class pz_projects_controller_screen extends pz_projects_controller {
 	private function getLabelsPage($p = array())
 	{
 	
-		$p["title"] = rex_i18n::msg("labels");
+		$p["title"] = pz_i18n::msg("labels");
 		$p["mediaview"] = "screen";
 		$p["controll"] = "projects";
 		$p["function"] = "labels";
@@ -452,7 +452,7 @@ class pz_projects_controller_screen extends pz_projects_controller {
 						}
 						return $cs->getEditForm($p);
 				}else {
-					return '<div id="label_form"><p class="xform-warning">'.rex_i18n::msg("label_not_found").'</p></div>';
+					return '<div id="label_form"><p class="xform-warning">'.pz_i18n::msg("label_not_found").'</p></div>';
 				}
 				break;
 			
@@ -462,7 +462,7 @@ class pz_projects_controller_screen extends pz_projects_controller {
 					$cs = new pz_label_screen($label);
 					$s2_content = $cs->getInfoPage($p);
 				}else {
-					return '<div id="label_form"><p class="xform-warning">'.rex_i18n::msg("label_not_found").'</p></div>';
+					return '<div id="label_form"><p class="xform-warning">'.pz_i18n::msg("label_not_found").'</p></div>';
 				}
 				break;
 			
@@ -476,7 +476,7 @@ class pz_projects_controller_screen extends pz_projects_controller {
 				break;
 		}
 
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('header', pz_screen::getHeader($p), false);
 		$f->setVar('function', $this->getNavigation($p), false);
 		$f->setVar('section_1', $s1_content, false);

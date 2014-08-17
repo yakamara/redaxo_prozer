@@ -27,42 +27,42 @@ class pz_user_screen {
 		}
 
 		if($this->user->isActive())  
-			$return .= '<td><span class="status status-1">'.rex_i18n::msg("yes").'</span></td>';
+			$return .= '<td><span class="status status-1">'.pz_i18n::msg("yes").'</span></td>';
 		else 
-			$return .= '<td><span class="status status-2">'.rex_i18n::msg("no").'</span></td>';
+			$return .= '<td><span class="status status-2">'.pz_i18n::msg("no").'</span></td>';
 
 		if($this->user->isAdmin())  
-			$return .= '<td><span class="status status-1">'.rex_i18n::msg("yes").'</span></td>';
+			$return .= '<td><span class="status status-1">'.pz_i18n::msg("yes").'</span></td>';
 		else 
-			$return .= '<td><span class="status status-2">'.rex_i18n::msg("no").'</span></td>';
+			$return .= '<td><span class="status status-2">'.pz_i18n::msg("no").'</span></td>';
 
 
 		if(pz::getUser()->isAdmin())
 		{
 		
       if($this->user->hasPerm('webdav')) {
-        $return .= '<td><span class="status status-1">'.rex_i18n::msg("yes").'</span></td>';
+        $return .= '<td><span class="status status-1">'.pz_i18n::msg("yes").'</span></td>';
       }else {
-        $return .= '<td><span class="status status-2">'.rex_i18n::msg("no").'</span></td>';
+        $return .= '<td><span class="status status-2">'.pz_i18n::msg("no").'</span></td>';
       }
 
       if($this->user->hasPerm('carddav')) {
-        $return .= '<td><span class="status status-1">'.rex_i18n::msg("yes").'</span></td>';
+        $return .= '<td><span class="status status-1">'.pz_i18n::msg("yes").'</span></td>';
       }else {
-        $return .= '<td><span class="status status-2">'.rex_i18n::msg("no").'</span></td>';
+        $return .= '<td><span class="status status-2">'.pz_i18n::msg("no").'</span></td>';
       }
 		  
       if($this->user->hasPerm('projectsadmin')) {
-        $return .= '<td><span class="status status-1">'.rex_i18n::msg("yes").'</span></td>';
+        $return .= '<td><span class="status status-1">'.pz_i18n::msg("yes").'</span></td>';
       }else {
-        $return .= '<td><span class="status status-2">'.rex_i18n::msg("no").'</span></td>';
+        $return .= '<td><span class="status status-2">'.pz_i18n::msg("no").'</span></td>';
       }
 		
 		  $last_login = "-";
       if($this->user->getValue("last_login") != "")
       {
   		  $d = DateTime::createFromFormat('Y-m-d H:i:s', $this->user->getValue("last_login"), pz::getDateTimeZone());
-        $last_login = ' '.strftime(rex_i18n::msg("show_datetime_normal"),pz_user::getDateTime($d)->format("U")).'';
+        $last_login = ' '.strftime(pz_i18n::msg("show_datetime_normal"),pz_user::getDateTime($d)->format("U")).'';
       }
       
       /*
@@ -70,7 +70,7 @@ class pz_user_screen {
       if($this->user->getValue("created") != "")
       {
 		    $d = DateTime::createFromFormat('Y-m-d H:i:s', $this->user->getValue("created"), pz::getDateTimeZone());
-        $created = ' '.strftime(rex_i18n::msg("show_datetime_normal"),pz_user::getDateTime($d)->format("U")).'';
+        $created = ' '.strftime(pz_i18n::msg("show_datetime_normal"),pz_user::getDateTime($d)->format("U")).'';
 		  }
 		  */
 		
@@ -78,7 +78,7 @@ class pz_user_screen {
 		  // $return .= '<td>'.$created.'</td>'; // created
 		
 			if(pz::getUser()->getId() != $this->user->getId()) {
-        		$return .= '<td><a class="bt2" href="javascript:pz_loadPage(\'users_list\',\''.$del_link.'\')"><span class="title">'.rex_i18n::msg("delete").'</span></a></td>';
+        		$return .= '<td><a class="bt2" href="javascript:pz_loadPage(\'users_list\',\''.$del_link.'\')"><span class="title">'.pz_i18n::msg("delete").'</span></a></td>';
 			}else
 			{
 	        	$return .= '<td><span class="title"></span></td>';
@@ -118,17 +118,17 @@ class pz_user_screen {
           <table class="users tbl1">
           <thead><tr>
               <th></th>
-              <th>'.rex_i18n::msg("username").'</th>
-              <th>'.rex_i18n::msg("active").'</th>
-              <th>'.rex_i18n::msg("admin").'</th>
+              <th>'.pz_i18n::msg("username").'</th>
+              <th>'.pz_i18n::msg("active").'</th>
+              <th>'.pz_i18n::msg("admin").'</th>
               ';
 		if(pz::getUser()->isAdmin()) {
 			$content .= '
-              <th>'.rex_i18n::msg("webdav").'</th>
-              <th>'.rex_i18n::msg("carddav").'</th>
-              <th>'.rex_i18n::msg("projectsadmin").'</th>
-              <th>'.rex_i18n::msg("last_login").'</th>
-              <th>'.rex_i18n::msg("functions").'</th>
+              <th>'.pz_i18n::msg("webdav").'</th>
+              <th>'.pz_i18n::msg("carddav").'</th>
+              <th>'.pz_i18n::msg("projectsadmin").'</th>
+              <th>'.pz_i18n::msg("last_login").'</th>
+              <th>'.pz_i18n::msg("functions").'</th>
 				';
 		}
 		
@@ -143,7 +143,7 @@ class pz_user_screen {
 			$content = $p["info"].$content;
 		}
 		
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('title', $p["title"], false);
 		$f->setVar('content', $content , false);
 		return '<div id="users_list" class="design2col">'.$f->parse('pz_screen_list.tpl').'</div>';
@@ -171,13 +171,13 @@ class pz_user_screen {
         <table class="userperms tbl1">
         <thead><tr>
               <th></th>
-              <th>'.rex_i18n::msg("project_name").'</th>
-              <th>'.rex_i18n::msg("emails").'</th>
-              <th>'.rex_i18n::msg("calendar_events").'</th>
-              <th>'.rex_i18n::msg("calendar_jobs").'</th>
-              <th>'.rex_i18n::msg("calendar_caldav").'</th>
-              <th>'.rex_i18n::msg("calendar_jobs_caldav").'</th>
-              <th>'.rex_i18n::msg("files").'</th>
+              <th>'.pz_i18n::msg("project_name").'</th>
+              <th>'.pz_i18n::msg("emails").'</th>
+              <th>'.pz_i18n::msg("calendar_events").'</th>
+              <th>'.pz_i18n::msg("calendar_jobs").'</th>
+              <th>'.pz_i18n::msg("calendar_caldav").'</th>
+              <th>'.pz_i18n::msg("calendar_jobs_caldav").'</th>
+              <th>'.pz_i18n::msg("files").'</th>
           </tr></thead>
         <tbody>
           '.$list.'
@@ -191,13 +191,13 @@ class pz_user_screen {
           <table class="userperms tbl1">
           <thead><tr>
               <th></th>
-              <th>'.rex_i18n::msg("project_name").'</th>
-              <th>'.rex_i18n::msg("emails").'</th>
-              <th>'.rex_i18n::msg("calendar_events").'</th>
-              <th>'.rex_i18n::msg("calendar_jobs").'</th>
-              <th>'.rex_i18n::msg("calendar_caldav").'</th>
-              <th>'.rex_i18n::msg("calendar_jobs_caldav").'</th>
-              <th>'.rex_i18n::msg("files").'</th>
+              <th>'.pz_i18n::msg("project_name").'</th>
+              <th>'.pz_i18n::msg("emails").'</th>
+              <th>'.pz_i18n::msg("calendar_events").'</th>
+              <th>'.pz_i18n::msg("calendar_jobs").'</th>
+              <th>'.pz_i18n::msg("calendar_caldav").'</th>
+              <th>'.pz_i18n::msg("calendar_jobs_caldav").'</th>
+              <th>'.pz_i18n::msg("files").'</th>
           </tr></thead>
           <tbody>
             '.$list.'
@@ -208,7 +208,7 @@ class pz_user_screen {
 			$content = $p["info"].$content;
 		}
 		
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('title', $p["title"], false);
 		$f->setVar('content', $content , false);
 		return '<div id="userperms_list" class="design2col">'.$f->parse('pz_screen_list.tpl').'</div>';
@@ -262,7 +262,7 @@ class pz_user_screen {
 		$header = '
         <header>
           <div class="header">
-            <h1 class="hl1">'.rex_i18n::msg("search_for_users").'</h1>
+            <h1 class="hl1">'.pz_i18n::msg("search_for_users").'</h1>
           </div>
         </header>';
 		
@@ -272,8 +272,8 @@ class pz_user_screen {
 		$xform->setObjectparams("form_action", "javascript:pz_loadFormPage('users_list','users_search_form','".pz::url($p["mediaview"],$p["controll"],$p["function"])."')");
 		$xform->setObjectparams("form_id", "users_search_form");
 		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl', 'runtime'));
-		$xform->setValueField("text",array("search_name",rex_i18n::msg("name")));
-		$xform->setValueField("submit",array('submit',rex_i18n::msg('search'), '', 'search'));
+		$xform->setValueField("text",array("search_name",pz_i18n::msg("name")));
+		$xform->setValueField("submit",array('submit',pz_i18n::msg('search'), '', 'search'));
 		$xform->setValueField("hidden",array("mode","list"));
 		$searchform = $xform->getForm();
 		
@@ -289,14 +289,14 @@ class pz_user_screen {
 
     /*
 		if($this->user->isAdmin())  
-			$return .= '<td><span class="status status-1">'.rex_i18n::msg("yes").'</span></td>';
+			$return .= '<td><span class="status status-1">'.pz_i18n::msg("yes").'</span></td>';
 		else 
-			$return .= '<td><span class="status status-2">'.rex_i18n::msg("no").'</span></td>';
+			$return .= '<td><span class="status status-2">'.pz_i18n::msg("no").'</span></td>';
 
 		if($this->user->isActive())  
-			$return .= '<td><span class="status status-1">'.rex_i18n::msg("yes").'</span></td>';
+			$return .= '<td><span class="status status-1">'.pz_i18n::msg("yes").'</span></td>';
 		else 
-			$return .= '<td><span class="status status-2">'.rex_i18n::msg("no").'</span></td>';
+			$return .= '<td><span class="status status-2">'.pz_i18n::msg("no").'</span></td>';
     */
 
     $info = "";
@@ -306,14 +306,14 @@ class pz_user_screen {
       if($this->user->getValue("last_login") != "")
       {
   		  $d = DateTime::createFromFormat('Y-m-d H:i:s', $this->user->getValue("last_login"), pz::getDateTimeZone());
-        $last_login = ' '.strftime(rex_i18n::msg("show_datetime_normal"),pz_user::getDateTime($d)->format("U")).'';
+        $last_login = ' '.strftime(pz_i18n::msg("show_datetime_normal"),pz_user::getDateTime($d)->format("U")).'';
       }
       		
       $created = "-";
       if($this->user->getValue("created") != "")
       {
 		    $d = DateTime::createFromFormat('Y-m-d H:i:s', $this->user->getValue("created"), pz::getDateTimeZone());
-        $created = ' '.strftime(rex_i18n::msg("show_datetime_normal"),pz_user::getDateTime($d)->format("U")).'';
+        $created = ' '.strftime(pz_i18n::msg("show_datetime_normal"),pz_user::getDateTime($d)->format("U")).'';
 		  }
 
       $info = $last_login.''.$created.''; // created
@@ -350,13 +350,13 @@ class pz_user_screen {
 		$header = '
         <header>
           <div class="header">
-            <h1 class="hl1">'.rex_i18n::msg("api_key").'</h1>
+            <h1 class="hl1">'.pz_i18n::msg("api_key").'</h1>
           </div>
         </header>';
 	
 		$return = $header;
 	
-		$return .= '<div class="xform">'.rex_i18n::msg('api_info',$this->user->getAPIKey()).'</div>';
+		$return .= '<div class="xform">'.pz_i18n::msg('api_info',$this->user->getAPIKey()).'</div>';
 	
 		$return = '<div id="api_form"><div id="api_view" class="design1col xform-edit">'.$return.'</div></div>';
 
@@ -372,7 +372,7 @@ class pz_user_screen {
 		$header = '
         <header>
           <div class="header">
-            <h1 class="hl1">'.rex_i18n::msg("user_add").'</h1>
+            <h1 class="hl1">'.pz_i18n::msg("user_add").'</h1>
           </div>
         </header>';
 
@@ -384,27 +384,27 @@ class pz_user_screen {
 		$xform->setObjectparams("form_id", "user_add_form");
 
 		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
-		$xform->setValueField("text",array("name",rex_i18n::msg("name")));
-			$xform->setValidateField("empty",array("name",rex_i18n::msg("error_name_empty")));
-		$xform->setValueField("text",array("login",rex_i18n::msg("login")));
-			$xform->setValidateField("empty",array("login",rex_i18n::msg("error_login_empty")));
-			$xform->setValidateField("unique",array("login",rex_i18n::msg("error_login_unique")));
-		$xform->setValueField("text",array("password",rex_i18n::msg("password")));
+		$xform->setValueField("text",array("name",pz_i18n::msg("name")));
+			$xform->setValidateField("empty",array("name",pz_i18n::msg("error_name_empty")));
+		$xform->setValueField("text",array("login",pz_i18n::msg("login")));
+			$xform->setValidateField("empty",array("login",pz_i18n::msg("error_login_empty")));
+			$xform->setValidateField("unique",array("login",pz_i18n::msg("error_login_unique")));
+		$xform->setValueField("text",array("password",pz_i18n::msg("password")));
 
-		$xform->setValueField("text",array("email",rex_i18n::msg("email")));
-			$xform->setValidateField("empty",array("email",rex_i18n::msg("error_email_empty")));
-			$xform->setValidateField("unique",array("email",rex_i18n::msg("error_email_unique")));
+		$xform->setValueField("text",array("email",pz_i18n::msg("email")));
+			$xform->setValidateField("empty",array("email",pz_i18n::msg("error_email_empty")));
+			$xform->setValidateField("unique",array("email",pz_i18n::msg("error_email_unique")));
 
-		$xform->setValueField("checkbox",array("status",rex_i18n::msg("active"),"1","0","0"));
-		$xform->setValueField("checkbox",array("admin",rex_i18n::msg("admin").' ('.rex_i18n::msg("admin_info").')',"1","0","0"));
+		$xform->setValueField("checkbox",array("status",pz_i18n::msg("active"),"1","0","0"));
+		$xform->setValueField("checkbox",array("admin",pz_i18n::msg("admin").' ('.pz_i18n::msg("admin_info").')',"1","0","0"));
 		$xform->setValueField("stamp",array("created"," created","mysql_datetime","0","0","","","",""));
 		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0","","","",""));
 
-		$xform->setValueField("checkbox",array("webdav",rex_i18n::msg("webdav").' ('.rex_i18n::msg("webdav_info").')',"1","0","no_db"));
-		$xform->setValueField("checkbox",array("carddav",rex_i18n::msg("carddav").' ('.rex_i18n::msg("carddav_info").')',"1","0","no_db"));
-		$xform->setValueField("checkbox",array("projectsadmin",rex_i18n::msg("projectsadmin").' ('.rex_i18n::msg("projectsadmin_info").')',"1","0","no_db"));
+		$xform->setValueField("checkbox",array("webdav",pz_i18n::msg("webdav").' ('.pz_i18n::msg("webdav_info").')',"1","0","no_db"));
+		$xform->setValueField("checkbox",array("carddav",pz_i18n::msg("carddav").' ('.pz_i18n::msg("carddav_info").')',"1","0","no_db"));
+		$xform->setValueField("checkbox",array("projectsadmin",pz_i18n::msg("projectsadmin").' ('.pz_i18n::msg("projectsadmin_info").')',"1","0","no_db"));
 
-		$xform->setValueField("textarea",array("comment",rex_i18n::msg("user_comment")));
+		$xform->setValueField("textarea",array("comment",pz_i18n::msg("user_comment")));
 
 		$xform->setActionField("db",array('pz_user'));
 
@@ -438,7 +438,7 @@ class pz_user_screen {
 				$user->create();
 				
 			}
-			$return = $header.'<p class="xform-info">'.rex_i18n::msg("user_added").'</p>'.$return;
+			$return = $header.'<p class="xform-info">'.pz_i18n::msg("user_added").'</p>'.$return;
 			$return .= pz_screen::getJSLoadFormPage('users_list','users_search_form',pz::url($p["mediaview"],$p["controll"],$p["function"],array("mode"=>'list')));
 		}else
 		{
@@ -457,7 +457,7 @@ class pz_user_screen {
     	$header = '
         <header>
           <div class="header">
-            <h1 class="hl1">'.rex_i18n::msg("user_edit").': '.$this->user->getName().'</h1>
+            <h1 class="hl1">'.pz_i18n::msg("user_edit").': '.$this->user->getName().'</h1>
           </div>
         </header>';
 
@@ -476,32 +476,32 @@ class pz_user_screen {
 		$xform->setHiddenField("user_id",$this->user->getId());
 
 		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
-		$xform->setValueField("text",array("name",rex_i18n::msg("name")));
-		$xform->setValidateField("empty",array("name",rex_i18n::msg("error_name_empty")));
+		$xform->setValueField("text",array("name",pz_i18n::msg("name")));
+		$xform->setValidateField("empty",array("name",pz_i18n::msg("error_name_empty")));
 
-		$xform->setValueField("text",array("login",rex_i18n::msg("login")));
-		$xform->setValidateField("empty",array("login",rex_i18n::msg("error_login_empty")));
-		$xform->setValidateField("unique",array("login",rex_i18n::msg("error_login_unique")));
+		$xform->setValueField("text",array("login",pz_i18n::msg("login")));
+		$xform->setValidateField("empty",array("login",pz_i18n::msg("error_login_empty")));
+		$xform->setValidateField("unique",array("login",pz_i18n::msg("error_login_unique")));
 
-		$xform->setValueField("password",array("password",rex_i18n::msg("password"),"","no_db"));
+		$xform->setValueField("password",array("password",pz_i18n::msg("password"),"","no_db"));
 				
-		$xform->setValueField("text",array("email",rex_i18n::msg("email")));
-			$xform->setValidateField("empty",array("email",rex_i18n::msg("error_email_empty")));
-			$xform->setValidateField("unique",array("email",rex_i18n::msg("error_email_unique")));
+		$xform->setValueField("text",array("email",pz_i18n::msg("email")));
+			$xform->setValidateField("empty",array("email",pz_i18n::msg("error_email_empty")));
+			$xform->setValidateField("unique",array("email",pz_i18n::msg("error_email_unique")));
 
 		if($this->user->getId() != pz::getUser()->getId())
 		{
 		}
-		$xform->setValueField("checkbox",array("status",rex_i18n::msg("active"),"1","0","0"));
-		$xform->setValueField("checkbox",array("admin",rex_i18n::msg("admin").' ('.rex_i18n::msg("admin_info").')',"1","0","0"));
+		$xform->setValueField("checkbox",array("status",pz_i18n::msg("active"),"1","0","0"));
+		$xform->setValueField("checkbox",array("admin",pz_i18n::msg("admin").' ('.pz_i18n::msg("admin_info").')',"1","0","0"));
 		
 		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0"));
 
-		$xform->setValueField("checkbox",array("webdav",rex_i18n::msg("webdav").' ('.rex_i18n::msg("webdav_info").$this->user->hasPerm("webdav").')',"1",$this->user->hasPerm("webdav"),"no_db"));
-		$xform->setValueField("checkbox",array("carddav",rex_i18n::msg("carddav").' ('.rex_i18n::msg("carddav_info").')',"1",$this->user->hasPerm("carddav"),"no_db"));
-		$xform->setValueField("checkbox",array("projectsadmin",rex_i18n::msg("projectsadmin").' ('.rex_i18n::msg("projectsadmin_info").')',"1",$this->user->hasPerm("projectsadmin"),"no_db"));
+		$xform->setValueField("checkbox",array("webdav",pz_i18n::msg("webdav").' ('.pz_i18n::msg("webdav_info").$this->user->hasPerm("webdav").')',"1",$this->user->hasPerm("webdav"),"no_db"));
+		$xform->setValueField("checkbox",array("carddav",pz_i18n::msg("carddav").' ('.pz_i18n::msg("carddav_info").')',"1",$this->user->hasPerm("carddav"),"no_db"));
+		$xform->setValueField("checkbox",array("projectsadmin",pz_i18n::msg("projectsadmin").' ('.pz_i18n::msg("projectsadmin_info").')',"1",$this->user->hasPerm("projectsadmin"),"no_db"));
 
-		$xform->setValueField("textarea",array("comment",rex_i18n::msg("user_comment")));
+		$xform->setValueField("textarea",array("comment",pz_i18n::msg("user_comment")));
 
 		$xform->setActionField("db",array('pz_user','id='.$this->user->getId()));
 
@@ -531,7 +531,7 @@ class pz_user_screen {
       
       $this->user->update();
 			
-			$return = $header.'<p class="xform-info">'.rex_i18n::msg("user_updated").'</p>'.$return;
+			$return = $header.'<p class="xform-info">'.pz_i18n::msg("user_updated").'</p>'.$return;
 			$return .= pz_screen::getJSLoadFormPage('users_list','users_search_form',pz::url($p["mediaview"],$p["controll"],$p["function"],array("mode"=>'list')));
 			
 		}else
@@ -552,7 +552,7 @@ class pz_user_screen {
     	$header = '
         <header>
           <div class="header">
-            <h1 class="hl1">'.rex_i18n::msg("profile_edit").'</h1>
+            <h1 class="hl1">'.pz_i18n::msg("profile_edit").'</h1>
           </div>
         </header>';
 
@@ -568,25 +568,25 @@ class pz_user_screen {
 		$xform->setObjectparams('form_showformafterupdate',1);
 
 		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
-		$xform->setValueField("text",array("name",rex_i18n::msg("name")));
-		$xform->setValidateField("empty",array("name",rex_i18n::msg("error_name_empty")));
+		$xform->setValueField("text",array("name",pz_i18n::msg("name")));
+		$xform->setValidateField("empty",array("name",pz_i18n::msg("error_name_empty")));
 
-		$xform->setValueField("text",array("login",rex_i18n::msg("login")));
-		$xform->setValidateField("empty",array("login",rex_i18n::msg("error_login_empty")));
-		$xform->setValidateField("unique",array("login",rex_i18n::msg("error_login_unique")));
+		$xform->setValueField("text",array("login",pz_i18n::msg("login")));
+		$xform->setValidateField("empty",array("login",pz_i18n::msg("error_login_empty")));
+		$xform->setValidateField("unique",array("login",pz_i18n::msg("error_login_unique")));
 
-		$xform->setValueField("text",array("email",rex_i18n::msg("email")));
-			$xform->setValidateField("empty",array("email",rex_i18n::msg("error_email_empty")));
-			$xform->setValidateField("unique",array("email",rex_i18n::msg("error_email_unique")));
+		$xform->setValueField("text",array("email",pz_i18n::msg("email")));
+			$xform->setValidateField("empty",array("email",pz_i18n::msg("error_email_empty")));
+			$xform->setValidateField("unique",array("email",pz_i18n::msg("error_email_unique")));
 
-		$xform->setValueField("pz_select_screen",array("account_id",rex_i18n::msg("default_email_account"),pz::getUser()->getEmailaccountsAsString(),"","",0));
+		$xform->setValueField("pz_select_screen",array("account_id",pz_i18n::msg("default_email_account"),pz::getUser()->getEmailaccountsAsString(),"","",0));
 		
 		$startpages = array();
-		$startpages[] = array('id'=>'projects','label'=>rex_i18n::msg("projects"));
-		$startpages[] = array('id'=>'emails','label'=>rex_i18n::msg("emails"));
-		$startpages[] = array('id'=>'calendars','label'=>rex_i18n::msg("calendars"));
+		$startpages[] = array('id'=>'projects','label'=>pz_i18n::msg("projects"));
+		$startpages[] = array('id'=>'emails','label'=>pz_i18n::msg("emails"));
+		$startpages[] = array('id'=>'calendars','label'=>pz_i18n::msg("calendars"));
 		
-		$xform->setValueField("pz_select_screen",array("startpage",rex_i18n::msg("default_startpage_account"),$startpages,"no_db",$this->user->getConfig('startpage'),0));
+		$xform->setValueField("pz_select_screen",array("startpage",pz_i18n::msg("default_startpage_account"),$startpages,"no_db",$this->user->getConfig('startpage'),0));
 		
 		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0"));
 		$xform->setActionField("db",array('pz_user','id='.$this->user->getId()));
@@ -599,7 +599,7 @@ class pz_user_screen {
 			$this->user->setConfig('startpage',$xform->objparams["value_pool"]["email"]["startpage"]);
 			$this->user->saveConfig();
 			$this->user->update();
-			$return = $header.'<p class="xform-info">'.rex_i18n::msg("user_updated").'</p>'.$return;
+			$return = $header.'<p class="xform-info">'.pz_i18n::msg("user_updated").'</p>'.$return;
 			// $return .= pz_screen::getJSLoadFormPage('users_list','users_search_form',pz::url('screen','tools','users',array("mode"=>'list')));
 		}else
 		{
@@ -618,7 +618,7 @@ class pz_user_screen {
     	$header = '
         <header>
           <div class="header">
-            <h1 class="hl1">'.rex_i18n::msg("profile_edit_password").'</h1>
+            <h1 class="hl1">'.pz_i18n::msg("profile_edit_password").'</h1>
           </div>
         </header>';
 
@@ -635,12 +635,12 @@ class pz_user_screen {
 
 		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
 
-		$xform->setValueField("password",array("password",rex_i18n::msg("password"),"","no_db"));
-		$xform->setValueField("password",array("password_2",rex_i18n::msg("password_reenter"),"","no_db"));
+		$xform->setValueField("password",array("password",pz_i18n::msg("password"),"","no_db"));
+		$xform->setValueField("password",array("password_2",pz_i18n::msg("password_reenter"),"","no_db"));
 
-		$xform->setValidateField("empty",array("password",rex_i18n::msg("error_password_empty")));
+		$xform->setValidateField("empty",array("password",pz_i18n::msg("error_password_empty")));
 
-		$xform->setValidateField("compare",array("password","password_2",rex_i18n::msg("error_passwords_different")));
+		$xform->setValidateField("compare",array("password","password_2",pz_i18n::msg("error_passwords_different")));
 
 		$return = $xform->getForm();
 
@@ -654,7 +654,7 @@ class pz_user_screen {
 			
 			$this->user->update();
 			// $this->user->hashPassword();
-			$return = $header.'<p class="xform-info">'.rex_i18n::msg("user_password_updated").'</p>'.$return;
+			$return = $header.'<p class="xform-info">'.pz_i18n::msg("user_password_updated").'</p>'.$return;
 		}else
 		{
 			$return = $header.$return;	

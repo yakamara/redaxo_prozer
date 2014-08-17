@@ -13,7 +13,7 @@ class pz_projects_screen
 	{
 		
 		$project_id = rex_request("project_id","int");
-		$project_name = rex_i18n::msg("select_project");
+		$project_name = pz_i18n::msg("select_project");
 		
 		$projects = array();
     $customers = array();
@@ -23,17 +23,17 @@ class pz_projects_screen
 			$links = array();
 			/*if($project->hasCalendar()) 
 				$links[] = '<a href="'.pz::url('screen','calendars', 'day', array('project_id'=>$project->getId())).'">'.
-					'<span class="title">'.rex_i18n::msg("calendar").'</span></a>';
+					'<span class="title">'.pz_i18n::msg("calendar").'</span></a>';
 			*/
 			if($project->hasCalendarJobs())
 				$links[] = '<a href="'.pz::url('screen','project', 'jobs', array('project_id'=>$project->getId())).'">'.
-					'<span class="title">'.rex_i18n::msg("jobs").'</span></a>';
+					'<span class="title">'.pz_i18n::msg("jobs").'</span></a>';
 			if($project->hasFiles()) 
 				$links[] = '<a href="'.pz::url('screen','project', 'files', array('project_id'=>$project->getId())).'">'.
-					'<span class="title">'.rex_i18n::msg("files").'</span></a>';
+					'<span class="title">'.pz_i18n::msg("files").'</span></a>';
 			if($project->hasEmails()) 
 				$links[] = '<a href="'.pz::url('screen','project', 'emails', array('project_id'=>$project->getId())).'">'.
-					'<span class="title">'.rex_i18n::msg("emails").'</span></a>';
+					'<span class="title">'.pz_i18n::msg("emails").'</span></a>';
 			
 			if($project_id == $project->getId())
 				$project_name = $project->getName();
@@ -66,7 +66,7 @@ class pz_projects_screen
           $customer_name = pz_customer::get($customer_id)->getName();
         }else 
         {
-          $customer_name = rex_i18n::msg("customer_notexists");
+          $customer_name = pz_i18n::msg("customer_notexists");
         }
         
         $return .= '<ul class="entries projects-customer-flyout customer-'.$customer_id.'"><li class="entry customer" onclick="pz_toggleClass($(this),\'customer-active\');">

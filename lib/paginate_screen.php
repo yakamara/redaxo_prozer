@@ -163,7 +163,7 @@ class pz_paginate_screen{
       
       $link = "pz_paginatePage('".$append_layer."','".pz::url($p["mediaview"],$p["controll"],$p["function"],$p["linkvars"])."','#".$load_id."','#".$load_id."');";
 
-      $return .= '<div id="'.$load_id.'" class="page-load not-visible">'.rex_i18n::msg("paginate_page",($this->page_current+2)).'</div>';
+      $return .= '<div id="'.$load_id.'" class="page-load not-visible">'.pz_i18n::msg("paginate_page",($this->page_current+2)).'</div>';
 
       $return .= '<script>
       $(document).ready(function() {

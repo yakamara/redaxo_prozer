@@ -10,19 +10,20 @@ class pz_screen_controller extends pz_controller
 	{
 
  		$pz_login = new pz_login;
-    /*
-  		$login = rex_request('login','string');
-  		$psw = rex_request('psw','string');
-  		if($login != '' && $psw != '')  { $pz_login->setLogin($login, $psw); }
-    */
-    if(rex_request('logout','string') == 1) 
+    $login = rex_request('login','string');
+    $psw = rex_request('psw','string');
+    if($login != '' && $psw != '')  {
+        $pz_login->setLogin($login, $psw);
+    }
+
+    if(rex_request('logout','string') == 1)
     {
     	$pz_login->setLogout(true);
     }
 		$pz_login->checkLogin();
 
 		$controller = array();
-		foreach(self::$controller as $controll) 
+		foreach(self::$controller as $controll)
 		{
 			$class = 'pz_'.$controll.'_controller_'.pz::$mediaview;
 			if(class_exists($class)) 
@@ -37,11 +38,13 @@ class pz_screen_controller extends pz_controller
 				pz::debug("class does not exist: $controll");
 			}
 		}
+
 		static::$controller = $controller;
 
 		$controll = rex_request('controll','string');
 		if(!array_key_exists($controll,self::$controller))
 		{
+
 			if(pz::getUser() && array_key_exists(pz::getUser()->getStartpage(),self::$controller))
 			{
 				$controll = pz::getUser()->getStartpage(); // 'login';

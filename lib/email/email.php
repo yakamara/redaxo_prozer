@@ -40,7 +40,7 @@ class pz_email extends pz_model{
 
 		} else if (isset($vars["id"]) &&  $vars["id"] != "") {
 
-      $email_sql = rex_sql::factory();
+      $email_sql = pz_sql::factory();
   		$email_sql->setQuery('select * from pz_email where id = ?', array($vars["id"]));
   		$emails = $email_sql->getArray();
   		if(count($emails) != 1) return FALSE;
@@ -60,7 +60,7 @@ class pz_email extends pz_model{
   public function __call($m, $a) {
 
     if($this->setvars) {
-      $email_sql = rex_sql::factory();
+      $email_sql = pz_sql::factory();
       $emails_array = $email_sql->getArray('select * from pz_email where id = ? LIMIT 2', array($this->getId()));
       foreach($emails_array as $email) {
         $this->__construct($email);
@@ -78,7 +78,7 @@ class pz_email extends pz_model{
 	static function get($email_id = "")
 	{
 		if($email_id == "") return FALSE;
-		$email_sql = rex_sql::factory();
+		$email_sql = pz_sql::factory();
 		$email_sql->setQuery('select * from pz_email where id = ?', array($email_id));
 		$emails = $email_sql->getArray();
 		if(count($emails) != 1) return FALSE;
@@ -96,7 +96,7 @@ class pz_email extends pz_model{
 			}
 		}
 		
-		$emails = rex_sql::factory();
+		$emails = pz_sql::factory();
 		$emails->setQuery('select e.* from pz_email as e where e.id = ?', $params);
 		$emails_array = $emails->getArray();
 		
@@ -166,7 +166,7 @@ class pz_email extends pz_model{
 		  $order_sql = ' order by '.implode(',',$order_array);
 		}
 
-    $sql = rex_sql::factory();
+    $sql = pz_sql::factory();
     if(is_object($pager)) {
       $emails_array = pz_model::query('SELECT id FROM pz_email '.$where_sql .' '.$order_sql.'', $params, $pager);
       
@@ -290,7 +290,7 @@ class pz_email extends pz_model{
 		if($subject != "") {
 			return $subject;
 		}
-		return rex_i18n::msg("no_subject_entered");
+		return pz_i18n::msg("no_subject_entered");
 	}
 
 	public function getEml() {
@@ -608,14 +608,14 @@ class pz_email extends pz_model{
 		$this->setCreated(pz::getDateTime()->format("Y-m-d H:i:s"));
 		$this->setUpdated(pz::getDateTime()->format("Y-m-d H:i:s"));
 		
-		$get_email = rex_sql::factory();
+		$get_email = pz_sql::factory();
 		// $get_email->debugsql = 1;
 		$get_email->setQuery('select id from pz_email where message_id = ?',array($this->getMessageId()));
 		
 		if($get_email->getRows() == 0)
 		{
 			// email does not exist
-			$add_email = rex_sql::factory();
+			$add_email = pz_sql::factory();
 			// $add_email->debugsql = 1;
 			$add_email->setTable('pz_email');
 			foreach($this->getVars() as $k => $v)
@@ -664,7 +664,7 @@ class pz_email extends pz_model{
 		  {
 
         // Während des Mailversandes als Draft markiert.
-        $u = rex_sql::factory();
+        $u = pz_sql::factory();
         $u->setTable("pz_email");
         $u->setWhere(array('id'=>$this->getId()));
         $u->setValue("draft",1);
@@ -752,7 +752,7 @@ class pz_email extends pz_model{
 		  ob_end_clean();
 
 	
-			$u = rex_sql::factory();
+			$u = pz_sql::factory();
 			// $u->debugsql = 1;
 			$u->setTable("pz_email");
 			$u->setWhere(array('id'=>$this->getId()));
@@ -777,7 +777,7 @@ class pz_email extends pz_model{
 			
 			if($reply_id > 0)
 			{
-				$u = rex_sql::factory();
+				$u = pz_sql::factory();
 				$u->setTable("pz_email");
 				$u->setWhere(array('id'=>$reply_id));
 				$u->setValue("replied_id",$this->getId());
@@ -787,7 +787,7 @@ class pz_email extends pz_model{
 			$forward_id = (int) $this->getForwardId();
 			if($forward_id > 0)
 			{
-				$u = rex_sql::factory();
+				$u = pz_sql::factory();
 				$u->setTable("pz_email");
 				$u->setWhere(array('id'=>$forward_id));
 				$u->setValue("forwarded_id",$this->getId());
@@ -803,14 +803,14 @@ class pz_email extends pz_model{
 	}
 	
 	public function trash() {
-		$u = rex_sql::factory();
+		$u = pz_sql::factory();
 		$u->setQuery('update pz_email set trash=1, project_id = 0 where id = ?', array($this->getId()));
 		$this->update();
 		$this->saveToHistory('update','trash');
 	}
 
 	public function untrash() {
-		$u = rex_sql::factory();
+		$u = pz_sql::factory();
 		$u->setQuery('update pz_email set trash=0 where id = ?', array($this->getId()));
 		$this->update();
 		$this->saveToHistory('update','untrash');
@@ -819,26 +819,26 @@ class pz_email extends pz_model{
 	public function updateStatus($status = 0) {
 		if($status != 1)
 			$status = 0;
-		$u = rex_sql::factory();
+		$u = pz_sql::factory();
 		$u->setQuery('update pz_email set status=? where id = ?', array($status,$this->getId()));
 		$this->update();	
 	}
 
 	public function readed() {
-		$u = rex_sql::factory();
+		$u = pz_sql::factory();
 		$u->setQuery('update pz_email set readed=1 where id = ?', array($this->getId()));
 		$this->update();
 	}
 
 	public function unreaded() {
-		$u = rex_sql::factory();
+		$u = pz_sql::factory();
 		$u->setQuery('update pz_email set readed=0 where id = ?', array($this->getId()));
 		$this->update();
 	}
 
 	public function moveToProjectId($project_id = 0) 
 	{
-		$u = rex_sql::factory();
+		$u = pz_sql::factory();
 		$u->setQuery('update pz_email set trash=0,project_id=? where id = ?', array($project_id,$this->getId()));
 		$this->update();
 		
@@ -848,7 +848,7 @@ class pz_email extends pz_model{
 
 	public function removeFromProject() 
 	{
-		$u = rex_sql::factory();
+		$u = pz_sql::factory();
 		$u->setQuery('update pz_email set trash=0,project_id=? where id = ?', array(0,$this->getId()));
 		$this->update();
 		$this->saveToHistory('update','removefromproject');
@@ -874,12 +874,12 @@ class pz_email extends pz_model{
     }
 
 		if($this->isDraft()) {
-			$d = rex_sql::factory();
+			$d = pz_sql::factory();
 			$d->setQuery('delete from pz_email where id = ?', array($this->getId()));
 			return TRUE;
 	
 		}else if($this->isTrash()) {
-			$d = rex_sql::factory();
+			$d = pz_sql::factory();
 			$d->setQuery('delete from pz_email where id = ?', array($this->getId()));
   		rex_dir::delete($this->getFolder());
       return TRUE;		  
@@ -917,7 +917,7 @@ class pz_email extends pz_model{
 		}
 
 		if(count($update)>0) {
-			$u = rex_sql::factory();
+			$u = pz_sql::factory();
 			// $u->debugsql = 1;
 			$u->setTable('pz_email');
 			$u->setWhere(array('id' => $this->getId()));
@@ -933,7 +933,7 @@ class pz_email extends pz_model{
 
   public function saveToHistory($mode = 'update', $func = '')
   {
-    $sql = rex_sql::factory();
+    $sql = pz_sql::factory();
     $sql->setTable('pz_history')
       ->setValue('control', 'email')
       ->setValue('func', $func)

@@ -44,7 +44,7 @@
 
           }
           
-          ?><?php echo rex_i18n::msg("order_name").': '.$this->orders[$active]["name"]; ?></span>
+          ?><?php echo pz_i18n::msg("order_name").': '.$this->orders[$active]["name"]; ?></span>
             <div class="flyout">
               <div class="content">
                 <ul class="entries sort">

@@ -3,7 +3,7 @@
 class pz_api 
 {
 
-	public function	send($data, $format = "json")
+	static public function send($data, $format = "json")
 	{
 	  switch($format)
 	  {

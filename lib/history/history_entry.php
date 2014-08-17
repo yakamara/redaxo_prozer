@@ -15,7 +15,7 @@ class pz_history_entry extends pz_model
 		if($id == "") return FALSE;
 		$id = (int) $id;
 
-		$sql = rex_sql::factory();
+		$sql = pz_sql::factory();
 		$sql->setQuery('select * from pz_history where id = ? LIMIT 2',array($id));
 
 		$entries = $sql->getArray();
@@ -30,7 +30,7 @@ class pz_history_entry extends pz_model
 	
 	public function delete() 
 	{
-    $d = rex_sql::factory();
+    $d = pz_sql::factory();
 		$d->setQuery('delete from pz_history where id = ?', array($this->getId()));
 		return TRUE;
 	
@@ -38,5 +38,3 @@ class pz_history_entry extends pz_model
 	
 
 }
-
-?>

@@ -133,13 +133,13 @@ class pz_history_entry_screen
           <figure><img src="'.$user_image.'" width="25" height="25" /></figure>
           <hgroup class="data">
             <h2 class="hl7 piped">
-              <span class="name">'.strftime(rex_i18n::msg("show_datetime_normal"),$d->format("U")).' / '.$p["title"].'</span>
+              <span class="name">'.strftime(pz_i18n::msg("show_datetime_normal"),$d->format("U")).' / '.$p["title"].'</span>
               <span>'.$this->entry->getVar("mode").' / '.$this->entry->getVar("control").' / '.$this->entry->getVar("func").'</span>
               <span> '.$project_name.' / '.$user_name.' </span>';
 
     if($p["show_toggle"])
     {
-      $return .= '<a class="button bt1" href="javascript:void(0);" onclick="$(this).closest(\'.history\').find(\'footer\').toggleClass(\'hidden\');"><span class="inner">'.rex_i18n::msg("toggle").'</span></a>';
+      $return .= '<a class="button bt1" href="javascript:void(0);" onclick="$(this).closest(\'.history\').find(\'footer\').toggleClass(\'hidden\');"><span class="inner">'.pz_i18n::msg("toggle").'</span></a>';
     
     }
 
@@ -153,6 +153,3 @@ class pz_history_entry_screen
 
 
 }
-
-
-?>

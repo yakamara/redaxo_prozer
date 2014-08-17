@@ -14,7 +14,7 @@ class pz_customers_screen {
 	    $return = '
 	        <header>
 	          <div class="header">
-	            <h1 class="hl1">'.rex_i18n::msg("search_for_customer").'</h1>
+	            <h1 class="hl1">'.pz_i18n::msg("search_for_customer").'</h1>
 	          </div>
 	        </header>';
         
@@ -25,9 +25,9 @@ class pz_customers_screen {
 		$xform->setObjectparams("form_id", "customer_search_form");
 
 		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl', 'runtime'));
-		$xform->setValueField("text",array("search_name",rex_i18n::msg("project_name")));
+		$xform->setValueField("text",array("search_name",pz_i18n::msg("project_name")));
 		$xform->setValueField("checkbox",array("archived","archived","1","0","0","","","",""));
-		$xform->setValueField("submit",array('submit',rex_i18n::msg('search'), '', 'search'));
+		$xform->setValueField("submit",array('submit',pz_i18n::msg('search'), '', 'search'));
 		$return .= $xform->getForm();
 		
 		$return = '<div id="customer_search" class="design1col xform-search">'.$return.'</div>';
@@ -61,7 +61,7 @@ class pz_customers_screen {
 
     $content = $paginate.$list.$paginate_loader;
 
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('title', $p["title"], false);
 		$f->setVar('content', $content , false);
 		$f->setVar('paginate', "", false);

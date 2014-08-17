@@ -142,41 +142,41 @@ class pz_addresses_controller_screen extends pz_addresses_controller {
 	static function getAddressListOrders($orders = array(), $p = array())
 	{
 
-		$orders['iddesc'] = array("orderby" => "name", "sort" => "desc", "name" => rex_i18n::msg("address_orderby_iddesc"), 
+		$orders['iddesc'] = array("orderby" => "name", "sort" => "desc", "name" => pz_i18n::msg("address_orderby_iddesc"),
 			"link" => "javascript:pz_loadPage('addresses_list','".
 			pz::url($p["mediaview"],$p["controll"],$p["function"],array_merge($p["linkvars"],array("mode" => "list", "search_orderby" => "iddesc"))).
 			"')");
-		$orders['idasc'] = array("orderby" => "name", "sort" => "asc", "name" => rex_i18n::msg("address_orderby_idasc"), 
+		$orders['idasc'] = array("orderby" => "name", "sort" => "asc", "name" => pz_i18n::msg("address_orderby_idasc"),
 			"link" => "javascript:pz_loadPage('addresses_list','".
 			pz::url($p["mediaview"],$p["controll"],$p["function"],array_merge($p["linkvars"],array("mode" => "list", "search_orderby" => "idasc"))).
 			"')");
 
-		$orders['lastnamedesc'] = array("orderby" => "name", "sort" => "desc", "name" => rex_i18n::msg("address_orderby_lastnamedesc"), 
+		$orders['lastnamedesc'] = array("orderby" => "name", "sort" => "desc", "name" => pz_i18n::msg("address_orderby_lastnamedesc"),
 			"link" => "javascript:pz_loadPage('addresses_list','".
 			pz::url($p["mediaview"],$p["controll"],$p["function"],array_merge($p["linkvars"],array("mode" => "list", "search_orderby" => "lastnamedesc"))).
 			"')");
 
-		$orders['lastnameasc'] = array("orderby" => "name", "sort" => "asc", "name" => rex_i18n::msg("address_orderby_lastnameasc"), 
+		$orders['lastnameasc'] = array("orderby" => "name", "sort" => "asc", "name" => pz_i18n::msg("address_orderby_lastnameasc"),
 			"link" => "javascript:pz_loadPage('addresses_list','".
 			pz::url($p["mediaview"],$p["controll"],$p["function"],array_merge($p["linkvars"],array("mode" => "list", "search_orderby" => "lastnameasc"))).
 			"')");
 
-		$orders['firstnamedesc'] = array("orderby" => "firstname", "sort" => "desc", "name" => rex_i18n::msg("address_orderby_firstnamedesc"), 
+		$orders['firstnamedesc'] = array("orderby" => "firstname", "sort" => "desc", "name" => pz_i18n::msg("address_orderby_firstnamedesc"),
 			"link" => "javascript:pz_loadPage('addresses_list','".
 			pz::url($p["mediaview"],$p["controll"],$p["function"],array_merge($p["linkvars"],array("mode" => "list", "search_orderby" => "firstnamedesc"))).
 			"')");
 
-		$orders['firstnameasc'] = array("orderby" => "firstname", "asc" => "asc", "name" => rex_i18n::msg("address_orderby_firstnameasc"), 
+		$orders['firstnameasc'] = array("orderby" => "firstname", "asc" => "asc", "name" => pz_i18n::msg("address_orderby_firstnameasc"),
 			"link" => "javascript:pz_loadPage('addresses_list','".
 			pz::url($p["mediaview"],$p["controll"],$p["function"],array_merge($p["linkvars"],array("mode" => "list", "search_orderby" => "firstnameasc"))).
 			"')");
 
-		$orders['companydesc'] = array("orderby" => "company", "sort" => "desc", "name" => rex_i18n::msg("address_orderby_companydesc"), 
+		$orders['companydesc'] = array("orderby" => "company", "sort" => "desc", "name" => pz_i18n::msg("address_orderby_companydesc"),
 			"link" => "javascript:pz_loadPage('addresses_list','".
 			pz::url($p["mediaview"],$p["controll"],$p["function"],array_merge($p["linkvars"],array("mode" => "list", "search_orderby" => "companydesc"))).
 			"')");
 
-		$orders['companyasc'] = array("orderby" => "company", "sort" => "asc", "name" => rex_i18n::msg("address_orderby_companyasc"), 
+		$orders['companyasc'] = array("orderby" => "company", "sort" => "asc", "name" => pz_i18n::msg("address_orderby_companyasc"),
 			"link" => "javascript:pz_loadPage('addresses_list','".
 			pz::url($p["mediaview"],$p["controll"],$p["function"],array_merge($p["linkvars"],array("mode" => "list", "search_orderby" => "companyasc"))).
 			"')");
@@ -201,7 +201,7 @@ class pz_addresses_controller_screen extends pz_addresses_controller {
 
 	function getMyAddressesPage($p = array()) 
 	{
-		$p["title"] = rex_i18n::msg("my_addresses");
+		$p["title"] = pz_i18n::msg("my_addresses");
 		
 		$s1_content = "";
 		$s2_content = "";
@@ -270,7 +270,7 @@ class pz_addresses_controller_screen extends pz_addresses_controller {
 
 		$s1_content .= $form;
 
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('header', pz_screen::getHeader($p), false);
 		$f->setVar('function', $this->getNavigation($p), false);
 		$f->setVar('section_1', $s1_content, false);
@@ -281,7 +281,7 @@ class pz_addresses_controller_screen extends pz_addresses_controller {
 
 	function getAddressesPage($p = array()) 
 	{
-		$p["title"] = rex_i18n::msg("all_addresses");
+		$p["title"] = pz_i18n::msg("all_addresses");
 		
 		$s1_content = "";
 		$s2_content = "";
@@ -336,7 +336,7 @@ class pz_addresses_controller_screen extends pz_addresses_controller {
 
 		$s1_content .= $form;
 
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('header', pz_screen::getHeader($p), false);
 		$f->setVar('function', $this->getNavigation($p), false);
 		$f->setVar('section_1', $s1_content, false);

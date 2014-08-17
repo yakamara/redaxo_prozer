@@ -14,7 +14,7 @@ class pz_project_controller_screen extends pz_project_controller
 		
 		if(!$this->setProject(rex_request("project_id","int"))) 
 		{
-			return rex_i18n::msg("no_permission_contact_admin").' - PNPXS-'.rex_request("project_id","int");
+			return pz_i18n::msg("no_permission_contact_admin").' - PNPXS-'.rex_request("project_id","int");
 		}
 
 		if(!$this->project->hasEmails() || !$this->projectuser->hasEmails())
@@ -66,7 +66,7 @@ class pz_project_controller_screen extends pz_project_controller
 			default: break;
 		}
 
-		return rex_i18n::msg("no_permission_contact_admin").' - PNPNF-'.rex_request("project_id","int"); 
+		return pz_i18n::msg("no_permission_contact_admin").' - PNPNF-'.rex_request("project_id","int");
 
 	}
 
@@ -83,13 +83,13 @@ class pz_project_controller_screen extends pz_project_controller
 			if($this->function == $k) $active = " active";
 			$items[$k] = array();
 			$items[$k]["classes"] = $k.$first.$active;
-			$items[$k]["name"] = rex_i18n::msg("page_".$this->name."_".$k);
+			$items[$k]["name"] = pz_i18n::msg("page_".$this->name."_".$k);
 			$items[$k]["url"] = pz::url('screen',$this->name, $k, array('project_id'=>$this->project_id));
 			$first = "";
 			$temp_k = $k;
 		}
 		if($temp_k != "") $items[$temp_k]["classes"] = $k." last";
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->items = $items;
 		$f->item_active = $this->function;
 		
@@ -109,7 +109,7 @@ class pz_project_controller_screen extends pz_project_controller
 	{
 	
 	  $p["layer"] = 'history_list';
-		$p["title"] = rex_i18n::msg("project_history");
+		$p["title"] = pz_i18n::msg("project_history");
 	
 		$section_1 = '';
 		$section_2 = '';
@@ -173,7 +173,7 @@ class pz_project_controller_screen extends pz_project_controller
 		$section_2 = $entries_list;
 	
 		$p = array();
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('header', pz_screen::getHeader(), false);
 		$f->setVar('function', $this->getNavigation() , false);
 		$f->setVar('section_1', $section_1 , false);
@@ -188,7 +188,7 @@ class pz_project_controller_screen extends pz_project_controller
 	{
 
     $p["layer"] = 'ordered_list'; // history
-		$p["title"] = rex_i18n::msg("page_project_view"); // project_history
+		$p["title"] = pz_i18n::msg("page_project_view"); // project_history
 	
 		$section_1 = '';
 		$section_2 = '';
@@ -256,7 +256,7 @@ class pz_project_controller_screen extends pz_project_controller
 		$section_2 = $entries_list;
 	
 		$p = array();
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('header', pz_screen::getHeader(), false);
 		$f->setVar('function', $this->getNavigation() , false);
 		$f->setVar('section_1', $section_1 , false);
@@ -422,7 +422,7 @@ class pz_project_controller_screen extends pz_project_controller
 	public function getUserPage($p = array()) 
 	{
 	
-		$p["title"] = rex_i18n::msg("projectuserlist");
+		$p["title"] = pz_i18n::msg("projectuserlist");
 	
 		$section_1 = "";
 		$section_2 = "";
@@ -445,10 +445,10 @@ class pz_project_controller_screen extends pz_project_controller
 			case("delete"):
 				if($this->project->deleteUser(rex_request("projectuser_id")))
 				{
-					$p["info"] = '<p class="xform-info">'.rex_i18n::msg("projectuser_deleted").'</p>';					
+					$p["info"] = '<p class="xform-info">'.pz_i18n::msg("projectuser_deleted").'</p>';
 				}else
 				{
-					$p["info"] = '<p class="xform-warning">'.rex_i18n::msg("projectuser_deleted_failed").'</p>';					
+					$p["info"] = '<p class="xform-warning">'.pz_i18n::msg("projectuser_deleted_failed").'</p>';
 				}
 				
 			case("list"):
@@ -480,7 +480,7 @@ class pz_project_controller_screen extends pz_project_controller
 		}
 	
 		$p = array();
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('header', pz_screen::getHeader(), false);
 		$f->setVar('function', $this->getNavigation() , false);
 		$f->setVar('section_1', $section_1 , false); // $pus->getAddForm()
@@ -500,7 +500,7 @@ class pz_project_controller_screen extends pz_project_controller
 	public function getWikiPage($p = array()) 
 	{
 	
-		$p["title"] = rex_i18n::msg("project_wiki");
+		$p["title"] = pz_i18n::msg("project_wiki");
 	
 		$section_1 = '';
 		$section_2 = '';
@@ -518,7 +518,7 @@ class pz_project_controller_screen extends pz_project_controller
 		}
 	
 		$p = array();
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('header', pz_screen::getHeader(), false);
 		$f->setVar('function', $this->getNavigation() , false);
 		$f->setVar('section_1', $section_1 , false);
@@ -535,7 +535,7 @@ class pz_project_controller_screen extends pz_project_controller
 		public function getJobsPage($p = array()) 
 		{
 		
-			$p["title"] = rex_i18n::msg("project_jobs");
+			$p["title"] = pz_i18n::msg("project_jobs");
 			$p["mediaview"] = "screen";
 			$p["controll"] = "project";
 			$p["function"] = "jobs";
@@ -567,7 +567,7 @@ class pz_project_controller_screen extends pz_project_controller
 			$searchform = '
 	        <header>
 	          <div class="header">
-	            <h1 class="hl1">'.rex_i18n::msg("search_for_jobs").'</h1>
+	            <h1 class="hl1">'.pz_i18n::msg("search_for_jobs").'</h1>
 	          </div>
 	        </header>';
 			
@@ -577,11 +577,11 @@ class pz_project_controller_screen extends pz_project_controller
 			$xform->setObjectparams("form_action", "javascript:pz_loadFormPage('projectjobs_list','projectjob_search_form','".pz::url('screen','project',$this->function)."')");
 			$xform->setObjectparams("form_id", "projectjob_search_form");
 			$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl', 'runtime'));
-			$xform->setValueField("text",array("search_title",rex_i18n::msg("title")));
-			$xform->setValueField("pz_date_screen",array("search_date_from",rex_i18n::msg("search_date_from")));
-			$xform->setValueField("pz_date_screen",array("search_date_to",rex_i18n::msg("search_date_to")));
+			$xform->setValueField("text",array("search_title",pz_i18n::msg("title")));
+			$xform->setValueField("pz_date_screen",array("search_date_from",pz_i18n::msg("search_date_from")));
+			$xform->setValueField("pz_date_screen",array("search_date_to",pz_i18n::msg("search_date_to")));
 			
-			$xform->setValueField("submit",array('submit',rex_i18n::msg('search'), '', 'search'));
+			$xform->setValueField("submit",array('submit',pz_i18n::msg('search'), '', 'search'));
 			$xform->setValueField("hidden",array("mode","list"));
 			$xform->setValueField("hidden",array("project_id",$this->project->getId()));
 			$searchform .= $xform->getForm();
@@ -608,14 +608,14 @@ class pz_project_controller_screen extends pz_project_controller
 			$minutes = $minutes - ($hfm*60);
 	
 			$p["list_links"] = array();
-			$p["list_links"][] = rex_i18n::msg('jobtime_total').' '.$hours.'h '.$minutes.'m';
+			$p["list_links"][] = pz_i18n::msg('jobtime_total').' '.$hours.'h '.$minutes.'m';
 			$p["list_links"][] = '<a href="'.pz::url('screen','project',$this->function,array(
 							"mode" =>"export_excel",
 							"project_id" => $this->project->getId(),
 							"search_title" => rex_request("search_title"),
 							"search_date_from" => rex_request("search_date_from"),
 							"search_date_to" => rex_request("search_date_to"),
-						)).'">'.rex_i18n::msg('excel_export').'</a>';
+						)).'">'.pz_i18n::msg('excel_export').'</a>';
 	
 	    $p["linkvars"]["mode"] = "list";
 	    $p["linkvars"]["project_id"] = $this->project->getId();
@@ -634,7 +634,7 @@ class pz_project_controller_screen extends pz_project_controller
 			$section_2 = $jobs_list;
 		
 			$p = array();
-			$f = new rex_fragment();
+			$f = new pz_fragment();
 			$f->setVar('header', pz_screen::getHeader(), false);
 			$f->setVar('function', $this->getNavigation() , false);
 			$f->setVar('section_1', $section_1 , false);
@@ -656,8 +656,8 @@ class pz_project_controller_screen extends pz_project_controller
 	public function getEmailsPage($p = array()) 
 	{
 	
-		$p["title"] = rex_i18n::msg("emails_inbox");
-		$p["title_search"] = rex_i18n::msg("emails_projekt_search");
+		$p["title"] = pz_i18n::msg("emails_inbox");
+		$p["title_search"] = pz_i18n::msg("emails_projekt_search");
 		
 		$p["mediaview"] = "screen";
 		$p["controll"] = "project";
@@ -714,7 +714,7 @@ class pz_project_controller_screen extends pz_project_controller
     $s1_content .= pz_email_screen::getEmailsSearchForm($p, $ignore_search_fields);
     $s2_content .= $return;
 
-    $f = new rex_fragment();
+    $f = new pz_fragment();
     $f->setVar('header', pz_screen::getHeader($p), false);
     $f->setVar('function', $this->getNavigation($p), false);
     $f->setVar('section_1', $s1_content, false);
@@ -755,12 +755,12 @@ class pz_project_controller_screen extends pz_project_controller
           <table class="projectfiles tbl1">
           <thead><tr>
               <th></th>
-              <th>'.rex_i18n::msg("filename").'</th>
-              <th>'.rex_i18n::msg("filesize").'</th>
-              <th>'.rex_i18n::msg("comment").'</th>
-              <th>'.rex_i18n::msg("createdate").'</th>
-              <th>'.rex_i18n::msg("createuser").'</th>
-              <th>'.rex_i18n::msg("updateuser").'</th>
+              <th>'.pz_i18n::msg("filename").'</th>
+              <th>'.pz_i18n::msg("filesize").'</th>
+              <th>'.pz_i18n::msg("comment").'</th>
+              <th>'.pz_i18n::msg("createdate").'</th>
+              <th>'.pz_i18n::msg("createuser").'</th>
+              <th>'.pz_i18n::msg("updateuser").'</th>
               <th class="label"></th>
           </tr></thead>
           <tbody>
@@ -768,7 +768,7 @@ class pz_project_controller_screen extends pz_project_controller
           </tbody>
           </table>';
 		
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('title', $p["title"], false);
 		$f->setVar('content', $content , false);
 		return '<div id="projectfiles_list" class="design2col">'.$f->parse('pz_screen_list.tpl').'</div>';
@@ -782,7 +782,7 @@ class pz_project_controller_screen extends pz_project_controller
 		$orders['namedesc'] = array(
 		  "orderby" => "name", 
 		  "sort" => "desc", 
-		  "name" => rex_i18n::msg("files_orderby_namedesc"), 
+		  "name" => pz_i18n::msg("files_orderby_namedesc"),
 			"link" => "javascript:pz_loadPage('".$p["layer_list"]."','".
 			      pz::url(
 			        $p["mediaview"],
@@ -796,7 +796,7 @@ class pz_project_controller_screen extends pz_project_controller
 		  array(
 		    "orderby" => "name", 
 		    "sort" => "asc", 
-		    "name" => rex_i18n::msg("files_orderby_nameasc"), 
+		    "name" => pz_i18n::msg("files_orderby_nameasc"),
 			  "link" => "javascript:pz_loadPage('".$p["layer_list"]."','".
 			      pz::url(
 			        $p["mediaview"],
@@ -810,7 +810,7 @@ class pz_project_controller_screen extends pz_project_controller
 		  array(
 		    "orderby" => "created", 
 		    "sort" => "desc", 
-		    "name" => rex_i18n::msg("files_orderby_createdesc"), 
+		    "name" => pz_i18n::msg("files_orderby_createdesc"),
 			  "link" => "javascript:pz_loadPage('".$p["layer_list"]."','".
 			    pz::url(
 			      $p["mediaview"],
@@ -824,7 +824,7 @@ class pz_project_controller_screen extends pz_project_controller
 		  array(
 		    "orderby" => "created", 
 		    "sort" => "asc", 
-		    "name" => rex_i18n::msg("files_orderby_createasc"), 
+		    "name" => pz_i18n::msg("files_orderby_createasc"),
 			  "link" => "javascript:pz_loadPage('".$p["layer_list"]."','".
 			    pz::url(
 			      $p["mediaview"],
@@ -838,7 +838,7 @@ class pz_project_controller_screen extends pz_project_controller
 		  array(
 		    "orderby" => "filesize", 
 		    "sort" => "desc", 
-		    "name" => rex_i18n::msg("files_orderby_filesizedesc"), 
+		    "name" => pz_i18n::msg("files_orderby_filesizedesc"),
 			  "link" => "javascript:pz_loadPage('".$p["layer_list"]."','".
 			    pz::url(
 			      $p["mediaview"],
@@ -852,7 +852,7 @@ class pz_project_controller_screen extends pz_project_controller
 		  array(
 		    "orderby" => "filesize", 
 		    "sort" => "asc", 
-		    "name" => rex_i18n::msg("files_orderby_filesizeasc"), 
+		    "name" => pz_i18n::msg("files_orderby_filesizeasc"),
 			  "link" => "javascript:pz_loadPage('".$p["layer_list"]."','".
 			    pz::url(
 			      $p["mediaview"],
@@ -867,7 +867,7 @@ class pz_project_controller_screen extends pz_project_controller
 		  array(
 		    "orderby" => "mimetype", 
 		    "sort" => "desc", 
-		    "name" => rex_i18n::msg("files_orderby_mimetypedesc"), 
+		    "name" => pz_i18n::msg("files_orderby_mimetypedesc"),
 			  "link" => "javascript:pz_loadPage('".$p["layer_list"]."','".
 			    pz::url(
 			      $p["mediaview"],
@@ -881,7 +881,7 @@ class pz_project_controller_screen extends pz_project_controller
 		  array(
 		    "orderby" => "mimetype", 
 		    "sort" => "asc", 
-		    "name" => rex_i18n::msg("files_orderby_mimetypeasc"), 
+		    "name" => pz_i18n::msg("files_orderby_mimetypeasc"),
 			  "link" => "javascript:pz_loadPage('".$p["layer_list"]."','".
 			    pz::url(
 			      $p["mediaview"],
@@ -916,7 +916,7 @@ class pz_project_controller_screen extends pz_project_controller
 			dir...	createFile($name, $data = null)
 		*/
 		
-		$p["title"] = rex_i18n::msg("files");
+		$p["title"] = pz_i18n::msg("files");
 		$p["linkvars"]["project_id"] = $this->project->getId();
 		$p["linkvars"]["search_name"] = rex_request("search_name","string");
 		$p["layer_list"] = "project_files_list";
@@ -940,7 +940,7 @@ class pz_project_controller_screen extends pz_project_controller
 					}
 				}else 
 				{
-					return '<p class="xform-warning">'.rex_i18n::msg("file_not_exists").'</p>';
+					return '<p class="xform-warning">'.pz_i18n::msg("file_not_exists").'</p>';
 				}
 			
 			case("clipboardfile2clipboard"):
@@ -953,7 +953,7 @@ class pz_project_controller_screen extends pz_project_controller
 						$clip = pz_clip::createAsSource($file->getContent(), $file->getName(), $file->getSize(), $file_type, false);
 						return '<script>
 						  pz_clipboard_init();
-						  pz_clipboard_msg("'.htmlspecialchars(rex_i18n::msg("copied_to_myclipboard",$file->getName())).'");
+						  pz_clipboard_msg("'.htmlspecialchars(pz_i18n::msg("copied_to_myclipboard",$file->getName())).'");
 						  </script>';
 					}
 				}
@@ -986,7 +986,7 @@ class pz_project_controller_screen extends pz_project_controller
 						return $return;
 					}
 				}else {
-					return '<p class="xform-warning">'.rex_i18n::msg("folder_not_exists").'</p>';
+					return '<p class="xform-warning">'.pz_i18n::msg("folder_not_exists").'</p>';
 				}
 				return '';
 				
@@ -1001,7 +1001,7 @@ class pz_project_controller_screen extends pz_project_controller
 						return $cs->getEditFolderForm($this->project, $p);
 					}
 				}else {
-					return '<p class="xform-warning">'.rex_i18n::msg("folder_not_exists").'</p>';
+					return '<p class="xform-warning">'.pz_i18n::msg("folder_not_exists").'</p>';
 				}
 				return '';
 			
@@ -1027,7 +1027,7 @@ class pz_project_controller_screen extends pz_project_controller
 						return $cs->getEditFileForm($this->project, $p);
 					}
 				}else {
-					return '<p class="xform-warning">'.rex_i18n::msg("file_not_exists").'</p>';
+					return '<p class="xform-warning">'.pz_i18n::msg("file_not_exists").'</p>';
 				}
 				break;
 			
@@ -1042,7 +1042,7 @@ class pz_project_controller_screen extends pz_project_controller
 					}
 				}else 
 				{
-					return '<p class="xform-warning">'.rex_i18n::msg("folder_not_exists").'</p>';
+					return '<p class="xform-warning">'.pz_i18n::msg("folder_not_exists").'</p>';
 				}
 				return '';
 				
@@ -1084,7 +1084,7 @@ class pz_project_controller_screen extends pz_project_controller
 				break;
 		}
 
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('header', pz_screen::getHeader($p), false);
 		$f->setVar('function', $this->getNavigation($p), false);
 		$f->setVar('section_1', $section_1, false);
@@ -1098,7 +1098,7 @@ class pz_project_controller_screen extends pz_project_controller
 	private function getProjectSubsPage($p = array())
 	{
 	
-		$p["title"] = rex_i18n::msg("project_subs");
+		$p["title"] = pz_i18n::msg("project_subs");
 		$p["mediaview"] = "screen";
 		$p["controll"] = "project";
 		$p["function"] = "project_sub";
@@ -1138,7 +1138,7 @@ class pz_project_controller_screen extends pz_project_controller
 					return $cs->getEditForm($p);
 
 				}
-				return '<div id="project_sub_form"><p class="xform-warning">'.rex_i18n::msg("project_sub_not_found").'</p></div>';
+				return '<div id="project_sub_form"><p class="xform-warning">'.pz_i18n::msg("project_sub_not_found").'</p></div>';
 				
 			case("project_sub_info"):
 				$project_sub_id = rex_request("project_sub_id","int",0);
@@ -1146,7 +1146,7 @@ class pz_project_controller_screen extends pz_project_controller
 					$cs = new pz_project_sub_screen($project_sub);
 					$section_2 = $cs->getInfoPage($p);
 				}
-				return '<div id="project_sub_form"><p class="xform-warning">'.rex_i18n::msg("project_sub_not_found").'</p></div>';
+				return '<div id="project_sub_form"><p class="xform-warning">'.pz_i18n::msg("project_sub_not_found").'</p></div>';
 			
 			default:
 				$project_subs = $this->project->getProjectSubs();
@@ -1155,7 +1155,7 @@ class pz_project_controller_screen extends pz_project_controller
 				break;
 		}
 
-		$f = new rex_fragment();
+		$f = new pz_fragment();
 		$f->setVar('header', pz_screen::getHeader($p), false);
 		$f->setVar('function', $this->getNavigation($p), false);
 		$f->setVar('section_1', $section_1, false);

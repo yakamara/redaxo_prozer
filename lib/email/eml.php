@@ -20,7 +20,7 @@ class pz_eml{
 		$this->element_id = $depth."-".$part_id;
 		$this->children = array();
 		$this->extractHeaderBody();
-		$this->mail_filename = rex_i18n::msg("emlname");
+		$this->mail_filename = pz_i18n::msg("emlname");
 		
 	}
 
@@ -105,7 +105,7 @@ class pz_eml{
     }
 
 		if ($filename == "") {
-			$filename = rex_i18n::msg("no_filename");
+			$filename = pz_i18n::msg("no_filename");
   		if ($ext = pz::getExtensionByMimeType($this->getContentType())) {
   			$filename .= '.'.$ext;
   		}
@@ -666,7 +666,7 @@ Content-Type: text/calendar; charset="utf-8"; method=REQUEST
 	static function refreshInformations() {
 
 		$return = "";
-		$sql = rex_sql::factory();
+		$sql = pz_sql::factory();
 		// $sql->debugsql = 1;
 		$emails = $sql->getArray('select * from pz_email where header <> "" and id > ?', array(0));
 		
@@ -710,7 +710,7 @@ Content-Type: text/calendar; charset="utf-8"; method=REQUEST
 						$return .= '<tr><td>'.$k.'</td><td>'.substr(htmlspecialchars($email[$k]),0,100).'</td><td>'.htmlspecialchars($update[$k]).'</td></tr>';
 					}
 					
-					$u = rex_sql::factory();
+					$u = pz_sql::factory();
 					// $u->debugsql = 1;
 					$u->setTable('pz_email');
 					$u->setWhere('id = '.$email["id"]);
@@ -726,13 +726,7 @@ Content-Type: text/calendar; charset="utf-8"; method=REQUEST
 			}
 		}
 		return '<table>'.$return.'</table>';
-		return $return;
+
 	}
 
-
 }
-
-
-
-
-

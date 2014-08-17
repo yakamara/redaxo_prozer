@@ -98,12 +98,8 @@ class pz_pager_screen{
 		if($count_to > $this->pager->getRowCount()) 
 			$count_to = $this->pager->getRowCount();
 
-    $greater = "";
-    if($this->pager->getRowCount() == $this->list_max)
-      $greater = "&gt;";
-
 		$links = array();
-		$links[] = '<li>'.$count_from.' - '.$count_to.' von '.$greater.$this->pager->getRowCount().' Treffern</li>';
+		$links[] = '<li>'.$count_from.' - '.$count_to.' von '.$this->pager->getRowCount().' Treffern</li>';
 		
 		$echo = '<div class="grid2col setting"><div class="column first">'.$echo.'</div><div class="column last"><ul>'.implode("",$links).'</ul></div></div>';
 		$echo .= $content.$this->setPaginateLoader($p);
@@ -127,7 +123,7 @@ class pz_pager_screen{
       
       $link = "pz_paginatePage('#".$this->layer."','".pz::url($p["mediaview"],$p["controll"],$p["function"],$p["linkvars"])."','#".$load_id."','#".$load_id."');";
 
-      $return .= '<div id="'.$load_id.'" class="page-load not-visible">'.rex_i18n::msg("paginate_page",($this->pager->getCurrentPage()+2)).'</div>';
+      $return .= '<div id="'.$load_id.'" class="page-load not-visible">'.pz_i18n::msg("paginate_page",($this->pager->getCurrentPage()+2)).'</div>';
 
       $return .= '<script>
       $(document).ready(function() {
