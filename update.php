@@ -5,7 +5,7 @@ $error = '';
 // bisher installierte Version:
 $version = $this->getVersion();
 
-$sql = rex_sql::factory();
+$sql = pz_sql::factory();
 
 
 // ------------------------------------------------- alpha5
@@ -14,14 +14,14 @@ if(rex_string::versionCompare($version, '2.0 alpha5', '<'))
 {
 
 	// user profile
-	rex_sql::factory()->setQuery('ALTER TABLE `pz_user` DROP `config`;',array());
-	rex_sql::factory()->setQuery('ALTER TABLE `pz_user` ADD `config` TEXT NOT NULL;',array());
-	rex_sql::factory()->setQuery('REPLACE INTO `rex_xform_field` (`id`, `table_name`, `prio`, `type_id`, `type_name`, `f1`, `f2`, `f3`, `f4`, `f5`, `f6`, `f7`, `f8`, `f9`, `list_hidden`, `search`) VALUES(203, "pz_user", 170, "value", "textarea", "config", "config", "", "0", "", "", "", "", "", 1, 1);',array());
+	pz_sql::factory()->setQuery('ALTER TABLE `pz_user` DROP `config`;',array());
+	pz_sql::factory()->setQuery('ALTER TABLE `pz_user` ADD `config` TEXT NOT NULL;',array());
+	pz_sql::factory()->setQuery('REPLACE INTO `rex_xform_field` (`id`, `table_name`, `prio`, `type_id`, `type_name`, `f1`, `f2`, `f3`, `f4`, `f5`, `f6`, `f7`, `f8`, `f9`, `list_hidden`, `search`) VALUES(203, "pz_user", 170, "value", "textarea", "config", "config", "", "0", "", "", "", "", "", 1, 1);',array());
 
 	// user perms
-	rex_sql::factory()->setQuery('ALTER TABLE `pz_user` DROP `perms`;',array());
-	rex_sql::factory()->setQuery('ALTER TABLE `pz_user` ADD `perms` TEXT NOT NULL;',array());
-	rex_sql::factory()->setQuery('REPLACE INTO `rex_xform_field` (`id`, `table_name`, `prio`, `type_id`, `type_name`, `f1`, `f2`, `f3`, `f4`, `f5`, `f6`, `f7`, `f8`, `f9`, `list_hidden`, `search`) VALUES(204, "pz_user", 180, "value", "textarea", "perms", "perms", "", "0", "", "", "", "", "", 1, 1);',array());
+	pz_sql::factory()->setQuery('ALTER TABLE `pz_user` DROP `perms`;',array());
+	pz_sql::factory()->setQuery('ALTER TABLE `pz_user` ADD `perms` TEXT NOT NULL;',array());
+	pz_sql::factory()->setQuery('REPLACE INTO `rex_xform_field` (`id`, `table_name`, `prio`, `type_id`, `type_name`, `f1`, `f2`, `f3`, `f4`, `f5`, `f6`, `f7`, `f8`, `f9`, `list_hidden`, `search`) VALUES(204, "pz_user", 180, "value", "textarea", "perms", "perms", "", "0", "", "", "", "", "", 1, 1);',array());
 
 }
 
@@ -31,8 +31,8 @@ if(rex_string::versionCompare($version, '2.0 alpha7', '<'))
 {
 
 	// clipboard
-	rex_sql::factory()->setQuery('ALTER TABLE `pz_clipboard` CHANGE `hidden` `hidden` TINYINT( 1 ) NOT NULL;',array());
-	rex_sql::factory()->setQuery('ALTER TABLE `pz_clipboard` ADD `open` TINYINT( 1 ) NOT NULL , ADD `online_date` DATETIME NOT NULL , ADD `offline_date` DATETIME NOT NULL , ADD `uri` TEXT NOT NULL;',array());
+	pz_sql::factory()->setQuery('ALTER TABLE `pz_clipboard` CHANGE `hidden` `hidden` TINYINT( 1 ) NOT NULL;',array());
+	pz_sql::factory()->setQuery('ALTER TABLE `pz_clipboard` ADD `open` TINYINT( 1 ) NOT NULL , ADD `online_date` DATETIME NOT NULL , ADD `offline_date` DATETIME NOT NULL , ADD `uri` TEXT NOT NULL;',array());
 
 }
 
@@ -40,7 +40,7 @@ if(rex_string::versionCompare($version, '2.0 alpha7', '<'))
 
 if(rex_string::versionCompare($version, '2.0 alpha8', '<'))
 {
-	rex_sql::factory()->setQuery('ALTER TABLE `pz_user` ADD `comment` TEXT NOT NULL;',array());
+	pz_sql::factory()->setQuery('ALTER TABLE `pz_user` ADD `comment` TEXT NOT NULL;',array());
 
 }
 
@@ -125,7 +125,7 @@ if(rex_string::versionCompare($version, '2.0 alpha10', '<'))
 if(rex_string::versionCompare($version, '2.0 alpha12', '<'))
 {
 
-	$sql = rex_sql::factory();
+	$sql = pz_sql::factory();
 	$sql->setQuery('ALTER TABLE `pz_email` ADD `has_attachments` TINYINT NOT NULL;');
 	$sql->setQuery('INSERT INTO `rex_xform_field` (`id`, `table_name`, `prio`, `type_id`, `type_name`, `f1`, `f2`, `f3`, `f4`, `f5`, `f6`, `f7`, `f8`, `f9`, `list_hidden`, `search`) VALUES(219, "pz_email", 330, "value", "checkbox", "has_attachments", "has_attachments", "1", "0", "0", "", "", "", "", 1, 1);');
 
@@ -139,7 +139,7 @@ if(rex_string::versionCompare($version, '2.0 alpha12', '<'))
 
 if(rex_string::versionCompare($version, '2.0 alpha13', '<'))
 {
-  $sql = rex_sql::factory();
+  $sql = pz_sql::factory();
   $sql->setQuery('ALTER TABLE `pz_email_account` CHANGE `last_login` `last_login` DATETIME NOT NULL;');
   $sql->setQuery('ALTER TABLE `pz_email_account` ADD `last_login_finished` DATETIME NOT NULL AFTER `last_login`;');
 
@@ -162,7 +162,7 @@ if(rex_string::versionCompare($version, '2.0 alpha13', '<'))
 
 if(rex_string::versionCompare($version, '2.0 alpha14', '<'))
 {
-  $sql = rex_sql::factory();
+  $sql = pz_sql::factory();
   $sql->setQuery('CREATE TABLE IF NOT EXISTS `pz_project_sub` (
     `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
     `project_id` INT NOT NULL ,
@@ -234,7 +234,7 @@ if(rex_string::versionCompare($version, '2.0 alpha14', '<'))
 
 if(rex_string::versionCompare($version, '2.0 alpha15', '<'))
 {
-  $sql = rex_sql::factory();
+  $sql = pz_sql::factory();
   $sql->setQuery('ALTER TABLE `pz_address` ADD `responsible_user_id` INT NOT NULL AFTER `updated_user_id` ;');
   $sql->setQuery('ALTER TABLE `pz_user` ADD `last_login` VARCHAR( 255 ) NOT NULL AFTER `lasttrydate` ;');
   $sql->setQuery('ALTER TABLE `pz_project_file` ADD `filesize` INT NOT NULL AFTER `filename` , ADD `mimetype` VARCHAR( 255 ) NOT NULL AFTER `filesize` ;');
@@ -274,7 +274,7 @@ if(rex_string::versionCompare($version, '2.0 alpha15', '<'))
 
 if(rex_string::versionCompare($version, '2.0 alpha17', '<'))
 {
-  $sql = rex_sql::factory();
+  $sql = pz_sql::factory();
   $sql->setQuery('ALTER TABLE `pz_calendar_history` ADD `project_id` INT NOT NULL ;');
   $sql->setQuery('ALTER TABLE `pz_project_file_history` ADD `project_id` INT NOT NULL ;');
 
@@ -323,11 +323,11 @@ PRIMARY KEY ( `id` )
 
 if(rex_string::versionCompare($version, '2.0 beta5', '<'))
 {
-  $sql = rex_sql::factory();
+  $sql = pz_sql::factory();
   $sql->setQuery('ALTER TABLE `pz_user` CHANGE `password` `password` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL');
 
   $sql->setQuery('SELECT id, password FROM pz_user');
-  $sql2 = rex_sql::factory();
+  $sql2 = pz_sql::factory();
   $sql2->prepareQuery('UPDATE pz_user SET password = ? WHERE id = ?');
   foreach ($sql as $row) {
     $sql2->execute(array(rex_login::passwordHash($row->getValue('password')), $row->getValue('id')));
@@ -340,10 +340,10 @@ if(rex_string::versionCompare($version, '2.0 beta5', '<'))
 
 if(rex_string::versionCompare($version, '2.0 beta11', '<'))
 {
-  rex_sql::factory()->setQuery('ALTER TABLE `pz_email` ADD INDEX `project_id` (`project_id`);');
-  rex_sql::factory()->setQuery('ALTER TABLE `pz_email` ADD INDEX `user_id` (`user_id`);');
-  rex_sql::factory()->setQuery('ALTER TABLE `pz_email` ADD INDEX `created` (`created`);');
-  rex_sql::factory()->setQuery('ALTER TABLE `pz_email` ADD INDEX `project_user` (`user_id`,`project_id`);');
+  pz_sql::factory()->setQuery('ALTER TABLE `pz_email` ADD INDEX `project_id` (`project_id`);');
+  pz_sql::factory()->setQuery('ALTER TABLE `pz_email` ADD INDEX `user_id` (`user_id`);');
+  pz_sql::factory()->setQuery('ALTER TABLE `pz_email` ADD INDEX `created` (`created`);');
+  pz_sql::factory()->setQuery('ALTER TABLE `pz_email` ADD INDEX `project_user` (`user_id`,`project_id`);');
 }
 
 

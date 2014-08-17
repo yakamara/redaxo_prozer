@@ -1,14 +1,25 @@
-PROZER 2.0
+PROZER 3.0
 =============
 
 project-communication-software
 license - still unclear - will be defined soon.
 
+REDAXO 4
+
+TODOS:
+- PHPMailer integrieren
+- Domain eintragen
+- XForm Felder noch umbauen
+- Testing..
+- i18n Umbau
+- Autoloader prüfen.
+- redaxo5/prozer konvertierung: passwörter - übernahme dateisystem und datenbank.
+
+
+
 Installation
 -------
-
-* Download and unzip redaxo5 / https://github.com/redaxo/redaxo
-* Install redaxo5
+* Download and install redaxo4 / http://www.redaxo.org
 * Log In REDAXO Backend www.domain.de/redaxo
 * SetUp Domain in System-AddOn: www.domain.de
 * Install and activate PHPMailer-AddOn

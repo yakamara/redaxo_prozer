@@ -1,19 +1,12 @@
 <?php
 
+include rex_path::addon('prozer','lib/login/login.php');
+
+
 
 $error = '';
+$debug = 1;
 $c = rex_sql::factory();
-
-
-// -------------------------------------------------- SQL Patch
-
-$path = rex_path::core("lib/sql.php");
-$search = ' throw new rex_sql_exception(\'Field ';
-
-$sql_lib_contents = file_get_contents($path);
-$sql_lib_contents = str_replace($search, ' // '.$search, $sql_lib_contents);
-file_put_contents($path, $sql_lib_contents);
-
 
 // -------------------------------------------------- Install htaccess
 
@@ -21,7 +14,7 @@ $path_frontend = rex_path::frontend(".htaccess");
 $path_backend = rex_path::addon("prozer","install/_htaccess");
 
 if (!rex_file::copy($path_backend, $path_frontend)) {
-    $error = rex_i18n::msg('install_failed_htaccess_copy')."<br />".$path_backend.'<br />'.$path_frontend;
+    $error = pz_i18n::msg('install_failed_htaccess_copy')."<br />".$path_backend.'<br />'.$path_frontend;
 }
 
 // -------------------------------------------------- Base prozer tables
@@ -430,25 +423,29 @@ $c->setQuery('ALTER TABLE `pz_email` ADD INDEX `project_user` (`user_id`,`projec
 // -------------------------------------------------- create admin user
 
 $c = rex_sql::factory();
-
-$c->setQuery('select * from pz_user where id=?',array(1));
-if($c->getRows() != 1) {
-  $c->setQuery("INSERT INTO `pz_user` (`id`, `name`, `status`, `role`, `login`, `password`, `digest`, `login_tries`, `lasttrydate`, `session_id`, `cookiekey`, `admin`, `image_inline`, `image`, `created`, `updated`, `address_id`, `email`, `account_id`) VALUES
-(1, 'admin', 1, 0, 'admin', 'admin', '11111111111', 0, 1323940123, '11111111111', '', '1', '', '1', '2012-08-11 14:00:00', '2012-08-11 05:00:00', 0, 'info@yakamara.de', 5);");
-}
+$c->debugsql = $debug;
+$c->setQuery('delete from pz_user where id=1');
 
 $password = "admin";
-$password = rex_login::passwordHash($password);
+$password = pz_login::passwordHash($password);
+
 $u = rex_sql::factory();
+$u->debugsql = $debug;
 $u->setTable('pz_user');
-$u->setWhere( array( 'id' => 1 ) );
+$u->setValue('id',1);
+$u->setValue('name', 'admin' );
+$u->setValue('status', 1 );
+$u->setValue('login', 'admin' );
+$u->setValue('email', 'info@yakamara.de' );
+$u->setValue('login_tries', 0 );
+$u->setValue('session_id', $password );
 $u->setValue('password', $password );
 $u->setValue('digest', sha1($password));
-$u->update();
+$u->insert();
 
 // -------------------------------------------------- create dummy data / customer yakamara
 
-$c->setQuery('select * from pz_customer where id=?',array(1));
+$c->setQuery('select * from pz_customer where id=1');
 if($c->getRows() == 0) {
   $c->setQuery("INSERT INTO `pz_customer` (`id`, `name`, `created`, `status`, `description`, `archived`, `updated`, `image_inline`, `image`) VALUES
   (1, 'Yakamara Media', '2012-08-11 05:00:00', 1, 'Yakamara Media GmbH & Co. KG', '', '', '', '');");
@@ -463,7 +460,7 @@ if($c->getRows() == 0) {
 
 // -------------------------------------------------- create labels
 
-$c->setQuery('select * from pz_label',array());
+$c->setQuery('select * from pz_label');
 if($c->getRows() == 0) {
   $c->setQuery("INSERT INTO `pz_label` (`id`, `color`, `border`, `name`, `created`, `updated`) VALUES
   (1, '#fcb819', '#e3a617', 'Support', '', ''),
@@ -475,15 +472,33 @@ if($c->getRows() == 0) {
 }
 
 
+// ----- version 3.0 / redaxo4
+
+$c->setQuery('CREATE TABLE `pz_config` (
+`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `namespace` varchar(75) NOT NULL,
+  `key` varchar(255) NOT NULL,
+  `value` text NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_key` (`namespace`,`key`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;');
+
+rex_dir::copy(
+  rex_path::addon('prozer', 'assets'),
+  rex_path::frontend('assets/addons/prozer')
+);
+
+
+
 // -------------------------------------------------- create WebDAV tmp Ordner
 
 $dav_path = rex_path::addonData("prozer", "dav");
 rex_dir::create($dav_path);
 
+
+
+
+
 // -------------------------------------------------- Output Info
 
-if($error != "") {
-  $this->setProperty('installmsg', $error);
-} else {
-  $this->setProperty('install', true);
-}
+$REX['ADDON']['install']['prozer'] = true;
