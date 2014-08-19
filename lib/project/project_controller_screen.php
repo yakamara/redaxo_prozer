@@ -669,9 +669,6 @@ class pz_project_controller_screen extends pz_project_controller
 		$p["linkvars"]["mode"] = "list";
 		$p["linkvars"]["project_id"] = $this->project->getId();
 
-		$section_1 = "";
-		$section_2 = "";
-
 		$ignore_search_fields = array("project_id","noprojects","intrash");
 
 		$filter = array();
@@ -711,14 +708,14 @@ class pz_project_controller_screen extends pz_project_controller
       return $return;
     }
 
-    $s1_content .= pz_email_screen::getEmailsSearchForm($p, $ignore_search_fields);
-    $s2_content .= $return;
+    $section_1 = pz_email_screen::getEmailsSearchForm($p, $ignore_search_fields);
+    $section_2 = $return;
 
     $f = new pz_fragment();
     $f->setVar('header', pz_screen::getHeader($p), false);
     $f->setVar('function', $this->getNavigation($p), false);
-    $f->setVar('section_1', $s1_content, false);
-    $f->setVar('section_2', $s2_content, false);
+    $f->setVar('section_1', $section_1, false);
+    $f->setVar('section_2', $section_2, false);
 
     return $f->parse('pz_screen_main.tpl');
 	
