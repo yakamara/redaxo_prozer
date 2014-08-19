@@ -10,6 +10,9 @@ TODOS:
 - PHPMailer integrieren
 - Domain eintragen
 - XForm Felder noch umbauen
+-- javscript hidden fields etc noch setzen
+- validate bei pz_feldern prüfen.
+-- Teilprojekt erscheint immer .. fehler
 - Testing..
 - i18n Umbau
 - Autoloader prüfen.
