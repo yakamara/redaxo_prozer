@@ -330,7 +330,7 @@ if(rex_string::versionCompare($version, '2.0 beta5', '<'))
   $sql2 = pz_sql::factory();
   $sql2->prepareQuery('UPDATE pz_user SET password = ? WHERE id = ?');
   foreach ($sql as $row) {
-    $sql2->execute(array(rex_login::passwordHash($row->getValue('password')), $row->getValue('id')));
+    $sql2->execute(array(pz_login::passwordHash($row->getValue('password')), $row->getValue('id')));
   }
 
 }

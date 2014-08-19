@@ -307,7 +307,7 @@ class pz_user
 	}
 
   public function passwordHash($password) {
-    $password = rex_login::passwordHash($password);
+    $password = pz_login::passwordHash($password);
     $u = pz_sql::factory();
   	// $u->debugsql = 1;
   	$u->setTable('pz_user');
