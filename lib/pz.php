@@ -278,7 +278,7 @@ class pz {
   	return $return;
   }
 
-  public function getProjectsAsArray($projects = NULL) 
+  static public function getProjectsAsArray($projects = NULL)
   {
     if(!$projects)
       return array();
