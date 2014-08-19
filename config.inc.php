@@ -15,6 +15,14 @@ if(!$REX["REDAXO"]) {
 
       $REX['ADDON']['xform']['templatepaths'][] = rex_path::addon('prozer','xform/templates/');
 
+      $deactivate_addons = array('community','phpmailer','metainfo','textile','version','image_manager');
+
+      foreach($deactivate_addons as $deactivate_addon) {
+          if (isset($REX['ADDON']['version'][$deactivate_addon])) {
+            die ('please deactivate '.$deactivate_addon.' addon');
+          }
+      }
+
       require_once rex_path::addon('prozer','autoload.php');
 
       rex_autoload::register();
