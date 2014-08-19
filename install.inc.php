@@ -434,6 +434,7 @@ $u->setValue('id',1);
 $u->setValue('name', 'admin' );
 $u->setValue('status', 1 );
 $u->setValue('login', 'admin' );
+$u->setValue('admin', 1 );
 $u->setValue('email', 'info@yakamara.de' );
 $u->setValue('login_tries', 0 );
 $u->setValue('session_id', $password );
