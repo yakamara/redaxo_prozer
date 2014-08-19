@@ -8,7 +8,7 @@ class pz_sabre_auth_backend extends Sabre\DAV\Auth\Backend\AbstractBasic
         $sql = pz_sql::factory();
         $sql->setQuery('SELECT * FROM pz_user WHERE status = 1 AND login = ? LIMIT 2', array($username));
 
-        if ($sql->getRows() == 1 && rex_login::passwordVerify($password, $sql->getValue('password'))) {
+        if ($sql->getRows() == 1 && pz_login::passwordVerify($password, $sql->getValue('password'))) {
             pz::setUser(new pz_user($sql));
             return true;
         }
