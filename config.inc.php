@@ -6,11 +6,14 @@ $REX['ADDON']['author']['prozer'] = 'Jan Kristinus, Gregor Harlan, Thomas Blum';
 $REX['ADDON']['xform']['classpaths']['value']['prozer'] = rex_path::addon('prozer','xform/value/');
 $REX['ADDON']['xform']['classpaths']['validate']['prozer'] = rex_path::addon('prozer','xform/validate/');
 
+
 if(!$REX["REDAXO"]) {
 
   rex_register_extension('OUTPUT_FILTER', function($ep) {
 
       global $REX;
+
+      $REX['ADDON']['xform']['templatepaths'][] = rex_path::addon('prozer','xform/templates/');
 
       require_once rex_path::addon('prozer','autoload.php');
 
