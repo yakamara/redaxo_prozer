@@ -835,3 +835,6 @@ delete = löschen
 user = Benutzer
 name = Name
 description = Beschreibung
+
+prozer_install_redaxo_version_problem = Es wird REDAXO mit mindestens Version {0} benötigt
+prozer_install_xform_version_problem = Es wird das XForm AddOn mit mindestens Version {0} benötigt

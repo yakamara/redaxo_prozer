@@ -1,10 +1,26 @@
 <?php
 
+include rex_path::addon('prozer','lib/pz.php');
+include rex_path::addon('prozer','lib/i18n.php');
 include rex_path::addon('prozer','lib/login/login.php');
+
+pz::setProperty('lang', $REX['LANG']);
+pz_i18n::addDirectory(rex_path::addon('prozer','lang'));
 
 $debug = false;
 $error = '';
 $c = rex_sql::factory();
+
+if ($REX['VERSION'] != '4' || $REX['SUBVERSION'] < '6') {
+  $REX['ADDON']['install']['prozer'] = 0;
+  $REX['ADDON']['installmsg']['prozer'] = pz_i18n::msg('prozer_install_redaxo_version_problem', '4.6', $REX['VERSION'].".".$REX['SUBVERSION']);
+
+} elseif (OOAddon::isAvailable('xform') != 1 || version_compare(OOAddon::getVersion('xform'), '4.7', '<')) {
+  $REX['ADDON']['install']['prozer'] = 0;
+  $REX['ADDON']['installmsg']['prozer'] = pz_i18n::msg('prozer_install_xform_version_problem', '4.7');
+
+} else {
+
 
 // -------------------------------------------------- Install htaccess
 
@@ -501,3 +517,6 @@ rex_dir::create($dav_path);
 // -------------------------------------------------- Output Info
 
 $REX['ADDON']['install']['prozer'] = true;
+
+
+}

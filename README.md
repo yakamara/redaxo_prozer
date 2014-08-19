@@ -7,17 +7,13 @@ license - still unclear - will be defined soon.
 REDAXO 4
 
 TODOS:
-- PHPMailer integrieren
 - Domain eintragen
 - XForm Felder noch umbauen
--- javscript hidden fields etc noch setzen
 - validate bei pz_feldern prüfen.
--- Teilprojekt erscheint immer .. fehler
-- Testing..
-- i18n Umbau
-- Autoloader prüfen.
+-- javascript hidden fields etc noch setzen
+--- Teilprojekt erscheint immer .. fehler
 - redaxo5/prozer konvertierung: passwörter - übernahme dateisystem und datenbank.
-
+- webdav, caldav, cardav prüfen
 
 
 Installation
