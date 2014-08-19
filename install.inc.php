@@ -2,10 +2,8 @@
 
 include rex_path::addon('prozer','lib/login/login.php');
 
-
-
+$debug = false;
 $error = '';
-$debug = 1;
 $c = rex_sql::factory();
 
 // -------------------------------------------------- Install htaccess
