@@ -692,8 +692,7 @@ class pz_email extends pz_model{
   			$mail->SetFrom($email_account->getEmail(), $email_account->getName());
   			$mail->Subject = $this->getSubject();
   
-        $package = rex_package::get("prozer");
-        $mail->addCustomHeader('X-PROZER: '.$package->getVersion()); 
+        $mail->addCustomHeader('X-PROZER: '.pz::getProperty("version"));
   
   			// TODO
   			// - richtig splitten, Cc, Bcc nach email und name..
