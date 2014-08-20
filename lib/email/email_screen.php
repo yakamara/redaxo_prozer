@@ -999,9 +999,10 @@ class pz_email_screen{
 			$projects = pz::getUser()->getEmailProjects();
 			$xform->setValueField("pz_select_screen",array("project_id",pz_i18n::msg("project"),pz_project::getProjectsAsString($projects),"","",0,pz_i18n::msg("please_choose")));
 
-			$xform->setValueField("stamp",array("created","created","mysql_datetime","0","1"));
-			$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0"));
-			$xform->setValueField("hidden",array("create_user_id",pz::getUser()->getId()));
+      $xform->setValueField("datestamp",array("created","mysql","","0","1"));
+      $xform->setValueField("datestamp",array("updated","mysql","","0","0"));
+
+      $xform->setValueField("hidden",array("create_user_id",pz::getUser()->getId()));
 			$xform->setValueField("hidden",array("update_user_id",pz::getUser()->getId()));
 			
 			$xform->setValueField("hidden",array("reply_id",rex_request("reply_id","int",0)));
@@ -1111,9 +1112,10 @@ class pz_email_screen{
 			$projects = pz::getUser()->getEmailProjects();
 			$xform->setValueField("pz_select_screen",array("project_id",pz_i18n::msg("project"),pz::getProjectsAsArray($projects),"","",0,pz_i18n::msg("please_choose")));
 
-			$xform->setValueField("stamp",array("created","created","mysql_datetime","0","0")); // allways new
-			$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0"));
-			$xform->setValueField("hidden",array("create_user_id",pz::getUser()->getId()));
+      $xform->setValueField("datestamp",array("created","mysql","","0","1"));
+      $xform->setValueField("datestamp",array("updated","mysql","","0","0"));
+
+      $xform->setValueField("hidden",array("create_user_id",pz::getUser()->getId()));
 			$xform->setValueField("hidden",array("update_user_id",pz::getUser()->getId()));
 			$xform->setValueField("checkbox",array("draft",pz_i18n::msg("save_as_draft")));
 			$xform->setValueField("hidden",array("user_id",pz::getUser()->getId()));

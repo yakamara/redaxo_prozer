@@ -141,9 +141,11 @@ class pz_project_wiki_screen
 		
 		
 		$xform->setValueField('pz_select_screen',array('user_id', pz_i18n::msg('user'), pz_users::getAsString(),"","",1,pz_i18n::msg("please_choose")));
-		$xform->setValueField("stamp",array("created","created","mysql_datetime","0","1","","","",""));
-		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0","","","",""));
-		
+
+    $xform->setValueField("datestamp",array("created","mysql","","0","1"));
+    $xform->setValueField("datestamp",array("updated","mysql","","0","0"));
+
+
 		if($project->hasEmails() == 1) {
 			$xform->setValueField("checkbox",array("emails",pz_i18n::msg("emails_access"),"","1"));
 		}else {

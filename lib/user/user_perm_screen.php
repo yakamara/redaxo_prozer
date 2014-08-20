@@ -152,11 +152,10 @@ class pz_user_perm_screen {
 
 		$xform->setValueField("hidden", array("user_id",pz::getUser()->getId()));
 
-		$xform->setValueField("stamp",array("created","created","mysql_datetime","0","0"));
-		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0"));
+    $xform->setValueField("datestamp",array("created","mysql","","0","1"));
+    $xform->setValueField("datestamp",array("updated","mysql","","0","0"));
 
-
-		$xform->setActionField("db",array('pz_user_perm'));
+    $xform->setActionField("db",array('pz_user_perm'));
 
 		$return = $xform->getForm();
 
@@ -219,10 +218,10 @@ class pz_user_perm_screen {
 
 		$xform->setValueField("hidden", array("user_id",pz::getUser()->getId()));
 
-		$xform->setValueField("stamp",array("created","created","mysql_datetime","0","0"));
-		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0"));
+    $xform->setValueField("datestamp",array("created","mysql","","0","1"));
+    $xform->setValueField("datestamp",array("updated","mysql","","0","0"));
 
-		$xform->setActionField("db",array('pz_user_perm','id='.$this->user_perm->getId()));
+    $xform->setActionField("db",array('pz_user_perm','id='.$this->user_perm->getId()));
 
 		$return = $xform->getForm();
 

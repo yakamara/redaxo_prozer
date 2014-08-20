@@ -454,8 +454,8 @@ class pz_address_screen{
 		$xform->setValueField("pz_address_fields",array("fields"));
 		$xform->setValueField("textarea",array("note",pz_i18n::msg("address_note")));
 
-		$xform->setValueField("stamp",array("created","created","mysql_datetime","0","1","","","",""));
-		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0","","","",""));
+    $xform->setValueField("datestamp",array("created","mysql","","0","1"));
+    $xform->setValueField("datestamp",array("updated","mysql","","0","0"));
 
     $xform->setValueField("hidden",array("created_user_id",pz::getUser()->getId()));
 		$xform->setValueField("hidden",array("updated_user_id",pz::getUser()->getId()));
@@ -552,8 +552,9 @@ class pz_address_screen{
 		$xform->setValueField("pz_address_fields",array("fields"));
 		$xform->setValueField("textarea",array("note",pz_i18n::msg("address_note")));
 		
-		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0"));
-		$xform->setValueField("hidden",array("updated_user_id",pz::getUser()->getId()));
+    $xform->setValueField("datestamp",array("updated","mysql","","0","0"));
+
+    $xform->setValueField("hidden",array("updated_user_id",pz::getUser()->getId()));
 
     if(pz_user::get($this->address->getVar("created_user_id")))
     {

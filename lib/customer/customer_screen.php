@@ -92,10 +92,12 @@ class pz_customer_screen{
 		
 		$xform->setValueField("text",array("name",pz_i18n::msg("customer_name"),"","0"));
 		$xform->setValueField("textarea",array("description",pz_i18n::msg("customer_description"),"","0"));
-		$xform->setValueField("stamp",array("created","created","mysql_datetime","0","1","","","",""));
-		$xform->setValueField("checkbox",array("archived",pz_i18n::msg("customer_archived"),"","0"));
+
+    $xform->setValueField("datestamp",array("created","mysql","","0","1"));
+    $xform->setValueField("datestamp",array("updated","mysql","","0","0"));
+
+    $xform->setValueField("checkbox",array("archived",pz_i18n::msg("customer_archived"),"","0"));
 		$xform->setValidateField("empty",array("name",pz_i18n::msg("error_customer_name_empty")));
-		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0"));
 
 		$xform->setActionField("db",array('pz_customer','id='.$this->customer->getId()));
 
@@ -150,10 +152,13 @@ class pz_customer_screen{
 		
 		$xform->setValueField("text",array("name",pz_i18n::msg("customer_name"),"","0"));
 		$xform->setValueField("textarea",array("description",pz_i18n::msg("customer_description"),"","0"));
-		$xform->setValueField("stamp",array("created","created","mysql_datetime","0","1","","","",""));
-		$xform->setValueField("checkbox",array("archived",pz_i18n::msg("customer_archived"),"","0"));
+
+    $xform->setValueField("datestamp",array("created","mysql","","0","1"));
+    $xform->setValueField("datestamp",array("updated","mysql","","0","0"));
+
+    $xform->setValueField("checkbox",array("archived",pz_i18n::msg("customer_archived"),"","0"));
 		$xform->setValidateField("empty",array("name",pz_i18n::msg("error_customer_name_empty")));
-		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0","","","",""));
+
 		$xform->setActionField("db",array());
 		$return .= $xform->getForm();
 

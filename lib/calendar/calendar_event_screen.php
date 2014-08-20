@@ -2792,9 +2792,10 @@ public function getProjectjobListView($projects, $events, $p, $start, $end)
 
 		// $xform->setValueField("html",array("timesplit",'<div class="split-h"></div>'));
 		$xform->setValueField("checkbox",array("allday",pz_i18n::msg("calendar_event_allday")));
-		$xform->setValueField("stamp",array("created","created","mysql_datetime","0","1"));
-		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0"));
-		
+
+    $xform->setValueField("datestamp",array("created","mysql","","0","1"));
+    $xform->setValueField("datestamp",array("updated","mysql","","0","0"));
+
 		if(rex_request("allday","int") == 1)
 		{
 			$_REQUEST["from"]["hours"] = "00";
@@ -2928,7 +2929,7 @@ $jquery .= '
 		
 			$value_pool = $xform->getObjectparams("value_pool");
 			$data = $value_pool["sql"];
-		
+
 			$format = 'Y-m-d H:i:s';
 			$from = DateTime::createFromFormat($format, $data["from"]);
 			$to = DateTime::createFromFormat($format, $data["to"]);
@@ -3051,10 +3052,10 @@ $jquery .= '
 		{
 			$xform->setValueField("checkbox",array("allday",pz_i18n::msg("calendar_event_allday")));
 		}
-		$xform->setValueField("stamp",array("created","created","mysql_datetime","0","1"));
-		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0"));
-		
-		if(rex_request("allday","int") == 1)
+    $xform->setValueField("datestamp",array("created","mysql","","0","1"));
+    $xform->setValueField("datestamp",array("updated","mysql","","0","0"));
+
+    if(rex_request("allday","int") == 1)
 		{
 			$_REQUEST["from"]["hours"] = "00";
 			$_REQUEST["from"]["minutes"] = "00";

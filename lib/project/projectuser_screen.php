@@ -193,10 +193,11 @@ class pz_projectuser_screen{
 		$xform->setValidateField("pz_projectuser",array("pu",$project));
 		$xform->setValueField("hidden",array("project_id",$project->getId()));
 		$xform->setValueField('pz_select_screen',array('user_id', pz_i18n::msg('user'), pz::getUsersAsArray(pz::getUser()->getUsers()),"","",0,pz_i18n::msg("please_choose")));
-		$xform->setValueField("stamp",array("created","created","mysql_datetime","0","1","","","",""));
-		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0","","","",""));
-		
-		if($project->hasEmails() == 1) {
+
+    $xform->setValueField("datestamp",array("created","mysql","","0","1"));
+    $xform->setValueField("datestamp",array("updated","mysql","","0","0"));
+
+    if($project->hasEmails() == 1) {
 			$xform->setValueField("checkbox",array("emails",pz_i18n::msg("emails"),"","1"));
 		}else {
 			$xform->setValueField("hidden",array("emails","0"));

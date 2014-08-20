@@ -146,10 +146,10 @@ class pz_email_account_screen{
 		$xform->setValueField("checkbox",array("delete_emails",pz_i18n::msg("email_account_delete_emails"),'',1));
 		$xform->setValueField("checkbox",array("status",pz_i18n::msg("active"),'',1));
 
-		$xform->setValueField("stamp",array("created","created","mysql_datetime","0","1"));
-		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0"));
+    $xform->setValueField("datestamp",array("created","mysql","","0","1"));
+    $xform->setValueField("datestamp",array("updated","mysql","","0","0"));
 
-		$xform->setActionField("db",array('pz_email_account','id='.$this->email_account->getId()));
+    $xform->setActionField("db",array('pz_email_account','id='.$this->email_account->getId()));
 
 		$return = $xform->getForm();
 
@@ -202,9 +202,10 @@ class pz_email_account_screen{
 		$xform->setValueField("checkbox",array("delete_emails",pz_i18n::msg("email_account_delete_emails"),"","1"));
 		$xform->setValueField("checkbox",array("status",pz_i18n::msg("active"),"","1"));
 		
-		$xform->setValueField("stamp",array("created","created","mysql_datetime","0","1"));
-		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0"));
-		$xform->setValueField("hidden",array("user_id",pz::getUser()->getId()));
+    $xform->setValueField("datestamp",array("created","mysql","","0","1"));
+    $xform->setValueField("datestamp",array("updated","mysql","","0","0"));
+
+    $xform->setValueField("hidden",array("user_id",pz::getUser()->getId()));
 		
 		$xform->setActionField("db",array("pz_email_account"));
 		

@@ -196,9 +196,9 @@ class pz_project_screen
 		$xform->setValidateField("empty",array("name",pz_i18n::msg("error_project_enter_name")));
 		$xform->setValueField("textarea",array("description",pz_i18n::msg("project_description"),"","0"));
 		$xform->setValueField("pz_select_screen",array("label_id",pz_i18n::msg("project_label"),pz_labels::getAsString(), '', '', 0));
-		$xform->setValueField("stamp",array("created","created","mysql_datetime","0","1"));
-		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0"));
-		$xform->setValueField("pz_select_screen",array("customer_id",pz_i18n::msg("project_customer"),$customer_string,"","",0, pz_i18n::msg("please_choose")));
+    $xform->setValueField("datestamp",array("created","mysql","","0","1"));
+    $xform->setValueField("datestamp",array("updated","mysql","","0","0"));
+    $xform->setValueField("pz_select_screen",array("customer_id",pz_i18n::msg("project_customer"),$customer_string,"","",0, pz_i18n::msg("please_choose")));
 		$xform->setValueField("hidden",array("create_user_id",pz::getUser()->getId()));
 		$xform->setValueField("hidden",array("update_user_id",pz::getUser()->getId()));
 		$xform->setValueField("hidden",array("archived",0));
@@ -258,7 +258,7 @@ class pz_project_screen
 		$xform->setValidateField("empty",array("name",pz_i18n::msg("error_project_enter_name")));
 		$xform->setValueField("textarea",array("description",pz_i18n::msg("project_description"),"","0","","","","",""));
 		$xform->setValueField("pz_select_screen",array("label_id",pz_i18n::msg("project_label"),pz_labels::getAsString(), '', '', '0'));
-		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0","","","",""));
+    $xform->setValueField("datestamp",array("updated","mysql","","0","0"));
 		$xform->setValueField("pz_select_screen",array("customer_id",pz_i18n::msg("project_customer"),pz_customers::getAsString(),"","",0,pz_i18n::msg("please_choose")));
 		$xform->setValueField("hidden",array("update_user_id",pz::getUser()->getId()));
 		$xform->setValueField("checkbox",array("has_emails",pz_i18n::msg("emails"),"","1"));

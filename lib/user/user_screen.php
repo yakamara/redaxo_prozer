@@ -397,10 +397,11 @@ class pz_user_screen {
 
 		$xform->setValueField("checkbox",array("status",pz_i18n::msg("active"),"","0"));
 		$xform->setValueField("checkbox",array("admin",pz_i18n::msg("admin").' ('.pz_i18n::msg("admin_info").')',"","0"));
-		$xform->setValueField("stamp",array("created"," created","mysql_datetime","0","0","","","",""));
-		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0","","","",""));
 
-		$xform->setValueField("checkbox",array("webdav",pz_i18n::msg("webdav").' ('.pz_i18n::msg("webdav_info").')',"","0","no_db"));
+    $xform->setValueField("datestamp",array("created","mysql","","0","1"));
+    $xform->setValueField("datestamp",array("updated","mysql","","0","0"));
+
+    $xform->setValueField("checkbox",array("webdav",pz_i18n::msg("webdav").' ('.pz_i18n::msg("webdav_info").')',"","0","no_db"));
 		$xform->setValueField("checkbox",array("carddav",pz_i18n::msg("carddav").' ('.pz_i18n::msg("carddav_info").')',"","0","no_db"));
 		$xform->setValueField("checkbox",array("projectsadmin",pz_i18n::msg("projectsadmin").' ('.pz_i18n::msg("projectsadmin_info").')',"","0","no_db"));
 
@@ -495,9 +496,9 @@ class pz_user_screen {
 		$xform->setValueField("checkbox",array("status",pz_i18n::msg("active"),"","0"));
 		$xform->setValueField("checkbox",array("admin",pz_i18n::msg("admin").' ('.pz_i18n::msg("admin_info").')',"","0"));
 		
-		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0"));
+    $xform->setValueField("datestamp",array("updated","mysql","","0","0"));
 
-		$xform->setValueField("checkbox",array("webdav",pz_i18n::msg("webdav").' ('.pz_i18n::msg("webdav_info").')',"",$this->user->hasPerm("webdav"),"no_db"));
+    $xform->setValueField("checkbox",array("webdav",pz_i18n::msg("webdav").' ('.pz_i18n::msg("webdav_info").')',"",$this->user->hasPerm("webdav"),"no_db"));
 		$xform->setValueField("checkbox",array("carddav",pz_i18n::msg("carddav").' ('.pz_i18n::msg("carddav_info").')',"",$this->user->hasPerm("carddav"),"no_db"));
 		$xform->setValueField("checkbox",array("projectsadmin",pz_i18n::msg("projectsadmin").' ('.pz_i18n::msg("projectsadmin_info").')',"",$this->user->hasPerm("projectsadmin"),"no_db"));
 
@@ -588,8 +589,9 @@ class pz_user_screen {
 		
 		$xform->setValueField("pz_select_screen",array("startpage",pz_i18n::msg("default_startpage_account"),$startpages,"no_db",$this->user->getConfig('startpage'),0));
 		
-		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0"));
-		$xform->setActionField("db",array('pz_user','id='.$this->user->getId()));
+    $xform->setValueField("datestamp",array("updated","mysql","","0","0"));
+
+    $xform->setActionField("db",array('pz_user','id='.$this->user->getId()));
 
 		$return = $xform->getForm();
 
