@@ -130,21 +130,21 @@ class pz_email_account_screen{
 		$xform->setHiddenField("email_account_id",$this->email_account->getId());
 		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
 
-		$xform->setValueField("text",array("name",pz_i18n::msg("email_account_name"),"","0","","","","",""));
+		$xform->setValueField("text",array("name",pz_i18n::msg("email_account_name"),"","0"));
 		$xform->setValidateField("empty",array("name",pz_i18n::msg("error_email_account_name_empty")));
-		$xform->setValueField("text",array("email",pz_i18n::msg("email_account_email"),"","0","","","","",""));
+		$xform->setValueField("text",array("email",pz_i18n::msg("email_account_email"),"","0"));
 
 		$xform->setValueField("pz_select_screen",array("mailboxtype",pz_i18n::msg("email_account_mailboxtype"),"imap,pop3"));
 
-		$xform->setValueField("text",array("host",pz_i18n::msg("email_account_host"),"","0","","","","",""));
-		$xform->setValueField("text",array("login",pz_i18n::msg("email_account_login"),"","0","","","","",""));
-		$xform->setValueField("text",array("password",pz_i18n::msg("email_account_password"),"","0","","","","",""));
-		$xform->setValueField("text",array("smtp",pz_i18n::msg("email_account_smtp_host"),"","0","","","","",""));
-		$xform->setValueField("textarea",array("signature",pz_i18n::msg("email_account_signature"),"","0","","","","",""));
+		$xform->setValueField("text",array("host",pz_i18n::msg("email_account_host"),"","0"));
+		$xform->setValueField("text",array("login",pz_i18n::msg("email_account_login"),"","0"));
+		$xform->setValueField("text",array("password",pz_i18n::msg("email_account_password"),"","0"));
+		$xform->setValueField("text",array("smtp",pz_i18n::msg("email_account_smtp_host"),"","0"));
+		$xform->setValueField("textarea",array("signature",pz_i18n::msg("email_account_signature"),"","0"));
 
-		$xform->setValueField("checkbox",array("ssl",pz_i18n::msg("email_account_secure_download"),"1","1","0"));
-		$xform->setValueField("checkbox",array("delete_emails",pz_i18n::msg("email_account_delete_emails"),"1","1","0"));
-		$xform->setValueField("checkbox",array("status",pz_i18n::msg("active"),"1","1","0"));
+		$xform->setValueField("checkbox",array("ssl",pz_i18n::msg("email_account_secure_download"),'',1));
+		$xform->setValueField("checkbox",array("delete_emails",pz_i18n::msg("email_account_delete_emails"),'',1));
+		$xform->setValueField("checkbox",array("status",pz_i18n::msg("active"),'',1));
 
 		$xform->setValueField("stamp",array("created","created","mysql_datetime","0","1"));
 		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0"));
@@ -198,9 +198,9 @@ class pz_email_account_screen{
 		$xform->setValueField("text",array("smtp",pz_i18n::msg("email_account_smtp_host"),"","0","","","","",""));
 		$xform->setValueField("textarea",array("signature",pz_i18n::msg("email_account_signature"),"","0","","","","",""));
 
-		$xform->setValueField("checkbox",array("ssl",pz_i18n::msg("email_account_secure_download"),"1","1","0"));
-		$xform->setValueField("checkbox",array("delete_emails",pz_i18n::msg("email_account_delete_emails"),"1","1","0"));
-		$xform->setValueField("checkbox",array("status",pz_i18n::msg("active"),"1","1","0"));
+		$xform->setValueField("checkbox",array("ssl",pz_i18n::msg("email_account_secure_download"),"","1"));
+		$xform->setValueField("checkbox",array("delete_emails",pz_i18n::msg("email_account_delete_emails"),"","1"));
+		$xform->setValueField("checkbox",array("status",pz_i18n::msg("active"),"","1"));
 		
 		$xform->setValueField("stamp",array("created","created","mysql_datetime","0","1"));
 		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0"));

@@ -26,7 +26,7 @@ class pz_customers_screen {
 
 		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl', 'runtime'));
 		$xform->setValueField("text",array("search_name",pz_i18n::msg("project_name")));
-		$xform->setValueField("checkbox",array("archived","archived","1","0","0","","","",""));
+		$xform->setValueField("checkbox",array("archived",pz_i18n::msg("archived"),"","0"));
 		$xform->setValueField("submit",array('submit',pz_i18n::msg('search'), '', 'search'));
 		$return .= $xform->getForm();
 		

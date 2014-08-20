@@ -15,7 +15,7 @@ value="<?php echo $value ?>"<?php echo $this->getValue() == $value ? ' checked="
 
 echo '<div id="'.$this->getHTMLId().'" class="xform1 data xform1-reverse xform-checkbox">
   <div class="flabel"><label for="'.$this->getFieldId().'" class="checkbox xform-checkbox '.$this->getWarningClass().'">'.$this->getLabel().'</label></div>
-  <div class="felement"><input type="checkbox" value="1" name="'.$this->getFieldName().'" id="'.$this->getFieldId().'"
+  <div class="felement"><input type="checkbox" value="'.$value.'" name="'.$this->getFieldName().'" id="'.$this->getFieldId().'"
   class="checkbox xform-checkbox '.$this->getWarningClass().'" ';
 echo $this->getValue() == $value ? ' checked="checked"' : '';
 echo '></div>

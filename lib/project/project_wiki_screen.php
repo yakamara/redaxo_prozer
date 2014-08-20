@@ -145,30 +145,30 @@ class pz_project_wiki_screen
 		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0","","","",""));
 		
 		if($project->hasEmails() == 1) {
-			$xform->setValueField("checkbox",array("emails",pz_i18n::msg("emails_access"),"1","1","0","","","",""));
+			$xform->setValueField("checkbox",array("emails",pz_i18n::msg("emails_access"),"","1"));
 		}else {
 			$xform->setValueField("hidden",array("emails","0"));
 		}
 		
 		if($project->hasCalendar() == 1) {
-			$xform->setValueField("checkbox",array("calendar",pz_i18n::msg("calendar_access"),"1","1","0","","","",""));
+			$xform->setValueField("checkbox",array("calendar",pz_i18n::msg("calendar_access"),"","1"));
 		}else {
 			$xform->setValueField("hidden",array("calendar","0"));
 		}
 
 		if($project->hasFiles() == 1) {
-			$xform->setValueField("checkbox",array("files",pz_i18n::msg("files_access"),"1","1","0","","","",""));
+			$xform->setValueField("checkbox",array("files",pz_i18n::msg("files_access"),"","1"));
 		}else {
 			$xform->setValueField("hidden",array("files","0"));
 		}
 
 		if($project->hasWiki() == 1) {
-			$xform->setValueField("checkbox",array("wiki",pz_i18n::msg("wiki_access"),"1","1","0","","","",""));
+			$xform->setValueField("checkbox",array("wiki",pz_i18n::msg("wiki_access"),"","1"));
 		}else {
 			$xform->setValueField("hidden",array("wiki","0"));
 		}
 
-		$xform->setValueField("checkbox",array("admin",pz_i18n::msg("admin_access"),"1","1","0","","","",""));
+		$xform->setValueField("checkbox",array("admin",pz_i18n::msg("admin_access"),"","1"));
 
 		$xform->setActionField("db",array());
 		$return .= $xform->getForm();

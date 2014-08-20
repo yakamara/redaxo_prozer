@@ -145,16 +145,15 @@ class pz_user_perm_screen {
 		$xform->setValidateField("customfunction", array("to_user_id","pz_checkIsMe",pz::getUser()->getId(),pz_i18n::msg("user_perm_user_isme")));
 
 
-		$xform->setValueField("checkbox",array("calendar_read",pz_i18n::msg("user_perm_calendar_read"),"1","0","0"));
-		$xform->setValueField("checkbox",array("calendar_write",pz_i18n::msg("user_perm_calendar_write"),"1","0","0"));
-
-		$xform->setValueField("checkbox",array("email_read",pz_i18n::msg("user_perm_email_read"),"1","0","0"));
-		$xform->setValueField("checkbox",array("email_write",pz_i18n::msg("user_perm_email_write"),"1","0","0"));
+		$xform->setValueField("checkbox",array("calendar_read",pz_i18n::msg("user_perm_calendar_read"),"","0"));
+		$xform->setValueField("checkbox",array("calendar_write",pz_i18n::msg("user_perm_calendar_write"),"","0"));
+		$xform->setValueField("checkbox",array("email_read",pz_i18n::msg("user_perm_email_read"),"","0"));
+		$xform->setValueField("checkbox",array("email_write",pz_i18n::msg("user_perm_email_write"),"","0"));
 
 		$xform->setValueField("hidden", array("user_id",pz::getUser()->getId()));
 
-		$xform->setValueField("stamp",array("created","created","mysql_datetime","0","0","","","",""));
-		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0","","","",""));
+		$xform->setValueField("stamp",array("created","created","mysql_datetime","0","0"));
+		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0"));
 
 
 		$xform->setActionField("db",array('pz_user_perm'));
@@ -213,16 +212,15 @@ class pz_user_perm_screen {
 		$xform->setValidateField("customfunction", array("to_user_id","pz_checkIsMe",pz::getUser()->getId(),pz_i18n::msg("user_perm_user_isme")));
 
 
-		$xform->setValueField("checkbox",array("calendar_read",pz_i18n::msg("user_perm_calendar_read"),"1","0","0"));
-		$xform->setValueField("checkbox",array("calendar_write",pz_i18n::msg("user_perm_calendar_write"),"1","0","0"));
-
-		$xform->setValueField("checkbox",array("email_read",pz_i18n::msg("user_perm_email_read"),"1","0","0"));
-		$xform->setValueField("checkbox",array("email_write",pz_i18n::msg("user_perm_email_write"),"1","0","0"));
+		$xform->setValueField("checkbox",array("calendar_read",pz_i18n::msg("user_perm_calendar_read"),"","0"));
+		$xform->setValueField("checkbox",array("calendar_write",pz_i18n::msg("user_perm_calendar_write"),"","0"));
+		$xform->setValueField("checkbox",array("email_read",pz_i18n::msg("user_perm_email_read"),"","0"));
+		$xform->setValueField("checkbox",array("email_write",pz_i18n::msg("user_perm_email_write"),"","0"));
 
 		$xform->setValueField("hidden", array("user_id",pz::getUser()->getId()));
 
-		$xform->setValueField("stamp",array("created","created","mysql_datetime","0","0","","","",""));
-		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0","","","",""));
+		$xform->setValueField("stamp",array("created","created","mysql_datetime","0","0"));
+		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0"));
 
 		$xform->setActionField("db",array('pz_user_perm','id='.$this->user_perm->getId()));
 

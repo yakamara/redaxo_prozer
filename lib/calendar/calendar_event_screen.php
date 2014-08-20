@@ -2777,7 +2777,7 @@ public function getProjectjobListView($projects, $events, $p, $start, $end)
 		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
 		$xform->setObjectparams('form_showformafterupdate',1);
 
-		$xform->setValueField("checkbox",array("booked",pz_i18n::msg("calendar_event_booked"),1,1));
+		$xform->setValueField("checkbox",array("booked",pz_i18n::msg("calendar_event_booked"),'',1));
 		$xform->setValueField("text",array("title",pz_i18n::msg("calendar_event_title")));
 
 		$projects = pz::getUser()->getCalendarProjects();

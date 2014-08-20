@@ -395,14 +395,14 @@ class pz_user_screen {
 			$xform->setValidateField("empty",array("email",pz_i18n::msg("error_email_empty")));
 			$xform->setValidateField("unique",array("email",pz_i18n::msg("error_email_unique")));
 
-		$xform->setValueField("checkbox",array("status",pz_i18n::msg("active"),"1","0","0"));
-		$xform->setValueField("checkbox",array("admin",pz_i18n::msg("admin").' ('.pz_i18n::msg("admin_info").')',"1","0","0"));
+		$xform->setValueField("checkbox",array("status",pz_i18n::msg("active"),"","0"));
+		$xform->setValueField("checkbox",array("admin",pz_i18n::msg("admin").' ('.pz_i18n::msg("admin_info").')',"","0"));
 		$xform->setValueField("stamp",array("created"," created","mysql_datetime","0","0","","","",""));
 		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0","","","",""));
 
-		$xform->setValueField("checkbox",array("webdav",pz_i18n::msg("webdav").' ('.pz_i18n::msg("webdav_info").')',"1","0","no_db"));
-		$xform->setValueField("checkbox",array("carddav",pz_i18n::msg("carddav").' ('.pz_i18n::msg("carddav_info").')',"1","0","no_db"));
-		$xform->setValueField("checkbox",array("projectsadmin",pz_i18n::msg("projectsadmin").' ('.pz_i18n::msg("projectsadmin_info").')',"1","0","no_db"));
+		$xform->setValueField("checkbox",array("webdav",pz_i18n::msg("webdav").' ('.pz_i18n::msg("webdav_info").')',"","0","no_db"));
+		$xform->setValueField("checkbox",array("carddav",pz_i18n::msg("carddav").' ('.pz_i18n::msg("carddav_info").')',"","0","no_db"));
+		$xform->setValueField("checkbox",array("projectsadmin",pz_i18n::msg("projectsadmin").' ('.pz_i18n::msg("projectsadmin_info").')',"","0","no_db"));
 
 		$xform->setValueField("textarea",array("comment",pz_i18n::msg("user_comment")));
 
@@ -492,14 +492,14 @@ class pz_user_screen {
 		if($this->user->getId() != pz::getUser()->getId())
 		{
 		}
-		$xform->setValueField("checkbox",array("status",pz_i18n::msg("active"),"1","0","0"));
-		$xform->setValueField("checkbox",array("admin",pz_i18n::msg("admin").' ('.pz_i18n::msg("admin_info").')',"1","0","0"));
+		$xform->setValueField("checkbox",array("status",pz_i18n::msg("active"),"","0"));
+		$xform->setValueField("checkbox",array("admin",pz_i18n::msg("admin").' ('.pz_i18n::msg("admin_info").')',"","0"));
 		
 		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0"));
 
-		$xform->setValueField("checkbox",array("webdav",pz_i18n::msg("webdav").' ('.pz_i18n::msg("webdav_info").$this->user->hasPerm("webdav").')',"1",$this->user->hasPerm("webdav"),"no_db"));
-		$xform->setValueField("checkbox",array("carddav",pz_i18n::msg("carddav").' ('.pz_i18n::msg("carddav_info").')',"1",$this->user->hasPerm("carddav"),"no_db"));
-		$xform->setValueField("checkbox",array("projectsadmin",pz_i18n::msg("projectsadmin").' ('.pz_i18n::msg("projectsadmin_info").')',"1",$this->user->hasPerm("projectsadmin"),"no_db"));
+		$xform->setValueField("checkbox",array("webdav",pz_i18n::msg("webdav").' ('.pz_i18n::msg("webdav_info").')',"",$this->user->hasPerm("webdav"),"no_db"));
+		$xform->setValueField("checkbox",array("carddav",pz_i18n::msg("carddav").' ('.pz_i18n::msg("carddav_info").')',"",$this->user->hasPerm("carddav"),"no_db"));
+		$xform->setValueField("checkbox",array("projectsadmin",pz_i18n::msg("projectsadmin").' ('.pz_i18n::msg("projectsadmin_info").')',"",$this->user->hasPerm("projectsadmin"),"no_db"));
 
 		$xform->setValueField("textarea",array("comment",pz_i18n::msg("user_comment")));
 

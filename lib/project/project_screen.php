@@ -202,11 +202,11 @@ class pz_project_screen
 		$xform->setValueField("hidden",array("create_user_id",pz::getUser()->getId()));
 		$xform->setValueField("hidden",array("update_user_id",pz::getUser()->getId()));
 		$xform->setValueField("hidden",array("archived",0));
-		$xform->setValueField("checkbox",array("has_emails",pz_i18n::msg("emails"),"1","1","0"));
-		$xform->setValueField("checkbox",array("has_calendar",pz_i18n::msg("calendar_events"),"1","1","0"));
-		$xform->setValueField("checkbox",array("has_calendar_jobs",pz_i18n::msg("calendar_jobs"),"1","1","0"));
-		// $xform->setValueField("checkbox",array("has_wiki",pz_i18n::msg("wiki"),"1","1","0"));
-		$xform->setValueField("checkbox",array("has_files",pz_i18n::msg("files"),"1","1","0"));
+		$xform->setValueField("checkbox",array("has_emails",pz_i18n::msg("emails"),"","1"));
+		$xform->setValueField("checkbox",array("has_calendar",pz_i18n::msg("calendar_events"),"","1"));
+		$xform->setValueField("checkbox",array("has_calendar_jobs",pz_i18n::msg("calendar_jobs"),"","1"));
+		// $xform->setValueField("checkbox",array("has_wiki",pz_i18n::msg("wiki"),"","1"));
+		$xform->setValueField("checkbox",array("has_files",pz_i18n::msg("files"),"","1"));
 
 		$xform->setActionField("db",array());
 		$return = $xform->getForm();
@@ -261,13 +261,12 @@ class pz_project_screen
 		$xform->setValueField("stamp",array("updated","updated","mysql_datetime","0","0","","","",""));
 		$xform->setValueField("pz_select_screen",array("customer_id",pz_i18n::msg("project_customer"),pz_customers::getAsString(),"","",0,pz_i18n::msg("please_choose")));
 		$xform->setValueField("hidden",array("update_user_id",pz::getUser()->getId()));
-		$xform->setValueField("checkbox",array("has_emails",pz_i18n::msg("emails"),"1","1","0","","","",""));
-		$xform->setValueField("checkbox",array("has_calendar",pz_i18n::msg("calendar_events"),"1","1","0","","","",""));
-		$xform->setValueField("checkbox",array("has_calendar_jobs",pz_i18n::msg("calendar_jobs"),"1","1","0","","","",""));
-		// $xform->setValueField("checkbox",array("has_wiki",pz_i18n::msg("wiki"),"1","1","0","","","",""));
-		$xform->setValueField("checkbox",array("has_files",pz_i18n::msg("files"),"1","1","0","","","",""));
-
-		$xform->setValueField("checkbox",array("archived",pz_i18n::msg("archived"),"1","1","0","","","",""));
+		$xform->setValueField("checkbox",array("has_emails",pz_i18n::msg("emails"),"","1"));
+		$xform->setValueField("checkbox",array("has_calendar",pz_i18n::msg("calendar_events"),"","1"));
+		$xform->setValueField("checkbox",array("has_calendar_jobs",pz_i18n::msg("calendar_jobs"),"","1"));
+		// $xform->setValueField("checkbox",array("has_wiki",pz_i18n::msg("wiki"),"","1"));
+		$xform->setValueField("checkbox",array("has_files",pz_i18n::msg("files"),"","1"));
+		$xform->setValueField("checkbox",array("archived",pz_i18n::msg("archived"),"","1"));
 
 		$xform->setActionField("db",array('pz_project','id='.$this->project->getId()));
 
@@ -314,11 +313,11 @@ class pz_project_screen
 		// $xform->setValueField("pz_select_screen",array("customer_id",pz_i18n::msg("project_customer"),pz_customers::getAsString(),"","",1,pz_i18n::msg("please_choose"),'disabled'=>TRUE));
 
 
-		$xform->setValueField("checkbox",array("has_calendar",pz_i18n::msg("calendar"),"1","1","0",'disabled'=>TRUE));
-		$xform->setValueField("checkbox",array("has_wiki",pz_i18n::msg("wiki"),"1","1","0",'disabled'=>TRUE));
-		$xform->setValueField("checkbox",array("has_files",pz_i18n::msg("files"),"1","1","0",'disabled'=>TRUE));
-		$xform->setValueField("checkbox",array("has_emails",pz_i18n::msg("emails"),"1","1","0",'disabled'=>TRUE));
-		$xform->setValueField("checkbox",array("archived",pz_i18n::msg("archived"),"1","1","0",'disabled'=>TRUE));
+		$xform->setValueField("checkbox",array("has_calendar",pz_i18n::msg("calendar"),"","1"));
+		$xform->setValueField("checkbox",array("has_wiki",pz_i18n::msg("wiki"),"","1"));
+		$xform->setValueField("checkbox",array("has_files",pz_i18n::msg("files"),"","1"));
+		$xform->setValueField("checkbox",array("has_emails",pz_i18n::msg("emails"),"","1"));
+		$xform->setValueField("checkbox",array("archived",pz_i18n::msg("archived"),"","1"));
 */
 
 		$return = $header.$xform->getForm();
