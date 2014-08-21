@@ -2835,7 +2835,7 @@ public function getProjectjobListView($projects, $events, $p, $start, $end)
 		$jquery ='
 		<script>
 
-		$("#calendar_event_add_form #xform-formular-booked input, #calendar_event_add_form #xform-formular-allday input, #calendar_event_add_form #xform-formular-project-id select").bind("change",function() {
+		$("#calendar_event_add_form #xform-formular-booked input, #calendar_event_add_form #xform-formular-allday input, #calendar_event_add_form #xform-formular-project_id select").bind("change",function() {
 			calendar_event_add_form_updater();
 		});
 		
@@ -2843,8 +2843,8 @@ public function getProjectjobListView($projects, $events, $p, $start, $end)
 		{
 			booked = $("#calendar_event_add_form #xform-formular-booked input:checkbox:checked").val();
 			allday = $("#calendar_event_add_form #xform-formular-allday input:checkbox:checked").val();
-			project_id = $("#calendar_event_add_form #xform-formular-project-id select").val();
-			project_sub_id = $("#calendar_event_add_form #xform-formular-project-sub-id select").val();
+			project_id = $("#calendar_event_add_form #xform-formular-project_id select").val();
+			project_sub_id = $("#calendar_event_add_form #xform-formular-project_sub_id select").val();
 
 			if(allday == 1)
 			{
@@ -2894,25 +2894,25 @@ public function getProjectjobListView($projects, $events, $p, $start, $end)
 $jquery .= '
 
       // project_sub_id;
-      $("#calendar_event_add_form #xform-formular-project-sub-id select option").remove();
+      $("#calendar_event_add_form #xform-formular-project_sub_id select option").remove();
 
       if(project_id == "" || typeof(project_sub_ids[project_id]) == "undefined" ) {
-        $("#calendar_event_add_form #xform-formular-project-sub-id").hide();
+        $("#calendar_event_add_form #xform-formular-project_sub_id").hide();
 
       }else {
         if(project_sub_ids[project_id].length == 0) {
-          $("#calendar_event_add_form #xform-formular-project-sub-id").hide();
+          $("#calendar_event_add_form #xform-formular-project_sub_id").hide();
         }else {
-          $("<option/>").val(0).text("'.pz_i18n::msg("please_choose").'").appendTo("#calendar_event_add_form #xform-formular-project-sub-id select");
+          $("<option/>").val(0).text("'.pz_i18n::msg("please_choose").'").appendTo("#calendar_event_add_form #xform-formular-project_sub_id select");
           $.each(project_sub_ids[project_id], function(t, v) {
           
-            $("<option/>").val(v).text(project_sub_name[v]).appendTo("#calendar_event_add_form #xform-formular-project-sub-id select");
+            $("<option/>").val(v).text(project_sub_name[v]).appendTo("#calendar_event_add_form #xform-formular-project_sub_id select");
             if(v == project_sub_id) {
-              $("#calendar_event_add_form #xform-formular-project-sub-id select option[value=\'"+v+"\']").attr("selected", true);
+              $("#calendar_event_add_form #xform-formular-project_sub_id select option[value=\'"+v+"\']").attr("selected", true);
             }
           });
-          $("#calendar_event_add_form #xform-formular-project-sub-id select").trigger("liszt:updated");
-          $("#calendar_event_add_form #xform-formular-project-sub-id").show();
+          $("#calendar_event_add_form #xform-formular-project_sub_id select").trigger("liszt:updated");
+          $("#calendar_event_add_form #xform-formular-project_sub_id").show();
         }
       }
 
@@ -3087,7 +3087,7 @@ $jquery .= '
 $jquery ='
 		<script>
 		
-		$("#calendar_event_edit_form #xform-formular-booked input, #calendar_event_edit_form #xform-formular-allday input, #calendar_event_edit_form #xform-formular-project-id select").bind("change",function() {
+		$("#calendar_event_edit_form #xform-formular-booked input, #calendar_event_edit_form #xform-formular-allday input, #calendar_event_edit_form #xform-formular-project_id select").bind("change",function() {
 			calendar_event_edit_form_updater();
 		});
 		
@@ -3095,8 +3095,8 @@ $jquery ='
 		{
 			booked = $("#calendar_event_edit_form #xform-formular-booked input:checkbox:checked").val();
 			allday = $("#calendar_event_edit_form #xform-formular-allday input:checkbox:checked").val();
-			project_id = $("#calendar_event_edit_form #xform-formular-project-id select").val();
-			project_sub_id = $("#calendar_event_edit_form #xform-formular-project-sub-id select").val();
+			project_id = $("#calendar_event_edit_form #xform-formular-project_id select").val();
+			project_sub_id = $("#calendar_event_edit_form #xform-formular-project_sub_id select").val();
 			
 			if(allday == 1)
 			{
@@ -3144,25 +3144,25 @@ $jquery ='
 $jquery .= '
 
       // project_sub_id;
-      $("#calendar_event_edit_form #xform-formular-project-sub-id select option").remove();
+      $("#calendar_event_edit_form #xform-formular-project_sub_id select option").remove();
 
       if(project_id == "" || typeof(project_sub_ids[project_id]) == "undefined" ) {
-        $("#calendar_event_edit_form #xform-formular-project-sub-id").hide();
+        $("#calendar_event_edit_form #xform-formular-project_sub_id").hide();
 
       }else {
         if(project_sub_ids[project_id].length == 0) {
-          $("#calendar_event_edit_form #xform-formular-project-sub-id").hide();
+          $("#calendar_event_edit_form #xform-formular-project_sub_id").hide();
         }else {
-          $("<option/>").val(0).text("'.pz_i18n::msg("please_choose").'").appendTo("#calendar_event_edit_form #xform-formular-project-sub-id select");
+          $("<option/>").val(0).text("'.pz_i18n::msg("please_choose").'").appendTo("#calendar_event_edit_form #xform-formular-project_sub_id select");
           $.each(project_sub_ids[project_id], function(t, v) {
           
-            $("<option/>").val(v).text(project_sub_name[v]).appendTo("#calendar_event_edit_form #xform-formular-project-sub-id select");
+            $("<option/>").val(v).text(project_sub_name[v]).appendTo("#calendar_event_edit_form #xform-formular-project_sub_id select");
             if(v == project_sub_id) {
-              $("#calendar_event_edit_form #xform-formular-project-sub-id select option[value=\'"+v+"\']").attr("selected", true);
+              $("#calendar_event_edit_form #xform-formular-project_sub_id select option[value=\'"+v+"\']").attr("selected", true);
             }
           });
-          $("#calendar_event_edit_form #xform-formular-project-sub-id select").trigger("liszt:updated");
-          $("#calendar_event_edit_form #xform-formular-project-sub-id").show();
+          $("#calendar_event_edit_form #xform-formular-project_sub_id select").trigger("liszt:updated");
+          $("#calendar_event_edit_form #xform-formular-project_sub_id").show();
         }
       }
 			
