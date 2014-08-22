@@ -28,7 +28,7 @@ Last Changes
 
 #### Bugs
 
-* Teilprojekte erscheinen reagieren im Kalender nun richtig
-* Bei der Installation wird nach der PHP Version geprüft (>=5.4)
+* Teilprojekte reagieren im Kalender nun richtig
+* Bei der Installation wird nun nach der PHP Version geprüft (>=5.4)
 
 
