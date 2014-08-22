@@ -1,22 +1,17 @@
-PROZER 3.0
+PROZER 3.0 AddOn für REDAXO 4 (www.redaxo.org)
 =============
 
 project-communication-software
 license - still unclear - will be defined soon.
 
-REDAXO 4
 
-TODOS:
-- Domain eintragen
-- XForm Felder noch umbauen
-- validate bei pz_feldern prüfen.
--- javascript hidden fields etc noch setzen
---- Teilprojekt erscheint immer .. fehler
-- redaxo5/prozer konvertierung: passwörter - übernahme dateisystem und datenbank.
-- webdav, caldav, cardav prüfen
+#### TODOS
+-------
+* bei PROZER 2.0 Versionen
+** Passwörter neu setzen
 
 
-Installation
+#### Installation
 -------
 * Download and install redaxo4 / http://www.redaxo.org
 * Log In REDAXO Backend www.domain.de/redaxo
@@ -24,3 +19,16 @@ Installation
 * Install and activate PHPMailer-AddOn
 * Go To AddON "Installer" and load and install newest version of XForm and Prozer
 * Prozer will be now available in the frontend. Login with admin/admin
+
+
+Last Changes
+-------
+
+### Version 3.0 beta3 // 22. August 2014
+
+#### Bugs
+
+* Teilprojekte erscheinen reagieren im Kalender nun richtig
+* Bei der Installation wird nach der PHP Version geprüft (>=5.4)
+
+
