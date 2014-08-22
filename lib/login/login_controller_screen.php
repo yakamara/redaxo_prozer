@@ -51,7 +51,7 @@ class pz_login_controller_screen extends pz_login_controller{
 		
 		$function = '
 		        <div class="slogan">
-		          <h1><span>PROZER 2.0 </span><br /><span>Agentursoftware</span></h1>
+		          <h1><span>PROZER 3.0 </span><br /><span>Agentursoftware</span></h1>
 		          <h2><span>Das kostenlose Open-Source </span><br /><span>Projekt-Kommunikations-System</span></h2>
 		        </div>
 		        <figure class="me1">
@@ -61,7 +61,7 @@ class pz_login_controller_screen extends pz_login_controller{
 		$section1 = '
 		        <div class="grid2col formatted">
 		          <div class="column first">
-                <h1>Willkommen bei PROZER 2.0</h1>
+                <h1>Willkommen bei PROZER 3.0</h1>
                 <p>PROZER ist eine Agentursoftware, die alle typischen Kommunikationsaufgaben der Projektarbeit abdeckt - vielseitig und leicht zu handhaben. Termine oder Arbeitsstunden können online sowie über CalDav-Clients (iPhone, Android) gepflegt und synchronisiert werden. Auch Adressen, E-Mails und andere Dateien sind mit PROZER immer leicht im Blick zu behalten.</p>
               </div>
               
