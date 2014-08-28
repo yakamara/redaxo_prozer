@@ -1,6 +1,6 @@
 <?php
 
-$REX['ADDON']['version']['prozer'] = '3.0beta3';
+$REX['ADDON']['version']['prozer'] = '3.0beta2';
 $REX['ADDON']['author']['prozer'] = 'Jan Kristinus, Gregor Harlan, Thomas Blum';
 
 $REX['ADDON']['xform']['classpaths']['value']['prozer'] = rex_path::addon('prozer','xform/value/');
@@ -41,6 +41,9 @@ if(!$REX["REDAXO"]) {
 
       $output = ""; // $ep["subject"];
       $output .= pz::controller();
+
+      pz::sendHeader();
+
 
       echo $output;
       exit;

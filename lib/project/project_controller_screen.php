@@ -1006,10 +1006,11 @@ class pz_project_controller_screen extends pz_project_controller
 				$file_id = rex_request("file_id","int",0);
 				if($file_id > 0 && ($file = pz_project_file::get($file_id)) ) {
 					if($file->getProjectId() == $this->project->getId()){
-						pz::getDownloadHeader($file->getName(), $file->getContent());
+						pz::setDownloadHeaders($file->getName(), $file->getContent());
+						return $file->getContent();
 					}
 				}
-				exit;
+        return '';
 				break;
 				
 			case("add_file"):

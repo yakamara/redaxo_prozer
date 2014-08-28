@@ -7,6 +7,7 @@ class pz {
 	static $users = NULL;
 	static $mediaviews = array('screen', 'calcarddav', 'caldav', 'webdav', 'carddav', 'api'); // 'mobile'
 	static $mediaview = 'screen';
+	static $header = array();
   protected static $properties = [];
   const CONFIG_NAMESPACE = 'prozer';
 
@@ -827,20 +828,85 @@ class pz {
 		return "/assets/addons/prozer/themes/blue_grey/mimetypes/file.png";
 	}
 
-	static function getDownloadHeader($file_name, $content)
+	static function setDownloadHeaders($file_name, $content)
 	{
-		header("Pragma: public"); // required
-    header("Expires: 0");
-    header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-    header("Cache-Control: private",false); // required for certain browsers
-    header("Content-Type: ".pz::getMimeTypeByFilename($file_name, $content));
-    header("Content-Disposition: attachment; filename=\"".basename($file_name)."\";" );
-    header("Content-Transfer-Encoding: binary");
-    header("Content-Length: ".strlen($content));
-		echo $content;
-		exit;
-	}
+		// header("Pragma: public"); // required
+    // header("Expires: 0");
+    // header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+    // header("Cache-Control: private",false); // required for certain browsers
+    // header("Content-Type: ".pz::getMimeTypeByFilename($file_name, $content));
+    // header("Content-Disposition: attachment; filename=\"".basename($file_name)."\";" );
+    // header("Content-Transfer-Encoding: binary");
+    // header("Content-Length: ".strlen($content));
+    
+    pz::setHeader('cache-control', 'private' );
+    pz::setHeader('content-type', pz::getMimeTypeByFilename($file_name, $content) );
+    pz::setHeader('filename', basename($file_name) );
+    pz::setHeader('content-disposition', 'attachment');
+    pz::setHeader('content-length', strlen($content));
+    pz::setHeader('pragma', 'public');
+    pz::setHeader('expires', '0');
+    pz::setHeader('content-transfer-encoding', 'binary');
 
+	}
+	
+  static function setHeader($type, $value) 
+  {
+      pz::$header[$type] = $value;
+  }
+
+  static function getHeader($type) 
+  {
+      if (!isset(pz::$header[$type])) {
+          return '';
+      }
+      return pz::$header[$type];
+  }
+
+  static function sendHeader() 
+  {
+
+    if (pz::getHeader("content-type") == "") {
+       pz::setHeader("content-type", "text/html");
+       pz::setHeader("charset", "UTF-8");
+    }
+
+    $charset = pz::getHeader("charset");
+    if ($charset != "") {
+      $charset = ' charset='.$charset;
+    }
+
+    header('Content-Type: '.pz::getHeader("content-type").'; '.$charset);
+
+    if (pz::getHeader("filename") != "") {
+      if (pz::getHeader("content-disposition") == "") {
+         pz::setHeader("content-disposition", "inline");
+      }
+      header('Content-Disposition: '.pz::getHeader("content-disposition").'; filename="' . pz::getHeader("filename") . '";');
+    }
+    
+    if (pz::getHeader("content-length") == "") {
+        header('Content-Length: ' . pz::getHeader("content-length"));
+    }
+
+    if (pz::getHeader("pragma") == "") {
+        header('Pragma: ' . pz::getHeader("pragma"));
+    }
+    
+    if (pz::getHeader("expires") == "") {
+        header('Expires: ' . pz::getHeader("expires"));
+    }
+
+    if (pz::getHeader("content-transfer-encoding") == "") {
+        header('Content-Transfer-Encoding: ' . pz::getHeader("content-transfer-encoding"));
+    }
+    
+    if (pz::getHeader("cache-control") == "private") {
+        header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+        header("Cache-Control: private",false); // required for certain browsers
+    }
+    
+  }
 
   // ---------------------------------------------------------------
 

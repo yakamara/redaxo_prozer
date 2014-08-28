@@ -341,10 +341,13 @@ class pz_emails_controller_screen extends pz_emails_controller
 
         $return = '<script language="Javascript">';
         $emails = array();
+        $timer = new rex_timer();
         $email_accounts = pz_email_account::getAccounts(pz::getUser()->getId(), 1);
+
         foreach ($email_accounts as $email_account) {
           $email_account->downloadEmails();
           $emails = array_merge($emails, $email_account->getEmails());
+
         }
         // $return.= 'alert("'.count($emails).' E-mails downloaded");';
 
@@ -397,11 +400,10 @@ class pz_emails_controller_screen extends pz_emails_controller
           // header("Cache-Control: no-cache, must-revalidate");
           // header("Cache-Control","private");
           // header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // in the past
-          header('Content-Disposition: inline; filename="' . $element->getFileName() . '";'); //
-          header('Content-type: ' . $element->getContentType());
           // header("Content-Transfer-Encoding: binary");
           // header("Content-Length: ".$element->getSize());
-
+          pz::setHeader("content-type", $element->getContentType());
+          pz::setHeader("filename", $element->getFileName());
           return $element->getBody();
         }
         return false;
@@ -414,7 +416,7 @@ class pz_emails_controller_screen extends pz_emails_controller
       case 'view_firstbody':
         $pz_eml = $email->getProzerEml();
         $return = $pz_eml->getFirstText();
-        header('Content-type: text/plain; charset=UTF-8');
+        pz::setHeader("content-type", 'text/plain');
         return $return;
 
       case 'view_ashtml':
@@ -429,12 +431,15 @@ class pz_emails_controller_screen extends pz_emails_controller
           $search = '#cid:([a-zA-Z-0-9\\\/_.]*)#i';
           $replace = pz::url('screen', 'emails', 'email', array('mode' => 'view_element_by_content_id', 'email_id' => $email->getId(), 'content_id' => '')) . "\${1}";
           $body = preg_replace($search, $replace, $body);
-          if ($element->getContentTypeCharset() != '') {
-            $content_type .= ' charset=' . $element->getContentTypeCharset();
+
+          if ($element->getContentTypeCharset() != "") {
+              pz::setHeader("charset", $element->getContentTypeCharset());
             $body = mb_convert_encoding($body, $element->getContentTypeCharset(), 'UTF-8');
           }
-          header('Content-Disposition: inline; filename="' . $element->getFileName() . '";');
-          header('Content-type: text/html');
+          if ($content_type != "") {
+              pz::setHeader("content-type", $content_type);
+          }
+          pz::setHeader("filename", $element->getFileName());
           return $body;
         }
         return false;
@@ -454,13 +459,15 @@ class pz_emails_controller_screen extends pz_emails_controller
             $replace = pz::url('screen', 'emails', 'email', array('mode' => 'view_element_by_content_id', 'email_id' => $email->getId(), 'content_id' => '')) . "\${1}";
             $body = preg_replace($search, $replace, $body);
             if ($element->getContentTypeCharset() != '') {
-              $content_type .= ' charset=' . $element->getContentTypeCharset();
+              pz::setHeader("charset", $element->getContentTypeCharset());
               $body = mb_convert_encoding($body, $element->getContentTypeCharset(), 'UTF-8');
             }
           }
-          header('Content-Disposition: inline; filename="' . $element->getFileName() . '";');
-          header('Content-type: ' . pz::getMimetypeByFilename($element->getFileName()));
-          echo $body; exit;
+
+          pz::setHeader("content-type", pz::getMimetypeByFilename($element->getFileName()));
+          pz::setHeader("filename", $element->getFileName());
+
+          return $body;
         }
         return false;
 
@@ -469,8 +476,8 @@ class pz_emails_controller_screen extends pz_emails_controller
         $pz_eml->setMailFilename($email->getId());
         $element_id = rex_request('element_id', 'string', 0);
         if ($element = $pz_eml->getElementByElementId($element_id)) {
-          pz::getDownloadHeader($element->getFileName(), $element->getBody());
-          return '';
+          pz::setDownloadHeaders($element->getFileName(), $element->getBody());
+          return $element->getBody();
         }
         return false;
 
@@ -479,8 +486,8 @@ class pz_emails_controller_screen extends pz_emails_controller
         $pz_eml->setMailFilename($email->getId());
         $element_id = rex_request('element_id', 'string', 0);
         if ($element = $pz_eml->getElementByElementId($element_id)) {
-          pz::getDownloadHeader($element->getFileName(), $element->getSource());
-          return '';
+          pz::setDownloadHeaders($element->getFileName(), $element->getSource());
+          return $element->getSource();
         }
         return false;
 

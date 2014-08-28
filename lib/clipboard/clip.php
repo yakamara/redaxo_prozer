@@ -108,7 +108,8 @@ class pz_clip extends pz_model
 
   public function download()
   {
-    return pz::getDownloadHeader($this->getFilename(), $this->getContent());
+    pz::setDownloadHeaders($this->getFilename(), $this->getContent());
+    return $this->getContent();
   }
 
   public function getUserId()
