@@ -2,13 +2,14 @@
 
 class pz {
 
-	static $login_user = NULL;
-	static $user = NULL;
-	static $users = NULL;
-	static $mediaviews = array('screen', 'calcarddav', 'caldav', 'webdav', 'carddav', 'api'); // 'mobile'
-	static $mediaview = 'screen';
-	static $header = array();
+	protected static $login_user = NULL;
+	protected static $user = NULL;
+	protected static $users = NULL;
+	public static $mediaviews = array('screen', 'calcarddav', 'caldav', 'webdav', 'carddav', 'api'); // 'mobile'
+	public static $mediaview = 'screen';
+	protected static $header = array();
   protected static $properties = [];
+  
   const CONFIG_NAMESPACE = 'prozer';
 
 	static function controller()
@@ -27,7 +28,7 @@ class pz {
 		// ob_start();
 
 		setlocale (LC_ALL, pz_i18n::msg("locale"));
-    date_default_timezone_set(pz::getDateTimeZone()->getName());
+    date_default_timezone_set(self::getDateTimeZone()->getName());
 
 		$func = rex_request('func');
 
@@ -36,7 +37,7 @@ class pz {
 			self::$mediaview = 'screen';
 		}
 
-		$class = 'pz_'.pz::$mediaview.'_controller';
+		$class = 'pz_'.self::$mediaview.'_controller';
 
 		if(!class_exists($class)) {
 			return "ERROR PCNE ".$class;
@@ -45,7 +46,7 @@ class pz {
 		$return = $ctr->controller($func);
 
     // debug - if page needs more than xxx seconds
-    if(is_object(pz::getUser()) && pz::getUser()->getId() == 1 && $timer->getDelta()>700) {
+    if(is_object(self::getUser()) && self::getUser()->getId() == 1 && $timer->getDelta()>700) {
     }
 
     return $return;
@@ -233,7 +234,7 @@ class pz {
 		$params = array();
 		$where = array();
 
-		$f = pz::getFilter($filter,$where,$params);
+		$f = self::getFilter($filter,$where,$params);
 		$where = $f["where"];
 		$params = $f["params"];
 		$where_sql = $f["where_sql"];
@@ -257,7 +258,7 @@ class pz {
 		$return = array();
 		
     if(!$users)		
-		  $users = pz::getUsers();
+		  $users = self::getUsers();
 
 		foreach($users as $user) {
 			$v = $user->getName();
@@ -271,7 +272,7 @@ class pz {
   static public function getUsersAsArray($users = NULL) 
   {
     if(!$users)		
-      $users = pz::getUsers();
+      $users = self::getUsers();
   	$return = array();
   	foreach($users as $user) {
   	  $return[] = array("id"=>$user->getId(), "label"=>$user->getName());
@@ -293,7 +294,7 @@ class pz {
   static function getServer()
   {
     return $_SERVER["HTTP_HOST"];
-    // return pz::getProperty('server');
+    // return self::getProperty('server');
   }
 
   static function getServerUrl()
@@ -302,7 +303,7 @@ class pz {
   	if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
   		$protocolSecure = 's';
   	}
-    return 'http'.$protocolSecure.'://'.pz::getServer();
+    return 'http'.$protocolSecure.'://'.self::getServer();
   }
 
 
@@ -383,7 +384,7 @@ class pz {
     if(!$datetime)
       $datetime = new DateTime();
 
-    $datetime->setTimezone(pz::getDateTimeZone());
+    $datetime->setTimezone(self::getDateTimeZone());
     return $datetime;
   }
 
@@ -469,7 +470,7 @@ class pz {
     FB::$type('pz: '.$message);
 		if(is_array($p))
 		{
-		  pz::debugArray($p, $type, 0);
+		  self::debugArray($p, $type, 0);
 
 		}elseif($p != '')
 		{
@@ -487,7 +488,7 @@ class pz {
     	{
     	  FB::$type('['.$k.'] = ');
     	  $level++;
-    		pz::debugArray($m, $type, $level);
+    		self::debugArray($m, $type, $level);
     	  $level--;
     	}else
     	{
@@ -502,12 +503,12 @@ class pz {
 	{
 		// TODO
 		// anhand vom mimetype erkennen welches Bildrenderer genommen werdenkann oder muss oder auch nicht
-		// if(isset(pz::$mimetypes[$mimetype]))
-		// 	return pz::$mimetypes[$mimetype]["extension"];
+		// if(isset(self::$mimetypes[$mimetype]))
+		// 	return self::$mimetypes[$mimetype]["extension"];
 
 		$src = @imagecreatefrompng($image_path);
     if($src) {
-		  return pz::makeInlineImageFromSource($src, $size, $mimetype, true);
+		  return self::makeInlineImageFromSource($src, $size, $mimetype, true);
     }
 		return "";
 	}
@@ -676,14 +677,14 @@ class pz {
 
 		$file_name = 'excel_export'.date('Ymd').'.xls';
 
-    pz::setHeader('pragma', 'public');
-    pz::setHeader('expires', '0');
-    pz::setHeader('cache-control', 'private' );
-    pz::setHeader('content-type', "application/vnd.ms-excel" );
-    pz::setHeader('content-disposition', 'attachment');
-    pz::setHeader('filename', basename($file_name) );
-    pz::setHeader('content-length', strlen($return));
-    pz::setHeader('content-transfer-encoding', 'binary');
+    self::setHeader('pragma', 'public');
+    self::setHeader('expires', '0');
+    self::setHeader('cache-control', 'private' );
+    self::setHeader('content-type', "application/vnd.ms-excel" );
+    self::setHeader('content-disposition', 'attachment');
+    self::setHeader('filename', basename($file_name) );
+    self::setHeader('content-length', strlen($return));
+    self::setHeader('content-transfer-encoding', 'binary');
 
 		return $return;
 	}
@@ -750,7 +751,7 @@ class pz {
 
 	// ------------------------------------------------------------------------ mimetypes
 
-	static $mimetypes = array(
+	protected static $mimetypes = array(
 		"html" => "text/html",
 		"zip" => "application/zip",
 		"gif" => "image/gif",
@@ -788,9 +789,9 @@ class pz {
 		
 	);
 
-	static function getExtensionByMimetype($mimetype)
+	public static function getExtensionByMimetype($mimetype)
 	{
-	  foreach(pz::$mimetypes as $ext => $mt)
+	  foreach(self::$mimetypes as $ext => $mt)
 	  {
 	    if($mimetype == $mt)
 	    {
@@ -800,13 +801,13 @@ class pz {
 		return FALSE;
 	}
 
-  static function getMimeTypeByFilename($file_name, $content = "")
+  public static function getMimeTypeByFilename($file_name, $content = "")
   {
     $f = explode(".",$file_name);
     end($f);
     $ext = current($f);
-    if(isset(pz::$mimetypes[$ext]))
-      return pz::$mimetypes[$ext];
+    if(isset(self::$mimetypes[$ext]))
+      return self::$mimetypes[$ext];
     if($content != "")
     {
       $file_info = new finfo(FILEINFO_MIME_TYPE);
@@ -816,9 +817,9 @@ class pz {
     return 'application/octet-stream';
   }
 
-	static function getMimetypeIconPath($mimetype)
+	public static function getMimetypeIconPath($mimetype)
 	{
-		if($ext = pz::getExtensionByMimetype($mimetype))
+		if($ext = self::getExtensionByMimetype($mimetype))
 		{
 			$file = rex_path::frontend("/assets/addons/prozer/themes/blue_grey/mimetypes/".$ext.".png");
 			if(file_exists($file))
@@ -827,71 +828,76 @@ class pz {
 		return "/assets/addons/prozer/themes/blue_grey/mimetypes/file.png";
 	}
 
-	static function setDownloadHeaders($file_name, $content)
+	public static function setDownloadHeaders($file_name, $content)
 	{
-    pz::setHeader('cache-control', 'private' );
-    pz::setHeader('content-type', pz::getMimeTypeByFilename($file_name, $content) );
-    pz::setHeader('filename', basename($file_name) );
-    pz::setHeader('content-disposition', 'attachment');
-    pz::setHeader('content-length', strlen($content));
-    pz::setHeader('pragma', 'public');
-    pz::setHeader('expires', '0');
-    pz::setHeader('content-transfer-encoding', 'binary');
+    self::setHeader('cache-control', 'private' );
+    self::setHeader('content-type', self::getMimeTypeByFilename($file_name, $content) );
+    self::setHeader('filename', basename($file_name) );
+    self::setHeader('content-disposition', 'attachment');
+    self::setHeader('content-length', strlen($content));
+    self::setHeader('pragma', 'public');
+    self::setHeader('expires', '0');
+    self::setHeader('content-transfer-encoding', 'binary');
 
 	}
 	
-  static function setHeader($type, $value) 
+  public static function setHeader($type, $value) 
   {
-      pz::$header[$type] = $value;
+      self::$header[$type] = $value;
   }
 
-  static function getHeader($type) 
+  public static function setHeaders($header) 
   {
-      if (!isset(pz::$header[$type])) {
+      self::$header = array_merge(self::$header, $header);
+  }
+
+  public static function getHeader($type) 
+  {
+      if (!isset(self::$header[$type])) {
           return '';
       }
-      return pz::$header[$type];
+      return self::$header[$type];
   }
 
-  static function sendHeader() 
+  public static function sendHeader() 
   {
 
-    if (pz::getHeader("content-type") == "") {
-       pz::setHeader("content-type", "text/html");
-       pz::setHeader("charset", "UTF-8");
+    if (self::getHeader("content-type") == "") {
+       self::setHeader("content-type", "text/html");
+       self::setHeader("charset", "UTF-8");
     }
 
-    $charset = pz::getHeader("charset");
+    $charset = self::getHeader("charset");
     if ($charset != "") {
       $charset = ' charset='.$charset;
     }
 
-    header('Content-Type: '.pz::getHeader("content-type").'; '.$charset);
+    header('Content-Type: '.self::getHeader("content-type").'; '.$charset);
 
-    if (pz::getHeader("filename") != "") {
-      if (pz::getHeader("content-disposition") == "") {
-         pz::setHeader("content-disposition", "inline");
+    if (self::getHeader("filename") != "") {
+      if (self::getHeader("content-disposition") == "") {
+         self::setHeader("content-disposition", "inline");
       }
-      header('Content-Disposition: '.pz::getHeader("content-disposition").'; filename="' . pz::getHeader("filename") . '";');
+      header('Content-Disposition: '.self::getHeader("content-disposition").'; filename="' . self::getHeader("filename") . '";');
     }
     
-    if (pz::getHeader("content-length") != "") {
-        header('Content-Length: 22' . pz::getHeader("content-length"));
+    if (self::getHeader("content-length") != "") {
+        header('Content-Length: 22' . self::getHeader("content-length"));
     }
 
-    if (pz::getHeader("pragma") != "") {
-        header('Pragma: ' . pz::getHeader("pragma"));
+    if (self::getHeader("pragma") != "") {
+        header('Pragma: ' . self::getHeader("pragma"));
     }
     
-    if (pz::getHeader("expires") != "") {
-        header('Expires: ' . pz::getHeader("expires"));
+    if (self::getHeader("expires") != "") {
+        header('Expires: ' . self::getHeader("expires"));
     }
 
-    if (pz::getHeader("content-transfer-encoding") != "") {
-        header('Content-Transfer-Encoding: ' . pz::getHeader("content-transfer-encoding"));
+    if (self::getHeader("content-transfer-encoding") != "") {
+        header('Content-Transfer-Encoding: ' . self::getHeader("content-transfer-encoding"));
     }
     
-    if (pz::getHeader("cache-control") == "private") {
+    if (self::getHeader("cache-control") == "private") {
         header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
         header("Cache-Control: private",false); // required for certain browsers
     }
