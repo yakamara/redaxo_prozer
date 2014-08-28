@@ -674,17 +674,16 @@ class pz {
 
 		$return .= '</table>';
 
-		$file_size = strlen($return);
 		$file_name = 'excel_export'.date('Ymd').'.xls';
 
-		header("Pragma: public"); // required
-    header("Expires: 0");
-    header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-    header("Cache-Control: private",false); // required for certain browsers
-    header("Content-Type: application/vnd.ms-excel");
-    header("Content-Disposition: attachment; filename=\"".basename($file_name)."\";" );
-    header("Content-Transfer-Encoding: binary");
-    header("Content-Length: ".$file_size);
+    pz::setHeader('pragma', 'public');
+    pz::setHeader('expires', '0');
+    pz::setHeader('cache-control', 'private' );
+    pz::setHeader('content-type', "application/vnd.ms-excel" );
+    pz::setHeader('content-disposition', 'attachment');
+    pz::setHeader('filename', basename($file_name) );
+    pz::setHeader('content-length', strlen($return));
+    pz::setHeader('content-transfer-encoding', 'binary');
 
 		return $return;
 	}
@@ -830,15 +829,6 @@ class pz {
 
 	static function setDownloadHeaders($file_name, $content)
 	{
-		// header("Pragma: public"); // required
-    // header("Expires: 0");
-    // header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-    // header("Cache-Control: private",false); // required for certain browsers
-    // header("Content-Type: ".pz::getMimeTypeByFilename($file_name, $content));
-    // header("Content-Disposition: attachment; filename=\"".basename($file_name)."\";" );
-    // header("Content-Transfer-Encoding: binary");
-    // header("Content-Length: ".strlen($content));
-    
     pz::setHeader('cache-control', 'private' );
     pz::setHeader('content-type', pz::getMimeTypeByFilename($file_name, $content) );
     pz::setHeader('filename', basename($file_name) );
@@ -885,19 +875,19 @@ class pz {
       header('Content-Disposition: '.pz::getHeader("content-disposition").'; filename="' . pz::getHeader("filename") . '";');
     }
     
-    if (pz::getHeader("content-length") == "") {
-        header('Content-Length: ' . pz::getHeader("content-length"));
+    if (pz::getHeader("content-length") != "") {
+        header('Content-Length: 22' . pz::getHeader("content-length"));
     }
 
-    if (pz::getHeader("pragma") == "") {
+    if (pz::getHeader("pragma") != "") {
         header('Pragma: ' . pz::getHeader("pragma"));
     }
     
-    if (pz::getHeader("expires") == "") {
+    if (pz::getHeader("expires") != "") {
         header('Expires: ' . pz::getHeader("expires"));
     }
 
-    if (pz::getHeader("content-transfer-encoding") == "") {
+    if (pz::getHeader("content-transfer-encoding") != "") {
         header('Content-Transfer-Encoding: ' . pz::getHeader("content-transfer-encoding"));
     }
     
