@@ -882,7 +882,7 @@ class pz {
     }
     
     if (self::getHeader("content-length") != "") {
-        header('Content-Length: 22' . self::getHeader("content-length"));
+        header('Content-Length: ' . self::getHeader("content-length"));
     }
 
     if (self::getHeader("pragma") != "") {
