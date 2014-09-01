@@ -52,7 +52,7 @@ class rex_xform_pz_address_fields extends rex_xform_abstract
 		$url_labels = array("WORK","HOME",'_$!<HomePage>!$_',"MobileMe");
 		
 		// X-SOCIALPROFILE
-		$socialprofile_value_types = array("myspace","linkedin","flickr","facebook","twitter");
+		$socialprofile_value_types = array("myspace","linkedin","flickr","facebook","twitter","plus.google.com","xing");
 
 		// IMPP
 		$impp_labels = array("WORK","HOME");
