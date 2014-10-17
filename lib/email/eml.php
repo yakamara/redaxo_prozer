@@ -586,7 +586,7 @@ Content-Type: text/calendar; charset="utf-8"; method=REQUEST
    			}
 	   		if (preg_match('#name[ ]*=[" \']*([a-zA-Z-0-9\.-_\[\]]*)[" \';,]*#im', $header, $regs)) {
 */
-	   		if (preg_match('#name[ ]*=[ ]*["\']{1}([a-zA-Z-0-9\.-_\[\] ]*)["\';,]{1}#im', $header, $regs)) {
+	   		if (preg_match('#name[ ]*=[ ]*["\']?([a-zA-Z-0-9\.-_\[\] ]*)["\';,]?#im', $header, $regs)) {
    				$return["content-type-name"] = (trim($regs[1])); // strtolower
    			}
 
