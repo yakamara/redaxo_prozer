@@ -578,6 +578,7 @@ search_update = Nach Updates suchen
 search_delete = Nach Löschungen suchen
 search_download = Nach Downloads suchen
 search_clip = Nach Clips suchen
+search_error = Nach Fehlern suchen
 
 search_user = Nach User suchen
 search_email = Nach E-Mail suchen

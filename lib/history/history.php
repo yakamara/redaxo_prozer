@@ -11,7 +11,9 @@ class pz_history
         array('id'=>'update',  'label' => pz_i18n::msg('search_update')),
         array('id'=>'delete',  'label' => pz_i18n::msg('search_delete')),
 //        array('id'=>'logout',  'label' => pz_i18n::msg('search_logout')),
-        array('id'=>'download',  'label' => pz_i18n::msg('search_download'))
+        array('id'=>'download',  'label' => pz_i18n::msg('search_download')),
+        array('id'=>'error',  'label' => pz_i18n::msg('search_error')),
+        
       );
   
   }

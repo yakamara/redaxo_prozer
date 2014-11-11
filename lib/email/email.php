@@ -740,11 +740,13 @@ class pz_email extends pz_model{
     		if ($mail->Send() != 1)
     		{
 		      ob_end_clean();
+		      $this->saveToHistory('error', 'send', $mail->ErrorInfo);
     			return false;
     		}
     		
       } catch (phpmailerException $e) {
         // $e->getMessage()
+        $this->saveToHistory('error', 'send', $mail->ErrorInfo);
 		    ob_end_clean();
         return false;
       }
@@ -796,7 +798,7 @@ class pz_email extends pz_model{
 			return TRUE;			
 		
 		}
-		
+		$this->saveToHistory('error', 'send', 'account is missing');
 		return FALSE;
 	
 	}
@@ -930,7 +932,7 @@ class pz_email extends pz_model{
 		return TRUE;
 	}
 
-  public function saveToHistory($mode = 'update', $func = '')
+  public function saveToHistory($mode = 'update', $func = '', $message = '')
   {
     $sql = pz_sql::factory();
     $sql->setTable('pz_history')
@@ -940,7 +942,9 @@ class pz_email extends pz_model{
       ->setValue('project_id', $this->getProjectId())
       ->setValue('user_id', pz::getUser()->getId())
       ->setRawValue('stamp', 'NOW()')
-      ->setValue('mode', $mode);
+      ->setValue('mode', $mode)
+      ->setValue('message', $message);
+      
     if($mode != 'delete')
     {
       $data = $this->vars;

@@ -128,13 +128,26 @@ class pz_history_entry_screen
 	
 	// echo '<pre>'.$this->entry->getVar("control");var_dump($data);echo '</pre>';
 	
+	  $info = array();
+	  $info[] = $this->entry->getVar("mode");
+	  if ($this->entry->getVar("control") != "") {
+	    $info[] = $this->entry->getVar("control");
+	  }
+	  if ($this->entry->getVar("func") != "") {
+	    $info[] = $this->entry->getVar("func");
+	  }
+	
+	  if ($this->entry->getVar("message") != "") {
+	    $info[] = $this->entry->getVar("message");
+	  }
+	
 		$return = '
         <header class="head">
           <figure><img src="'.$user_image.'" width="25" height="25" /></figure>
           <hgroup class="data">
             <h2 class="hl7 piped">
               <span class="name">'.strftime(pz_i18n::msg("show_datetime_normal"),$d->format("U")).' / '.$p["title"].'</span>
-              <span>'.$this->entry->getVar("mode").' / '.$this->entry->getVar("control").' / '.$this->entry->getVar("func").'</span>
+              <span>'.implode(' / ', $info).'</span>
               <span> '.$project_name.' / '.$user_name.' </span>';
 
     if($p["show_toggle"])
