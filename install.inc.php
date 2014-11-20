@@ -505,7 +505,7 @@ if ($REX['VERSION'] != '4' || $REX['SUBVERSION'] < '6') {
     `value` text NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `unique_key` (`namespace`,`key`)
-  ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;');
+  ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;');
 
 
   // ----- version 3.0 beta3
