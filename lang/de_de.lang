@@ -662,7 +662,7 @@ save_as_draft = Als Entwurf ablegen
 email_saved_in_drafts = E-Mail wurde in Entwürfe gespeichert
 email_send = E-Mail wurde abgeschickt
 email_send_failed = E-Mail-Versand ist fehlgeschlagen.
-email_send_failed_saved_in_drafts = E-Mail-Versand ist fehlgeschlagen. Email wurde in Drafts gepspeichert.
+email_send_failed_saved_in_drafts = E-Mail-Versand ist fehlgeschlagen. Email wurde in Drafts gespeichert.
 
 email_show_header = Header anzeigen
 email_hide_header = Header verstecken
