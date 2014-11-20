@@ -739,8 +739,8 @@ class pz_email extends pz_model{
 
     		if ($mail->Send() != 1)
     		{
-		      ob_end_clean();
 		      $this->saveToHistory('error', 'send', $mail->ErrorInfo);
+          ob_end_clean();
     			return false;
     		}
     		
