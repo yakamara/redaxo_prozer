@@ -4,4 +4,4 @@
 
 require_once __DIR__ . '/composer' . '/autoload_real.php';
 
-return ComposerAutoloaderInitRedaxoCore::getLoader();
+return ComposerAutoloaderInitd516acb64b8d50f08876d3aeaa51d476::getLoader();

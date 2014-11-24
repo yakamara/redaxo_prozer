@@ -1,0 +1,7 @@
+/vendor/bin
+/vendor/sabre/dav/bin
+/vendor/sabre/dav/examples
+/vendor/sabre/dav/tests
+/vendor/sabre/vobject/bin
+/vendor/sabre/vobject/tests
+

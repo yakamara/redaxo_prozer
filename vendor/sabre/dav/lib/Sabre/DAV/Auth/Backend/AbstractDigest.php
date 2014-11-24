@@ -12,9 +12,9 @@ use Sabre\DAV;
  * Most of the digest logic is handled, implementors just need to worry about
  * the getDigestHash method
  *
- * @copyright Copyright (C) 2007-2013 fruux GmbH (https://fruux.com/).
+ * @copyright Copyright (C) 2007-2014 fruux GmbH (https://fruux.com/).
  * @author Evert Pot (http://evertpot.com/)
- * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
+ * @license http://sabre.io/license/ Modified BSD License
  */
 abstract class AbstractDigest implements BackendInterface {
 

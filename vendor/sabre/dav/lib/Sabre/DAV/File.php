@@ -8,9 +8,9 @@ namespace Sabre\DAV;
  * This is a helper class, that should aid in getting file classes setup.
  * Most of its methods are implemented, and throw permission denied exceptions
  *
- * @copyright Copyright (C) 2007-2013 fruux GmbH (https://fruux.com/).
+ * @copyright Copyright (C) 2007-2014 fruux GmbH (https://fruux.com/).
  * @author Evert Pot (http://evertpot.com/)
- * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
+ * @license http://sabre.io/license/ Modified BSD License
  */
 abstract class File extends Node implements IFile {
 

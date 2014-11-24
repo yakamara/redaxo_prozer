@@ -6,6 +6,10 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Symfony\\Component\\Yaml\\' => array($vendorDir . '/symfony/yaml'),
-    'Psr\\Log\\' => array($vendorDir . '/psr/log'),
+    'Sabre\\VObject' => array($vendorDir . '/sabre/vobject/lib'),
+    'Sabre\\HTTP' => array($vendorDir . '/sabre/dav/lib'),
+    'Sabre\\DAVACL' => array($vendorDir . '/sabre/dav/lib'),
+    'Sabre\\DAV' => array($vendorDir . '/sabre/dav/lib'),
+    'Sabre\\CardDAV' => array($vendorDir . '/sabre/dav/lib'),
+    'Sabre\\CalDAV' => array($vendorDir . '/sabre/dav/lib'),
 );

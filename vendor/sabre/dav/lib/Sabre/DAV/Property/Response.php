@@ -11,9 +11,9 @@ use Sabre\DAV;
  * This is used by the Server class to encode individual items within a multistatus
  * response.
  *
- * @copyright Copyright (C) 2007-2013 fruux GmbH (https://fruux.com/).
+ * @copyright Copyright (C) 2007-2014 fruux GmbH (https://fruux.com/).
  * @author Evert Pot (http://evertpot.com/)
- * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
+ * @license http://sabre.io/license/ Modified BSD License
  */
 class Response extends DAV\Property implements IHref {
 

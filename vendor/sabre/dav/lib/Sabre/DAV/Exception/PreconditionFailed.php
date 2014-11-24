@@ -11,9 +11,9 @@ use Sabre\DAV;
  * like for example an If, If-None-Match or If-Match header, which caused the HTTP
  * request to not execute (the condition of the header failed)
  *
- * @copyright Copyright (C) 2007-2013 fruux GmbH (https://fruux.com/).
+ * @copyright Copyright (C) 2007-2014 fruux GmbH (https://fruux.com/).
  * @author Evert Pot (http://evertpot.com/)
- * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
+ * @license http://sabre.io/license/ Modified BSD License
  */
 class PreconditionFailed extends DAV\Exception {
 

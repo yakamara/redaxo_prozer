@@ -10,9 +10,9 @@ use Sabre\DAV;
  * This class represents the current-user-privilege-set property. When
  * requested, it contain all the privileges a user has on a specific node.
  *
- * @copyright Copyright (C) 2007-2013 fruux GmbH (https://fruux.com/).
+ * @copyright Copyright (C) 2007-2014 fruux GmbH (https://fruux.com/).
  * @author Evert Pot (http://evertpot.com/)
- * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
+ * @license http://sabre.io/license/ Modified BSD License
  */
 class CurrentUserPrivilegeSet extends DAV\Property {
 
