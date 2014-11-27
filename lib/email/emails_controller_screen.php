@@ -102,7 +102,7 @@ class pz_emails_controller_screen extends pz_emails_controller
     }
 
     if (!in_array('to', $ignore_fields) && rex_request('search_to', 'string') != '') {
-      $filter[] = array('type' => 'orlike', 'field' => 'to,to_emails', 'value' => rex_request('search_to', 'string'));
+      $filter[] = array('type' => 'orlike', 'field' => 'to,to_emails,cc', 'value' => rex_request('search_to', 'string'));
       $linkvars['search_to'] = rex_request('search_to', 'string');
     }
 
