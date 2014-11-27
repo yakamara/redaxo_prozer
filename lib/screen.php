@@ -1,18 +1,18 @@
 <?php
 
-class pz_screen 
+class pz_screen
 {
 
 	/*
 	static function initPage($content) {
-		
+
 		$f = new pz_fragment();
 		$f->setVar('content',$content);
 		return $f->parse('pz_screen_main.tpl');
 	}
 	*/
 
-	static function getPageTitle() 
+	static function getPageTitle()
 	{
     global $REX;
 
@@ -23,7 +23,7 @@ class pz_screen
 		return 'PROZER '.$REX['ADDON']['version']['prozer'];
 	}
 
-	static function getHeader($p = array()) 
+	static function getHeader($p = array())
 	{
 		$fragment = new pz_fragment();
 		$fragment->setVar('navigation', self::getMainNavigation($p), false);
@@ -34,15 +34,15 @@ class pz_screen
 			$users = array();
 			if(pz::getUser()->getId() != pz::getLoginUser()->getId())
 				$users[] = array('name' => pz::getLoginUser()->getName(), 'link' => '/screen/?pz_set_user='.pz::getLoginUser()->getId());
-			
+
 			foreach(pz::getLoginUser()->getGivenUserPerms() as $user_perm)
 			{
 				if(pz::getUser()->getId() != $user_perm->getFromUser()->getId())
 					$users[] = array('name' => $user_perm->getFromUser()->getName(), 'link' => '/screen/?pz_set_user='.$user_perm->getFromUser()->getId());
 			}
-			
+
 			$fragment->setVar('user_navigation', $users);
-			
+
 		}else
 		{
 			$fragment->setVar('user', "");
@@ -61,7 +61,7 @@ class pz_screen
 
   static function getThemes() {
     $themes = array(
-      'blue_grey' => '/assets/addons/prozer/themes/blue_grey', 
+      'blue_grey' => '/assets/addons/prozer/themes/blue_grey',
 //      'magneto_dark' => '/assets/addons/prozer/themes/magneto_dark',
       'mountain' => '/assets/addons/prozer/themes/mountain'
     );
@@ -72,13 +72,13 @@ class pz_screen
   }
 
 
-	static function getMainNavigation($p = array()) 
+	static function getMainNavigation($p = array())
 	{
-	
+
 		$first = " first";
 		$temp_k = "";
 		$items = array();
-		foreach(pz_screen_controller::$controller as $k => $controll) 
+		foreach(pz_screen_controller::$controller as $k => $controll)
 		{
 			if($controll->isVisible())
 			{
@@ -87,23 +87,23 @@ class pz_screen
 				if(method_exists($controll,'getMainFlyout'))
 					$items[$k]["flyout"] = $controll->getMainFlyout();
 				$items[$k]["url"] = pz::url('screen',$controll->name);
-				
+
 				if($controll->name == "emails") {
 				  $email_count = pz::getUser()->countInboxEmails();
 				  if($email_count > 0) {
 					  $items[$k]["span"] = pz::getUser()->countInboxEmails();
 					}
 				}
-				
+
 				if($controll->name == "calendars")
 					$items[$k]["span"] = pz::getUser()->countAttendeeEvents();
-				
+
 				$first = "";
 				$temp_k = $k;
 			}
 		}
 		if($temp_k != "") $items[$temp_k]["classes"] = $k." last";
-	
+
 		$f = new pz_fragment();
 		$f->items = $items;
 		$f->item_active = pz_screen_controller::$controll;
@@ -111,13 +111,13 @@ class pz_screen
 	}
 
 	static function getNavigation($p, $navigation = array(), $function = "", $name = "", $flyout = "") {
-		
+
 		if($flyout == "" && (pz::getUser()->isMe() || pz::getUser()->getUserPerm()->hasProjectsPerm()))
     {
   		$projects_screen = new pz_projects_screen(pz::getUser()->getMyProjects());
   		$flyout = $projects_screen->getProjectsFlyout($p);
-	  }	
-		
+	  }
+
 		$temp_k = "";
 		$items = array();
 		foreach($navigation as $k) {
@@ -137,29 +137,36 @@ class pz_screen
 		$f->flyout = $flyout;
 
 		return $f->parse('pz_screen_main_sub_navigation.tpl');
-	
+
 	}
 
 	static public function getJSUpdateLayer($layer,$link)
 	{
-		return '<script language="Javascript"><!--	
+		return '<script language="Javascript"><!--
 		pz_loadPage("'.$layer.'","'.$link.'");
 		--></script>';
 	}
 
+    static public function getJSUpdatePage($link)
+    {
+        return '<script language="Javascript"><!--
+		location.href = "'.$link.'";
+		--></script>';
+    }
+
 	static public function getJSLoadFormPage($layer,$form_id,$link)
 	{
-		return '<script language="Javascript"><!--	
+		return '<script language="Javascript"><!--
 		pz_loadFormPage("'.$layer.'","'.$form_id.'","'.$link.'");
 		--></script>';
 	}
 
 	static public function getTooltipView($html,$tooltip)
 	{
-		return '<div class="tooltip">'.$html.'<span class="tooltip"><span class="inner">'.$tooltip.'</span></span></div>';	
+		return '<div class="tooltip">'.$html.'<span class="tooltip"><span class="inner">'.$tooltip.'</span></span></div>';
 	}
 
-  static public function prepareOutput($text, $specialchars = TRUE) 
+  static public function prepareOutput($text, $specialchars = TRUE)
   {
 		$text = pz_screen::setLinks($text);
 		if($specialchars)
@@ -167,12 +174,12 @@ class pz_screen
 		$text = pz_screen::replaceLinks($text);
 		return $text;
 	}
-  
-	static public function setLinks($text) 
+
+	static public function setLinks($text)
 	{
 		$urlsuch[]="/([^]_a-z0-9-=\"'\/])((https?|ftp):\/\/|www\.)([^ \r\n\(\)\^\$!`\"'\|\[\]\{\}<>]*)/si";
 		$urlsuch[]="/^((https?|ftp):\/\/|www\.)([^ \r\n\(\)\^\$!`\"'\|\[\]\{\}<>]*)/si";
-		
+
 		$urlreplace[]="\\1[URL]\\2\\4[/URL]";
 		$urlreplace[]="[URL]\\1\\3[/URL]";
 
@@ -189,11 +196,11 @@ class pz_screen
 		return $text;
 	}
 
-	static function replaceLinks($text) 
+	static function replaceLinks($text)
 	{
 		$text = preg_replace("/\[URL\]www.(.*?)\[\/URL\]/si", "<a target=\"_blank\" href=\"http://www.\\1\">www.\\1</a>", $text);
 		$text = preg_replace("/\[URL\](.*?)\[\/URL\]/si", "<a target=\"_blank\" href=\"\\1\">\\1</a>", $text);
-		$text = preg_replace("/\[EMAIL\](.*?)\[\/EMAIL\]/si", "<a href=\"/screen/emails/create/?to=\\1\">\\1</a>", $text); 
+		$text = preg_replace("/\[EMAIL\](.*?)\[\/EMAIL\]/si", "<a href=\"/screen/emails/create/?to=\\1\">\\1</a>", $text);
 		return $text;
 	}
 

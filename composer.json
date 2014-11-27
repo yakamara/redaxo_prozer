@@ -1,6 +1,7 @@
 {
     "require": {
         "ircmaxell/password-compat": "~1.0",
-        "sabre/dav": "~1.8"
+        "sabre/dav": "~1.8",
+        "kzykhys/ciconia": "~1.0"
     }
 }

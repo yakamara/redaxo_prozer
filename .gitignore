@@ -4,4 +4,8 @@
 /vendor/sabre/dav/tests
 /vendor/sabre/vobject/bin
 /vendor/sabre/vobject/tests
+/vendor/kzykhys/ciconia/test
+/vendor/symfony/console
+/vendor/symfony/options-resolver/Symfony/Component/OptionsResolver/Tests
+
 

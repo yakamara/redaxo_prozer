@@ -5,17 +5,17 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=1200" />
 	<base href="<?php echo pz::getServerUrl(); ?>/" />
-	<?php 
+	<?php
 
 	if(pz::getUser()) {
 	  $theme = pz::getUser()->getTheme();
 	} else {
 	  $theme = pz_screen::getTheme();
 	}
-	
+
 	$themes = pz_screen::getThemes();
 	$themepath = $themes[$theme];
-	
+
 	?>
 	<link rel="stylesheet" type="text/css" href="/assets/addons/prozer/css/css_import.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="/assets/addons/prozer/css/fileuploader.css" media="screen" />
@@ -24,16 +24,17 @@
 
 	<link rel="stylesheet" type="text/css" href="<?php echo $themepath; ?>/theme.css" media="screen" />
 	<link rel="shortcut icon" type="image/x-icon" href="<?php echo $themepath; ?>/favicon.ico" />
-	
+
 	<script type="text/javascript" src="/assets/addons/prozer/js/jquery.min.js"></script>
 	<script type="text/javascript" src="/assets/addons/prozer/js/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="/assets/addons/prozer/js/fileuploader.js"></script>
 	<script type="text/javascript" src="/assets/addons/prozer/js/jquery.bullseye-1.0.js"></script>
 	<script type="text/javascript" src="/assets/addons/prozer/js/chosen.jquery.js"></script>
+	<script type="text/javascript" src="/assets/addons/prozer/js/tasklist.js"></script>
 
 	<script type="text/javascript" src="/assets/addons/prozer/js/prozer.js"></script>
 	<script type="text/javascript" src="<?php echo $themepath; ?>/theme.js"></script>
-	
+
 </head>
 <body class="grid-a-bc<?php
 
@@ -47,18 +48,18 @@ if(pz::getUser() && pz::getUser()->getId() != pz::getLoginUser()->getId())
       <?php echo @$this->header; ?>
     </div>
   </header>
-  
+
   <div id="function">
     <div class="wrapper clearfix grid2col">
         <?php echo @$this->function; ?>
     </div>
   </div>
-  
+
   <div id="main">
     <div class="wrapper clearfix">
 
       <?php echo @$this->main_header; ?>
-      
+
       <section class="area section1">
         <?php echo @$this->section_1; ?>
       </section>
@@ -70,11 +71,11 @@ if(pz::getUser() && pz::getUser()->getId() != pz::getLoginUser()->getId())
       <section class="area section3">
         <?php echo @$this->section_3; ?>
       </section>
-        
+
     </div>
   </div>
-  
-<?php  
+
+<?php
 if(isset($this->footer) && $this->footer != '')
 {
   echo '
@@ -86,7 +87,7 @@ if(isset($this->footer) && $this->footer != '')
 }
 ?>
 
-<?php 
+<?php
 
 echo '<script type="text/javascript">
 

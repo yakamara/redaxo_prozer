@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "8ce4ca3ef2ed846463978b13d71b0428",
+    "hash": "38b05944be840d222a686989cc28b4eb",
     "packages": [
         {
             "name": "ircmaxell/password-compat",
@@ -47,6 +47,61 @@
                 "password"
             ],
             "time": "2014-11-20 16:49:30"
+        },
+        {
+            "name": "kzykhys/ciconia",
+            "version": "v1.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kzykhys/Ciconia.git",
+                "reference": "52d43ec35a656ef1bda07fdd8398081801f960ae"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kzykhys/Ciconia/zipball/52d43ec35a656ef1bda07fdd8398081801f960ae",
+                "reference": "52d43ec35a656ef1bda07fdd8398081801f960ae",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">5.4.0",
+                "symfony/console": ">=2.3,<2.5-dev",
+                "symfony/options-resolver": ">=2.3,<2.5-dev"
+            },
+            "require-dev": {
+                "symfony/finder": ">=2.3,<2.5-dev",
+                "symfony/stopwatch": ">=2.3,<2.5-dev"
+            },
+            "bin": [
+                "bin/ciconia"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Kazuyuki Hayashi",
+                    "email": "hayashi@valnur.net"
+                }
+            ],
+            "description": "The Markdown parser for PHP5.4",
+            "keywords": [
+                "cli",
+                "markdown",
+                "parser"
+            ],
+            "time": "2014-01-23 08:14:37"
         },
         {
             "name": "sabre/dav",
@@ -170,6 +225,111 @@
                 "vCard"
             ],
             "time": "2014-06-03 16:41:29"
+        },
+        {
+            "name": "symfony/console",
+            "version": "v2.4.10",
+            "target-dir": "Symfony/Component/Console",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/Console.git",
+                "reference": "39dd1c85ffdfc3c5fb008019dd027af05f64ec36"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/Console/zipball/39dd1c85ffdfc3c5fb008019dd027af05f64ec36",
+                "reference": "39dd1c85ffdfc3c5fb008019dd027af05f64ec36",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "symfony/event-dispatcher": "~2.1"
+            },
+            "suggest": {
+                "symfony/event-dispatcher": ""
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.4-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\Console\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                },
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                }
+            ],
+            "description": "Symfony Console Component",
+            "homepage": "http://symfony.com",
+            "time": "2014-09-22 08:51:05"
+        },
+        {
+            "name": "symfony/options-resolver",
+            "version": "v2.4.10",
+            "target-dir": "Symfony/Component/OptionsResolver",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/OptionsResolver.git",
+                "reference": "45f5e4f9b49eef5d88d68fbd36dbf27023283e44"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/OptionsResolver/zipball/45f5e4f9b49eef5d88d68fbd36dbf27023283e44",
+                "reference": "45f5e4f9b49eef5d88d68fbd36dbf27023283e44",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.4-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\OptionsResolver\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                },
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                }
+            ],
+            "description": "Symfony OptionsResolver Component",
+            "homepage": "http://symfony.com",
+            "keywords": [
+                "config",
+                "configuration",
+                "options"
+            ],
+            "time": "2014-09-22 08:51:05"
         }
     ],
     "packages-dev": [],

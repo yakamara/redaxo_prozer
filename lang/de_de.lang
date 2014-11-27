@@ -205,7 +205,7 @@ all_addresses = Alle Adressen
 my_addresses = Meine Adressen
 address_prefix = Titel
 address_suffix = Ergänzung
-address_suffix_labels = Dr.,Prof.,Herr,Frau 
+address_suffix_labels = Dr.,Prof.,Herr,Frau
 
 address_name = Name
 address_firstname = Vorname
@@ -257,7 +257,7 @@ please_select_project_for_email = Bitte E-Mail einem Projekt zuweisen...
 
 street = Straße
 address_extra1 = Zusatz 1
-address_extra2 = Zusatz 2 
+address_extra2 = Zusatz 2
 city = Stadt
 region = Bundesland
 zip = PLZ
@@ -401,6 +401,8 @@ error_files_no_files_selected = Bitte Dateien auswählen
 error_folder_in_same_folder = Ordner kann nicht in sich selbst verschoben werden
 error_folder_not_unique = Dieser Ordner existiert bereits
 error_file_not_unique = Diese Datei existiert bereits
+
+error_wiki_title_empty = Bitte einen Seitentitel eingeben
 
 no_emails_found = Keine E-Mails gefunden
 
@@ -820,6 +822,27 @@ has_not_attachments = Keine Dateien hängen an
 no_results_text = Keine Ergebnisse für
 
 
+wiki_add = Neue Seite
+wiki_create = Erstellen
+wiki_view = Ansicht
+wiki_edit = Bearbeiten
+wiki_history = Versionen
+wiki_page_main = Hauptseite
+wiki_page_title = Seitentitel
+wiki_page_text = Text
+wiki_page_text_edit = Schreiben
+wiki_page_text_preview = Vorschau
+wiki_page_admin = Adminseite
+wiki_page_tasks = {0} von {1}
+wiki_page_created = Erstellt
+wiki_page_updated = Zuletzt geändert
+wiki_page_message = Versionsnotiz
+wiki_page_version = Version
+wiki_page_current = Zur aktuellen Version
+wiki_page_revert = Zurücksetzen
+wiki_page_delete = Seite löschen
+wiki_page_delete_question = Seite "{0}" wirklich löschen?
+wiki_page_tasklist_update = Aktualisierung einer Taskliste
 
 system_edit = Systemdaten ändern
 page_title = Bezeichnung (Title)

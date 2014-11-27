@@ -5,8 +5,8 @@ class pz_project_controller_screen extends pz_project_controller
 
     var $name = 'project';
     var $function = '';
-    var $functions = array('view' => 'view', 'user' => 'user', 'jobs' => 'jobs', 'files' => 'files', 'emails' => 'emails', 'userperm' => 'userperm');
-    var $navigation = array('view' => 'view', 'user' => 'user', 'jobs' => 'jobs', 'files' => 'files', 'emails' => 'emails');
+    var $functions = array('view' => 'view', 'user' => 'user', 'jobs' => 'jobs', 'wiki' => 'wiki', 'files' => 'files', 'emails' => 'emails', 'userperm' => 'userperm');
+    var $navigation = array('view' => 'view', 'user' => 'user', 'jobs' => 'jobs', 'wiki' => 'wiki', 'files' => 'files', 'emails' => 'emails');
     var $isVisible = false;
 
     function controller($function)
@@ -492,20 +492,73 @@ class pz_project_controller_screen extends pz_project_controller
     public function getWikiPage($p = array())
     {
 
-        $p['title'] = pz_i18n::msg('project_wiki');
+        //$p['title'] = pz_i18n::msg('project_wiki');
 
         $section_1 = '';
         $section_2 = '';
 
+        $page = null;
         $mode = rex_request('mode', 'string');
+        $title = '';
+        if ('create' === $mode) {
+            $title = rex_request('wiki_title', 'string');
+        } elseif (!in_array($mode, ['create_form', 'preview'])) {
+            $id = rex_request('wiki_id', 'int');
+            if ($id) {
+                $page = pz_wiki_page::get($id);
+            }
+            if ($page && 'tasklist' === $mode && $text = rex_post('text', 'string')) {
+                $sql = pz_sql::factory();
+                $sql->setQuery('UPDATE pz_wiki SET text = ?, update_user_id = ?, updated = NOW() WHERE id = ?', [stripslashes($text), pz::getUser()->getId(), $page->getId()]);
+                $page = pz_wiki_page::get($page->getId());
+                $page->update(pz_i18n::msg('wiki_page_tasklist_update'));
+            }
+            if (!$page) {
+                $page = pz_wiki_page::getStart($this->project->getId());
+            }
+            $versionId = rex_request('wiki_version_id', 'int');
+            if ($page && $versionId && $version = $page->getVersion($versionId)) {
+                $page = $version;
+            }
+            if (!$page) {
+                $mode = 'create';
+                $title = pz_i18n::msg('wiki_page_main');
+            }
+        }
+
+        $screen = new pz_project_wiki_screen($this->project, $this->projectuser, $page);
+
         switch ($mode) {
-            case '':
-                $section_1 .= pz_project_wiki_screen::getArticlelist($p, $this->project);
-                $section_1 .= pz_project_wiki_screen::getAddForm($p, $this->project);
-                $section_2 .= pz_project_wiki_screen::getArticle($p, $this->project);
+            case 'navigation':
+                $pages = pz_wiki_page::getAll($this->project->getId());
+                return $screen->getNavigationView($p, $pages);
+            case 'delete':
+                if (pz::getUser()->isAdmin() || $this->projectuser->isAdmin() || pz::getUser()->getId() == $page->getCreateUser()->getId()) {
+                    $page->delete();
+                    return pz_screen::getJSUpdatePage(pz::url('screen', 'project', 'wiki', ['project_id' => $this->project_id]));
+                }
+            case 'view':
+                return $screen->getPageView($p);
+            case 'tasklist':
+                return pz_screen::getJSUpdateLayer('project_wiki_navigation', pz::url('screen', 'project', 'wiki', ['project_id' => $this->project_id, 'mode' => 'navigation', 'wiki_id' => $page->getId()]))
+                    . $screen->getPageView($p);
+            case 'edit':
+                return $screen->getPageEditView($p);
+            case 'preview':
+                return $screen->getPageTextPreview($p);
+            case 'history':
+                return $screen->getPageHistoryView($p);
+            case 'create_form':
+                return $screen->getPageCreateView($p, $title);
+            case 'create':
+                $pages = pz_wiki_page::getAll($this->project->getId());
+                $section_1 .= $screen->getNavigationView($p, $pages);
+                $section_2 .= $screen->getPageCreateView($p, $title);
                 break;
             default:
-                break;
+                $pages = pz_wiki_page::getAll($this->project->getId());
+                $section_1 .= $screen->getNavigationView($p, $pages);
+                $section_2 .= $screen->getPageView($p);
         }
 
         $p = array();
@@ -514,7 +567,6 @@ class pz_project_controller_screen extends pz_project_controller
         $f->setVar('function', $this->getNavigation() , false);
         $f->setVar('section_1', $section_1 , false);
         $f->setVar('section_2', $section_2 , false);
-        // $f->setVar('section_3', $section_3 , false);
         return $f->parse('pz_screen_main.tpl');
 
     }

@@ -9,7 +9,7 @@ class pz {
 	public static $mediaview = 'screen';
 	protected static $header = array();
   protected static $properties = [];
-  
+
   const CONFIG_NAMESPACE = 'prozer';
 
 	static function controller()
@@ -64,13 +64,13 @@ class pz {
     		$f["type"] = "";
       }
 
-    	switch($f["type"]) 
+    	switch($f["type"])
     	{
-    		
+
     		case("plain"):
 		    	$where[] = $f["value"];
     			break;
-    		
+
     		case("findinset"):
           $where[] = ' FIND_IN_SET(?, `'.$f["field"].'`) ';
 		    	$params[] = $f["value"];
@@ -82,7 +82,7 @@ class pz {
           $where[] = ' FIND_IN_SET(`'.$w.'`, ? ) ';
         	$params[] = $f["value"];
         	break;
-    		
+
     		case("like"):
     			$w = $f["field"];
     			$w .= ' LIKE ? ';
@@ -90,7 +90,7 @@ class pz {
 		    	$where[] = $w;
 		    	$params[] = $f["value"];
     			break;
-    		
+
     		case("orlike"):
     			$fields = explode(",",$f["field"]);
     			$w = array();
@@ -101,19 +101,19 @@ class pz {
     			}
 			    $where[] = '('.implode(" OR ",$w).')';
     			break;
-    		
+
     		case("query"):
     		  $where[] = $f["query"];
     		  $params = array_merge($params, $f["params"]);
     		  break;
-    		
+
     		case(">"):
   				$w = $f["field"];
   				$w .= ' > ? ';
 		    	$where[] = $w;
 		    	$params[] = $f["value"];
 				  break;
-    		
+
     		case(">="):
     		case("=>"):
   				$w = $f["field"];
@@ -121,14 +121,14 @@ class pz {
 		    	$where[] = $w;
 		    	$params[] = $f["value"];
 				  break;
-    		
+
     		case("<"):
   				$w = $f["field"];
   				$w .= ' < ? ';
 		    	$where[] = $w;
 		    	$params[] = $f["value"];
 				  break;
-    		
+
     		case("<="):
     		case("=<"):
   				$w = $f["field"];
@@ -136,7 +136,7 @@ class pz {
 		    	$where[] = $w;
 		    	$params[] = $f["value"];
 				  break;
-				
+
 				case("<>"):
 				case("><"):
   				$w = $f["field"];
@@ -144,7 +144,7 @@ class pz {
 					$where[] = $w;
 					$params[] = $f["value"];
 				  break;
-				
+
     		case("="):
 			  default:
   				$w = $f["field"];
@@ -163,8 +163,8 @@ class pz {
       $return['query'] = '('.implode(" OR ",$return['where']).')';
     else
       $return['query'] = '('.implode(" AND ",$return['where']).')';
-		
-    if(count($return['where']) > 0) 
+
+    if(count($return['where']) > 0)
     {
 	    $return['where_sql'] = ' where '.$return['query'].'';
     }
@@ -213,7 +213,9 @@ class pz {
 
 	}
 
-
+    /**
+     * @return pz_user
+     */
 	static public function getUser()
 	{
 	  return self::$user;
@@ -253,11 +255,11 @@ class pz {
 
 	}
 
-	static function getUsersAsString($users = NULL) 
+	static function getUsersAsString($users = NULL)
 	{
 		$return = array();
-		
-    if(!$users)		
+
+    if(!$users)
 		  $users = self::getUsers();
 
 		foreach($users as $user) {
@@ -269,9 +271,9 @@ class pz {
 		return implode(",",$return);
 	}
 
-  static public function getUsersAsArray($users = NULL) 
+  static public function getUsersAsArray($users = NULL)
   {
-    if(!$users)		
+    if(!$users)
       $users = self::getUsers();
   	$return = array();
   	foreach($users as $user) {
@@ -380,7 +382,7 @@ class pz {
   static public function getDatetime($datetime = NULL)
   {
     // TODO: settimezone - greenwhich time +0000
-  
+
     if(!$datetime)
       $datetime = new DateTime();
 
@@ -392,7 +394,7 @@ class pz {
   {
     return new DateTimeZone("Europe/Berlin");
   }
-  
+
 
 
 	// ----------- tools
@@ -448,7 +450,7 @@ class pz {
 	static function debug($message, $p = '', $type = 'log')
 	{
 	  // return;
-	
+
 	  switch($type)
 	  {
       case('error'):
@@ -612,7 +614,7 @@ class pz {
 		return round($size/pow(1024, ($i = floor(log($size, 1024)))), 2) . $filesizename[$i];
 	}
 
-	static function array2csv($as = array()) 
+	static function array2csv($as = array())
 	{
 
     $search = array(",",'"',"\n","\r", " ");
@@ -625,17 +627,17 @@ class pz {
       	$h[$k] = $k;
       }
 	  }
-	  
+
     $search = array(",",'"',"\n","\r");
     $replace = array(";",'""',"","");
 
 	  $return = array();
 	  $return[] = implode(",",$h);
-    
+
     foreach($as as $a) {
       $data = array();
     	foreach($h as $t => $tt) {
-    	
+
         $t = str_replace($search, $replace, $t);
     	  $v = @$a[$t];
     	  if(!is_int($v)) {
@@ -645,12 +647,12 @@ class pz {
     	}
     	$return[] = implode(',',$data);
     }
-	  
+
     return implode("\n",$return);
 
   }
 
-	static function array2excel($as = array()) 
+	static function array2excel($as = array())
 	{
 
 		$return = "";
@@ -786,7 +788,7 @@ class pz {
     "xlsx" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     "xltm" => "application/vnd.ms-excel.template.macroEnabled.12",
     "xltx" => "application/vnd.openxmlformats-officedocument.spreadsheetml.template"
-		
+
 	);
 
 	public static function getExtensionByMimetype($mimetype)
@@ -840,18 +842,18 @@ class pz {
     self::setHeader('content-transfer-encoding', 'binary');
 
 	}
-	
-  public static function setHeader($type, $value) 
+
+  public static function setHeader($type, $value)
   {
       self::$header[$type] = $value;
   }
 
-  public static function setHeaders($header) 
+  public static function setHeaders($header)
   {
       self::$header = array_merge(self::$header, $header);
   }
 
-  public static function getHeader($type) 
+  public static function getHeader($type)
   {
       if (!isset(self::$header[$type])) {
           return '';
@@ -859,7 +861,7 @@ class pz {
       return self::$header[$type];
   }
 
-  public static function sendHeader() 
+  public static function sendHeader()
   {
 
     if (self::getHeader("content-type") == "") {
@@ -880,7 +882,7 @@ class pz {
       }
       header('Content-Disposition: '.self::getHeader("content-disposition").'; filename="' . self::getHeader("filename") . '";');
     }
-    
+
     if (self::getHeader("content-length") != "") {
         header('Content-Length: ' . self::getHeader("content-length"));
     }
@@ -888,7 +890,7 @@ class pz {
     if (self::getHeader("pragma") != "") {
         header('Pragma: ' . self::getHeader("pragma"));
     }
-    
+
     if (self::getHeader("expires") != "") {
         header('Expires: ' . self::getHeader("expires"));
     }
@@ -896,12 +898,12 @@ class pz {
     if (self::getHeader("content-transfer-encoding") != "") {
         header('Content-Transfer-Encoding: ' . self::getHeader("content-transfer-encoding"));
     }
-    
+
     if (self::getHeader("cache-control") == "private") {
         header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
         header("Cache-Control: private",false); // required for certain browsers
     }
-    
+
   }
 
   // ---------------------------------------------------------------

@@ -1,9 +1,15 @@
 <?php
 
-class pz_project_controller extends pz_controller {
+class pz_project_controller extends pz_controller
+{
+    /** @type pz_project */
+    protected $project;
+    protected $project_id;
+    /** @type pz_projectuser */
+    protected $projectuser;
 
 	function isVisible() {
-		return FALSE;	
+		return FALSE;
 	}
 
 	function setProject($project_id)
@@ -11,15 +17,15 @@ class pz_project_controller extends pz_controller {
 		$filter = array();
 		$filter[] = array("field"=>"id","type"=>"=","value"=>$project_id);
 		$project = pz::getUser()->getAllProjects($filter);
-		if(count($project) != 1) { 
-			return FALSE; 
+		if(count($project) != 1) {
+			return FALSE;
 		}
-		
+
 		$this->project = current($project);
 		$this->project_id = $project_id;
 
 		if(pz::getUser()->isAdmin()) {
-			
+
 			$vars = array(
 				"id" => -1,
 				"admin" => 1,
@@ -37,7 +43,7 @@ class pz_project_controller extends pz_controller {
 				return TRUE;
 			}
 		}
-		
+
 		return FALSE;
 	}
 

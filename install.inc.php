@@ -418,9 +418,13 @@ if ($REX['VERSION'] != '4' || $REX['SUBVERSION'] < '6') {
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `title` text NOT NULL,
     `text` text NOT NULL,
-    `stamp` varchar(255) NOT NULL,
     `project_id` int(11) NOT NULL,
     `vt` text NOT NULL,
+    `created` datetime NOT NULL,
+    `create_user_id` int(10) unsigned NOT NULL,
+    `updated` datetime NOT NULL,
+    `update_user_id` int(10) unsigned NOT NULL,
+    `admin` tinyint(1) NOT NULL,
     PRIMARY KEY (`id`)
   ) ENGINE=MyISAM DEFAULT CHARSET=utf8;');
 
@@ -512,6 +516,9 @@ if ($REX['VERSION'] != '4' || $REX['SUBVERSION'] < '6') {
 
   $c->setQuery('ALTER TABLE `pz_history` ADD `message` VARCHAR( 255 ) NOT NULL ;');
 
+    $c->setQuery('ALTER TABLE `pz_wiki` DROP `stamp`;');
+    $c->setQuery('ALTER TABLE `pz_wiki` ADD `created` DATETIME NOT NULL , ADD `create_user_id` INT(10) UNSIGNED NOT NULL , ADD `updated` DATETIME NOT NULL , ADD `update_user_id` INT(10) UNSIGNED NOT NULL ;');
+    $c->setQuery('ALTER TABLE `pz_wiki` ADD `admin` TINYINT(1) NOT NULL');
 
   rex_dir::copy(
     rex_path::addon('prozer', 'assets'),
@@ -526,7 +533,7 @@ if ($REX['VERSION'] != '4' || $REX['SUBVERSION'] < '6') {
   rex_dir::create($dav_path);
 
 
-  
+
 
 
   // -------------------------------------------------- Output Info
