@@ -31,39 +31,53 @@ class pz_project_wiki_screen
     {
         $return = '
           <div class="design1col" id="project_wiki_navigation">
-            <header class="header">
-                <h1 class="hl1">Wiki <span class="info">(' . count($pages) . ' Seiten)</span></h1>
+            <header>
+                <div class="header grid2col">
+                    <div class="column first">
+                        <h1 class="hl1">Wiki</h1>
+                    </div>
+                    <div class="column last">
+                        <a href="' . $this->url(['mode' => 'create'], '&amp;') . '" class="bt2">' . pz_i18n::msg('wiki_add') . '</a>
+                    </div>
+                </div>
             </header>
 
-            <dl class="navi-box1">
-              <dt>
-                <div class="grid2col">
-                  <div class="column first">Navigation</div>
-                  <div class="column last"><a href="' . $this->url(['mode' => 'create'], '&amp;') . '" class="bt2">' . pz_i18n::msg('wiki_add') . '</a></div>
+
+            <div class="boxed-group wiki-pages-box">
+
+                <header>
+                    <h3>Seiten <span class="info">(' . count($pages) . ')</span></h3>
+                </header>
+
+                <div class="body">
+                    <nav class="menu">
+                        <ul class="wiki-pages">';
+                        foreach ($pages as $page) {
+                            $class = '';
+                            if ($page->getId() == $this->pageId) {
+                                $class = ' active';
+                            }
+                            if ($page->isAdminPage()) {
+                                $class .= ' admin';
+                            }
+                            $tasks = '';
+                            if ($countTasks = $page->countTasks()) {
+                                $countChecked = $page->countTasksChecked();
+                                $percent = intval($countChecked / $countTasks * 100);
+                                $tasks = '
+                                    <span class="info">(' . $percent . '%)</span>
+                                    <div class="tooltip">
+                                        <div class="progress"><div class="progress-bar" style="width:' . $percent . '%"></div></div>
+                                        <span class="tooltip"><span class="inner">' . pz_i18n::msg('wiki_page_tasks', $countChecked, $countTasks) . '</span></span>
+                                    </div>';
+                            }
+                            $return .= '<li><a class="menu-item' . $class . '" href="' . $this->url(['wiki_id' => $page->getId()], '&amp;') . '"><span>' . htmlspecialchars($page->getTitle()) . '</span>' . $tasks . '</a></li>';
+                        }
+                        $return .= '
+                        </ul>
+                    </nav>
                 </div>
-              </dt>
-              <dd>
-                <ul class="navi-list1">';
-        foreach ($pages as $page) {
-            $class = '';
-            if ($page->getId() == $this->pageId) {
-                $class = ' active';
-            }
-            if ($page->isAdminPage()) {
-                $class .= ' admin';
-            }
-            $tasks = '';
-            if ($countTasks = $page->countTasks()) {
-                $countChecked = $page->countTasksChecked();
-                $percent = number_format($countChecked / $countTasks * 100, 2, '.', '');
-                $tasks = '<div class="progress" title="' . pz_i18n::msg('wiki_page_tasks', $countChecked, $countTasks) . '"><div class="progress-bar" style="width:' . $percent . '%"></div></div>';
-            }
-            $return .= '<li class="lev1"><a class="lev1' . $class . '" href="' . $this->url(['wiki_id' => $page->getId()], '&amp;') . '"><span>' . htmlspecialchars($page->getTitle()) . '</span>' . $tasks . '</a></li>';
-        }
-        $return .= '
-            </ul>
-              </dd>
-            </dl>
+            </div>
           </div>
 
         ';
@@ -78,18 +92,25 @@ class pz_project_wiki_screen
         $content = $this->getPageText($this->page->getText(), $this->page instanceof pz_wiki_page_version ? null : $this->page->getRawText());
         $content .= '
             <footer>
-                <dl>
-                    <dt>' . pz_i18n::msg('wiki_page_created') . ':</dt>
-                    <dd>' . $this->page->getCreatedFormatted() . ' – ' . htmlspecialchars($this->page->getCreateUser()->getName()) . '</dd>
-                    <dt>' . pz_i18n::msg('wiki_page_updated') . ':</dt>
-                    <dd>' . $this->page->getUpdatedFormatted() . ' – ' . htmlspecialchars($this->page->getUpdateUser()->getName()) . '</dd>';
-        if ($this->page instanceof pz_wiki_page_version) {
+                <div class="wiki-meta">
+                    <dl class="wiki-meta-list">
+                        <dt>' . pz_i18n::msg('wiki_page_created') . ':</dt>
+                        <dd><span class="time">' . $this->page->getCreatedFormatted() . '</span> <span class="author">' . htmlspecialchars($this->page->getCreateUser()->getName()) . '</span></dd>
+                    </dl>
+                    <dl class="wiki-meta-list">
+                        <dt>' . pz_i18n::msg('wiki_page_updated') . ':</dt>
+                        <dd><span class="time">' . $this->page->getUpdatedFormatted() . '</span> <span class="author">' . htmlspecialchars($this->page->getUpdateUser()->getName()) . '</span></dd>
+                    </dl>';
+
+            if ($this->page instanceof pz_wiki_page_version) {
+                $content .= '
+                    <dl class="wiki-meta-list">
+                        <dt>' . pz_i18n::msg('wiki_page_version') . ':</dt>
+                        <dd><span class="time">' . $this->page->getStampFormatted() . '</span> <span class="author">' . htmlspecialchars($this->page->getUser()->getName()) . '</span></dd>
+                    </dl>';
+            }
             $content .= '
-                    <dt>' . pz_i18n::msg('wiki_page_version') . ':</dt>
-                    <dd>' . $this->page->getStampFormatted() . ' – ' . htmlspecialchars($this->page->getUser()->getName()) . '</dd>';
-        }
-        $content .= '
-                </dl>
+                </div>
             </footer>
         ';
         return $this->getPageWrapper('view', $content);
@@ -125,11 +146,15 @@ class pz_project_wiki_screen
                     <div class="header">
                         <h1 class="hl1">' . pz_i18n::msg('wiki_add') . '</h1>
                     </div>
-                    <ul class="navi-list2 clearfix">
-                        <li class="lev1 active"><a class="lev1 active" href="#"><span>' . pz_i18n::msg('wiki_create') . '</span></a></li>
-                    </ul>
                 </header>
+                <nav class="tabnav">
+                    <ul class="tabnav-tabs">
+                        <li><a class="tabnav-tab active" href="#"><span>' . pz_i18n::msg('wiki_create') . '</span></a></li>
+                    </ul>
+                </nav>
+                <article class="wiki-editor">
                 ' . $content . '
+                </article>
             </div>';
 
         return $content;
@@ -158,7 +183,7 @@ class pz_project_wiki_screen
 
         $xform->setActionField('db', ['pz_wiki', 'id=' . $this->pageId]);
 
-        $content = $xform->getForm();
+        $content = '<article class="wiki-editor">' . $xform->getForm() . '</article>';
 
         if ($xform->getObjectparams('actions_executed')) {
             $page = pz_wiki_page::get($this->pageId);
@@ -189,15 +214,124 @@ class pz_project_wiki_screen
         $xform->setValidateField('empty', ['title', pz_i18n::msg('error_wiki_title_empty')]);
 
         $xform->setValueField('html', ['open', '
-            <ul class="navi-list2 clearfix" id="wiki_page_text_navi">
-                <li><a class="active" href="#xform-formular-text">' . pz_i18n::msg('wiki_page_text_edit') . '</a></li>
-                <li><a href="#wiki_page_text_preview">' . pz_i18n::msg('wiki_page_text_preview') . '</a></li>
-            </ul>
-            <div>
+            <nav class="tabnav tabnav-down wiki-editor-tabnav" id="wiki_page_text_navi">
+                <ul class="tabnav-tabs">
+                    <li><a class="tabnav-tab active" href="#wiki_page_text_edit">' . pz_i18n::msg('wiki_page_text_edit') . '</a></li>
+                    <li><a class="tabnav-tab" href="#wiki_page_text_preview">' . pz_i18n::msg('wiki_page_text_preview') . '</a></li>
+                    <li><a class="tabnav-tab" href="#wiki_page_text_help">' . pz_i18n::msg('wiki_page_text_help') . '</a></li>
+                </ul>
+            </nav>
+            <div class="wiki-editor-write-content">
+                <div id="wiki_page_text_edit">
         ']);
         $xform->setValueField('textarea', ['text', pz_i18n::msg('wiki_page_text')]);
         $xform->setValueField('html', ['close', '
-                <div id="wiki_page_text_preview"></div>
+                </div>
+                <div class="wiki-preview-content markdown-body" id="wiki_page_text_preview"></div>
+                <div class="markdown-body" id="wiki_page_text_help" style="display: none">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Eingabe</th>
+                                <th>Ausgabe</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    # Überschrift 1<br>
+                                    ## Überschrift 2<br>
+                                    ### Überschrift 3
+                                </td>
+                                <td>
+                                    <h1>Überschrift 1</h1>
+                                    <h2>Überschrift 2</h2>
+                                    <h3>Überschrift 3</h3>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Dies ist *fetter Text*.</td>
+                                <td>Dies ist <strong>fetter Text</strong>.</td>
+                            </tr>
+                            <tr>
+                                <td>Dies ist _kursiver Text_.</td>
+                                <td>Dies ist <em>kursiver Text</em>.</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Automatische Verlinkung: http://prozer.de<br>
+                                    Expliziter Link mit Linktext: [Prozer](http://prozer.de)<br>
+                                    Interner Link: [[Seitentitel]]<br>
+                                    Interner Link mit Linktext: [[Linktext|Seitentitel]]
+                                </td>
+                                <td>
+                                    Automatische Verlinkung: <a href="http://prozer.de">http://prozer.de</a><br>
+                                    Expliziter Link mit Linktext: <a href="http://prozer.de">Prozer</a><br>
+                                    Interner Link: <a href="#" class="internal">Seitentitel</a><br>
+                                    Interner Link mit Linktext: <a href="#" class="internal">Linktext</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    * Listenpunkt 1<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;* Unterpunkt 1 (Einrückung mit 4 Leerzeichen)<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;* Unterpunkt 2<br>
+                                    * Listenpunkt 2<br>
+                                    * Listenpunkt 3
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li>Listenpunkt 1
+                                            <ul>
+                                                <li>Unterpunkt 1 (Einrückung mit 4 Leerzeichen)</li>
+                                                <li>Unterpunkt 2</li>
+                                            </ul>
+                                        </li>
+                                        <li>Listenpunkt 2</li>
+                                        <li>Listenpunkt 3</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    1. Listenpunkt 1<br>
+                                    2. Listenpunkt 2<br>
+                                    3. Listenpunkt 3
+                                </td>
+                                <td>
+                                    <ol>
+                                        <li>Listenpunkt 1</li>
+                                        <li>Listenpunkt 2</li>
+                                        <li>Listenpunkt 3</li>
+                                    </ol>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    - [ ] Task 1<br>
+                                    - [x] Task 2<br>
+                                    - [ ] Task 3
+                                </td>
+                                <td>
+                                    <ul class="task-list">
+                                        <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox"/> Task 1</li>
+                                        <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" checked/> Task 2</li>
+                                        <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox"/> Task 3</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    > Dies ist ein Zitat<br>
+                                    > über mehrere Zeilen.
+                                </td>
+                                <td>
+                                    <blockquote>Dies ist ein Zitat<br>über mehrere Zeilen.</blockquote>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <script><!--
                 $("#wiki_page_text_navi a").click(function () {
@@ -214,7 +348,7 @@ class pz_project_wiki_screen
         ']);
 
         if (pz::getUser()->isAdmin() || $this->projectuser->isAdmin()) {
-            $xform->setValueField('checkbox', ['admin', pz_i18n::msg('wiki_page_admin')]);
+            $xform->setValueField('checkbox', ['admin', pz_i18n::msg('wiki_page_admin') . '<i class="notice">' . pz_i18n::msg('wiki_page_admin_notice') . '</i>']);
         }
 
         $xform->setValueField('text', ['message', pz_i18n::msg('wiki_page_message'), 'no_db' => 'no_db']);
@@ -227,16 +361,16 @@ class pz_project_wiki_screen
 
     public function getPageTextPreview()
     {
-        $text = rex_post('text', 'string');
+        $text = stripslashes(rex_post('text', 'string'));
         $text = pz_wiki_page::parseText($this->project->getId(), $text);
 
-        return '<div id="wiki_page_text_preview">' . $this->getPageText($text) . '</div>';
+        return '<div class="wiki-preview-content markdown-body" id="wiki_page_text_preview">' . $this->getPageText($text) . '</div>';
     }
 
     protected function getPageText($text, $rawText = null)
     {
         $content = '
-            <article class="formatted js-task-list-container" id="wiki_page_view">
+            <article class="markdown-body js-task-list-container" id="wiki_page_view">
                 <div>
                     ' . $text . '
                 </div>';
@@ -252,10 +386,10 @@ class pz_project_wiki_screen
                 var wrapper = $("#wiki_page_view");
                 wrapper.find("> div ul, > div ol").each(function () {
                     var list = $(this);
-                    var tasks = list.find("> li > input");
+                    var tasks = list.find("> li input");
                     if (tasks.length) {
                         list.addClass("task-list");
-                        tasks.addClass("task-list-item-checkbox").attr("disabled", "disabled").parent().addClass("task-list-item");
+                        tasks.addClass("task-list-item-checkbox").attr("disabled", "disabled").closest("li").addClass("task-list-item");
                     }
                 });';
         if (!is_null($rawText)) {
@@ -301,17 +435,26 @@ class pz_project_wiki_screen
     private function getPageWrapper($active, $content)
     {
         $info = '';
+        $button = '';
         if ($this->page instanceof pz_wiki_page_version) {
             $info = ' <span class="info">(' . pz_i18n::msg('wiki_page_version') . ': ' . $this->page->getStampFormatted() . ')</span> ';
-            $info .= '<a class="bt2" href="javascript:pz_loadPage(\'project_wiki_page\', \'' . $this->url(['mode' => $active]) . '\')">' . pz_i18n::msg('wiki_page_current') . '</a>';
+            $button = '<a class="bt2" href="javascript:pz_loadPage(\'project_wiki_page\', \'' . $this->url(['mode' => $active]) . '\')">' . pz_i18n::msg('wiki_page_current') . '</a>';
         }
         $return = '
             <div id="project_wiki_page" class="design2col wiki article">
                 <header>
-                    <div class="header">
-                        <h1 class="hl1">' . htmlspecialchars($this->page->getTitle()) . $info . '</h1>
+                    <div class="header grid2col">
+                        <div class="column first">
+                            <h1 class="hl1">' . htmlspecialchars($this->page->getTitle()) . $info . '</h1>
+                        </div>
+                        <div class="column last">
+                            ' . $button . '
+                        </div>
                     </div>
-                    <ul class="navi-list2 clearfix">';
+                </header>
+
+                <nav class="tabnav">
+                    <ul class="tabnav-tabs">';
 
         $navi = ['view', 'edit', 'history'];
         foreach ($navi as $mode) {
@@ -320,12 +463,12 @@ class pz_project_wiki_screen
                 'wiki_version_id' => 'history' === $mode ? '' : $this->versionId,
                 'mode' => $mode
             ]);
-            $return .= '<li class="lev1' . $class . '"><a class="lev1' . $class . '" href="javascript:pz_loadPage(\'project_wiki_page\', \'' . $url . '\')"><span>' . pz_i18n::msg('wiki_' . $mode) . '</span></a></li>';
+            $return .= '<li><a class="tabnav-tab' . $class . '" href="javascript:pz_loadPage(\'project_wiki_page\', \'' . $url . '\')"><span>' . pz_i18n::msg('wiki_' . $mode) . '</span></a></li>';
         }
 
         $return .= '
                     </ul>
-                </header>
+                </nav>
                 ' . $content . '
             </div>';
         return $return;

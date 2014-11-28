@@ -1,0 +1,78 @@
+/*
+
+@media (max-width: 767px) { ... }
+@media (min-width: 768px) and (max-width: 991px) { ... }
+@media (min-width: 992px) and (max-width: 1199x) { ... }
+@media (min-width: 1200px) { ... }
+
+*/
+
+
+/* @media (min-width: 768px) and (max-width: 991px) { */
+@media (max-width: 991px) {
+    #header {
+        width: 760px;
+        height: 78px;
+        margin: 0 auto;
+    } 
+
+    #function {
+        clear: both;
+        width: 760px;
+        margin: 0 auto;
+    }
+
+    #main {
+        width: 760px;
+        margin: 0 auto;
+    }
+
+    body#login #header, 
+    body#login #main {
+        width: 760px;        
+    }
+
+    #navi-meta li.date {
+        display: none;
+    }
+
+
+    .area {
+        float: none;
+    }
+    .area .design1col, 
+    .area .design2col {
+        margin-left: 0;
+    }
+    
+
+    .section1 .design1col > * {
+        display: none;
+    }
+    .section1 .design1col > header, 
+    .section1 .design1col > div > header {
+        position: relative;
+        cursor: pointer;
+        background-color: #dedede;
+    }
+    .section1 .design1col.is-visible, 
+    .section1 .design1col > header, 
+    .section1 .design1col > div > header {
+        border-bottom: 1px solid #d0d0d0;
+    }
+    .section1 .design1col > header, 
+    .section1 .design1col > div > header, 
+    .section1 .design1col > .design1col,  
+    .section1 .design1col.is-visible > *:not(script), 
+    .section1 .xform-edit > header, 
+    .section1 .xform-edit > div > header, 
+    .section1 .xform-edit > .design1col, 
+    .section1 .xform-edit > *:not(script) {
+        display: block;
+    }
+    .section1 .design1col.is-visible > header, 
+    .section1 .design1col.is-visible > div > header {
+        background-color: transparent;
+        border-bottom-color: transparent;
+    }
+}

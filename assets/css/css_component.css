@@ -168,8 +168,8 @@ dl.data.normal dd {
 }
 
 .project-name-view .header {
-  margin-top: 10px;;
-padding: 4px;
+  margin-top: 10px;
+  padding: 4px;
   background-color: #fff;
 }
 
@@ -1393,4 +1393,23 @@ ul.projects-customer-flyout li.customer-active ul {
 }
 #clipboard-project-files-list .project-folder-path dl {
   padding-left: 18px;
+}
+
+
+
+
+
+
+
+
+.boxed-group > header {
+    padding: 8px 15px;
+    background-color: #d8d8d8;
+}
+.boxed-group > header h3 {
+    font-weight: bold;
+}
+
+.boxed-group > .body {
+
 }

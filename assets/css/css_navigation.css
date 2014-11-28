@@ -385,3 +385,98 @@ ul.sl4 li:hover {
   margin-right: 5px;
 }
 
+
+
+
+
+.menu {
+    background-color: #fff;
+}
+.menu-item {
+    position: relative;
+    display: block;
+    padding: 8px 15px;
+    color: #626d72;
+    text-shadow: 0 1px 0 #fff;
+    background-color: #f6f7f7;
+    border-bottom: 1px solid #d8d8d8;
+}
+.menu-item:hover {
+    background-color: #fff;
+    color: #06a9d6;
+}
+.menu-item.active {
+    background-color: #fff;
+    color: #06a9d6;
+    font-weight: bold;
+}
+.menu-item.active:before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 2px;
+    content: "";
+    background-color: #06a9d6;
+}
+.menu-item.admin:after {
+    content: "*";
+    position: absolute;
+    top: 0;
+    right: 15px;
+    bottom: 0;
+    padding: 10px 0;
+    vertical-align: middle;
+}
+.menu-item .info {
+    color: #9badb5;
+    font-size: 85%;
+}
+
+
+
+
+.tabnav {
+    background-color: #d8d8d8;
+}
+.tabnav-tabs {
+    display: inline-block;
+}
+.tabnav-tabs > li {
+    display: inline-block;
+    margin-bottom: -1px;
+    border-right-width: 1px;
+    border-right-style: solid;
+    border-right-color: #e8e8e8;
+}
+.tabnav-tab {
+    display: inline-block;
+    padding: 11px 25px 10px 25px;
+    color: #626d72;
+    font-weight: bold;
+    line-height: 20px;
+}
+.tabnav-tab.active, 
+.tabnav-tab.active:hover, 
+.tabnav-tab:hover {
+    margin-top: -4px;
+    padding-top: 14px;
+    background-color: #fff;
+    color: #06a9d6;
+}
+.tabnav-tab:hover {
+    background-color: #f6f7f7;
+}
+
+.tabnav-down {
+    padding: 6px 10px 0 10px;
+}
+.tabnav-down .tabnav-tabs > li {
+    border-right: 0;
+}
+.tabnav-down .tabnav-tab.active, 
+.tabnav-down .tabnav-tab:hover {
+    margin-top: 0;
+    padding-top: 11px;
+}
+

@@ -305,3 +305,21 @@
 .popbox .xform-search-small .data.xform-submit input {
   width: 22px;
 }
+
+
+
+
+.xform .data .flabel .notice {
+    margin-left: 5px;
+    margin-right: 5px;
+    color: #626d72;
+    font-style: normal;
+    font-weight: 400;
+}
+.xform .data .flabel .notice:first-child {
+    margin-left: 0;
+}
+.xform .data .flabel .notice:last-child {
+    margin-left: 5px;
+    margin-right: 0;
+}

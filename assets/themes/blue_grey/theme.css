@@ -51,6 +51,7 @@ body.notme {
 /* Text Color  *****************************************************************
 *******************************************************************************/
 /* Grey - from Light to Dark */
+/*
 {
   color: #f6f7f7;
 }
@@ -70,13 +71,13 @@ body.notme {
 {
   color: #888b8c;
 }
-
+*/
 #navi-meta,
 #navi-meta input,
 .info {
   color: #626d72;
 }
-
+/*
 {
   color: #4d595f;
 }
@@ -84,6 +85,7 @@ body.notme {
 {
   color: #292c2e;
 }
+*/
 /*  Grey - End */
 
 /* Blue */
@@ -1685,10 +1687,6 @@ a:hover .file40.mp3 { background-position: -40px -450px; }
 
 
 /*************************************************************** flyoutdetail */
-#calendar_event_attendee_view {
-  border-top: 1px solid #333;
-
-}
 
 #calendar_event_attendee_view .event-flyout-view {
   margin-top: 20px;
@@ -3007,3 +3005,29 @@ body#login #footer ul li {
   direction: rtl;
 }
 /* @end */
+
+
+
+
+
+
+
+/* @media (min-width: 768px) and (max-width: 991px) { */
+@media (max-width: 991px) {
+
+
+    body {
+        padding-left: 4px;
+        padding-right: 4px;
+    }
+
+    #loginbox {
+        width: auto;
+        max-width: 90%;
+    }
+
+    #navi-main li.logo a {
+        width: 23px;
+    }
+
+}

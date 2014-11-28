@@ -3,7 +3,11 @@
 <head>
 	<title><?php echo htmlspecialchars(pz_screen::getPageTitle()); ?></title>
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=1200" />
+    <?php
+	//<meta name="viewport" content="width=1200" />
+    //<meta name="viewport" content="width=device-width, initial-scale=1" />
+    ?>
+    <meta name="viewport" content="width=800" />
 	<base href="<?php echo pz::getServerUrl(); ?>/" />
 	<?php
 
@@ -32,7 +36,8 @@
 	<script type="text/javascript" src="/assets/addons/prozer/js/chosen.jquery.js"></script>
 	<script type="text/javascript" src="/assets/addons/prozer/js/tasklist.js"></script>
 
-	<script type="text/javascript" src="/assets/addons/prozer/js/prozer.js"></script>
+    <script type="text/javascript" src="/assets/addons/prozer/js/prozer.js"></script>
+    <script type="text/javascript" src="/assets/addons/prozer/js/prozer_responsive.js"></script>
 	<script type="text/javascript" src="<?php echo $themepath; ?>/theme.js"></script>
 
 </head>
