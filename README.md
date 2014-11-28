@@ -24,6 +24,14 @@ license - still unclear - will be defined soon.
 Last Changes
 -------
 
+### Version 3.0 beta5 // xx. xx 2014
+
+
+#### Bugs
+
+* Labels wurde nicht richtig erstellt.
+
+
 ### Version 3.0 beta4 // 28. November 2014
 
 #### Neu
