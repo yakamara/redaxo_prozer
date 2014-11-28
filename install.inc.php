@@ -516,14 +516,21 @@ if ($REX['VERSION'] != '4' || $REX['SUBVERSION'] < '6') {
 
   $c->setQuery('ALTER TABLE `pz_history` ADD `message` VARCHAR( 255 ) NOT NULL ;');
 
-    $c->setQuery('ALTER TABLE `pz_wiki` DROP `stamp`;');
-    $c->setQuery('ALTER TABLE `pz_wiki` ADD `created` DATETIME NOT NULL , ADD `create_user_id` INT(10) UNSIGNED NOT NULL , ADD `updated` DATETIME NOT NULL , ADD `update_user_id` INT(10) UNSIGNED NOT NULL ;');
-    $c->setQuery('ALTER TABLE `pz_wiki` ADD `admin` TINYINT(1) NOT NULL');
+
+  // ----- version 3.0 beta4
+  $c->setQuery('ALTER TABLE `pz_wiki` DROP `stamp`;');
+  $c->setQuery('ALTER TABLE `pz_wiki` ADD `created` DATETIME NOT NULL , ADD `create_user_id` INT(10) UNSIGNED NOT NULL , ADD `updated` DATETIME NOT NULL , ADD `update_user_id` INT(10) UNSIGNED NOT NULL ;');
+  $c->setQuery('ALTER TABLE `pz_wiki` ADD `admin` TINYINT(1) NOT NULL');
+  $c->setQuery('ALTER TABLE `pz_history` ADD INDEX `control data_id` ( `control` , `data_id` )');
+
+
 
   rex_dir::copy(
     rex_path::addon('prozer', 'assets'),
     rex_path::frontend('assets/addons/prozer')
   );
+
+
 
 
 

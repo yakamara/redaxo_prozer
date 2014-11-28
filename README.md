@@ -24,6 +24,24 @@ license - still unclear - will be defined soon.
 Last Changes
 -------
 
+### Version 3.0 beta4 // 28. November 2014
+
+#### Neu
+
+* Adresse. Sozial Profile um google+ und xing ergänzt
+* E-Mail Attachementnamen werden nun besser erkannt
+* Logfile um Anzeige von Fehlern ergänzt. 
+* Logfile - fehlerhafter E-mail Versand wird festgehalten und mit der Fehlermeldung versehen
+* Wiki in Projekten ergänzt. MarkDown mit Tasklisten und geschützten Wikiseiten
+* E-Mail-Suche: Auch CC wird nun durchsucht.
+* Minimale responsive Anpassungen / Vorbereitungen
+
+#### Bugs
+
+* Emails wurden z.T. mit falschem Zeichensatz ausgegeben
+* Downloaddateigröße war falsch und führte z.T. zu Problemen beim Download
+
+
 ### Version 3.0 beta3 // 22. August 2014
 
 #### Bugs
