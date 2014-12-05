@@ -2,70 +2,64 @@
 
 abstract class pz_calendar_element
 {
-  const
-    DATE = 'Y-m-d',
-    TIME = 'H:i:s',
-    DATETIME = 'Y-m-d H:i:s';
+    const DATE = 'Y-m-d';
+    const TIME = 'H:i:s';
+    const DATETIME = 'Y-m-d H:i:s';
 
-  protected $id;
+    protected $id;
 
-  protected $changed = array();
+    protected $changed = [];
 
-  protected $new = false;
+    protected $new = false;
 
-  public function getId()
-  {
-    return $this->id;
-  }
-
-  public function abort()
-  {
-    foreach($this->changed as $key => $original)
+    public function getId()
     {
-      $this->$key = $original;
+        return $this->id;
     }
-    $this->changed = array();
-  }
 
-  protected function getValue($key)
-  {
-    return $this->$key;
-  }
-
-  protected function setValue($key, $value)
-  {
-    if(!$this->hasChanged($key))
+    public function abort()
     {
-      $this->changed[$key] = $this->$key;
+        foreach ($this->changed as $key => $original) {
+            $this->$key = $original;
+        }
+        $this->changed = [];
     }
-    $this->$key = $value;
-    return $this;
-  }
 
-  protected function hasChanged($key)
-  {
-    return array_key_exists($key, $this->changed);
-  }
+    protected function getValue($key)
+    {
+        return $this->$key;
+    }
 
-  static protected function factory($class, $param1 = null, $param2 = null, $param3 = null)
-  {
-    return new $class($param1, $param2, $param3);
-  }
+    protected function setValue($key, $value)
+    {
+        if (!$this->hasChanged($key)) {
+            $this->changed[$key] = $this->$key;
+        }
+        $this->$key = $value;
+        return $this;
+    }
 
-  static protected function sqlValue($value)
-  {
-    if(is_array($value))
+    protected function hasChanged($key)
     {
-      return implode(',', array_map(__METHOD__, $value));
+        return array_key_exists($key, $this->changed);
     }
-    if($value instanceof self)
+
+    protected static function factory($class, $param1 = null, $param2 = null, $param3 = null)
     {
-      return $value->getId();
+        return new $class($param1, $param2, $param3);
     }
-    if($value instanceof DateTime || $value instanceof DateInterval)
+
+    protected static function sqlValue($value)
     {
-      return $value->format(self::DATETIME);
+        if (is_array($value)) {
+            return implode(',', array_map(__METHOD__, $value));
+        }
+        if ($value instanceof self) {
+            return $value->getId();
+        }
+        if ($value instanceof DateTime || $value instanceof DateInterval) {
+            return $value->format(self::DATETIME);
+        }
+        return $value;
     }
-    return $value;
-  }
 }
