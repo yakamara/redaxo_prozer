@@ -2,6 +2,10 @@
 /vendor/sabre/dav/bin
 /vendor/sabre/dav/examples
 /vendor/sabre/dav/tests
+/vendor/sabre/event/tests
+/vendor/sabre/http/bin
+/vendor/sabre/http/examples
+/vendor/sabre/http/tests
 /vendor/sabre/vobject/bin
 /vendor/sabre/vobject/tests
 /vendor/kzykhys/ciconia/test

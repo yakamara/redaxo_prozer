@@ -52,6 +52,7 @@ class pz_sabre_caldav_backend extends AbstractBackend
         });
 
         foreach ($projects as $i => $t_p) {
+            /** @type pz_project $project */
             list($type, $project) = $t_p;
             switch ($type) {
                 case 1:
@@ -164,10 +165,7 @@ class pz_sabre_caldav_backend extends AbstractBackend
 
     private function getCalendarObjectData(pz_calendar_item $item)
     {
-        $calendar = new Component('vcalendar');
-        $calendar->version = '2.0';
-        $calendar->prodid = '-//prozer 2.0//';
-        $calendar->calscale = 'GREGORIAN';
+        $calendar = new Component\VCalendar();
 
         if ($item instanceof pz_calendar_todo) {
             $this->createTodoComponent($calendar, $item);
@@ -178,12 +176,12 @@ class pz_sabre_caldav_backend extends AbstractBackend
         return $calendar->serialize();
     }
 
-    private function createTodoComponent(Component $calendar, pz_calendar_todo $pzTodo)
+    private function createTodoComponent(Component\VCalendar $calendar, pz_calendar_todo $pzTodo)
     {
-        $todo = new Component('vtodo');
+        $todo = $calendar->createComponent('vtodo');
         $todo->uid = substr($pzTodo->getUri(), 0, -4);
-        $todo->created = self::getDateTime('created', $pzTodo->getCreated(), Property\DateTime::UTC);
-        $todo->dtstamp = self::getDateTime('dtstamp', $pzTodo->getUpdated(), Property\DateTime::UTC);
+        $todo->created = $pzTodo->getCreated()->setTimezone(new DateTimeZone('UTC'));
+        $todo->dtstamp = $pzTodo->getUpdated()->setTimezone(new DateTimeZone('UTC'));
         $todo->sequence = $pzTodo->getSequence();
         $todo->summary = $pzTodo->getTitle();
         if ($description = $pzTodo->getDescription()) {
@@ -194,64 +192,67 @@ class pz_sabre_caldav_backend extends AbstractBackend
             $todo->__set('x-apple-sort-order', $order);
         }
         if ($start = $pzTodo->getFrom()) {
-            $todo->dtstart = self::getDateTime('dtstart', $start);
+            $todo->dtstart = $start;
         }
         if ($due = $pzTodo->getDue()) {
-            $todo->due = self::getDateTime('due', $due);
+            $todo->due = $due;
         }
         if ($completed = $pzTodo->getCompleted()) {
             $todo->status = 'COMPLETED';
-            $todo->completed = self::getDateTime('completed', $completed, Property\DateTime::UTC);
+            $todo->completed = $completed->setTimezone(new DateTimeZone('UTC'));
         }
         if ($pzTodo->hasRule()) {
             $pzRule = pz_calendar_rule::get($pzTodo);
             $this->createRuleComponent($todo, $pzRule);
         }
-        $this->createAlarmComponents($todo, $pzTodo);
+        $this->createAlarmComponents($calendar, $todo, $pzTodo);
         $calendar->add($todo);
     }
 
-    private function createEventComponent(Component $calendar, pz_calendar_event $pzEvent)
+    private function createEventComponent(Component\VCalendar $calendar, pz_calendar_event $pzEvent)
     {
-        $event = $this->createVEvent($pzEvent);
+        $event = $this->createVEvent($calendar, $pzEvent);
         if (!$pzEvent->isBooked() && $pzEvent->hasRule()) {
             $pzRule = pz_calendar_rule::get($pzEvent);
             $this->createRuleComponent($event, $pzRule);
             foreach ($pzRule->getExceptions() as $exception) {
-                $exdate = new Property\DateTime('exdate');
-                $exdate->setDateTime($exception);
-                $event->add($exdate);
+                $event->add('exdate', $exception);
             }
         }
         $calendar->add($event);
         if (!$pzEvent->isBooked() && $pzEvent->hasRule()) {
             $exceptions = pz_calendar_rule_event::getAllExceptions($pzRule);
             foreach ($exceptions as $pzRuleEvent) {
-                $exEvent = $this->createVEvent($pzRuleEvent);
+                $exEvent = $this->createVEvent($calendar, $pzRuleEvent);
                 $exEvent->uid = $event->uid;
                 $exEvent->created = $event->created;
-                $dateType = $pzEvent->isAllDay() ? Property\DateTime::DATE : Property\DateTime::UTC;
-                $exEvent->__set('recurrence-id', self::getDateTime('recurrence-id', $pzRuleEvent->getBaseFrom(), $dateType));
+                if ($pzEvent->isAllDay()) {
+                    $exEvent->add('recurrence-id', $pzRuleEvent->getBaseFrom(), ['value' => 'DATE']);
+                } else {
+                    $exEvent->__set('recurrence-id', $pzRuleEvent->getBaseFrom()->setTimezone(new DateTimeZone('UTC')));
+                }
                 $calendar->add($exEvent);
             }
         }
     }
 
-    private function createVEvent(pz_calendar_event $pzEvent)
+    private function createVEvent(Component\VCalendar $calendar, pz_calendar_event $pzEvent)
     {
-        $event = new Component('vevent');
+        $event = $calendar->createComponent('vevent');
         $event->uid = substr($pzEvent->getUri(), 0, -4);
-        $event->created = self::getDateTime('created', $pzEvent->getCreated(), Property\DateTime::UTC);
-        $event->dtstamp = self::getDateTime('dtstamp', $pzEvent->getUpdated(), Property\DateTime::UTC);
+        $event->created = $pzEvent->getCreated()->setTimezone(new DateTimeZone('UTC'));
+        $event->dtstamp = $pzEvent->getUpdated()->setTimezone(new DateTimeZone('UTC'));
         $event->sequence = $pzEvent->getSequence();
         $dtend = $pzEvent->getTo();
-        $dateType = Property\DateTime::LOCALTZ;
         if ($pzEvent->isAllDay()) {
             $dtend->modify('+1 day');
-            $dateType = Property\DateTime::DATE;
         }
-        $event->dtstart = self::getDateTime('dtstart', $pzEvent->getFrom(), $dateType);
-        $event->dtend = self::getDateTime('dtend', $dtend, $dateType);
+        $event->dtstart = $pzEvent->getFrom();
+        $event->dtend = $dtend;
+        if ($pzEvent->isAllDay()) {
+            $event->dtstart['VALUE'] = 'date';
+            $event->dtend['VALUE'] = 'date';
+        }
         $event->summary = $pzEvent->getTitle();
         if ($location = $pzEvent->getLocation()) {
             $event->location = $location;
@@ -264,7 +265,7 @@ class pz_sabre_caldav_backend extends AbstractBackend
         }
 
         foreach ($pzEvent->getReleasedClips() as $pzClip) {
-            $clip = new Property('attach', $pzClip->getUri());
+            $clip = $calendar->createProperty('attach', $pzClip->getUri());
             if ($type = $pzClip->getContentType()) {
                 $clip['fmttype'] = $type;
             }
@@ -281,34 +282,34 @@ class pz_sabre_caldav_backend extends AbstractBackend
             if ($user) {
                 $event->organizer = 'mailto:' . $user->getEmail();
                 $event->organizer['cn'] = $user->getName();
-                $attendee = new Property('attendee', 'mailto:' . $user->getEmail());
+                $attendee = $calendar->createProperty('attendee', 'mailto:' . $user->getEmail());
                 $attendee['cn'] = $user->getName();
                 $attendee['partstat'] = 'ACCEPTED';
                 $attendee['role'] = 'CHAIR';
                 $event->add($attendee);
                 $userIsAttendee = false;
                 foreach ($pzAttendees as $pzAttendee) {
-                    $attendee = new Property('attendee', 'mailto:' . $pzAttendee->getEmail());
+                    $attendee = $calendar->createProperty('attendee', 'mailto:' . $pzAttendee->getEmail());
                     $attendee['cn'] = $pzAttendee->getName();
                     $attendee['partstat'] = $pzAttendee->getStatus();
                     $event->add($attendee);
                 }
             }
         }
-        $this->createAlarmComponents($event, $pzEvent);
+        $this->createAlarmComponents($calendar, $event, $pzEvent);
         return $event;
     }
 
-    private function createAlarmComponents(Component $component, pz_calendar_item $item)
+    private function createAlarmComponents(Component\VCalendar $calendar, Component $component, pz_calendar_item $item)
     {
         foreach ($item->getAlarms() as $pzAlarm) {
-            $alarm = new Component('valarm');
+            $alarm = $calendar->createComponent('valarm');
             $alarm->__set('x-wr-alarmuid', $pzAlarm->getUid());
             $alarm->action = $pzAlarm->getAction();
             if ($pzAlarm->triggerIsInterval()) {
                 $alarm->trigger = $pzAlarm->getTriggerString();
             } else {
-                $alarm->trigger = self::getDateTime('trigger', $pzAlarm->getTrigger(), Property\DateTime::UTC);
+                $alarm->trigger = $pzAlarm->getTrigger()->setTimezone(new DateTimeZone('UTC'))->format('Ymd\\THis\\Z');
                 $alarm->trigger['value'] = 'DATE-TIME';
             }
             if ($description = $pzAlarm->getDescription()) {
@@ -319,23 +320,23 @@ class pz_sabre_caldav_backend extends AbstractBackend
             }
             if ($emails = $pzAlarm->getEmails()) {
                 foreach ($emails as $email) {
-                    $alarm->add(new Property('attendee', 'mailto:' . $email));
+                    $alarm->add($calendar->createProperty('attendee', 'mailto:' . $email));
                 }
             }
             if ($attachment = $pzAlarm->getAttachment()) {
-                $alarm->attachment = Reader::read($attachment);
+                $alarm->attachment = pz_sabre_single_line_parser::parseSingeLine($calendar, $attachment);
             }
             if ($location = $pzAlarm->getLocation()) {
                 $alarm->location = $location;
             }
             if ($structuredLocation = $pzAlarm->getStructuredLocation()) {
-                $alarm->__set('x-apple-structured-location', Reader::read($structuredLocation));
+                $alarm->__set('x-apple-structured-location', pz_sabre_single_line_parser::parseSingeLine($calendar, $structuredLocation));
             }
             if ($proximity = $pzAlarm->getProximity()) {
                 $alarm->__set('x-apple-proximity', $proximity);
             }
             if ($acknowledged = $pzAlarm->getAckknowledged()) {
-                $alarm->acknowledged = self::getDateTime('acknowledged', $acknowledged, Property\DateTime::UTC);
+                $alarm->acknowledged = $acknowledged->setTimezone(new DateTimeZone('UTC'));
             }
             if ($pzAlarm->getRelatedId() && $related = $pzAlarm->getRelated()) {
                 $alarm->__set('related-to', $related->getUid());
@@ -354,7 +355,7 @@ class pz_sabre_caldav_backend extends AbstractBackend
             $rule .= ';COUNT=' . $count;
         }
         if ($end = $pzRule->getEnd()) {
-            $rule .= ';UNTIL=' . self::getDateTime('until', $end);
+            $rule .= ';UNTIL=' . $end->format('Ymd\\THis');
         }
         if ($weekDays = $pzRule->getWeekDays()) {
             $names = array(null, 'MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU');
@@ -428,7 +429,6 @@ class pz_sabre_caldav_backend extends AbstractBackend
                     $event = $events[$i];
                     $recurrenceId = $event->__get('recurrence-id');
                     $mode = isset($recurrenceId['RANGE']) && $recurrenceId['RANGE'] == 'THISANDFUTURE' ? pz_calendar_rule_event::FUTURE : pz_calendar_rule_event::THIS;
-                    $recurrenceId = new Property\DateTime('RECURRENCE-ID', $recurrenceId);
                     $pzRuleEvent = pz_calendar_rule_event::create($pzRule, $recurrenceId->getDateTime()->setTimezone(self::getDateTimeZone()));
                     $this->setRuleEventValues($event, $pzRuleEvent, $pzEvent);
                     if (isset($event->rrule) && $mode == pz_calendar_rule_event::FUTURE) {
@@ -517,7 +517,6 @@ class pz_sabre_caldav_backend extends AbstractBackend
                     $event = $events[$i];
                     $recurrenceId = $event->__get('recurrence-id');
                     $mode = isset($recurrenceId['RANGE']) && $recurrenceId['RANGE'] == 'THISANDFUTURE' ? pz_calendar_rule_event::FUTURE : pz_calendar_rule_event::THIS;
-                    $recurrenceId = new Property\DateTime('RECURRENCE-ID', $recurrenceId);
                     $pzRuleEvent = pz_calendar_rule_event::getByBaseFrom($pzRule, $recurrenceId->getDateTime()->setTimezone(self::getDateTimeZone())->add($add));
                     $pzRuleEvent->setBaseFrom($recurrenceId->getDateTime()->sub($add));
                     $this->setRuleEventValues($event, $pzRuleEvent, $pzEvent);
@@ -594,7 +593,7 @@ class pz_sabre_caldav_backend extends AbstractBackend
 
     private function setEventValues($calendarId, $objectUri, Component $event, pz_calendar_event $pzEvent)
     {
-        if ($event->dtend->getDateType() == Property\DateTime::DATE) {
+        if ($event->dtend->getValueType() == 'DATE') {
             $event->dtend->getDateTime()->modify('-1 day');
         }
 
@@ -608,7 +607,7 @@ class pz_sabre_caldav_backend extends AbstractBackend
             ->setUrl((string) $event->url)
             ->setFrom($event->dtstart->getDateTime()->setTimezone(self::getDateTimeZone()))
             ->setTo($event->dtend->getDateTime()->setTimezone(self::getDateTimeZone()))
-            ->setAllDay($event->dtstart->getDateType() == Property\DateTime::DATE);
+            ->setAllDay($event->dtstart->getValueType() == 'DATE');
 
         if (!$pzEvent->isBooked()) {
             $pzEvent->setAttendees($this->getAttendees($event));
@@ -618,7 +617,7 @@ class pz_sabre_caldav_backend extends AbstractBackend
 
     private function setRuleEventValues(Component $event, pz_calendar_rule_event $pzRuleEvent, pz_calendar_event $pzEvent)
     {
-        if ($event->dtend->getDateType() == Property\DateTime::DATE) {
+        if ($event->dtend->getValueType() == 'DATE') {
             $event->dtend->getDateTime()->modify('-1 day');
         }
         $pzRuleEvent
@@ -637,8 +636,8 @@ class pz_sabre_caldav_backend extends AbstractBackend
         if (isset($event->url) && $pzEvent->getUrl() != (string) $event->url) {
             $pzRuleEvent->setUrl((string) $event->url);
         }
-        if ($pzEvent->isAllDay() xor $event->dtstart->getDateType() == Property\DateTime::DATE) {
-            $pzRuleEvent->setAllDay($event->dtstart->getDateType() == Property\DateTime::DATE);
+        if ($pzEvent->isAllDay() xor $event->dtstart->getValueType() == 'DATE') {
+            $pzRuleEvent->setAllDay($event->dtstart->getValueType() == 'DATE');
         }
         $pzRuleEvent->setAttendees($this->getAttendees($event));
         $pzRuleEvent->setAlarms($this->getAlarms($event));
@@ -711,8 +710,7 @@ class pz_sabre_caldav_backend extends AbstractBackend
                 }
                 $pzAlarm->setAction((string) $alarm->action);
                 if (isset($alarm->trigger['value']) && $alarm->trigger['value'] == 'DATE-TIME') {
-                    $trigger = new Property\DateTime('trigger', (string) $alarm->trigger);
-                    $pzAlarm->setTrigger($trigger->getDateTime()->setTimezone(self::getDateTimeZone()));
+                    $pzAlarm->setTrigger($alarm->trigger->getDateTime()->setTimezone(self::getDateTimeZone()));
                 } else {
                     $trigger = (string) $alarm->trigger;
                     if (preg_match('/([PYM])([0-9]+)W(?:([0-9]+)D)?/', $trigger, $matches)) {
@@ -779,8 +777,7 @@ class pz_sabre_caldav_backend extends AbstractBackend
             $pzRule->setCount($rule['COUNT']);
         }
         if (isset($rule['UNTIL'])) {
-            $end = new Property\DateTime('UNTIL', $rule['UNTIL']);
-            $pzRule->setEnd($end->getDateTime());
+            $pzRule->setEnd(\Sabre\VObject\DateTimeParser::parseDateTime($rule['UNTIL']));
         }
         if (($freq == pz_calendar_rule::WEEKLY || isset($rule['BYSETPOS'])) && isset($rule['BYDAY'])) {
             $byday = array_map('self::constant', explode(',', $rule['BYDAY']));
@@ -876,7 +873,7 @@ class pz_sabre_caldav_backend extends AbstractBackend
             if (isset($event->organizer)) {
                 $organizer = str_replace('mailto:', '', strtolower($event->organizer));
                 if ($organizer != strtolower(pz::getUser()->getEmail())) {
-                    $attendee = new Property('attendee', (string) $event->organizer);
+                    $attendee = $calendar->createProperty('attendee', (string) $event->organizer);
                     $attendee['cn'] = (string) $event->organizer['cn'];
                     $attendee['partstat'] = 'ACCEPTED';
                     $event->add($attendee);
@@ -930,13 +927,6 @@ class pz_sabre_caldav_backend extends AbstractBackend
         return constant('pz_calendar_rule::' . $constant);
     }
 
-    private static function getDateTime($name, DateTime $dateTime, $dateType = Property\DateTime::LOCALTZ)
-    {
-        $dt = new Property\DateTime($name);
-        $dt->setDateTime($dateTime, $dateType);
-        return $dt;
-    }
-
     private static function getDateTimeZone()
     {
         static $timezone = null;
@@ -974,7 +964,7 @@ END:VCALENDAR';
         return false;
     }
 
-    public function updateCalendar($calendarId, array $properties)
+    public function updateCalendar($calendarId, \Sabre\DAV\PropPatch $propPatch)
     {
         return false;
     }

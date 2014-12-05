@@ -5,6 +5,7 @@ class pz_project extends pz_model
 
 	public $vars = array();
 	private $isProject = FALSE;
+    /** @type pz_label */
 	private $label;
 	public $customer = NULL;
 	public $users = array();
@@ -12,7 +13,7 @@ class pz_project extends pz_model
   private $subprojects = null;
 
   static private $projects = array();
-  
+
 
 	function __construct($vars = array())
 	{
@@ -66,6 +67,9 @@ class pz_project extends pz_model
 		return $this->vars['description'];
 	}
 
+    /**
+     * @return pz_label
+     */
 	public function getLabel()
 	{
 	  return $this->label ?: $this->label = pz_label::get($this->vars['label_id']);
@@ -186,7 +190,7 @@ class pz_project extends pz_model
 		$return = pz_history::get($filter);
 		return $return;
 	}
-  
+
   // -----------------------------
 
   public function getProjectSubs()
@@ -209,10 +213,10 @@ class pz_project extends pz_model
   {
     if($id == 0)
       return true;
-  
+
     if (array_key_exists($id,$this->getProjectSubs()))
       return true;
-    
+
     return false;
   }
 
@@ -356,27 +360,27 @@ class pz_project extends pz_model
 	    ->setValue('user_id', pz::getUser()->getId())
 	    ->setRawValue('stamp', 'NOW()')
 	    ->setValue('mode', $mode);
-	    
+
 	  // if($mode != 'delete') {
 	    $data = $this->getVars();
 	    $data["users"] = array();
       foreach($this->getUsers() as $u)
       {
-        $data["users"][$u->getId()] = $u->getVars();  
+        $data["users"][$u->getId()] = $u->getVars();
       }
 	    $sql->setValue('data', json_encode($data));
 	  // }
-	  
+
 	  $sql->insert();
 	}
 
-	public function update() 
+	public function update()
 	{
     $this->saveToHistory('update');
 	  pz_sabre_caldav_backend::incrementCtag($this->vars['id']);
 	}
 
-	public function create() 
+	public function create()
 	{
 		rex_dir::create($this->getFilesFolder());
 		$this->addUser(pz::getUser()->getId(),1);
@@ -385,7 +389,7 @@ class pz_project extends pz_model
 		return $this->getFilesFolder();
 	}
 
-	public function delete() 
+	public function delete()
 	{
     $this->saveToHistory('delete');
 

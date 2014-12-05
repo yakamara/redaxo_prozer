@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "38b05944be840d222a686989cc28b4eb",
+    "hash": "7bf46e335f4e2d5aad6a753ac0aca0fc",
     "packages": [
         {
             "name": "ircmaxell/password-compat",
@@ -105,16 +105,16 @@
         },
         {
             "name": "sabre/dav",
-            "version": "1.8.10",
+            "version": "2.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fruux/sabre-dav.git",
-                "reference": "0d064536ed3c7974e486b6ebb5b17ad7a974fe18"
+                "reference": "e977b952a69450ab46956c196a654d4dd1a37fb8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fruux/sabre-dav/zipball/0d064536ed3c7974e486b6ebb5b17ad7a974fe18",
-                "reference": "0d064536ed3c7974e486b6ebb5b17ad7a974fe18",
+                "url": "https://api.github.com/repos/fruux/sabre-dav/zipball/e977b952a69450ab46956c196a654d4dd1a37fb8",
+                "reference": "e977b952a69450ab46956c196a654d4dd1a37fb8",
                 "shasum": ""
             },
             "require": {
@@ -127,32 +127,31 @@
                 "ext-pcre": "*",
                 "ext-simplexml": "*",
                 "ext-spl": "*",
-                "php": ">=5.3.1",
-                "sabre/vobject": "~2.1.0"
-            },
-            "provide": {
-                "evert/sabredav": "1.7.*"
+                "php": ">=5.4.1",
+                "sabre/event": "~2.0.0",
+                "sabre/http": "~3.0.0",
+                "sabre/vobject": "~3.3.4"
             },
             "require-dev": {
-                "evert/phpdoc-md": "~0.0.7",
-                "phpunit/phpunit": "~4.0.0"
+                "evert/phpdoc-md": "~0.1.0",
+                "phpunit/phpunit": "~4.2",
+                "squizlabs/php_codesniffer": "~1.5.3"
             },
             "suggest": {
-                "ext-apc": "*",
                 "ext-curl": "*",
                 "ext-pdo": "*"
             },
             "bin": [
-                "bin/sabredav"
+                "bin/sabredav",
+                "bin/naturalselection"
             ],
             "type": "library",
             "autoload": {
-                "psr-0": {
-                    "Sabre\\DAV": "lib/",
-                    "Sabre\\HTTP": "lib/",
-                    "Sabre\\DAVACL": "lib/",
-                    "Sabre\\CalDAV": "lib/",
-                    "Sabre\\CardDAV": "lib/"
+                "psr-4": {
+                    "Sabre\\DAV\\": "lib/DAV/",
+                    "Sabre\\DAVACL\\": "lib/DAVACL/",
+                    "Sabre\\CalDAV\\": "lib/CalDAV/",
+                    "Sabre\\CardDAV\\": "lib/CardDAV/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -162,13 +161,13 @@
             "authors": [
                 {
                     "name": "Evert Pot",
-                    "email": "evert@rooftopsolutions.nl",
-                    "homepage": "http://www.rooftopsolutions.nl/",
+                    "email": "me@evertpot.com",
+                    "homepage": "http://evertpot.com/",
                     "role": "Developer"
                 }
             ],
             "description": "WebDAV Framework for PHP",
-            "homepage": "http://code.google.com/p/sabredav/",
+            "homepage": "http://sabre.io/",
             "keywords": [
                 "CalDAV",
                 "CardDAV",
@@ -176,33 +175,29 @@
                 "framework",
                 "iCalendar"
             ],
-            "time": "2014-05-16 00:14:02"
+            "time": "2014-11-22 20:18:14"
         },
         {
-            "name": "sabre/vobject",
-            "version": "2.1.5",
+            "name": "sabre/event",
+            "version": "2.0.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/fruux/sabre-vobject.git",
-                "reference": "344a3560835b9f48ee51ee8cf4502b857b6e4772"
+                "url": "https://github.com/fruux/sabre-event.git",
+                "reference": "f33d60742d7dff63d3722d0f70016704bf32e8db"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fruux/sabre-vobject/zipball/344a3560835b9f48ee51ee8cf4502b857b6e4772",
-                "reference": "344a3560835b9f48ee51ee8cf4502b857b6e4772",
+                "url": "https://api.github.com/repos/fruux/sabre-event/zipball/f33d60742d7dff63d3722d0f70016704bf32e8db",
+                "reference": "f33d60742d7dff63d3722d0f70016704bf32e8db",
                 "shasum": ""
             },
             "require": {
-                "ext-mbstring": "*",
-                "php": ">=5.3.1"
+                "php": ">=5.4.1"
             },
-            "bin": [
-                "bin/vobjectvalidate.php"
-            ],
             "type": "library",
             "autoload": {
-                "psr-0": {
-                    "Sabre\\VObject": "lib/"
+                "psr-4": {
+                    "Sabre\\Event\\": "lib/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -212,8 +207,126 @@
             "authors": [
                 {
                     "name": "Evert Pot",
-                    "email": "evert@rooftopsolutions.nl",
-                    "homepage": "http://www.rooftopsolutions.nl/",
+                    "email": "me@evertpot.com",
+                    "homepage": "http://evertpot.com/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "sabre/event is a library for lightweight event-based programming",
+            "homepage": "http://sabre.io/event/",
+            "keywords": [
+                "EventEmitter",
+                "events",
+                "hooks",
+                "plugin",
+                "promise",
+                "signal"
+            ],
+            "time": "2014-10-06 23:26:48"
+        },
+        {
+            "name": "sabre/http",
+            "version": "3.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fruux/sabre-http.git",
+                "reference": "acb39bb948985e38808adc9b96e5ccad05294c3d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fruux/sabre-http/zipball/acb39bb948985e38808adc9b96e5ccad05294c3d",
+                "reference": "acb39bb948985e38808adc9b96e5ccad05294c3d",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": ">=5.4",
+                "sabre/event": ">=1.0.0,<3.0.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "*",
+                "squizlabs/php_codesniffer": "~1.5.3"
+            },
+            "suggest": {
+                "ext-curl": " to make http requests with the Client class"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Sabre\\HTTP\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Evert Pot",
+                    "email": "me@evertpot.com",
+                    "homepage": "http://evertpot.com/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "The sabre/http library provides utilities for dealing with http requests and responses. ",
+            "homepage": "https://github.com/fruux/sabre-http",
+            "keywords": [
+                "http"
+            ],
+            "time": "2014-12-03 06:01:21"
+        },
+        {
+            "name": "sabre/vobject",
+            "version": "3.3.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fruux/sabre-vobject.git",
+                "reference": "e7cbc59a7a77325dfa32924865e1802c9216a3e0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fruux/sabre-vobject/zipball/e7cbc59a7a77325dfa32924865e1802c9216a3e0",
+                "reference": "e7cbc59a7a77325dfa32924865e1802c9216a3e0",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": ">=5.3.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "*",
+                "squizlabs/php_codesniffer": "*"
+            },
+            "bin": [
+                "bin/vobject",
+                "bin/generate_vcards"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.2.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Sabre\\VObject\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Evert Pot",
+                    "email": "me@evertpot.com",
+                    "homepage": "http://evertpot.com/",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Dominik Tobschall",
+                    "email": "dominik@fruux.com",
+                    "homepage": "http://tobschall.de/",
                     "role": "Developer"
                 }
             ],
@@ -222,9 +335,11 @@
             "keywords": [
                 "VObject",
                 "iCalendar",
+                "jCal",
+                "jCard",
                 "vCard"
             ],
-            "time": "2014-06-03 16:41:29"
+            "time": "2014-11-19 22:15:24"
         },
         {
             "name": "symfony/console",

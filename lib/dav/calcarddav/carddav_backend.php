@@ -71,20 +71,16 @@ class pz_sabre_carddav_backend extends AbstractBackend
 
     private function getGroup()
     {
-        $card = new Component('vcard');
-        $card->version = '3.0';
-        $card->prodid = '-//prozer 2.0//';
+        $card = new Component\VCard();
         $card->__set('X-ADDRESSBOOKSERVER-KIND', 'group');
         $card->n = pz_i18n::msg('mycontacts');
         $card->fn = pz_i18n::msg('mycontacts');
-        $card->rev = new Property\DateTime('rev');
-        $card->rev->setDateTime(new DateTime(null, new DateTimeZone('UTC')), Property\DateTime::UTC);
-        unset($card->rev['value']);
+        $card->rev = (new DateTime(null, new DateTimeZone('UTC')))->format('Ymd\\THis\\Z');
         $card->uid = self::GROUP;
         $sql = pz_sql::factory();
         $sql->setQuery('SELECT uri FROM pz_address WHERE created_user_id = ?', array(pz::getUser()->getId()));
         foreach ($sql as $row) {
-            $card->add(new Property('X-ADDRESSBOOKSERVER-MEMBER', 'urn:uuid:' . str_replace('.vcf', '', $sql->getValue('uri'))));
+            $card->add($card->createProperty('X-ADDRESSBOOKSERVER-MEMBER', 'urn:uuid:' . str_replace('.vcf', '', $sql->getValue('uri'))));
         }
         return array(
             'uri' => self::GROUP . '.vcf',
@@ -95,16 +91,13 @@ class pz_sabre_carddav_backend extends AbstractBackend
 
     private function getCardArray(pz_address $address)
     {
-        $card = new Component('vcard');
-        $card->version = '3.0';
+        $card = new Component\VCard();
         $card->prodid = '-//prozer 2.0//';
         $card->fn = $address->isCompany() ? $address->getCompany() : $address->getFullName();
-        $card->n = $address->getName() . ';' . $address->getFirstName() . ';' . $address->getVar('additional_names') . ';' . $address->getVar('prefix') . ';' . $address->getVar('suffix');
+        $card->n = [$address->getName(), $address->getFirstName(), $address->getVar('additional_names'), $address->getVar('prefix'), $address->getVar('suffix')];
         $card->uid = str_replace('.vcf', '', $address->getVar('uri'));
-        $card->rev = new Property\DateTime('rev');
-        $card->rev->setDateTime(new DateTime($address->getVar('updated')), Property\DateTime::UTC);
-        unset($card->rev['value']);
-        $this->addToCard($card, 'org', $address->getCompany() . ';' . $address->getVar('department'), ';');
+        $card->rev = (new DateTime($address->getVar('updated'), new DateTimeZone('UTC')))->format('Ymd\\THis\\Z');
+        $this->addToCard($card, 'org', [$address->getCompany(), $address->getVar('department')]);
         $this->addToCard($card, 'title', $address->getVar('title'));
         $this->addToCard($card, 'X-ABShowAs', $address->isCompany() ? 'COMPANY' : '');
         $this->addToCard($card, 'note', $address->getNote());
@@ -135,29 +128,33 @@ class pz_sabre_carddav_backend extends AbstractBackend
         $i = 1;
         foreach ($fields as $row) {
             $type = $row['type'];
-            $property = new Property("item$i.$type", $row['value']);
+            $property = $card->createProperty("item$i.$type", explode(';', $row['value']));
             $card->add($property);
+            $typeArray = [];
             switch ($type) {
-                case 'ADR': $card->add(new Property("item$i.X-ABADR", $row['value_type'])); break;
+                case 'ADR': $card->add($card->createProperty("item$i.X-ABADR", $row['value_type'])); break;
                 case 'IMPP': $property['x-service-type'] = $row['value_type']; break;
-                case 'X-SOCIALPROFILE': $property[] = new Parameter('type', $row['value_type']); break;
-                case 'EMAIL': $property[] = new Parameter('type', 'internet'); break;
+                case 'X-SOCIALPROFILE': $typeArray[] = $row['value_type']; break;
+                case 'EMAIL': $typeArray[] = 'internet'; break;
             }
             foreach (explode(',', $row['label']) as $label) {
                 if (in_array($label, $this->knownLabels)) {
-                    $property[] = new Parameter('type', $label);
+                    $typeArray[] = $label;
                 } elseif ($type != 'X-SOCIALPROFILE' && $label) {
-                    $card->add(new Property("item$i.X-ABLabel", $label));
+                    $card->add($card->createProperty("item$i.X-ABLabel", $label));
                 }
             }
             if ($row['preferred']) {
-                $property[] = new Parameter('type', 'pref');
+                $typeArray[] = 'pref';
+            }
+            if ($type) {
+                $property['type'] = $typeArray;
             }
             ++$i;
         }
 
         if ($photo = $address->getVar('photo')) {
-            $card->photo = Reader::read($photo);
+            $card->photo = pz_sabre_single_line_parser::parseSingeLine($card, $photo);
         }
 
         $array = $this->getCardMeta($address);
@@ -392,7 +389,7 @@ class pz_sabre_carddav_backend extends AbstractBackend
     }
 
 
-    public function updateAddressBook($addressBookId, array $mutations)
+    public function updateAddressBook($addressBookId, \Sabre\DAV\PropPatch $propPatch)
     {
         return false;
     }

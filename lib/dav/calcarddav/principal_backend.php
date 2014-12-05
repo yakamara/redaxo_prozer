@@ -33,6 +33,11 @@ class pz_sabre_principal_backend implements Sabre\DAVACL\PrincipalBackend\Backen
         return $this->principals[$user] = $sql->getRows() == 1 ? $this->getPrincipalBySql($sql) : null;
     }
 
+    public function findByUri($uri)
+    {
+        // TODO
+    }
+
     private function getPrincipalBySql(pz_sql $sql)
     {
         return array(
@@ -57,12 +62,12 @@ class pz_sabre_principal_backend implements Sabre\DAVACL\PrincipalBackend\Backen
     {
     }
 
-    function updatePrincipal($path, $mutations)
+    function updatePrincipal($path, \Sabre\DAV\PropPatch $propPatch)
     {
         return false;
     }
 
-    function searchPrincipals($prefixPath, array $searchProperties)
+    function searchPrincipals($prefixPath, array $searchProperties, $test = 'allof')
     {
         return array();
     }

@@ -13,6 +13,10 @@ class pz_label extends pz_model{
 		parent::__construct($vars);
 	}
 
+    /**
+     * @param string $id
+     * @return static
+     */
 	static public function get($id = "")
 	{
 		if($id == "") return FALSE;
@@ -54,7 +58,7 @@ class pz_label extends pz_model{
 		pz_labels::update();
 	}
 
-	public function hasProjects() 
+	public function hasProjects()
 	{
 		$sql = pz_sql::factory();
 		$projects = $sql->getArray('select * from pz_project where label_id = ? LIMIT 2',array($this->getId()));
@@ -63,7 +67,7 @@ class pz_label extends pz_model{
 		return false;
 	}
 
-	public function delete() 
+	public function delete()
 	{
 		$sql = pz_sql::factory();
 		$sql->setQuery('delete from pz_label where id = ?',array($this->getId()));

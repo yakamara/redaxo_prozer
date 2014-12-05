@@ -8,11 +8,5 @@ $baseDir = dirname($vendorDir);
 return array(
     'Symfony\\Component\\OptionsResolver\\' => array($vendorDir . '/symfony/options-resolver'),
     'Symfony\\Component\\Console\\' => array($vendorDir . '/symfony/console'),
-    'Sabre\\VObject' => array($vendorDir . '/sabre/vobject/lib'),
-    'Sabre\\HTTP' => array($vendorDir . '/sabre/dav/lib'),
-    'Sabre\\DAVACL' => array($vendorDir . '/sabre/dav/lib'),
-    'Sabre\\DAV' => array($vendorDir . '/sabre/dav/lib'),
-    'Sabre\\CardDAV' => array($vendorDir . '/sabre/dav/lib'),
-    'Sabre\\CalDAV' => array($vendorDir . '/sabre/dav/lib'),
     '' => array($vendorDir . '/kzykhys/ciconia/src'),
 );
