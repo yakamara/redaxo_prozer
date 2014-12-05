@@ -188,7 +188,7 @@ class pz_admin_controller_screen extends pz_admin_controller {
 	{
 
 		$p["title"] = pz_i18n::msg("userperm_list");
-		$p["layer"] = "userperm_list";
+		$p["layer"] = "userperms_list";
 		$p["linkvars"] = array();
 
     $user_id = rex_request("search_user_id","int");
@@ -220,8 +220,8 @@ class pz_admin_controller_screen extends pz_admin_controller {
 		$xform = new rex_xform;
 		$xform->setObjectparams("real_field_names",TRUE);
 		$xform->setObjectparams("form_showformafterupdate", TRUE);
-		$xform->setObjectparams("form_action", 
-			"javascript:pz_loadFormPage('userperm_list','userperm_search_form','".pz::url($p["mediaview"],$p["controll"],$this->function)."')");
+		$xform->setObjectparams("form_action",
+			"javascript:pz_loadFormPage('userperms_list','userperm_search_form','".pz::url($p["mediaview"],$p["controll"],$this->function)."')");
 		$xform->setObjectparams("form_id", "userperm_search_form");
 		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl', 'runtime'));
 		
