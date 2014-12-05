@@ -110,6 +110,8 @@ if ($REX['VERSION'] != '4' || $REX['SUBVERSION'] < '6') {
     KEY `user_id` (`user_id`)
   ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;');
 
+  $c->setQuery('ALTER TABLE `pz_calendar_alarm` ADD `default` TINYINT(1) NOT NULL ;');
+
   $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_calendar_attendee` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `event_id` int(10) unsigned NOT NULL,

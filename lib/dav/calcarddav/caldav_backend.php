@@ -335,6 +335,9 @@ class pz_sabre_caldav_backend extends AbstractBackend
             if ($proximity = $pzAlarm->getProximity()) {
                 $alarm->__set('x-apple-proximity', $proximity);
             }
+            if ($pzAlarm->isDefault()) {
+                $alarm->__set('X-APPLE-DEFAULT-ALARM', 'TRUE');
+            }
             if ($acknowledged = $pzAlarm->getAckknowledged()) {
                 $alarm->acknowledged = $acknowledged->setTimezone(new DateTimeZone('UTC'));
             }
@@ -745,6 +748,9 @@ class pz_sabre_caldav_backend extends AbstractBackend
                 }
                 if ($proximity = $alarm->__get('x-apple-proximity')) {
                     $pzAlarm->setProximity((string) $proximity);
+                }
+                if ($proximity = $alarm->__get('X-APPLE-DEFAULT-ALARM')) {
+                    $pzAlarm->setDefault(true);
                 }
                 if ($acknowledged = $alarm->acknowledged) {
                     $pzAlarm->setAcknowledged($acknowledged->getDateTime()->setTimezone(self::getDateTimeZone()));

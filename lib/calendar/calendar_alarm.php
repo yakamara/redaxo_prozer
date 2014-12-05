@@ -29,6 +29,8 @@ class pz_calendar_alarm extends pz_calendar_element
 
     protected $proximity;
 
+    protected $default;
+
     /**
      * @var DateTime
      */
@@ -75,6 +77,9 @@ class pz_calendar_alarm extends pz_calendar_element
         }
         if (isset($params['a.proximity'])) {
             $this->proximity = $params['a.proximity'];
+        }
+        if (isset($params['a.default'])) {
+            $this->default = $params['a.default'];
         }
         if (isset($params['a.acknowledged'])) {
             $this->acknowledged = new DateTime($params['a.acknowledged']);
@@ -161,6 +166,11 @@ class pz_calendar_alarm extends pz_calendar_element
         return $this->proximity;
     }
 
+    public function isDefault()
+    {
+        return (boolean) $this->default;
+    }
+
     /**
      * @return DateTime
      */
@@ -235,6 +245,11 @@ class pz_calendar_alarm extends pz_calendar_element
         return $this->setValue('proximity', $proximity);
     }
 
+    public function setDefault($default)
+    {
+        return $this->setValue('default', $default);
+    }
+
     public function setAcknowledged(DateTime $acknowledged = null)
     {
         return $this->setValue('acknowledged', $acknowledged);
@@ -265,18 +280,18 @@ class pz_calendar_alarm extends pz_calendar_element
             $i = 0;
             foreach ($alarms as $alarm) {
                 if ($alarm->uid) {
-                    $values .= '(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?),';
+                    $values .= '(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?),';
                     $params[] = $alarm->uid;
                 } else {
-                    $values .= '(CONCAT(UPPER(UUID()),"' . $i++ . '"),?,?,?,?,?,?,?,?,?,?,?,?,?,?),';
+                    $values .= '(CONCAT(UPPER(UUID()),"' . $i++ . '"),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?),';
                 }
                 $emails = is_array($alarm->emails) && count($alarm->emails) > 0 ? implode(',', $alarm->emails) : '';
-                array_push($params, $id, pz::getUser()->getId(), $alarm->action, $alarm->getTriggerString(), $alarm->description, $alarm->summary, $emails, $alarm->attachment, $alarm->location, $alarm->structured_location, $alarm->proximity, self::sqlValue($alarm->acknowledged), $alarm->related_id, $time);
+                array_push($params, $id, pz::getUser()->getId(), $alarm->action, $alarm->getTriggerString(), $alarm->description, $alarm->summary, $emails, $alarm->attachment, $alarm->location, $alarm->structured_location, $alarm->proximity, $alarm->default, self::sqlValue($alarm->acknowledged), $alarm->related_id, $time);
             }
             pz_sql::factory()->setQuery('
-                INSERT INTO ' . self::TABLE . ' (uid, `' . $column . '`, user_id, `action`, `trigger`, description, summary, emails, attachment, location, structured_location, proximity, acknowledged, related_id, timestamp)
+                INSERT INTO ' . self::TABLE . ' (uid, `' . $column . '`, user_id, `action`, `trigger`, description, summary, emails, attachment, location, structured_location, proximity, `default`, acknowledged, related_id, timestamp)
                 VALUES ' . rtrim($values, ',') . '
-                ON DUPLICATE KEY UPDATE `' . $column . '` = VALUES(`' . $column . '`), user_id = VALUES(user_id), `action` = VALUES(`action`), `trigger` = VALUES(`trigger`), description = VALUES(description), summary = VALUES(summary), emails = VALUES(emails), attachment = VALUES(attachment), location = VALUES(location), structured_location = VALUES(structured_location), proximity = VALUES(proximity), acknowledged = VALUES(acknowledged), related_id = VALUES(related_id), timestamp = VALUES(timestamp)
+                ON DUPLICATE KEY UPDATE `' . $column . '` = VALUES(`' . $column . '`), user_id = VALUES(user_id), `action` = VALUES(`action`), `trigger` = VALUES(`trigger`), description = VALUES(description), summary = VALUES(summary), emails = VALUES(emails), attachment = VALUES(attachment), location = VALUES(location), structured_location = VALUES(structured_location), proximity = VALUES(proximity), `default` = VALUES(`default`), acknowledged = VALUES(acknowledged), related_id = VALUES(related_id), timestamp = VALUES(timestamp)
             ', $params);
             $and = ' AND timestamp < ' . $time;
         }
