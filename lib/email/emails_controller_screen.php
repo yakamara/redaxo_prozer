@@ -962,7 +962,10 @@ class pz_emails_controller_screen extends pz_emails_controller
 
     $filter = array();
     $projects = array();
-    $emails = pz::getUser()->getDraftsEmails($filter, $projects);
+    $orders = array(
+        array("orderby" => "created", "sort" => "DESC")
+    );
+    $emails = pz::getUser()->getDraftsEmails($filter, $projects, $orders);
 
     // ------------ Reply Mail
 
