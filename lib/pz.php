@@ -879,6 +879,8 @@ class pz
 
     if (self::getHeader("content-type") == "") {
       self::setHeader("content-type", "text/html");
+    }
+    if (self::getHeader("charset") == "") {
       self::setHeader("charset", "UTF-8");
     }
 
