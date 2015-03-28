@@ -5,7 +5,13 @@ class pz_projectuser extends pz_model
 
   public $vars = array();
   private $isProjectuser = false;
+  /**
+   * @var pz_project
+   */
   public $project = null;
+  /**
+   * @var pz_user
+   */
   public $user = null;
 
   function __construct($vars = array(), $user, $project)
@@ -150,11 +156,21 @@ class pz_projectuser extends pz_model
     return $this->getVar('id');
   }
 
+  /**
+   * @method getUser
+   *
+   * @return pz_user
+   */
   public function getUser()
   {
     return $this->user;
   }
 
+  /**
+   * @see pz_projectuser::getProject()
+   *
+   * @return pz_project
+   */
   public function getProject()
   {
     return $this->project;
@@ -296,7 +312,4 @@ class pz_projectuser extends pz_model
 	  
 	  $sql->insert();
 	}
-
-
-
 }

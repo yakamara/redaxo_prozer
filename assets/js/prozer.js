@@ -7,7 +7,8 @@ $(document).ready(function() {
   
   /*
     $(window).on('resize', function() {
-        $('#clipboard-list').height($(window).height()-124);      }
+        $('#clipboard-list').height($(window).height()-124);
+      }
     );
   */
 
@@ -260,18 +261,21 @@ function pz_loadFormPage(layer_id,form_id,link)
 function pz_loadPage(layer_id, link, funccall_ok, funccall_ok_params)
 {
   if(layer_id.substring(0,1)!="." && layer_id.substring(0,1)!="#")
-  	layer_id = "#"+layer_id;
+    layer_id = "#"+layer_id;
 
-	pz_loading_start(layer_id);
-	
-	if(link.indexOf("?")) link += "&pz_login_refresh=1";
-	else link += "?pz_login_refresh=1";
-	$.post(link, '', function(data) {
-		if(pz_isLoggedIn(data)) {
-			$(layer_id).replaceWith(data);
-		}
-		pz_loading_end(layer_id);
-  });
+  pz_loading_start(layer_id);
+
+  if(link.indexOf("?")) link += "&pz_login_refresh=1";
+  else link += "?pz_login_refresh=1";
+  $.post(link, '', function(data) {
+    if(pz_isLoggedIn(data)) {
+      $(layer_id).replaceWith(data);
+      if(typeof funccall_ok == 'function') {
+        funccall_ok.call(this);
+      }
+    }
+    pz_loading_end(layer_id);
+  });
 }
 
 function pz_paginatePage(layer_id, link, loading_layer_id, remove_layer_id)
