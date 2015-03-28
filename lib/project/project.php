@@ -28,7 +28,7 @@ class pz_project extends pz_model
 
 
   /**
-   * @return pz_user
+   * @return pz_project
    */
   static public function get($id, $refresh = FALSE)
   {
