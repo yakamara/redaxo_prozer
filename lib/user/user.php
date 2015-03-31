@@ -726,7 +726,8 @@ class pz_user
         $serialized_filter = serialize($filter);
         if ($refresh && !isset($this->cache['email_projects'][$serialized_filter])) {
             $filter[] = ['field' => 'has_emails', 'value' => 1];
-            $filter[] = ['field' => 'archived', 'value' => 0];
+            //E-Mails sollten auch im archivierten Zustand gelesen werden koennen.
+            //$filter[] = ['field' => 'archived', 'value' => 0];
             $this->cache['email_projects'][$serialized_filter] = $this->_getProjects('(pu.emails = 1 OR pu.admin = 1)', true, $filter);
         }
 
