@@ -263,8 +263,8 @@ region = Bundesland
 zip = PLZ
 country = Land
 
-address_orderby_iddesc = Älteste ID zuerst
-address_orderby_idasc = Neuste ID zuerst
+address_orderby_iddesc = Neuste ID zuerst
+address_orderby_idasc = Älteste ID zuerst
 address_orderby_lastnamedesc = Nachname, absteigend
 address_orderby_lastnameasc = Nachname, aufsteigend
 address_orderby_firstnamedesc = Vorname, absteigend

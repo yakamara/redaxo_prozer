@@ -408,7 +408,7 @@ class pz_project_controller_screen extends pz_project_controller
                     $status = $projectuser->setAdmin($status);
 
                     $projectuser_screen = new pz_projectuser_screen($projectuser);
-                    return $projectuser_screen->getPermTableCellView('files', $status, $this->projectuser);
+                    return $projectuser_screen->getPermTableCellView('admin', $status, $this->projectuser);
 
                 }
 

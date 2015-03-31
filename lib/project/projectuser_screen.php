@@ -2,8 +2,10 @@
 
 class pz_projectuser_screen{
 
-	public
-		$projectuser = NULL;
+  /**
+   * @var pz_projectuser $projectuser
+   */
+	public $projectuser = NULL;
 
 	function __construct($projectuser)
 	{
@@ -55,8 +57,16 @@ class pz_projectuser_screen{
 		$f->setVar('content', $content , false);
 		return '<div id="projectusers_list" class="design2col">'.$f->parse('pz_screen_list.tpl').'</div>';
 	
-	}	
+	}
 
+  /**
+   * @method getTableView
+   *
+   * @param array                    $p
+   * @param Object | pz_project      $project
+   * @param Object | pz_projectuser  $projectuser
+   * @return string
+   */
   public function getTableView($p = array(), $project, $projectuser)
 	{
 
@@ -68,19 +78,25 @@ class pz_projectuser_screen{
 
     if($this->projectuser->getProject()->hasEmails()) {
       $status = 2;
-  		if($this->projectuser->getProject()->hasEmails() == 1) { $status = $this->projectuser->hasEmails() ? $status = 1 : $status = 0; }
+  		if($this->projectuser->getProject()->hasEmails() == 1) {
+        $status = $this->projectuser->hasEmails() ? $status = 1 : $status = 0;
+      }
   	  $td[] = $this->getPermTableCellView("emails", $status, $projectuser);
     }
 
     if($this->projectuser->getProject()->hasCalendarEvents()) {
       $status = 2;
-  	  if ($this->projectuser->getProject()->hasCalendar() == 1) { $status = $this->projectuser->hasCalendarEvents() ? $status = 1 : $status = 0; }
+  	  if ($this->projectuser->getProject()->hasCalendar() == 1) {
+        $status = $this->projectuser->hasCalendarEvents() ? $status = 1 : $status = 0;
+      }
   	  $td[] = $this->getPermTableCellView("calendar_events", $status, $projectuser);
     }
 
     if($this->projectuser->getProject()->hasCalendarJobs()) {
       $status = 2;
-      if ($this->projectuser->getProject()->hasCalendarJobs() == 1) { $status = $this->projectuser->hasCalendarJobs() ? $status = 1 : $status = 0; }
+      if ($this->projectuser->getProject()->hasCalendarJobs() == 1) {
+        $status = $this->projectuser->hasCalendarJobs() ? $status = 1 : $status = 0;
+      }
       $td[] = $this->getPermTableCellView("calendar_jobs", $status, $projectuser);
     }
     
@@ -119,6 +135,14 @@ class pz_projectuser_screen{
 		return $return;
 	}
 
+  /**
+   * @method getPermTableCellView
+   *
+   * @param string                    $type
+   * @param int                       $status
+   * @param object | pz_projectuser   $projectuser
+   * @return string
+   */
   public function getPermTableCellView($type = "", $status = 2, $projectuser = NULL)
 	{
 	
@@ -150,19 +174,29 @@ class pz_projectuser_screen{
   	      )
   	      
   	    ) {
+        $link_admin_a = pz::url("screen","project","user",array("project_id"=>$this->projectuser->getProject()->getId(), "user_id" => $this->projectuser->getUser()->getId(),"mode"=>"list"));
+        $link_admin = "pz_loadPage('#".$td_id."','".$link_a."', function(){ pz_loadPage('#projectusers_list', '".$link_admin_a."') })";
+
   	    if($status == 1) {
-  	      return '<td id="'.$td_id.'" class="'.implode(" ",$classes).'"><a href="javascript:void(0);" onclick="'.$link.'" ><span class="status status-changeable status-'.$status.'">'.pz_i18n::msg("yes").'</span></a></td>';
+  	      return '<td id="'.$td_id.'" class="'.implode(" ",$classes).'"><a href="javascript:void(0);" onclick="'.$link_admin.'" ><span class="status status-changeable status-'.$status.'">'.pz_i18n::msg("yes").'</span></a></td>';
   	    } else {
-          return '<td id="'.$td_id.'" class="'.implode(" ",$classes).'"><a href="javascript:void(0);" onclick="'.$link.'"><span class="status status-changeable status-'.$status.'">'.pz_i18n::msg("yes").'</span></a></td>';
+          return '<td id="'.$td_id.'" class="'.implode(" ",$classes).'"><a href="javascript:void(0);" onclick="'.$link_admin.'"><span class="status status-changeable status-'.$status.'">'.pz_i18n::msg("no").'</span></a></td>';
   	    }
   	  } else {
-	      $classes[] = "inactive";
-  	    if ($status == 1) {
-  	      return '<td id="'.$td_id.'" class="'.implode(" ",$classes).'"><span class="status status-1">'.pz_i18n::msg("yes").'</span></td>';
-  	    } else {
-  	      return '<td id="'.$td_id.'" class="'.implode(" ",$classes).'"><span class="status status-0">'.pz_i18n::msg("no").'</span></td>';
-  	    }
-  	  
+        if( (pz::getUser()->isAdmin() || $this->projectuser->isAdmin()) || $this->projectuser->getUser()->getId() == pz::getUser()->getId() ) {
+          $classes[] = "inactive";
+          if ($status == 1) {
+            return '<td id="'.$td_id.'" class="'.implode(" ",$classes).'"><span class="status status-1">'.pz_i18n::msg("yes").'</span></td>';
+          } else {
+            return '<td id="'.$td_id.'" class="'.implode(" ",$classes).'"><span class="status status-0">'.pz_i18n::msg("no").'</span></td>';
+          }
+        } else {
+          if($status == 1) {
+            return '<td id="'.$td_id.'" class="'.implode(" ",$classes).'"><a href="javascript:void(0);" onclick="'.$link.'" ><span class="status status-changeable status-'.$status.'">'.pz_i18n::msg("yes").'</span></a></td>';
+          } else {
+            return '<td id="'.$td_id.'" class="'.implode(" ",$classes).'"><a href="javascript:void(0);" onclick="'.$link.'"><span class="status status-changeable status-'.$status.'">'.pz_i18n::msg("no").'</span></a></td>';
+          }
+        }
   	  }
 	  }  
 	}
