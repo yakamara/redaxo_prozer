@@ -190,7 +190,7 @@ class pz_calendar_todo extends pz_calendar_item
 
     public static function create()
     {
-        $todo = new self;
+        $todo = new self();
         $todo->new = true;
         return $todo;
     }
@@ -256,7 +256,9 @@ class pz_calendar_todo extends pz_calendar_item
 
     /**
      * @param $project
+     *
      * @return self[]
+     *
      * @throws pz_sql_exception
      */
     public static function getAllBase($project)

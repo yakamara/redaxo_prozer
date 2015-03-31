@@ -1,12 +1,12 @@
 <?php
 
-class pz_tools_controller extends pz_controller {
-
-	function checkPerm() 
-	{
-		if(pz::getUser())
-			return TRUE;
-		return FALSE;
-	}
-
+class pz_tools_controller extends pz_controller
+{
+    public function checkPerm()
+    {
+        if (pz::getUser()) {
+            return true;
+        }
+        return false;
+    }
 }

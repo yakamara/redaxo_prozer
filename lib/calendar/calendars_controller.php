@@ -1,13 +1,16 @@
 <?php
 
-class pz_calendars_controller extends pz_controller {
-
-	
-	function checkPerm() 
-	{
-		if(pz::getUser() && pz::getUser()->isMe()) return TRUE;
-		if(pz::getUser() && pz::getUser()->getUserPerm()->hasCalendarReadPerm()) return TRUE;
-		else return FALSE;
-	}
-	
+class pz_calendars_controller extends pz_controller
+{
+    public function checkPerm()
+    {
+        if (pz::getUser() && pz::getUser()->isMe()) {
+            return true;
+        }
+        if (pz::getUser() && pz::getUser()->getUserPerm()->hasCalendarReadPerm()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

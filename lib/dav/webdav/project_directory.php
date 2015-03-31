@@ -13,7 +13,7 @@ class pz_sabre_project_directory extends pz_sabre_project_node implements Sabre\
 
     public function getChildren()
     {
-        $nodes = array();
+        $nodes = [];
         foreach ($this->node->getChildren() as $node) {
             $nodes[] = self::factory($node);
         }

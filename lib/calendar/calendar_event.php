@@ -165,7 +165,6 @@ class pz_calendar_event extends pz_calendar_item
         return $this->setValue('url', $this->makeSingleLine($url));
     }
 
-
     // ---------------------------
 
     public function isJob()
@@ -187,7 +186,6 @@ class pz_calendar_event extends pz_calendar_item
     {
         return $this->setValue('booked', $booked);
     }
-
 
     // ---------------------------
 
@@ -225,7 +223,7 @@ class pz_calendar_event extends pz_calendar_item
     public function isDay(DateTime $day)
     {
         $interval = new DateInterval('P1D');
-        $daterange = new DatePeriod($this->getFrom(), $interval , $this->getTo());
+        $daterange = new DatePeriod($this->getFrom(), $interval, $this->getTo());
         foreach ($daterange as $date) {
             if ($date->format('Ymd') == $day->format('Ymd')) {
                 return true;
@@ -268,7 +266,6 @@ class pz_calendar_event extends pz_calendar_item
             $return = $this->from < $other->from ? -1 : 1;
         }
         return $return;
-
     }
 
     // ---------------------------
@@ -389,7 +386,7 @@ class pz_calendar_event extends pz_calendar_item
 
     public static function create()
     {
-        $event = new self;
+        $event = new self();
         $event->new = true;
         return $event;
     }
@@ -444,8 +441,7 @@ class pz_calendar_event extends pz_calendar_item
         $users = null,
         $order = [],
         $fulltext = ''
-    )
-    {
+    ) {
         if (empty($projects)) {
             return [];
         }
@@ -531,14 +527,12 @@ class pz_calendar_event extends pz_calendar_item
         }
 
         if (!$onlyJobs && $from) {
-
             $rules = pz_calendar_rule::getAll($projects);
             foreach ($rules as $rule) {
 
                 // $events = array_merge($events, pz_calendar_rule_event::getAll($rule, $from, $to));
                 $rule_events = pz_calendar_rule_event::getAllRuleEvents($rule, $from, $to);
                 $events = $events + $rule_events;
-
             }
 
             // self::sort($events);
@@ -547,7 +541,7 @@ class pz_calendar_event extends pz_calendar_item
         return $events;
     }
 
-    public static function getAttendeeEvents(DateTime $from = null, DateTime $to = null, $user = null, $ignore = [pz_calendar_attendee::DECLINED] )
+    public static function getAttendeeEvents(DateTime $from = null, DateTime $to = null, $user = null, $ignore = [pz_calendar_attendee::DECLINED])
     {
         if (!$user) {
             $user = pz::getUser();
@@ -600,7 +594,6 @@ class pz_calendar_event extends pz_calendar_item
 
         return $events;
     }
-
 
     public static function getJobTime(array $projects, $user_id, DateTime $from = null, DateTime $to = null)
     {
@@ -660,15 +653,14 @@ class pz_calendar_event extends pz_calendar_item
 
     // ---------------------------
 
-    static function resetProjectSubs($project_sub_id)
+    public static function resetProjectSubs($project_sub_id)
     {
         $s = pz_sql::factory();
-        $s->setQuery('update ' . self::TABLE . ' set project_sub_id = 0 where project_sub_id = ?', [$project_sub_id] );
+        $s->setQuery('update ' . self::TABLE . ' set project_sub_id = 0 where project_sub_id = ?', [$project_sub_id]);
     }
 
     public function copy2Job()
     {
-
         $event = self::create();
         $event->setTitle($this->getTitle());
         $event->setProjectId($this->getProjectId());

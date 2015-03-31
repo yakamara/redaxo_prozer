@@ -2,15 +2,13 @@
 
 class rex_xform_validate_pz_auth extends rex_xform_validate_abstract
 {
-
-    function enterObject()
+    public function enterObject()
     {
         return;
     }
 
-    function postValueAction()
+    public function postValueAction()
     {
-
         $login = '';
         $psw = '';
         $stay = 0;
@@ -31,9 +29,7 @@ class rex_xform_validate_pz_auth extends rex_xform_validate_abstract
 
             if ($login == '' or $psw == '') {
                 $msg = $this->getElement(6);
-
             } else {
-
                 $pz_login = new pz_login();
                 $pz_login->setLogin($login, $psw);
                 if ($stay == 1) {
@@ -50,18 +46,15 @@ class rex_xform_validate_pz_auth extends rex_xform_validate_abstract
                     }
                 }
             }
-
         }
 
         if ($msg != '') {
             $this->params['warning'][] = $this->params['error_class'];
             $this->params['warning_messages'][] = $msg;
-
         }
-
     }
 
-    function getDescription()
+    public function getDescription()
     {
         return 'pz_auth';
     }

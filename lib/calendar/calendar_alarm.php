@@ -262,7 +262,7 @@ class pz_calendar_alarm extends pz_calendar_element
 
     public static function create()
     {
-        $alarm = new self;
+        $alarm = new self();
         $alarm->new = true;
         return $alarm;
     }

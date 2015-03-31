@@ -16,17 +16,17 @@ class pz_wiki_markdown_internal_link_extension implements Ciconia\Extension\Exte
      */
     public function register(Ciconia\Markdown $markdown)
     {
-        $markdown->on('inline', array($this, 'processInternalLink'), 100);
+        $markdown->on('inline', [$this, 'processInternalLink'], 100);
     }
 
     /**
-     * Turn standard URL into markdown URL
+     * Turn standard URL into markdown URL.
      *
      * @param Text $text
      */
     public function processInternalLink(Text $text)
     {
-        $hashes = array();
+        $hashes = [];
 
         // escape <code>
         $text->replace('{<code>.*?</code>}m', function (Text $w) use (&$hashes) {
@@ -53,7 +53,7 @@ class pz_wiki_markdown_internal_link_extension implements Ciconia\Extension\Exte
             return '<a href="' . $url . '" class="internal' . $class . '">' . htmlspecialchars($title) . '</a>';
         });
 
-        /** @noinspection PhpUnusedParameterInspection */
+        /* @noinspection PhpUnusedParameterInspection */
         $text->replace('/\{gfm-extraction-([0-9a-f]{32})\}/m', function (Text $w, Text $md5) use (&$hashes) {
             return $hashes[(string) $md5];
         });
@@ -66,6 +66,4 @@ class pz_wiki_markdown_internal_link_extension implements Ciconia\Extension\Exte
     {
         return 'internalLink';
     }
-
-
 }

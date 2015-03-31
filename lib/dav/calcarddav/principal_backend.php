@@ -6,9 +6,9 @@ class pz_sabre_principal_backend implements Sabre\DAVACL\PrincipalBackend\Backen
 
     public function getPrincipalsByPrefix($prefixPath)
     {
-        $principals = array();
+        $principals = [];
 
-        if (in_array($prefixPath, array('principals', 'principals/users', 'users'))) {
+        if (in_array($prefixPath, ['principals', 'principals/users', 'users'])) {
             $sql = pz_sql::factory();
             $sql->setQuery('SELECT id, login, name, email FROM pz_user WHERE status = 1');
 
@@ -28,7 +28,7 @@ class pz_sabre_principal_backend implements Sabre\DAVACL\PrincipalBackend\Backen
         }
 
         $sql = pz_sql::factory();
-        $sql->setQuery('SELECT id, login, name, email FROM pz_user WHERE status = 1 AND login = ? LIMIT 2', array($user));
+        $sql->setQuery('SELECT id, login, name, email FROM pz_user WHERE status = 1 AND login = ? LIMIT 2', [$user]);
 
         return $this->principals[$user] = $sql->getRows() == 1 ? $this->getPrincipalBySql($sql) : null;
     }
@@ -40,35 +40,35 @@ class pz_sabre_principal_backend implements Sabre\DAVACL\PrincipalBackend\Backen
 
     private function getPrincipalBySql(pz_sql $sql)
     {
-        return array(
+        return [
             'id' => $sql->getValue('id'),
             'uri' => 'principals/users/' . strtolower($sql->getValue('login')),
             '{DAV:}displayname' => $sql->getValue('name'),
-            '{http://sabredav.org/ns}email-address' => $sql->getValue('email')
-        );
+            '{http://sabredav.org/ns}email-address' => $sql->getValue('email'),
+        ];
     }
 
     public function getGroupMemberSet($principal)
     {
-        return array();
+        return [];
     }
 
     public function getGroupMembership($principal)
     {
-        return array();
+        return [];
     }
 
     public function setGroupMemberSet($principal, array $members)
     {
     }
 
-    function updatePrincipal($path, \Sabre\DAV\PropPatch $propPatch)
+    public function updatePrincipal($path, \Sabre\DAV\PropPatch $propPatch)
     {
         return false;
     }
 
-    function searchPrincipals($prefixPath, array $searchProperties, $test = 'allof')
+    public function searchPrincipals($prefixPath, array $searchProperties, $test = 'allof')
     {
-        return array();
+        return [];
     }
 }

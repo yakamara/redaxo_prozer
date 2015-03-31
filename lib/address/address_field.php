@@ -2,10 +2,10 @@
 
 class pz_address_field extends pz_model
 {
-	public $vars = array();
+    public $vars = [];
 
-	function __construct($vars = array())
-	{
-		$this->setVars($vars);
-	}
+    public function __construct($vars = [])
+    {
+        $this->setVars($vars);
+    }
 }

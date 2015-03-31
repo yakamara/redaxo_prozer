@@ -2,7 +2,7 @@
 
 class pz_calcarddav_controller extends pz_controller
 {
-    function controller($function)
+    public function controller($function)
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             header('HTTP/1.1 204 No Content');
@@ -15,11 +15,11 @@ class pz_calcarddav_controller extends pz_controller
         $principalBackend = new pz_sabre_principal_backend();
 
         /* Directory structure */
-        $tree = array(
-            new Sabre\DAV\SimpleCollection('principals', array(new Sabre\CalDAV\Principal\Collection($principalBackend, 'users'))),
+        $tree = [
+            new Sabre\DAV\SimpleCollection('principals', [new Sabre\CalDAV\Principal\Collection($principalBackend, 'users')]),
             new Sabre\CalDAV\CalendarRootNode($principalBackend, $calendarBackend),
             new Sabre\CardDAV\AddressBookRoot($principalBackend, $carddavBackend),
-        );
+        ];
 
         /* Initializing server */
         $server = new pz_sabre_dav_server($tree, '/calcarddav/');

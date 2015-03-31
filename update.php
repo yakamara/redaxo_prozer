@@ -16,7 +16,7 @@ $sql->setQuery('ALTER TABLE `pz_wiki` ADD `admin` TINYINT(1) NOT NULL');
 $sql->setQuery('ALTER TABLE `pz_calendar_alarm` ADD `default` TINYINT(1) NOT NULL ;');
 
 // -------------------------------------------------  allways check
-$dav_path = rex_path::addonData("prozer", "dav");
+$dav_path = rex_path::addonData('prozer', 'dav');
 rex_dir::create($dav_path);
 
 // -------------------------------------------------

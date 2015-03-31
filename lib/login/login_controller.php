@@ -1,18 +1,17 @@
 <?php
 
 
-class pz_login_controller extends pz_controller{
+class pz_login_controller extends pz_controller
+{
+    public $visible = false;
+    public $name = 'login';
 
-	var $visible = FALSE;
-	var $name = "login";
-
-	function checkPerm() 
-	{
-		if(!pz::getUser()) return TRUE;
-		else return FALSE;
-	}
-	
-
-
-
+    public function checkPerm()
+    {
+        if (!pz::getUser()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /*
 <p class="formsubmit <?php echo $this->getHTMLClass() ?>">
     <input type="submit" class="submit <?php echo $this->getElement(4), ' ', $this->getWarningClass() ?>"

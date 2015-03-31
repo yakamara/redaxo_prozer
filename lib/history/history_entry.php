@@ -2,39 +2,40 @@
 
 class pz_history_entry extends pz_model
 {
+    public $vars = [];
 
-	var $vars = array();
+    public function __construct($vars)
+    {
+        parent::__construct($vars);
+    }
 
-	public function __construct($vars) 
-	{
-		parent::__construct($vars);
-	}
+    public static function get($id = '')
+    {
+        if ($id == '') {
+            return false;
+        }
+        $id = (int) $id;
 
-	static public function get($id = "")
-	{
-		if($id == "") return FALSE;
-		$id = (int) $id;
+        $sql = pz_sql::factory();
+        $sql->setQuery('select * from pz_history where id = ? LIMIT 2', [$id]);
 
-		$sql = pz_sql::factory();
-		$sql->setQuery('select * from pz_history where id = ? LIMIT 2',array($id));
+        $entries = $sql->getArray();
+        if (count($entries) != 1) {
+            return false;
+        }
 
-		$entries = $sql->getArray();
-		if(count($entries) != 1) return FALSE;
+        return new static($entries[0]);
+    }
 
-		return new static($entries[0]);
-	}
-	
-	public function getId() {
-		return intval($this->vars["id"]);
-	}
-	
-	public function delete() 
-	{
-    $d = pz_sql::factory();
-		$d->setQuery('delete from pz_history where id = ?', array($this->getId()));
-		return TRUE;
-	
-	}
-	
+    public function getId()
+    {
+        return intval($this->vars['id']);
+    }
 
+    public function delete()
+    {
+        $d = pz_sql::factory();
+        $d->setQuery('delete from pz_history where id = ?', [$this->getId()]);
+        return true;
+    }
 }

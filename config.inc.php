@@ -3,49 +3,46 @@
 $REX['ADDON']['version']['prozer'] = '3.0beta5-dev';
 $REX['ADDON']['author']['prozer'] = 'Jan Kristinus, Gregor Harlan, Thomas Blum';
 
-$REX['ADDON']['xform']['classpaths']['value']['prozer'] = rex_path::addon('prozer','xform/value/');
-$REX['ADDON']['xform']['classpaths']['validate']['prozer'] = rex_path::addon('prozer','xform/validate/');
+$REX['ADDON']['xform']['classpaths']['value']['prozer'] = rex_path::addon('prozer', 'xform/value/');
+$REX['ADDON']['xform']['classpaths']['validate']['prozer'] = rex_path::addon('prozer', 'xform/validate/');
 
+if (!$REX['REDAXO']) {
+    rex_register_extension('OUTPUT_FILTER', function ($ep) {
 
-if(!$REX["REDAXO"]) {
+        global $REX;
 
-  rex_register_extension('OUTPUT_FILTER', function($ep) {
+        $REX['ADDON']['xform']['templatepaths'][] = rex_path::addon('prozer', 'xform/templates/');
 
-      global $REX;
+        $deactivate_addons = ['community', 'phpmailer', 'metainfo', 'textile', 'version', 'image_manager'];
 
-      $REX['ADDON']['xform']['templatepaths'][] = rex_path::addon('prozer','xform/templates/');
+        foreach ($deactivate_addons as $deactivate_addon) {
+            if (isset($REX['ADDON']['version'][$deactivate_addon])) {
+                die('please deactivate '.$deactivate_addon.' addon');
+            }
+        }
 
-      $deactivate_addons = array('community','phpmailer','metainfo','textile','version','image_manager');
+        require_once rex_path::addon('prozer', 'autoload.php');
 
-      foreach($deactivate_addons as $deactivate_addon) {
-          if (isset($REX['ADDON']['version'][$deactivate_addon])) {
-            die ('please deactivate '.$deactivate_addon.' addon');
-          }
-      }
+        rex_autoload::register();
+        rex_autoload::addDirectory(rex_path::addon('prozer', 'lib'));
+        rex_autoload::addDirectory(rex_path::addon('prozer', 'vendor'));
 
-      require_once rex_path::addon('prozer','autoload.php');
+        pz_fragment::addDirectory(rex_path::addon('prozer', 'fragments'));
 
-      rex_autoload::register();
-      rex_autoload::addDirectory(rex_path::addon('prozer','lib'));
-      rex_autoload::addDirectory(rex_path::addon('prozer','vendor'));
+        pz_i18n::addDirectory(rex_path::addon('prozer', 'lang'));
 
-      pz_fragment::addDirectory(rex_path::addon('prozer','fragments'));
+        pz::setProperty('instname', 'myinstant');
+        pz::setProperty('session_duration', 3000);
+        pz::setProperty('lang', 'de_de');
+        pz::setProperty('version', $REX['ADDON']['version']['prozer']);
+        pz::setProperty('redaxo_version', $REX['VERSION'].'.'.$REX['SUBVERSION'].'.'.$REX['MINORVERSION']);
 
-      pz_i18n::addDirectory(rex_path::addon('prozer','lang'));
+        $output = ''; // $ep["subject"];
+        $output .= pz::controller();
 
-      pz::setProperty('instname','myinstant');
-      pz::setProperty('session_duration',3000);
-      pz::setProperty('lang', 'de_de');
-      pz::setProperty('version', $REX['ADDON']['version']['prozer']);
-      pz::setProperty('redaxo_version', $REX['VERSION'].'.'.$REX['SUBVERSION'].'.'.$REX['MINORVERSION']);
+        pz::sendHeader();
 
-      $output = ""; // $ep["subject"];
-      $output .= pz::controller();
-
-      pz::sendHeader();
-
-      echo $output;
-      exit;
+        echo $output;
+        exit;
     });
-
 }

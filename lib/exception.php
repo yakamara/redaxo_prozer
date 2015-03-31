@@ -18,17 +18,21 @@ class pz_exception extends Exception
 /**
  * @package redaxo\core
  */
-class pz_sql_exception extends pz_exception {}
+class pz_sql_exception extends pz_exception
+{
+}
 
 /**
- * Exception class for user-friendly error messages
+ * Exception class for user-friendly error messages.
  *
  * @package redaxo\core
  */
-class pz_functional_exception extends pz_exception {}
+class pz_functional_exception extends pz_exception
+{
+}
 
 /**
- * Exception class for http-status code handling
+ * Exception class for http-status code handling.
  *
  * @package redaxo\core
  */

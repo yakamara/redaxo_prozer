@@ -33,7 +33,7 @@ abstract class pz_calendar_item extends pz_calendar_element
 
     protected $rule_id;
 
-    /** @type pz_calendar_alarm[] */
+    /** @var pz_calendar_alarm[] */
     protected $alarms;
 
     public function getUri()
@@ -188,5 +188,4 @@ abstract class pz_calendar_item extends pz_calendar_element
     {
         return str_replace(["\r"], [''], $value);
     }
-
 }

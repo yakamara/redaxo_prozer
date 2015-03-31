@@ -97,7 +97,7 @@ class pz_wiki_page extends pz_model
     public static function get($id)
     {
         $sql = pz_sql::factory();
-        $sql->setQuery(self::getBaseQuery() . 'id = ? LIMIT 2', array($id));
+        $sql->setQuery(self::getBaseQuery() . 'id = ? LIMIT 2', [$id]);
         if ($sql->getRows() != 1) {
             return null;
         }
@@ -108,7 +108,7 @@ class pz_wiki_page extends pz_model
     public static function getStart($project_id)
     {
         $sql = pz_sql::factory();
-        $sql->setQuery(self::getBaseQuery() . 'project_id = ? ORDER BY created LIMIT 1', array($project_id));
+        $sql->setQuery(self::getBaseQuery() . 'project_id = ? ORDER BY created LIMIT 1', [$project_id]);
         if ($sql->getRows() != 1) {
             return null;
         }
@@ -118,11 +118,11 @@ class pz_wiki_page extends pz_model
 
     public static function getAll($project_id)
     {
-        $pages = array();
+        $pages = [];
         if ($start = self::getStart($project_id)) {
             $pages[] = $start;
             $sql = pz_sql::factory();
-            $sql->setQuery(self::getBaseQuery() . 'project_id = ? AND id != ? ORDER BY title', array($project_id, $start->getId()));
+            $sql->setQuery(self::getBaseQuery() . 'project_id = ? AND id != ? ORDER BY title', [$project_id, $start->getId()]);
             foreach ($sql->getArray() as $row) {
                 $pages[] = new self($row);
             }
@@ -142,7 +142,7 @@ class pz_wiki_page extends pz_model
     public function getVersion($id)
     {
         $sql = pz_sql::factory();
-        $sql->setQuery('SELECT * FROM pz_history WHERE control = "wiki" AND data_id = ? AND id = ? LIMIT 2', array($this->getId(), $id));
+        $sql->setQuery('SELECT * FROM pz_history WHERE control = "wiki" AND data_id = ? AND id = ? LIMIT 2', [$this->getId(), $id]);
         if ($sql->getRows() != 1) {
             return null;
         }
@@ -157,7 +157,7 @@ class pz_wiki_page extends pz_model
     {
         $versions = [];
         $sql = pz_sql::factory();
-        $sql->setQuery('SELECT * FROM pz_history WHERE control = "wiki" AND data_id = ? ORDER BY stamp DESC', array($this->getId()));
+        $sql->setQuery('SELECT * FROM pz_history WHERE control = "wiki" AND data_id = ? ORDER BY stamp DESC', [$this->getId()]);
         foreach ($sql->getArray() as $row) {
             $versions[] = new pz_wiki_page_version($this, $row);
         }
@@ -195,12 +195,12 @@ class pz_wiki_page extends pz_model
 
     private function updateVT()
     {
-        $vt = array();
+        $vt = [];
         $vt[] = $this->getTitle();
         $vt[] = $this->getRawText();
         $sql = pz_sql::factory();
         $sql->setTable('pz_wiki')
-            ->setWhere(array('id' => $this->getId()))
+            ->setWhere(['id' => $this->getId()])
             ->setValue('vt', implode(' ', $vt))
             ->update();
     }
@@ -226,7 +226,7 @@ class pz_wiki_page extends pz_model
             DELETE
             FROM pz_wiki
             WHERE id = ?
-        ', array($this->vars['id']));
+        ', [$this->vars['id']]);
     }
 
     public static function parseText($projectId, $text)

@@ -221,7 +221,7 @@ class pz_calendar_rule_event extends pz_calendar_event
             case self::FUTURE:
                 $params = [
                     ':rule' => $this->rule->getId(),
-                    ':from' => $this->from->format(self::DATETIME)
+                    ':from' => $this->from->format(self::DATETIME),
                 ];
                 self::_delete('e.rule_id = :rule AND `e.from` >= :from', $params);
                 $end = $this->getFrom();
@@ -279,14 +279,14 @@ class pz_calendar_rule_event extends pz_calendar_event
         $sql->execute([
             ':rule' => $rule->getId(),
             ':basefrom' => $baseFrom->format(self::DATETIME),
-            ':id' => $base->getId()
+            ':id' => $base->getId(),
         ]);
         if ($sql->getRows() == 0) {
             $to = clone $baseFrom;
             $to->add($base->getDuration());
             $params = [
                 'e.from' => $baseFrom->format(self::DATETIME),
-                'e.to' => $to->format(self::DATETIME)
+                'e.to' => $to->format(self::DATETIME),
             ];
             $exception = false;
         } else {
@@ -323,7 +323,7 @@ class pz_calendar_rule_event extends pz_calendar_event
             ':rule' => $rule->getId(),
             ':id' => $base->getId(),
             ':from' => $from->format(self::DATETIME),
-            ':to' => $to->format(self::DATETIME)
+            ':to' => $to->format(self::DATETIME),
         ]);
         foreach ($sql as $row) {
             $row = $row->getRow();
@@ -339,7 +339,7 @@ class pz_calendar_rule_event extends pz_calendar_event
         $dur = $base->getDuration();
         $time = [
             'h' => (integer) $iFrom->format('H'),
-            'm' => (integer) $iFrom->format('i')
+            'm' => (integer) $iFrom->format('i'),
         ];
         $addQueue = new SplQueue();
         $callbackBefore = null;
@@ -482,7 +482,7 @@ class pz_calendar_rule_event extends pz_calendar_event
                 } else {
                     $params = [
                         'e.from' => $iFromStr,
-                        'e.to' => $iTo->format(self::DATETIME)
+                        'e.to' => $iTo->format(self::DATETIME),
                     ];
                     $exceptionFlag = false;
                 }
@@ -516,6 +516,7 @@ class pz_calendar_rule_event extends pz_calendar_event
 
     /**
      * @param pz_calendar_rule $rule
+     *
      * @return self[]
      */
     public static function getAllExceptions(pz_calendar_rule $rule)
@@ -531,7 +532,7 @@ class pz_calendar_rule_event extends pz_calendar_event
         }
         $sql->execute([
             ':rule' => $rule->getId(),
-            ':id' => $rule->getBase()->getId()
+            ':id' => $rule->getBase()->getId(),
         ]);
         $events = [];
         foreach ($sql as $row) {

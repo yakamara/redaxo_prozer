@@ -1,50 +1,44 @@
 <?php
 
 if (version_compare(phpversion(), '5.4', '<')) {
-
-  $REX['ADDON']['install']['prozer'] = 0;
-  $REX['ADDON']['installmsg']['prozer'] = 'PHP Version must be at least 5.4. You have '.phpversion().'.';
-  return;
-
+    $REX['ADDON']['install']['prozer'] = 0;
+    $REX['ADDON']['installmsg']['prozer'] = 'PHP Version must be at least 5.4. You have '.phpversion().'.';
+    return;
 }
 
-include rex_path::addon('prozer','lib/pz.php');
-include rex_path::addon('prozer','lib/i18n.php');
-include rex_path::addon('prozer','lib/login/login.php');
+include rex_path::addon('prozer', 'lib/pz.php');
+include rex_path::addon('prozer', 'lib/i18n.php');
+include rex_path::addon('prozer', 'lib/login/login.php');
 
 pz::setProperty('lang', $REX['LANG']);
-pz_i18n::addDirectory(rex_path::addon('prozer','lang'));
+pz_i18n::addDirectory(rex_path::addon('prozer', 'lang'));
 
 $debug = false;
 $error = '';
 $c = rex_sql::factory();
 
 if ($REX['VERSION'] != '4' || $REX['SUBVERSION'] < '6') {
-
-  $REX['ADDON']['install']['prozer'] = 0;
-  $REX['ADDON']['installmsg']['prozer'] = pz_i18n::msg('prozer_install_redaxo_version_problem', '4.6', $REX['VERSION'].".".$REX['SUBVERSION']);
-
+    $REX['ADDON']['install']['prozer'] = 0;
+    $REX['ADDON']['installmsg']['prozer'] = pz_i18n::msg('prozer_install_redaxo_version_problem', '4.6', $REX['VERSION'].'.'.$REX['SUBVERSION']);
 } elseif (OOAddon::isAvailable('xform') != 1 || version_compare(OOAddon::getVersion('xform'), '4.7', '<')) {
-
-  $REX['ADDON']['install']['prozer'] = 0;
-  $REX['ADDON']['installmsg']['prozer'] = pz_i18n::msg('prozer_install_xform_version_problem', '4.7');
-
+    $REX['ADDON']['install']['prozer'] = 0;
+    $REX['ADDON']['installmsg']['prozer'] = pz_i18n::msg('prozer_install_xform_version_problem', '4.7');
 } else {
 
-  // -------------------------------------------------- Install htaccess
+    // -------------------------------------------------- Install htaccess
 
-  $path_frontend = rex_path::frontend(".htaccess");
-  $path_backend = rex_path::addon("prozer","install/_htaccess");
+    $path_frontend = rex_path::frontend('.htaccess');
+    $path_backend = rex_path::addon('prozer', 'install/_htaccess');
 
-  if (!rex_file::copy($path_backend, $path_frontend)) {
-      $error = pz_i18n::msg('install_failed_htaccess_copy')."<br />".$path_backend.'<br />'.$path_frontend;
-  }
+    if (!rex_file::copy($path_backend, $path_frontend)) {
+        $error = pz_i18n::msg('install_failed_htaccess_copy').'<br />'.$path_backend.'<br />'.$path_frontend;
+    }
 
-  // -------------------------------------------------- Base prozer tables
+    // -------------------------------------------------- Base prozer tables
 
-  $c->setQuery('SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";');
+    $c->setQuery('SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";');
 
-  $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_address` (
+    $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_address` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `name` text NOT NULL,
     `firstname` text NOT NULL,
@@ -74,7 +68,7 @@ if ($REX['VERSION'] != '4' || $REX['SUBVERSION'] < '6') {
     KEY `id` (`id`)
   ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;');
 
-  $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_address_field` (
+    $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_address_field` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `address_id` int(11) NOT NULL,
     `type` text NOT NULL,
@@ -85,7 +79,7 @@ if ($REX['VERSION'] != '4' || $REX['SUBVERSION'] < '6') {
     PRIMARY KEY (`id`)
   ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;');
 
-  $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_calendar_alarm` (
+    $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_calendar_alarm` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `uid` varchar(255) NOT NULL,
     `event_id` int(10) unsigned DEFAULT NULL,
@@ -110,9 +104,9 @@ if ($REX['VERSION'] != '4' || $REX['SUBVERSION'] < '6') {
     KEY `user_id` (`user_id`)
   ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;');
 
-  $c->setQuery('ALTER TABLE `pz_calendar_alarm` ADD `default` TINYINT(1) NOT NULL ;');
+    $c->setQuery('ALTER TABLE `pz_calendar_alarm` ADD `default` TINYINT(1) NOT NULL ;');
 
-  $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_calendar_attendee` (
+    $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_calendar_attendee` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `event_id` int(10) unsigned NOT NULL,
     `user_id` int(10) unsigned NOT NULL,
@@ -124,7 +118,7 @@ if ($REX['VERSION'] != '4' || $REX['SUBVERSION'] < '6') {
     UNIQUE KEY `default` (`event_id`,`user_id`,`email`)
   ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;');
 
-  $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_calendar_event` (
+    $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_calendar_event` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `uri` varchar(255) DEFAULT NULL,
     `project_id` int(10) unsigned DEFAULT NULL,
@@ -151,7 +145,7 @@ if ($REX['VERSION'] != '4' || $REX['SUBVERSION'] < '6') {
     KEY `project` (`project_id`)
   ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;');
 
-  $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_calendar_rule` (
+    $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_calendar_rule` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `event_id` int(10) unsigned DEFAULT NULL,
     `todo_id` int(10) unsigned DEFAULT NULL,
@@ -169,7 +163,7 @@ if ($REX['VERSION'] != '4' || $REX['SUBVERSION'] < '6') {
     KEY `todo_id` (`todo_id`)
   ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;');
 
-  $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_calendar_todo` (
+    $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_calendar_todo` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `uri` varchar(255) NOT NULL,
     `project_id` int(10) unsigned NOT NULL,
@@ -192,7 +186,7 @@ if ($REX['VERSION'] != '4' || $REX['SUBVERSION'] < '6') {
     KEY `project_id` (`project_id`)
   ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;');
 
-  $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_clipboard` (
+    $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_clipboard` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `user_id` int(11) NOT NULL,
     `filename` text NOT NULL,
@@ -208,7 +202,7 @@ if ($REX['VERSION'] != '4' || $REX['SUBVERSION'] < '6') {
     PRIMARY KEY (`id`)
   ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;');
 
-  $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_customer` (
+    $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_customer` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `name` varchar(255) NOT NULL,
     `created` varchar(255) NOT NULL,
@@ -222,7 +216,7 @@ if ($REX['VERSION'] != '4' || $REX['SUBVERSION'] < '6') {
     UNIQUE KEY `id` (`id`)
   ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;');
 
-  $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_email` (
+    $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_email` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `user_id` int(11) NOT NULL DEFAULT \'0\',
     `project_id` int(11) NOT NULL DEFAULT \'0\',
@@ -269,7 +263,7 @@ if ($REX['VERSION'] != '4' || $REX['SUBVERSION'] < '6') {
     KEY `user_id` (`user_id`)
   ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;');
 
-  $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_email_account` (
+    $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_email_account` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `user_id` int(11) NOT NULL,
     `name` text NOT NULL,
@@ -291,7 +285,7 @@ if ($REX['VERSION'] != '4' || $REX['SUBVERSION'] < '6') {
     PRIMARY KEY (`id`)
   ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;');
 
-  $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_label` (
+    $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_label` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `color` varchar(255) NOT NULL,
     `border` varchar(255) NOT NULL,
@@ -301,7 +295,7 @@ if ($REX['VERSION'] != '4' || $REX['SUBVERSION'] < '6') {
     PRIMARY KEY (`id`)
   ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;');
 
-  $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_project` (
+    $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_project` (
     `id` int(6) NOT NULL AUTO_INCREMENT,
     `name` varchar(255) NOT NULL,
     `description` text NOT NULL,
@@ -322,7 +316,7 @@ if ($REX['VERSION'] != '4' || $REX['SUBVERSION'] < '6') {
     KEY `id_2` (`id`,`create_user_id`)
   ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;');
 
-  $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_project_file` (
+    $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_project_file` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `name` varchar(255) NOT NULL,
     `project_id` int(10) unsigned NOT NULL,
@@ -340,15 +334,14 @@ if ($REX['VERSION'] != '4' || $REX['SUBVERSION'] < '6') {
     UNIQUE KEY `name_project_parent` (`name`,`project_id`,`parent_id`)
   ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;');
 
-
-  $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_project_sub` (
+    $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_project_sub` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `project_id` int(11) NOT NULL,
     `name` varchar(255) NOT NULL,
     PRIMARY KEY (`id`)
   ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;');
 
-  $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_project_user` (
+    $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_project_user` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `user_id` int(11) NOT NULL,
     `project_id` int(11) NOT NULL,
@@ -366,7 +359,7 @@ if ($REX['VERSION'] != '4' || $REX['SUBVERSION'] < '6') {
     PRIMARY KEY (`id`)
   ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;');
 
-  $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_user` (
+    $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_user` (
     `id` int(6) NOT NULL AUTO_INCREMENT,
     `name` varchar(255) CHARACTER SET latin1 NOT NULL DEFAULT \'\',
     `status` tinyint(4) NOT NULL DEFAULT \'0\',
@@ -395,7 +388,7 @@ if ($REX['VERSION'] != '4' || $REX['SUBVERSION'] < '6') {
     KEY `id_2` (`id`,`status`,`login`)
   ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;');
 
-  $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_user_perm` (
+    $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_user_perm` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `user_id` text,
     `to_user_id` text,
@@ -408,7 +401,7 @@ if ($REX['VERSION'] != '4' || $REX['SUBVERSION'] < '6') {
     PRIMARY KEY (`id`)
   ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;');
 
-  $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_user_role` (
+    $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_user_role` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `name` varchar(255) NOT NULL,
     `perms` text NOT NULL,
@@ -416,7 +409,7 @@ if ($REX['VERSION'] != '4' || $REX['SUBVERSION'] < '6') {
     PRIMARY KEY (`id`)
   ) ENGINE=MyISAM DEFAULT CHARSET=utf8;');
 
-  $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_wiki` (
+    $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_wiki` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `title` text NOT NULL,
     `text` text NOT NULL,
@@ -430,7 +423,7 @@ if ($REX['VERSION'] != '4' || $REX['SUBVERSION'] < '6') {
     PRIMARY KEY (`id`)
   ) ENGINE=MyISAM DEFAULT CHARSET=utf8;');
 
-  $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_history` (
+    $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_history` (
   `id` int( 11 ) NOT NULL AUTO_INCREMENT ,
   `project_id` int( 11 ) NOT NULL ,
   `user_id` int( 11 ) NOT NULL ,
@@ -443,68 +436,65 @@ if ($REX['VERSION'] != '4' || $REX['SUBVERSION'] < '6') {
   PRIMARY KEY ( `id` )
   ) ENGINE = MYISAM DEFAULT CHARSET = utf8;');
 
-  $c->setQuery('ALTER TABLE `pz_email` ADD INDEX `project_id` (`project_id`);');
-  $c->setQuery('ALTER TABLE `pz_email` ADD INDEX `user_id` (`user_id`);');
-  $c->setQuery('ALTER TABLE `pz_email` ADD INDEX `created` (`created`);');
-  $c->setQuery('ALTER TABLE `pz_email` ADD INDEX `project_user` (`user_id`,`project_id`);');
+    $c->setQuery('ALTER TABLE `pz_email` ADD INDEX `project_id` (`project_id`);');
+    $c->setQuery('ALTER TABLE `pz_email` ADD INDEX `user_id` (`user_id`);');
+    $c->setQuery('ALTER TABLE `pz_email` ADD INDEX `created` (`created`);');
+    $c->setQuery('ALTER TABLE `pz_email` ADD INDEX `project_user` (`user_id`,`project_id`);');
 
+    // -------------------------------------------------- create admin user
 
-  // -------------------------------------------------- create admin user
+    $c = rex_sql::factory();
+    $c->debugsql = $debug;
+    $c->setQuery('delete from pz_user where id=1');
 
-  $c = rex_sql::factory();
-  $c->debugsql = $debug;
-  $c->setQuery('delete from pz_user where id=1');
+    $password = 'admin';
+    $password = pz_login::passwordHash($password);
 
-  $password = "admin";
-  $password = pz_login::passwordHash($password);
+    $u = rex_sql::factory();
+    $u->debugsql = $debug;
+    $u->setTable('pz_user');
+    $u->setValue('id', 1);
+    $u->setValue('name', 'admin');
+    $u->setValue('status', 1);
+    $u->setValue('login', 'admin');
+    $u->setValue('admin', 1);
+    $u->setValue('email', 'info@yakamara.de');
+    $u->setValue('login_tries', 0);
+    $u->setValue('session_id', $password);
+    $u->setValue('password', $password);
+    $u->setValue('digest', sha1($password));
+    $u->insert();
 
-  $u = rex_sql::factory();
-  $u->debugsql = $debug;
-  $u->setTable('pz_user');
-  $u->setValue('id',1);
-  $u->setValue('name', 'admin' );
-  $u->setValue('status', 1 );
-  $u->setValue('login', 'admin' );
-  $u->setValue('admin', 1 );
-  $u->setValue('email', 'info@yakamara.de' );
-  $u->setValue('login_tries', 0 );
-  $u->setValue('session_id', $password );
-  $u->setValue('password', $password );
-  $u->setValue('digest', sha1($password));
-  $u->insert();
+    // -------------------------------------------------- create dummy data / customer yakamara
 
-  // -------------------------------------------------- create dummy data / customer yakamara
-
-  $c->setQuery('select * from pz_customer where id=1');
-  if($c->getRows() == 0) {
-    $c->setQuery("INSERT INTO `pz_customer` (`id`, `name`, `created`, `status`, `description`, `archived`, `updated`, `image_inline`, `image`) VALUES
+    $c->setQuery('select * from pz_customer where id=1');
+    if ($c->getRows() == 0) {
+        $c->setQuery("INSERT INTO `pz_customer` (`id`, `name`, `created`, `status`, `description`, `archived`, `updated`, `image_inline`, `image`) VALUES
     (1, 'Yakamara Media', '2012-08-11 05:00:00', 1, 'Yakamara Media GmbH & Co. KG', '', '', '', '');");
 
-    $c->setQuery("INSERT INTO `pz_project` (`id`, `name`, `description`, `create_user_id`, `customer_id`, `label_id`, `created`, `updated`, `archived`, `has_emails`, `has_calendar`, `has_calendar_jobs`, `has_files`, `has_wiki`, `update_user_id`) VALUES
+        $c->setQuery("INSERT INTO `pz_project` (`id`, `name`, `description`, `create_user_id`, `customer_id`, `label_id`, `created`, `updated`, `archived`, `has_emails`, `has_calendar`, `has_calendar_jobs`, `has_files`, `has_wiki`, `update_user_id`) VALUES
   (1, 'Projekt Yakamara', '', 1, 1, 5, '2012-08-11 14:00:00', '2012-08-11 14:00:00', 0, 1, 1, 1, 1, 0, 1);");
 
-    $c->setQuery("INSERT INTO `pz_project_user` (`id`, `user_id`, `project_id`, `created`, `updated`, `calendar`, `calendar_jobs`, `wiki`, `admin`, `webdav`, `caldav`, `caldav_jobs`, `files`, `emails`) VALUES
+        $c->setQuery("INSERT INTO `pz_project_user` (`id`, `user_id`, `project_id`, `created`, `updated`, `calendar`, `calendar_jobs`, `wiki`, `admin`, `webdav`, `caldav`, `caldav_jobs`, `files`, `emails`) VALUES
   (1, 1, 1, '2012-08-11 14:00:00', '2012-08-11 14:00:00', 0, 0, 0, 1, 0, 0, 0, 0, 0);");
+    }
 
-  }
+    // -------------------------------------------------- create labels
 
-  // -------------------------------------------------- create labels
-
-  $c->setQuery('select * from pz_label');
-  if($c->getRows() == 0) {
-    $c->setQuery("INSERT INTO `pz_label` (`id`, `color`, `border`, `name`, `created`, `updated`) VALUES
+    $c->setQuery('select * from pz_label');
+    if ($c->getRows() == 0) {
+        $c->setQuery("INSERT INTO `pz_label` (`id`, `color`, `border`, `name`, `created`, `updated`) VALUES
     (1, '#fcb819', '#e3a617', 'Support', '', ''),
     (2, '#e118fc', '#cb17e3', 'Kundenprojekte', '', ''),
     (3, '#119194', '#0d797a', 'Private Projekte', '', ''),
     (4, '#678820', '#536e1a', 'Öffentliche Projekte', '', ''),
     (5, '#0f5dca', '#0c52b3', 'Agenturprojekte', '', ''),
     (6, '#aa6600', '#950c00', 'Interne Projekte', '', '');");
-  }
+    }
 
+    // ----- version 3.0 / redaxo4
 
-  // ----- version 3.0 / redaxo4
-
-  $c->setQuery('CREATE TABLE `pz_config` (
+    $c->setQuery('CREATE TABLE `pz_config` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `namespace` varchar(75) NOT NULL,
     `key` varchar(255) NOT NULL,
@@ -513,41 +503,27 @@ if ($REX['VERSION'] != '4' || $REX['SUBVERSION'] < '6') {
     UNIQUE KEY `unique_key` (`namespace`,`key`)
   ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;');
 
+    // ----- version 3.0 beta3
 
-  // ----- version 3.0 beta3
+    $c->setQuery('ALTER TABLE `pz_history` ADD `message` VARCHAR( 255 ) NOT NULL ;');
 
-  $c->setQuery('ALTER TABLE `pz_history` ADD `message` VARCHAR( 255 ) NOT NULL ;');
+    // ----- version 3.0 beta4
+    $c->setQuery('ALTER TABLE `pz_wiki` DROP `stamp`;');
+    $c->setQuery('ALTER TABLE `pz_wiki` ADD `created` DATETIME NOT NULL , ADD `create_user_id` INT(10) UNSIGNED NOT NULL , ADD `updated` DATETIME NOT NULL , ADD `update_user_id` INT(10) UNSIGNED NOT NULL ;');
+    $c->setQuery('ALTER TABLE `pz_wiki` ADD `admin` TINYINT(1) NOT NULL');
+    $c->setQuery('ALTER TABLE `pz_history` ADD INDEX `control data_id` ( `control` , `data_id` )');
 
+    rex_dir::copy(
+        rex_path::addon('prozer', 'assets'),
+        rex_path::frontend('assets/addons/prozer')
+    );
 
-  // ----- version 3.0 beta4
-  $c->setQuery('ALTER TABLE `pz_wiki` DROP `stamp`;');
-  $c->setQuery('ALTER TABLE `pz_wiki` ADD `created` DATETIME NOT NULL , ADD `create_user_id` INT(10) UNSIGNED NOT NULL , ADD `updated` DATETIME NOT NULL , ADD `update_user_id` INT(10) UNSIGNED NOT NULL ;');
-  $c->setQuery('ALTER TABLE `pz_wiki` ADD `admin` TINYINT(1) NOT NULL');
-  $c->setQuery('ALTER TABLE `pz_history` ADD INDEX `control data_id` ( `control` , `data_id` )');
+    // -------------------------------------------------- create WebDAV tmp Ordner
 
+    $dav_path = rex_path::addonData('prozer', 'dav');
+    rex_dir::create($dav_path);
 
+    // -------------------------------------------------- Output Info
 
-  rex_dir::copy(
-    rex_path::addon('prozer', 'assets'),
-    rex_path::frontend('assets/addons/prozer')
-  );
-
-
-
-
-
-  // -------------------------------------------------- create WebDAV tmp Ordner
-
-  $dav_path = rex_path::addonData("prozer", "dav");
-  rex_dir::create($dav_path);
-
-
-
-
-
-  // -------------------------------------------------- Output Info
-
-  $REX['ADDON']['install']['prozer'] = true;
-
-
+    $REX['ADDON']['install']['prozer'] = true;
 }

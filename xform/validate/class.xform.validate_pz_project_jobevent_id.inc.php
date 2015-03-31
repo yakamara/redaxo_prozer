@@ -1,64 +1,52 @@
 <?PHP
 
-class rex_xform_validate_pz_project_jobevent_id extends rex_xform_validate_abstract 
+class rex_xform_validate_pz_project_jobevent_id extends rex_xform_validate_abstract
 {
+    public function enterObject()
+    {
+        if ($this->params['send'] == '1') {
+            $error_msg = ' ';
+            $booked = $this->getElement(3);
 
-	function enterObject()
-	{
+            foreach ($this->obj_array as $o) {
+                if ($o->getName() == $this->getElement(2)) {
+                    $project_id = $o->getValue();
+                }
+            }
 
-		if($this->params["send"]=="1")
-		{
-		
-		  $error_msg = " ";
-		  $booked = $this->getElement(3);
+            $error = false;
 
-			foreach($this->obj_array as $o) {
-				if ($o->getName() == $this->getElement(2)) {
-					$project_id = $o->getValue();
-				}
-			}
-			
-      $error = false;
+            if (!isset($project_id)) {
+                $error = true;
+            } elseif (!isset($booked)) {
+                $error = true;
+            } else {
+                $filter = [];
+                $filter[] = ['field' => 'id','value' => $project_id];
+                if ($booked == 1) {
+                    $projects = pz::getUser()->getCalendarJobsProjects($filter);
+                    $error_msg = $this->getElement(4);
+                } else {
+                    $projects = pz::getUser()->getCalendarProjects($filter);
+                    $error_msg = $this->getElement(5);
+                }
 
+                if (count($projects) != 1) {
+                    $error = true;
+                }
+            }
 
-      if(!isset($project_id)) {
-        $error = true;
-
-      } else if (!isset($booked)) {
-        $error = true;
-
-      } else {
-  			$filter = array();
-  			$filter[] = array("field"=>"id","value"=>$project_id);
-        if($booked == 1) {
-  			  $projects = pz::getUser()->getCalendarJobsProjects($filter);
-          $error_msg = $this->getElement(4);
-
-        }else {
-  			  $projects = pz::getUser()->getCalendarProjects($filter);
-          $error_msg = $this->getElement(5);
-
+            if ($error) {
+                $this->params['warning'][$o->getId()] = $this->params['error_class'];
+                $this->params['warning_messages'][$o->getId()] = $error_msg;
+            }
         }
 
-  			if(count($projects) != 1) {
-          $error = true;  
-  			}
-        
-      }
+        return;
+    }
 
-      if ($error) {
-				$this->params["warning"][$o->getId()] = $this->params["error_class"];
-				$this->params["warning_messages"][$o->getId()] = $error_msg;
-      }			
-
-		}
-
-		return; 
-		
-	}
-
-	function getDescription()
-	{
-		return "pz_project_jobevent_id|project_id_field|booked_field|Warning Message";
-	}
+    public function getDescription()
+    {
+        return 'pz_project_jobevent_id|project_id_field|booked_field|Warning Message';
+    }
 }

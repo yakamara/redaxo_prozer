@@ -1,14 +1,18 @@
 <?php
 
-class pz_emails_controller extends pz_controller {
+class pz_emails_controller extends pz_controller
+{
+    public $search_order_fields = ['id_new' => 'id desc', 'title' => 'subject desc'];
 
-	public $search_order_fields = array('id_new' => 'id desc', 'title' => 'subject desc');
-
-	function checkPerm() 
-	{
-		if(pz::getUser() && pz::getUser()->isMe()) return TRUE;
-		if(pz::getUser() && pz::getUser()->getUserPerm()->hasEmailReadPerm()) return TRUE;
-		else return FALSE;
-	}
-
+    public function checkPerm()
+    {
+        if (pz::getUser() && pz::getUser()->isMe()) {
+            return true;
+        }
+        if (pz::getUser() && pz::getUser()->getUserPerm()->hasEmailReadPerm()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

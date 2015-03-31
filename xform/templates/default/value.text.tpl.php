@@ -24,7 +24,6 @@ echo '
 $this->getAttributeElement('required', true).' '. $this->getAttributeElement('disabled', true).' '. $this->getAttributeElement('readonly', true).'></div>
 </div>';
 
-
 /*
 <div id="xform-xform-search-fulltext" class="xform1 data xform-text">
     <div class="flabel"><label for="xform-xform-field-1" class="xform-text">Allgemein</label></div>  <div class="felement"><input type="text" value="" name="search_fulltext" id="xform-xform-field-1" class="xform-text"></div>    </div>

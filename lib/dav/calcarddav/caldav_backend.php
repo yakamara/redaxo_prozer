@@ -6,16 +6,15 @@ use Sabre\CalDAV\Property\SupportedCalendarComponentSet;
 use Sabre\DAV\Exception\Forbidden;
 use Sabre\DAV\Exception\NotFound;
 use Sabre\VObject\Component;
-use Sabre\VObject\Property;
 use Sabre\VObject\Reader;
 
 class pz_sabre_caldav_backend extends AbstractBackend
 {
-    private $calendars = array();
+    private $calendars = [];
 
-    private $objects = array();
+    private $objects = [];
 
-    private $items = array();
+    private $items = [];
 
     public function __construct()
     {
@@ -27,23 +26,23 @@ class pz_sabre_caldav_backend extends AbstractBackend
             return $this->calendars[$principalUri];
         }
 
-        $calendars = array();
+        $calendars = [];
 
-        $ctags = pz::getConfig('calendar_ctag', array());
+        $ctags = pz::getConfig('calendar_ctag', []);
 
         $normal = pz::getUser()->getCalDavProjects();
         $jobs   = pz::getUser()->getCalDavJobsProjects();
-        $projects = array();
-        foreach (array($normal, $jobs) as $type => $array) {
+        $projects = [];
+        foreach ([$normal, $jobs] as $type => $array) {
             foreach ($array as $project) {
-                $projects[] = array($type, $project);
+                $projects[] = [$type, $project];
             }
         }
         usort($projects, function ($a, $b) {
             list($typeA, $projectA) = $a;
             list($typeB, $projectB) = $b;
-            $nameA = str_replace(array('ä', 'ö', 'ü', 'ß'), array('a', 'o', 'u', 's'), mb_strtolower($projectA->getName()));
-            $nameB = str_replace(array('ä', 'ö', 'ü', 'ß'), array('a', 'o', 'u', 's'), mb_strtolower($projectB->getName()));
+            $nameA = str_replace(['ä', 'ö', 'ü', 'ß'], ['a', 'o', 'u', 's'], mb_strtolower($projectA->getName()));
+            $nameB = str_replace(['ä', 'ö', 'ü', 'ß'], ['a', 'o', 'u', 's'], mb_strtolower($projectB->getName()));
             $cmp = strcasecmp($nameA, $nameB);
             if ($cmp == 0) {
                 return $typeA <= $typeB ? -1 : 1;
@@ -52,13 +51,13 @@ class pz_sabre_caldav_backend extends AbstractBackend
         });
 
         foreach ($projects as $i => $t_p) {
-            /** @type pz_project $project */
+            /** @var pz_project $project */
             list($type, $project) = $t_p;
             switch ($type) {
                 case 1:
                     $id = $project->getId() . '_jobs';
                     $nameAdd = pz_i18n::msg('jobs');
-                    $supported = array('VEVENT', 'VTODO');
+                    $supported = ['VEVENT', 'VTODO'];
                     break;
                 /*case 2:
                     $id = $project->getId() .'_todos';
@@ -67,14 +66,14 @@ class pz_sabre_caldav_backend extends AbstractBackend
                 default:
                     $id = $project->getId() . '_events';
                     $nameAdd = pz_i18n::msg('events');
-                    $supported = array('VEVENT');
+                    $supported = ['VEVENT'];
             }
             $label = $project->getLabel();
             $color = '#FFFFFF';
             if ($label) {
                 $color = $type == 1 ? $label->getBorder() : $label->getColor();
             }
-            $calendars[] = array(
+            $calendars[] = [
                 'id' => $id,
                 'uri' => $id,
                 'principaluri' => $principalUri,
@@ -84,8 +83,8 @@ class pz_sabre_caldav_backend extends AbstractBackend
                 '{' . Plugin::NS_CALDAV . '}calendar-description' => $project->getDescription(),
                 '{' . Plugin::NS_CALDAV . '}calendar-timezone' => self::getTimezone(),
                 '{http://apple.com/ns/ical/}calendar-order' => $i,
-                '{http://apple.com/ns/ical/}calendar-color' => $color
-            );
+                '{http://apple.com/ns/ical/}calendar-color' => $color,
+            ];
         }
 
         $this->calendars[$principalUri] = $calendars;
@@ -97,7 +96,7 @@ class pz_sabre_caldav_backend extends AbstractBackend
     {
         list($rawCalendarId, $jobs) = self::splitCalendarId($calendarId);
 
-        $objects = array();
+        $objects = [];
 
         $items = pz_calendar_event::getAllBase($rawCalendarId, $jobs);
         foreach ($items as $item) {
@@ -153,13 +152,13 @@ class pz_sabre_caldav_backend extends AbstractBackend
             $etag .= '1';
             pz::removeConfig('calendar_etag_add/' . $uri);
         }
-        $this->objects[$calendarId][$uri] = array(
+        $this->objects[$calendarId][$uri] = [
             'id' => $item->getId(),
             'uri' => $uri,
             'lastmodified' => $timestamp,
             'calendarid' => $calendarId,
-            'etag' => '"' . $etag . '"'
-        );
+            'etag' => '"' . $etag . '"',
+        ];
         return $this->objects[$calendarId][$uri];
     }
 
@@ -361,9 +360,9 @@ class pz_sabre_caldav_backend extends AbstractBackend
             $rule .= ';UNTIL=' . $end->format('Ymd\\THis');
         }
         if ($weekDays = $pzRule->getWeekDays()) {
-            $names = array(null, 'MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU');
+            $names = [null, 'MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'];
             foreach ($weekDays as &$weekDay) {
-            $weekDay = $names[$weekDay];
+                $weekDay = $names[$weekDay];
             }
             $rule .= ';BYDAY=' . implode(',', $weekDays);
         }
@@ -385,7 +384,6 @@ class pz_sabre_caldav_backend extends AbstractBackend
      * @param string $calendarId
      * @param string $objectUri
      * @param string $calendarData
-     * @return void
      */
     public function createCalendarObject($calendarId, $objectUri, $calendarData)
     {
@@ -396,7 +394,7 @@ class pz_sabre_caldav_backend extends AbstractBackend
             SELECT project_id FROM ' . pz_calendar_event::TABLE . ' WHERE project_id = :project_id AND uri = :uri AND user_id != :user_id
             UNION
             SELECT project_id FROM ' . pz_calendar_todo::TABLE . ' WHERE project_id = :project_id AND uri = :uri
-        ', array(':project_id' => $rawCalendarId, ':uri' => $objectUri, ':user_id' => pz::getUser()->getId()));
+        ', [':project_id' => $rawCalendarId, ':uri' => $objectUri, ':user_id' => pz::getUser()->getId()]);
         if ($sql->getRows() > 0) {
             pz::setConfig('calendar_etag_add/' . $objectUri, 1);
             self::incrementCtag($sql->getValue('project_id'));
@@ -464,7 +462,6 @@ class pz_sabre_caldav_backend extends AbstractBackend
      * @param string $calendarId
      * @param string $objectUri
      * @param string $calendarData
-     * @return void
      */
     public function updateCalendarObject($calendarId, $objectUri, $calendarData)
     {
@@ -495,7 +492,7 @@ class pz_sabre_caldav_backend extends AbstractBackend
                 DELETE r
                 FROM ' . pz_calendar_rule::TABLE . ' r
                 WHERE r.todo_id = ?
-            ', array($pzTodo->getId()));
+            ', [$pzTodo->getId()]);
         }
     }
 
@@ -511,8 +508,8 @@ class pz_sabre_caldav_backend extends AbstractBackend
             $this->setRuleValues($event, $pzRule);
             $pzRule->save();
 
-            $eventIds = array($pzEvent->getId());
-            $ruleIds = array($pzRule->getId() => true);
+            $eventIds = [$pzEvent->getId()];
+            $ruleIds = [$pzRule->getId() => true];
             if (count($event) > 1) {
                 $events = $this->getSortedEvents($event);
                 $count = count($events);
@@ -558,7 +555,7 @@ class pz_sabre_caldav_backend extends AbstractBackend
                 LEFT JOIN ' . pz_calendar_alarm::TABLE . ' al
                 ON al.event_id = e.id
                 WHERE r.event_id = ?
-            ', array($pzEvent->getId()));
+            ', [$pzEvent->getId()]);
         }
         $pzEvent->saveToHistory('update');
     }
@@ -649,7 +646,7 @@ class pz_sabre_caldav_backend extends AbstractBackend
     private function getAttendees(Component $event)
     {
         $attendees = $event->attendee;
-        $pzAttendees = array();
+        $pzAttendees = [];
         if (count($attendees) > 0) {
             $organizer = str_ireplace('mailto:', '', strtolower($event->organizer));
             $sqlLogin = pz_sql::factory();
@@ -672,7 +669,7 @@ class pz_sabre_caldav_backend extends AbstractBackend
                     $userId = '';
                     $name = (string) $attendee['cn'];
                     if (strpos($email, '@') === false) {
-                        $sqlLogin->execute(array(strtolower($name)));
+                        $sqlLogin->execute([strtolower($name)]);
                         if ($sqlLogin->getRows() != 1) {
                             continue;
                         }
@@ -680,7 +677,7 @@ class pz_sabre_caldav_backend extends AbstractBackend
                         $email = $sqlLogin->getValue('email');
                         $userId = $sqlLogin->getValue('id');
                     } else {
-                        $sqlEmail->execute(array(':email' => strtolower($email)));
+                        $sqlEmail->execute([':email' => strtolower($email)]);
                         if ($sqlEmail->getRows() == 1) {
                             $userId = $sqlEmail->getValue('id');
                             $name = $sqlEmail->getValue('name');
@@ -704,7 +701,7 @@ class pz_sabre_caldav_backend extends AbstractBackend
 
     private function getAlarms(Component $component)
     {
-        $pzAlarms = array();
+        $pzAlarms = [];
         if (count($component->valarm) > 0) {
             foreach ($component->valarm as $alarm) {
                 $pzAlarm = pz_calendar_alarm::create();
@@ -731,7 +728,7 @@ class pz_sabre_caldav_backend extends AbstractBackend
                     $pzAlarm->setSummary((string) $alarm->summary);
                 }
                 if ($alarm->attendee) {
-                    $emails = array();
+                    $emails = [];
                     foreach ($alarm->attendee as $attendee) {
                         $emails[] = (string) $attendee;
                     }
@@ -774,11 +771,11 @@ class pz_sabre_caldav_backend extends AbstractBackend
             ->setInterval(max(1, $rule['INTERVAL']))
             ->setCount(null)
             ->setEnd(null)
-            ->setWeekDays(array())
-            ->setDays(array())
-            ->setMonths(array())
+            ->setWeekDays([])
+            ->setDays([])
+            ->setMonths([])
             ->setNth(0)
-            ->setExceptions(array());
+            ->setExceptions([]);
         if (isset($rule['COUNT'])) {
             $pzRule->setCount($rule['COUNT']);
         }
@@ -803,7 +800,7 @@ class pz_sabre_caldav_backend extends AbstractBackend
             $pzRule->setMonths(explode(',', $rule['BYMONTH']));
         }
         if (isset($component->exdate)) {
-            $exceptions = array();
+            $exceptions = [];
             foreach ($component->exdate as $exdate) {
                 foreach ($exdate->getDateTimes() as $dt) {
                     $exceptions[] = $dt->setTimeZone(self::getDateTimeZone());
@@ -830,7 +827,6 @@ class pz_sabre_caldav_backend extends AbstractBackend
      *
      * @param string $calendarId
      * @param string $objectUri
-     * @return void
      */
     public function deleteCalendarObject($calendarId, $objectUri)
     {
@@ -852,7 +848,7 @@ class pz_sabre_caldav_backend extends AbstractBackend
             LEFT JOIN ' . pz_calendar_alarm::TABLE . ' al
             ON al.event_id = e.id OR al.event_id = b.id
             WHERE b.project_id = ? AND b.uri = ? AND b.user_id = ?
-        ', array($rawCalendarId, $objectUri, pz::getUser()->getId()));
+        ', [$rawCalendarId, $objectUri, pz::getUser()->getId()]);
 
         if ($pzEvent) {
             $pzEvent->saveToHistory('delete');
@@ -867,7 +863,7 @@ class pz_sabre_caldav_backend extends AbstractBackend
                 LEFT JOIN ' . pz_calendar_rule::TABLE . ' r
                 ON r.todo_id = b.id
                 WHERE b.project_id = ? AND b.uri = ?
-            ', array($rawCalendarId, $objectUri));
+            ', [$rawCalendarId, $objectUri]);
         }
         self::incrementCtag($rawCalendarId);
     }
@@ -890,11 +886,11 @@ class pz_sabre_caldav_backend extends AbstractBackend
         }
         $data = $calendar->serialize();
 
-        $backend = new self;
+        $backend = new self();
         if (preg_match('/^UID:(.*)\s?$/Umi', $data, $matches)) {
             $uri = $matches[1] . '.ics';
             $sql = pz_sql::factory();
-            $sql->setQuery('SELECT id FROM pz_calendar_event WHERE uri = ?', array($uri));
+            $sql->setQuery('SELECT id FROM pz_calendar_event WHERE uri = ?', [$uri]);
             if ($sql->getRows() == 0) {
                 $backend->createCalendarObject($calendarId, $uri, $data);
             } else {
@@ -909,7 +905,7 @@ class pz_sabre_caldav_backend extends AbstractBackend
 
     public static function export(pz_calendar_event $event)
     {
-        $backend = new self;
+        $backend = new self();
         return $backend->getCalendarObjectData($event);
     }
 
@@ -918,12 +914,12 @@ class pz_sabre_caldav_backend extends AbstractBackend
         $jobs = false;
         $todos = false;
         $parts = array_pad(explode('_', $calendarId, 2), 2, null);
-        return array($parts[0], $parts[1] == 'jobs');
+        return [$parts[0], $parts[1] == 'jobs'];
     }
 
     public static function incrementCtag($calendarId)
     {
-        $ctags = pz::getConfig('calendar_ctag', array());
+        $ctags = pz::getConfig('calendar_ctag', []);
         $ctags[$calendarId] = isset($ctags[$calendarId]) ? ($ctags[$calendarId] + 1) : 1;
         pz::setConfig('calendar_ctag', $ctags);
     }
@@ -981,7 +977,7 @@ END:VCALENDAR';
 
         $sql = pz_sql::factory()
             ->setTable('pz_project_user')
-            ->setWhere(array('project_id' => $calendarId, 'user_id' => pz::getUser()->getId()));
+            ->setWhere(['project_id' => $calendarId, 'user_id' => pz::getUser()->getId()]);
         if ($jobs) {
             $sql->setValue('caldav_jobs', 0);
         } else {

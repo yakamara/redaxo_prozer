@@ -12,7 +12,7 @@ class pz_wiki_markdown_inline_style_extension extends \Ciconia\Extension\Core\In
         if (!$text->contains('*')) {
             return;
         }
-        /** @noinspection PhpUnusedParameterInspection */
+        /* @noinspection PhpUnusedParameterInspection */
         $text->replace('{ (\*) (?=\S) (.+?[*]*) (?<=\S) \1 }sx', function (Text $w, Text $a, Text $target) {
             return $this->getRenderer()->renderBoldText($target);
         });
@@ -26,7 +26,7 @@ class pz_wiki_markdown_inline_style_extension extends \Ciconia\Extension\Core\In
         if (!$text->contains('_')) {
             return;
         }
-        /** @noinspection PhpUnusedParameterInspection */
+        /* @noinspection PhpUnusedParameterInspection */
         $text->replace('{ (_) (?=\S) (.+?) (?<=\S) \1 }sx', function (Text $w, Text $a, Text $target) {
             return $this->getRenderer()->renderItalicText($target);
         });

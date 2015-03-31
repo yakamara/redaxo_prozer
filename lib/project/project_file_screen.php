@@ -2,72 +2,67 @@
 
 class pz_project_file_screen
 {
+    public $file;
 
-	public $file;
-	
-	function __construct($file) 
-	{
-		$this->file = $file;
-	}
+    public function __construct($file)
+    {
+        $this->file = $file;
+    }
 
-	// --------------------------------------------------------------- Listviews
+    // --------------------------------------------------------------- Listviews
 
-	public function getFileListView($p = array())
-	{
-	
-		$p["linkvars"]["file_id"] = $this->file->getId();
-    
-    	$edit_link = "pz_loadPage('project_file_form','".pz::url("screen","project","files",array_merge($p["linkvars"],array("mode"=>"edit_file")))."')";
-    	$delete_link = "javascript:pz_loadPage('project_file_form','".pz::url("screen","project","files",array_merge($p["linkvars"],array("mode"=>"edit_file")))."')";
-    	$download_link = pz::url("screen","project","files",array_merge($p["linkvars"],array("mode"=>"download_file")));
-    	$clipboard_link = "pz_exec_javascript('".pz::url("screen","project","files",array_merge($p["linkvars"],array("mode"=>"file2clipboard")))."')";
+    public function getFileListView($p = [])
+    {
+        $p['linkvars']['file_id'] = $this->file->getId();
 
-		$create_date = DateTime::createFromFormat('U', $this->file->getLastModified());
-    $create_date = pz::getUser()->getDateTime($create_date);
+        $edit_link = "pz_loadPage('project_file_form','".pz::url('screen', 'project', 'files', array_merge($p['linkvars'], ['mode' => 'edit_file']))."')";
+        $delete_link = "javascript:pz_loadPage('project_file_form','".pz::url('screen', 'project', 'files', array_merge($p['linkvars'], ['mode' => 'edit_file']))."')";
+        $download_link = pz::url('screen', 'project', 'files', array_merge($p['linkvars'], ['mode' => 'download_file']));
+        $clipboard_link = "pz_exec_javascript('".pz::url('screen', 'project', 'files', array_merge($p['linkvars'], ['mode' => 'file2clipboard']))."')";
 
-		$user_name = "";
-		if(($user = pz_user::get($this->file->getUserId())))
-	    	$user_name = $user->getName();
-    
-    
-    $class_figure = ' '.rex_file::extension($this->file->getName());
-        
-    	// '.$this->customer->getInlineImage().'
-		$return = '
+        $create_date = DateTime::createFromFormat('U', $this->file->getLastModified());
+        $create_date = pz::getUser()->getDateTime($create_date);
+
+        $user_name = '';
+        if (($user = pz_user::get($this->file->getUserId()))) {
+            $user_name = $user->getName();
+        }
+
+        $class_figure = ' '.rex_file::extension($this->file->getName());
+
+        // '.$this->customer->getInlineImage().'
+        $return = '
           <article>
             <header>
               <a class="detail clearfix" href="'.$download_link.'">
                 <figure class="file40'.$class_figure.'"></figure>
                 <hgroup>
-                  <h3 class="hl7"><span class="title" title="'.htmlspecialchars($this->file->getName()).'">'.htmlspecialchars(pz::cutText($this->file->getName(),60,' ... ','center')).'</span><br />('.pz::readableFilesize($this->file->getSize()).', <span title="'.htmlspecialchars($user_name).'">'.htmlspecialchars(pz::cutText($user_name,30)).'</span>, '.$create_date->format(pz_i18n::msg("format_d_m_y_h_i")).')</h3>
+                  <h3 class="hl7"><span class="title" title="'.htmlspecialchars($this->file->getName()).'">'.htmlspecialchars(pz::cutText($this->file->getName(), 60, ' ... ', 'center')).'</span><br />('.pz::readableFilesize($this->file->getSize()).', <span title="'.htmlspecialchars($user_name).'">'.htmlspecialchars(pz::cutText($user_name, 30)).'</span>, '.$create_date->format(pz_i18n::msg('format_d_m_y_h_i')).')</h3>
                 </hgroup>
                 <span class="label">Label</span>
               </a>
             </header>
             <footer>
-              '.pz_screen::getTooltipView('<a class="clipboard" href="javascript:void(0)" onclick="'.$clipboard_link.'">'.pz_i18n::msg("copy_to_clipboard").'</a>', htmlspecialchars(pz_i18n::msg("copy_to_clipboard"))).'
-              
-              <a class="bt2" href="javascript:void(0)" onclick="'.$edit_link.'">'.pz_i18n::msg("project_file_edit").'</a>
+              '.pz_screen::getTooltipView('<a class="clipboard" href="javascript:void(0)" onclick="'.$clipboard_link.'">'.pz_i18n::msg('copy_to_clipboard').'</a>', htmlspecialchars(pz_i18n::msg('copy_to_clipboard'))).'
+
+              <a class="bt2" href="javascript:void(0)" onclick="'.$edit_link.'">'.pz_i18n::msg('project_file_edit').'</a>
             </footer>
           </article>
         ';
-	
-		return $return;
-	}
 
-  
+        return $return;
+    }
 
-	public function getFolderListView($p = array())
-	{
-	
-		$p["linkvars"]["file_id"] = $this->file->getId();	
-    
-    $edit_link = "javascript:pz_loadPage('project_folder_form','".pz::url($p["mediaview"],$p["controll"],$p["function"],array_merge($p["linkvars"],array("mode"=>"edit_folder")))."')";
-    
-    $delete_link = "javascript:pz_loadPage('project_folder_form','".pz::url($p["mediaview"],$p["controll"],$p["function"],array_merge($p["linkvars"],array("mode"=>"edit_folder")))."')";
+    public function getFolderListView($p = [])
+    {
+        $p['linkvars']['file_id'] = $this->file->getId();
 
-    	// '.$this->customer->getInlineImage().'
-		$return = '
+        $edit_link = "javascript:pz_loadPage('project_folder_form','".pz::url($p['mediaview'], $p['controll'], $p['function'], array_merge($p['linkvars'], ['mode' => 'edit_folder']))."')";
+
+        $delete_link = "javascript:pz_loadPage('project_folder_form','".pz::url($p['mediaview'], $p['controll'], $p['function'], array_merge($p['linkvars'], ['mode' => 'edit_folder']))."')";
+
+        // '.$this->customer->getInlineImage().'
+        $return = '
           <article>
             <header>
               <a class="detail clearfix" href="'.$this->getIntoFolderLink($this->file->getId(), $p).'">
@@ -79,130 +74,115 @@ class pz_project_file_screen
               </a>
             </header>
             <footer>
-              <a class="bt2" href="'.$edit_link.'">'.pz_i18n::msg("project_folder_edit").'</a>
+              <a class="bt2" href="'.$edit_link.'">'.pz_i18n::msg('project_folder_edit').'</a>
             </footer>
           </article>
         ';
-	
-		return $return;
-	}
 
-  
+        return $return;
+    }
 
+    public static function getIntoFolderLink($file_id, $p)
+    {
+        $p['linkvars']['file_id'] = $file_id;
 
-	static function getIntoFolderLink($file_id, $p)
-	{
-		$p["linkvars"]["file_id"] = $file_id;
-		
-		// alert($('select name=[name=parent_id]').val())
-		// $("#form_field").trigger("liszt:updated")
-		
-		return "javascript:$('.section1 select[name=parent_id]').each(function(i,e){ $(this).val('".$file_id."').trigger('liszt:updated'); });pz_loadPage('".$p["layer_list"]."','".pz::url($p["mediaview"],$p["controll"],$p["function"],array_merge($p["linkvars"]))."')";
-	}
+        // alert($('select name=[name=parent_id]').val())
+        // $("#form_field").trigger("liszt:updated")
 
-	static function getPathView($category, $p = array()) 
-	{
-		$content = '';
-		$first = ' first';
-		
-		// $paginate_screen = new pz_paginate_screen($files);
-		// $paginate = $paginate_screen->getPlainView($p);
-		// $paginate_screen->getCurrentElements()
-		
-		// path..
-		$path = array();
-		
-		$current = $category;
-		if($current->getId() != 0)
-			$path[] = '<a class="bt7" href="'.pz_project_file_screen::getIntoFolderLink($current->getid(), $p).'">'.$current->getName().'</a>';
-		
-		while($current->getParentId() != 0)
-		{
-			$current = $current->getParent();
-			$path[] = '<a class="bt7" href="'.pz_project_file_screen::getIntoFolderLink($current->getid(), $p).'">'.$current->getName().'</a>';
-		}
+        return "javascript:$('.section1 select[name=parent_id]').each(function(i,e){ $(this).val('".$file_id."').trigger('liszt:updated'); });pz_loadPage('".$p['layer_list']."','".pz::url($p['mediaview'], $p['controll'], $p['function'], array_merge($p['linkvars']))."')";
+    }
 
-		$path[] = '<a class="bt7" href="'.pz_project_file_screen::getIntoFolderLink(0, $p).'">'.pz_i18n::msg("project_folder_home").'</a>';
+    public static function getPathView($category, $p = [])
+    {
+        $content = '';
+        $first = ' first';
 
-		if(count($path) > 0)
-		{
-			$content .= '<ul><li>'.implode("/</li><li>",array_reverse($path)).'</li></ul>';	
-			$first = '';
-		}
-		
-		
-		$content = '<div class="grid1col project-folder-path"><dl><dt>'.pz_i18n::msg("project_file_path").':</dt><dd>'.$content.'</dd></dl></div>'; // $paginate.
+        // $paginate_screen = new pz_paginate_screen($files);
+        // $paginate = $paginate_screen->getPlainView($p);
+        // $paginate_screen->getCurrentElements()
 
-		return $content;
+        // path..
+        $path = [];
 
-	}
+        $current = $category;
+        if ($current->getId() != 0) {
+            $path[] = '<a class="bt7" href="'.pz_project_file_screen::getIntoFolderLink($current->getid(), $p).'">'.$current->getName().'</a>';
+        }
 
-	static function getFilesListView($category, $files, $p = array(), $orders = array()) 
-	{
-		$content = "";
-		$first = " first";
-		$p["layer"] = 'project_files_list';
-		
-		// $paginate_screen = new pz_paginate_screen($files);
-		// $paginate = $paginate_screen->getPlainView($p);
-		// $paginate_screen->getCurrentElements()
-		
-		foreach($files as $file) 
-		{
-			if($cs = new pz_project_file_screen($file)) 
-			{
-				if($file->isDirectory())
-				{
-					$content .= '<li class="lev1 entry project-folder'.$first.'">'.$cs->getFolderListView($p).'</li>';
-				}else
-				{
-					$content .= '<li class="lev1 entry project-file'.$first.'">'.$cs->getFileListView($p).'</li>';
-				}
-				$first = "";
-			}
-		}
-		
-		$path = pz_project_file_screen::getPathView($category, $p);
-		$content = $path.'<ul class="entries view-list">'.$content.'</ul>'; // $paginate.
+        while ($current->getParentId() != 0) {
+            $current = $current->getParent();
+            $path[] = '<a class="bt7" href="'.pz_project_file_screen::getIntoFolderLink($current->getid(), $p).'">'.$current->getName().'</a>';
+        }
 
-		$f = new pz_fragment();
-		$f->setVar('title', @$p["title"], false);
-		$f->setVar('content', $content , false);
-		$f->setVar('paginate', "", false);
-	  $f->setVar("orders",$orders);
-	  $f->setVar("orders_flyout",true);
-	  $return = $f->parse('pz_screen_list.tpl');
-	  
-		return '<div id="project_files_list" class="design2col">'.$return.'</div>';
+        $path[] = '<a class="bt7" href="'.pz_project_file_screen::getIntoFolderLink(0, $p).'">'.pz_i18n::msg('project_folder_home').'</a>';
 
-	}
+        if (count($path) > 0) {
+            $content .= '<ul><li>'.implode('/</li><li>', array_reverse($path)).'</li></ul>';
+            $first = '';
+        }
 
-  public static function getClipboardFilesListView($category, $files, $p = array(), $orders = array()) 
-	{
-		$content = "";
-		$first = " first";
-		$p["layer_list"] = 'clipboard-project-files-list';
-		
-		// $paginate_screen = new pz_paginate_screen($files);
-		// $paginate = $paginate_screen->getPlainView($p);
-		// $paginate_screen->getCurrentElements()
-		
-		foreach($files as $file) 
-		{
-			if($cs = new pz_project_file_screen($file)) 
-			{
-				if($file->isDirectory())
-				{
-					$content .= '<tr class="project-folder'.$first.'">'.$cs->getClipboardFolderListView($p).'</tr>';
-				}else
-				{
-					$content .= '<tr class="project-file'.$first.'">'.$cs->getClipboardFileListView($p).'</tr>';
-				}
-				$first = "";
-			}
-		}
+        $content = '<div class="grid1col project-folder-path"><dl><dt>'.pz_i18n::msg('project_file_path').':</dt><dd>'.$content.'</dd></dl></div>'; // $paginate.
 
-    $list = '<script>
+        return $content;
+    }
+
+    public static function getFilesListView($category, $files, $p = [], $orders = [])
+    {
+        $content = '';
+        $first = ' first';
+        $p['layer'] = 'project_files_list';
+
+        // $paginate_screen = new pz_paginate_screen($files);
+        // $paginate = $paginate_screen->getPlainView($p);
+        // $paginate_screen->getCurrentElements()
+
+        foreach ($files as $file) {
+            if ($cs = new pz_project_file_screen($file)) {
+                if ($file->isDirectory()) {
+                    $content .= '<li class="lev1 entry project-folder'.$first.'">'.$cs->getFolderListView($p).'</li>';
+                } else {
+                    $content .= '<li class="lev1 entry project-file'.$first.'">'.$cs->getFileListView($p).'</li>';
+                }
+                $first = '';
+            }
+        }
+
+        $path = pz_project_file_screen::getPathView($category, $p);
+        $content = $path.'<ul class="entries view-list">'.$content.'</ul>'; // $paginate.
+
+        $f = new pz_fragment();
+        $f->setVar('title', @$p['title'], false);
+        $f->setVar('content', $content, false);
+        $f->setVar('paginate', '', false);
+        $f->setVar('orders', $orders);
+        $f->setVar('orders_flyout', true);
+        $return = $f->parse('pz_screen_list.tpl');
+
+        return '<div id="project_files_list" class="design2col">'.$return.'</div>';
+    }
+
+    public static function getClipboardFilesListView($category, $files, $p = [], $orders = [])
+    {
+        $content = '';
+        $first = ' first';
+        $p['layer_list'] = 'clipboard-project-files-list';
+
+        // $paginate_screen = new pz_paginate_screen($files);
+        // $paginate = $paginate_screen->getPlainView($p);
+        // $paginate_screen->getCurrentElements()
+
+        foreach ($files as $file) {
+            if ($cs = new pz_project_file_screen($file)) {
+                if ($file->isDirectory()) {
+                    $content .= '<tr class="project-folder'.$first.'">'.$cs->getClipboardFolderListView($p).'</tr>';
+                } else {
+                    $content .= '<tr class="project-file'.$first.'">'.$cs->getClipboardFileListView($p).'</tr>';
+                }
+                $first = '';
+            }
+        }
+
+        $list = '<script>
 		$(document).ready(function() {
 		  $("#main select[name|=\"parent_id\"]").each(function(i,e){
 		    $(this).val('.$category->getId().');
@@ -210,65 +190,62 @@ class pz_project_file_screen
       pz_clipboard_init();
 		});
 		</script>';
-		
-		$path = pz_project_file_screen::getPathView($category, $p);
-		$content = $path.'<table class="clips tbl1">'.$content.'</table>'.$list; // $paginate.
 
-		$f = new pz_fragment();
-		$f->setVar('title', @$p["title"], false);
-		$f->setVar('design', 'noheader', false);
-		$f->setVar('content', $content , false);
-		$f->setVar('paginate', "", false);
-	  $f->setVar("orders",$orders);
-	  $return = $f->parse('pz_screen_list.tpl');
-	  
-		return '<div id="'.$p["layer_list"].'">'.$return.'</div>';
+        $path = pz_project_file_screen::getPathView($category, $p);
+        $content = $path.'<table class="clips tbl1">'.$content.'</table>'.$list; // $paginate.
 
-	}
+        $f = new pz_fragment();
+        $f->setVar('title', @$p['title'], false);
+        $f->setVar('design', 'noheader', false);
+        $f->setVar('content', $content, false);
+        $f->setVar('paginate', '', false);
+        $f->setVar('orders', $orders);
+        $return = $f->parse('pz_screen_list.tpl');
 
+        return '<div id="'.$p['layer_list'].'">'.$return.'</div>';
+    }
 
-  public function getClipboardFileListView($p = array())
-	{
-	
-		$p["linkvars"]["file_id"] = $this->file->getId();
-  	$download_link = pz::url("screen","project","files",array_merge($p["linkvars"],array("mode"=>"download_file")));
+    public function getClipboardFileListView($p = [])
+    {
+        $p['linkvars']['file_id'] = $this->file->getId();
+        $download_link = pz::url('screen', 'project', 'files', array_merge($p['linkvars'], ['mode' => 'download_file']));
 
-  	$clipboard_link = "pz_exec_javascript('".pz::url("screen","project","files",array_merge($p["linkvars"],array("mode"=>"clipboardfile2clipboard")))."')";
+        $clipboard_link = "pz_exec_javascript('".pz::url('screen', 'project', 'files', array_merge($p['linkvars'], ['mode' => 'clipboardfile2clipboard']))."')";
 
 //  	$select_link = "pz_exec_javascript('".pz::url("screen","project","files",array_merge($p["linkvars"],array("mode"=>"clipboardfile2clipboard2select")))."')";
 
-		$create_date = DateTime::createFromFormat('U', $this->file->getLastModified());
-    $create_date = pz::getUser()->getDateTime($create_date);
+        $create_date = DateTime::createFromFormat('U', $this->file->getLastModified());
+        $create_date = pz::getUser()->getDateTime($create_date);
 
-		$user_name = "";
-		if(($user = pz_user::get($this->file->getUserId())))
-	    	$user_name = $user->getName();
-    
-    $ext = ' '.rex_file::extension($this->file->getName());
+        $user_name = '';
+        if (($user = pz_user::get($this->file->getUserId()))) {
+            $user_name = $user->getName();
+        }
 
-		$return = '
+        $ext = ' '.rex_file::extension($this->file->getName());
+
+        $return = '
           <tbody class="clip">
             <tr class="clip">
               <td class="clipname">
-                <a class="file25i '.$ext.'" href="'.$download_link.'" title="'.htmlspecialchars($this->file->getName()).'"><h3 class="hl7"><span class="title">'.htmlspecialchars(pz::cutText($this->file->getName(),60, '…', 'center')).'</span></h3><span class="clipinfo">('.pz::readableFilesize($this->file->getSize()).', <span title="'.htmlspecialchars($user_name).'">'.htmlspecialchars(pz::cutText($user_name,30)).'</span>, '.$create_date->format(pz_i18n::msg("format_d_m_y_h_i")).')</span></a>
+                <a class="file25i '.$ext.'" href="'.$download_link.'" title="'.htmlspecialchars($this->file->getName()).'"><h3 class="hl7"><span class="title">'.htmlspecialchars(pz::cutText($this->file->getName(), 60, '…', 'center')).'</span></h3><span class="clipinfo">('.pz::readableFilesize($this->file->getSize()).', <span title="'.htmlspecialchars($user_name).'">'.htmlspecialchars(pz::cutText($user_name, 30)).'</span>, '.$create_date->format(pz_i18n::msg('format_d_m_y_h_i')).')</span></a>
               </td>
               <td>
-                <a class="bt5" href="javascript:void(0)" onclick="'.$clipboard_link.'">'.pz_i18n::msg("copy_to_myclipboard").'</a>
+                <a class="bt5" href="javascript:void(0)" onclick="'.$clipboard_link.'">'.pz_i18n::msg('copy_to_myclipboard').'</a>
               </td>
             </tr>
           </tbody>
         ';
-	
-		return $return;
-	}
 
-  public function getClipboardFolderListView($p = array())
-	{
-	
-		$p["linkvars"]["file_id"] = $this->file->getId();	
+        return $return;
+    }
 
-    	// '.$this->customer->getInlineImage().'
-		$return = '
+    public function getClipboardFolderListView($p = [])
+    {
+        $p['linkvars']['file_id'] = $this->file->getId();
+
+        // '.$this->customer->getInlineImage().'
+        $return = '
           <tbody>
             <tr class="folder">
               <td class="foldername" colspan="3">
@@ -280,422 +257,384 @@ class pz_project_file_screen
             </tr>
           </tbody>
         ';
-	
-		return $return;
-	}
 
-	// --------------------------------------------------------------- Pageviews
+        return $return;
+    }
 
-	function getSearchForm($p = array())
-	{
+    // --------------------------------------------------------------- Pageviews
 
-		$searchform = '
+    public function getSearchForm($p = [])
+    {
+        $searchform = '
         <header>
           <div class="header">
-            <h1 class="hl1">'.pz_i18n::msg("project_files_search_for").'</h1>
+            <h1 class="hl1">'.pz_i18n::msg('project_files_search_for').'</h1>
           </div>
         </header>';
-		
-		$xform = new rex_xform;
-		$xform->setObjectparams("real_field_names",TRUE);
-		$xform->setObjectparams("form_showformafterupdate", TRUE);
-		$xform->setObjectparams("form_action", "javascript:pz_loadFormPage('project_files_list','project_files_search_form','".pz::url('screen','project',$this->function)."')");
-		$xform->setObjectparams("form_id", "project_files_search_form");
-		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl', 'runtime'));
-		$xform->setValueField("text",array("search_name",pz_i18n::msg("name")));
-		$xform->setValueField("hidden",array("mode","list"));
-		$xform->setValueField("hidden",array("project_id",$this->project->getId()));
-		$searchform .= $xform->getForm();
-		
-		$searchform = '<div id="project_files_search" class="design1col xform-search">'.$searchform.'</div>';
-		
-		return $searchform;
-		
-	}
 
+        $xform = new rex_xform();
+        $xform->setObjectparams('real_field_names', true);
+        $xform->setObjectparams('form_showformafterupdate', true);
+        $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('project_files_list','project_files_search_form','".pz::url('screen', 'project', $this->function)."')");
+        $xform->setObjectparams('form_id', 'project_files_search_form');
+        $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl', 'runtime']);
+        $xform->setValueField('text', ['search_name', pz_i18n::msg('name')]);
+        $xform->setValueField('hidden', ['mode', 'list']);
+        $xform->setValueField('hidden', ['project_id', $this->project->getId()]);
+        $searchform .= $xform->getForm();
 
+        $searchform = '<div id="project_files_search" class="design1col xform-search">'.$searchform.'</div>';
 
+        return $searchform;
+    }
 
+    // --------------------------------------------------------------- Formviews
 
-
-
-
-
-	// --------------------------------------------------------------- Formviews
-
-	static function getAddFileLink($p) {
-		
-		$p["linkvars"]["mode"] = "add_file";
-		$add_link = pz::url('screen','project','files',$p["linkvars"]);
-		$return = '<div class="xform">
-				<p><a class="bt1" onclick="pz_loadPage(\'project_file_form\',\''.$add_link.'\')" href="javascript:void(0);">+ '.pz_i18n::msg("project_file_add").'</a></p>
+    public static function getAddFileLink($p)
+    {
+        $p['linkvars']['mode'] = 'add_file';
+        $add_link = pz::url('screen', 'project', 'files', $p['linkvars']);
+        $return = '<div class="xform">
+				<p><a class="bt1" onclick="pz_loadPage(\'project_file_form\',\''.$add_link.'\')" href="javascript:void(0);">+ '.pz_i18n::msg('project_file_add').'</a></p>
 				</div>';
-		return $return;
-	}
+        return $return;
+    }
 
-	public function getDeleteFileLink($p) {
-		
-		$p["linkvars"]["mode"] = "delete_file";
-		$p["linkvars"]["file_id"] = $this->file->getId();
-		
-		$delete_link = pz::url('screen','project','files',$p["linkvars"]);
-		$return = '<div class="xform">
-					<p><a class="bt17" onclick="check = confirm(\''.pz_i18n::msg("project_file_confirm_delete",htmlspecialchars($this->file->getName())).'\'); if (check == true) pz_loadPage(\'project_file_form\',\''.$delete_link.'\')" href="javascript:void(0);">- '.pz_i18n::msg("project_file_delete").'</a></p>
+    public function getDeleteFileLink($p)
+    {
+        $p['linkvars']['mode'] = 'delete_file';
+        $p['linkvars']['file_id'] = $this->file->getId();
+
+        $delete_link = pz::url('screen', 'project', 'files', $p['linkvars']);
+        $return = '<div class="xform">
+					<p><a class="bt17" onclick="check = confirm(\''.pz_i18n::msg('project_file_confirm_delete', htmlspecialchars($this->file->getName())).'\'); if (check == true) pz_loadPage(\'project_file_form\',\''.$delete_link.'\')" href="javascript:void(0);">- '.pz_i18n::msg('project_file_delete').'</a></p>
 					</div>';
-		return $return;
-	}
+        return $return;
+    }
 
+    // ----------------------------- Fileform Views
 
-	// ----------------------------- Fileform Views
-
-	public function getDeleteFileForm($project, $p = array())
-	{
-		$header = '
+    public function getDeleteFileForm($project, $p = [])
+    {
+        $header = '
 	        <header>
 	          <div class="header">
-	            <h1 class="hl1">'.pz_i18n::msg("project_file_delete").'</h1>
+	            <h1 class="hl1">'.pz_i18n::msg('project_file_delete').'</h1>
 	          </div>
 	        </header>';
-		$return = $header.'<p class="xform-info">'.pz_i18n::msg("project_file_deleted", htmlspecialchars($this->file->getName())).'</p>';
-		$return .= pz_screen::getJSLoadFormPage('project_files_list','project_files_search_form',
-				pz::url('screen','project','files',array("mode"=>'list', 'project_id' => $project->getId(), 'file_id' => $this->file->getParentId()))
-				);
-		
-		$return .= pz_project_file_screen::getAddFileLink($p);
+        $return = $header.'<p class="xform-info">'.pz_i18n::msg('project_file_deleted', htmlspecialchars($this->file->getName())).'</p>';
+        $return .= pz_screen::getJSLoadFormPage('project_files_list', 'project_files_search_form',
+            pz::url('screen', 'project', 'files', ['mode' => 'list', 'project_id' => $project->getId(), 'file_id' => $this->file->getParentId()])
+        );
 
-		$return = '<div id="project_file_form"><div id="project_file_delete" class="design1col xform-delete">'.$return.'</div></div>';
-		return $return;
-	}
+        $return .= pz_project_file_screen::getAddFileLink($p);
 
+        $return = '<div id="project_file_form"><div id="project_file_delete" class="design1col xform-delete">'.$return.'</div></div>';
+        return $return;
+    }
 
-	static function getAddFileForm($project, $p = array()) 
-	{
+    public static function getAddFileForm($project, $p = [])
+    {
+        $p['linkvars']['mode'] = 'add_file';
 
-		$p["linkvars"]["mode"] = "add_file";
-	
-		$return = '
+        $return = '
 	        <header>
 	          <div class="header">
-	            <h1 class="hl1">'.pz_i18n::msg("project_file_add").'</h1>
+	            <h1 class="hl1">'.pz_i18n::msg('project_file_add').'</h1>
 	          </div>
 	        </header>';
 
-		$xform = new rex_xform;
-		// $xform->setDebug(TRUE);
-		$xform->setObjectparams("real_field_names",TRUE);
-		$xform->setObjectparams("form_action", "javascript:pz_loadFormPage('project_file_add','project_file_add_form','".pz::url('screen','project','files',$p["linkvars"])."')");
-		$xform->setObjectparams("form_id", "project_file_add_form");
-		$xform->setObjectparams("form_name", "projectfile");
-		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
-		$xform->setValueField("pz_attachment_screen",array("clip_ids",pz_i18n::msg("project_files")));
-		$xform->setValidateField("empty",array("clip_ids", pz_i18n::msg("error_files_no_files_selected")));
-		
-		$node = new pz_project_root_directory($project);
-		$paths = $node->getAllPaths();
-		$xform->setValueField("pz_select_screen",	array("parent_id", pz_i18n::msg("project_file_path"), $paths, "", "/",0));
-		$xform->setValidateField("pz_project_folder",array("parent_id",0, $project->getId(),pz_i18n::msg("error_folder_name_parent"),pz_i18n::msg("error_folder_project_id")));
-		$xform->setValueField("textarea",array("comment",pz_i18n::msg("project_file_comment"),"","0"));
+        $xform = new rex_xform();
+        // $xform->setDebug(TRUE);
+        $xform->setObjectparams('real_field_names', true);
+        $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('project_file_add','project_file_add_form','".pz::url('screen', 'project', 'files', $p['linkvars'])."')");
+        $xform->setObjectparams('form_id', 'project_file_add_form');
+        $xform->setObjectparams('form_name', 'projectfile');
+        $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl']);
+        $xform->setValueField('pz_attachment_screen', ['clip_ids', pz_i18n::msg('project_files')]);
+        $xform->setValidateField('empty', ['clip_ids', pz_i18n::msg('error_files_no_files_selected')]);
 
-		// $xform->setActionField("db",array());
-		$return .= $xform->getForm();
+        $node = new pz_project_root_directory($project);
+        $paths = $node->getAllPaths();
+        $xform->setValueField('pz_select_screen',    ['parent_id', pz_i18n::msg('project_file_path'), $paths, '', '/', 0]);
+        $xform->setValidateField('pz_project_folder', ['parent_id', 0, $project->getId(), pz_i18n::msg('error_folder_name_parent'), pz_i18n::msg('error_folder_project_id')]);
+        $xform->setValueField('textarea', ['comment', pz_i18n::msg('project_file_comment'), '', '0']);
 
-		if($xform->getObjectparams("actions_executed")) {
-			
-			$parent_id = $xform->objparams["value_pool"]["sql"]["parent_id"];
-			$comment = $xform->objparams["value_pool"]["sql"]["comment"];
-			
-			$node = pz_project_node::get($parent_id);
-			if($parent_id == 0)
-				$node = new pz_project_root_directory($project);
+        // $xform->setActionField("db",array());
+        $return .= $xform->getForm();
 
-			$clip_ids = explode(",",$xform->objparams["value_pool"]["sql"]["clip_ids"]);
-			$clips = array();
-			foreach($clip_ids as $clip_id) 
-			{
-				$clip_id = (int) $clip_id;
-				if(($clip = pz_clip::get($clip_id)) && $clip->getUser()->getId() == pz::getUser()->getId())
-				{
-					if(file_exists($clip->getPath()))
-					{
-						$name = $node->getAvailableName($clip->getFilename());
-						$data = file_get_contents($clip->getPath());
-						$node->createFile($name, $data, $comment);
+        if ($xform->getObjectparams('actions_executed')) {
+            $parent_id = $xform->objparams['value_pool']['sql']['parent_id'];
+            $comment = $xform->objparams['value_pool']['sql']['comment'];
 
-					}
-				}
-			}
+            $node = pz_project_node::get($parent_id);
+            if ($parent_id == 0) {
+                $node = new pz_project_root_directory($project);
+            }
 
-			$return .= '<p class="xform-info">'.pz_i18n::msg("project_file_added").'</p>';
-			$return .= pz_project_file_screen::getAddFileLink($p);
-			$return .= pz_screen::getJSLoadFormPage('project_files_list','project_files_search_form',
-				pz::url('screen','project','files',array("mode"=>'list', 'project_id' => $project->getId(), 'file_id' => $parent_id))
-				);
-			
-		}
-		$return = '<div id="project_file_form"><div id="project_file_add" class="design1col xform-add">'.$return.'</div></div>';
+            $clip_ids = explode(',', $xform->objparams['value_pool']['sql']['clip_ids']);
+            $clips = [];
+            foreach ($clip_ids as $clip_id) {
+                $clip_id = (int) $clip_id;
+                if (($clip = pz_clip::get($clip_id)) && $clip->getUser()->getId() == pz::getUser()->getId()) {
+                    if (file_exists($clip->getPath())) {
+                        $name = $node->getAvailableName($clip->getFilename());
+                        $data = file_get_contents($clip->getPath());
+                        $node->createFile($name, $data, $comment);
+                    }
+                }
+            }
 
-		return $return;	
-		
-	}
+            $return .= '<p class="xform-info">'.pz_i18n::msg('project_file_added').'</p>';
+            $return .= pz_project_file_screen::getAddFileLink($p);
+            $return .= pz_screen::getJSLoadFormPage('project_files_list', 'project_files_search_form',
+                pz::url('screen', 'project', 'files', ['mode' => 'list', 'project_id' => $project->getId(), 'file_id' => $parent_id])
+            );
+        }
+        $return = '<div id="project_file_form"><div id="project_file_add" class="design1col xform-add">'.$return.'</div></div>';
 
-	public function getEditFileForm($project, $p = array()) 
-	{
-		
-		$p["linkvars"]["mode"] = "edit_file";
-	
-		$parent_id = $this->file->getParentId();
-	
-    	$header = '
+        return $return;
+    }
+
+    public function getEditFileForm($project, $p = [])
+    {
+        $p['linkvars']['mode'] = 'edit_file';
+
+        $parent_id = $this->file->getParentId();
+
+        $header = '
         <header>
           <div class="header">
-            <h1 class="hl1">'.pz_i18n::msg("project_file_edit").': <br /><span title="'.$this->file->getName().'">'.pz::cutText($this->file->getName(),30,"...","center").'</span></h1>
+            <h1 class="hl1">'.pz_i18n::msg('project_file_edit').': <br /><span title="'.$this->file->getName().'">'.pz::cutText($this->file->getName(), 30, '...', 'center').'</span></h1>
           </div>
         </header>';
 
-		$xform = new rex_xform;
-		// $xform->setDebug(TRUE);
-		$xform->setObjectparams("real_field_names",TRUE);
-		$xform->setObjectparams("main_table",'pz_project_file');
-		$xform->setObjectparams("main_id",$this->file->getId());
-		$xform->setObjectparams("main_where",'id='.$this->file->getId());
-		$xform->setObjectparams('getdata',true);
-		$xform->setObjectparams("form_action", "javascript:pz_loadFormPage('project_file_edit','project_file_edit_form','".pz::url('screen','project','files',$p["linkvars"])."')");
-		$xform->setObjectparams("form_id", "project_file_edit_form");
-		$xform->setObjectparams("form_name", "project_file_edit_form");
-		
-		$xform->setObjectparams('form_showformafterupdate',1);
-		$xform->setHiddenField("file_id",$this->file->getId());
-		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
+        $xform = new rex_xform();
+        // $xform->setDebug(TRUE);
+        $xform->setObjectparams('real_field_names', true);
+        $xform->setObjectparams('main_table', 'pz_project_file');
+        $xform->setObjectparams('main_id', $this->file->getId());
+        $xform->setObjectparams('main_where', 'id='.$this->file->getId());
+        $xform->setObjectparams('getdata', true);
+        $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('project_file_edit','project_file_edit_form','".pz::url('screen', 'project', 'files', $p['linkvars'])."')");
+        $xform->setObjectparams('form_id', 'project_file_edit_form');
+        $xform->setObjectparams('form_name', 'project_file_edit_form');
 
-		$node = new pz_project_root_directory($project);
-		$paths = $node->getAllPaths();
-		$xform->setValueField("pz_select_screen",	array("parent_id", pz_i18n::msg("project_file_path"), $paths, "", "/",0));
-		
-		$xform->setValidateField("pz_project_folder",array("parent_id",0, $project->getId()));
-		$xform->setValidateField("unique",array("parent_id,name,project_id", pz_i18n::msg("error_file_not_unique"), 'pz_project_file'));
+        $xform->setObjectparams('form_showformafterupdate', 1);
+        $xform->setHiddenField('file_id', $this->file->getId());
+        $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl']);
 
-		$xform->setValueField("showvalue",array("name",pz_i18n::msg("project_file_name"),"","0"));
-		$xform->setValueField("textarea",array("comment",pz_i18n::msg("project_file_comment"),"","0"));
-		$xform->setValueField("hidden",array("project_id",$this->file->getProjectId()));
+        $node = new pz_project_root_directory($project);
+        $paths = $node->getAllPaths();
+        $xform->setValueField('pz_select_screen',    ['parent_id', pz_i18n::msg('project_file_path'), $paths, '', '/', 0]);
 
-		$return = $xform->getForm();
+        $xform->setValidateField('pz_project_folder', ['parent_id', 0, $project->getId()]);
+        $xform->setValidateField('unique', ['parent_id,name,project_id', pz_i18n::msg('error_file_not_unique'), 'pz_project_file']);
 
-		if($xform->getObjectparams("actions_executed")) 
-		{
-			$this->file->setComment($xform->objparams["value_pool"]["sql"]["comment"]);
-			
-			$parent_id = $xform->objparams["value_pool"]["sql"]["parent_id"];
-			if($this->file->getParentId() != $parent_id)
-			{
-				$node = pz_project_node::get($parent_id);
-				if($parent_id == 0)
-					$node = new pz_project_root_directory($project);
-				
-				if($node)
-					$this->file->moveTo( $node );
-				
-			}
+        $xform->setValueField('showvalue', ['name', pz_i18n::msg('project_file_name'), '', '0']);
+        $xform->setValueField('textarea', ['comment', pz_i18n::msg('project_file_comment'), '', '0']);
+        $xform->setValueField('hidden', ['project_id', $this->file->getProjectId()]);
 
-			$return = $header.'<p class="xform-info">'.pz_i18n::msg("project_file_updated").'</p>'.$return;
-			$return .= pz_screen::getJSLoadFormPage('project_files_list','project_files_search_form',
-				pz::url('screen','project','files',array("mode"=>'list', 'project_id' => $project->getId(), 'file_id' => rex_request('parent_id','int')))
-				);
-			
-		}else
-		{
-			$return = $header.$return;	
-		}
+        $return = $xform->getForm();
 
-		$p["linkvars"]["mode"] = "add_file";
-		$p["linkvars"]["parent_id"] = $parent_id;
+        if ($xform->getObjectparams('actions_executed')) {
+            $this->file->setComment($xform->objparams['value_pool']['sql']['comment']);
 
-		$return .= pz_project_file_screen::getAddFileLink($p);
-		$return .= $this->getDeleteFileLink($p);
+            $parent_id = $xform->objparams['value_pool']['sql']['parent_id'];
+            if ($this->file->getParentId() != $parent_id) {
+                $node = pz_project_node::get($parent_id);
+                if ($parent_id == 0) {
+                    $node = new pz_project_root_directory($project);
+                }
 
-		$return = '<div id="project_file_form"><div id="project_file_edit" class="design1col xform-edit">'.$return.'</div></div>';
+                if ($node) {
+                    $this->file->moveTo($node);
+                }
+            }
 
-		return $return;	
-		
-	}
+            $return = $header.'<p class="xform-info">'.pz_i18n::msg('project_file_updated').'</p>'.$return;
+            $return .= pz_screen::getJSLoadFormPage('project_files_list', 'project_files_search_form',
+                pz::url('screen', 'project', 'files', ['mode' => 'list', 'project_id' => $project->getId(), 'file_id' => rex_request('parent_id', 'int')])
+            );
+        } else {
+            $return = $header.$return;
+        }
 
+        $p['linkvars']['mode'] = 'add_file';
+        $p['linkvars']['parent_id'] = $parent_id;
 
+        $return .= pz_project_file_screen::getAddFileLink($p);
+        $return .= $this->getDeleteFileLink($p);
 
+        $return = '<div id="project_file_form"><div id="project_file_edit" class="design1col xform-edit">'.$return.'</div></div>';
 
+        return $return;
+    }
 
+    // ----------------------------- Folder Form Views
 
-
-
-	// ----------------------------- Folder Form Views
-
-	public function getDeleteFolderForm($project, $p = array())
-	{
-		$header = '
+    public function getDeleteFolderForm($project, $p = [])
+    {
+        $header = '
 	        <header>
 	          <div class="header">
-	            <h1 class="hl1">'.pz_i18n::msg("project_folder_delete").'</h1>
+	            <h1 class="hl1">'.pz_i18n::msg('project_folder_delete').'</h1>
 	          </div>
 	        </header>';
-		$return = $header.'<p class="xform-info">'.pz_i18n::msg("project_folder_deleted", htmlspecialchars($this->file->getName())).'</p>';
-		$return .= pz_screen::getJSLoadFormPage('project_files_list','project_files_search_form',
-				pz::url('screen','project','files',array("mode"=>'list', 'project_id' => $project->getId(), 'file_id' => $this->file->getParentId()))
-				);
+        $return = $header.'<p class="xform-info">'.pz_i18n::msg('project_folder_deleted', htmlspecialchars($this->file->getName())).'</p>';
+        $return .= pz_screen::getJSLoadFormPage('project_files_list', 'project_files_search_form',
+            pz::url('screen', 'project', 'files', ['mode' => 'list', 'project_id' => $project->getId(), 'file_id' => $this->file->getParentId()])
+        );
 
-		$p["linkvars"]["mode"] = "add_folder";
-		$add_link = pz::url('screen','project','files',$p["linkvars"]);
-		$return .= '<div class="xform">
-			<p><a class="bt1" onclick="pz_loadPage(\'project_folder_form\',\''.$add_link.'\')" href="javascript:void(0);">+ '.pz_i18n::msg("project_folder_add").'</a></p>
+        $p['linkvars']['mode'] = 'add_folder';
+        $add_link = pz::url('screen', 'project', 'files', $p['linkvars']);
+        $return .= '<div class="xform">
+			<p><a class="bt1" onclick="pz_loadPage(\'project_folder_form\',\''.$add_link.'\')" href="javascript:void(0);">+ '.pz_i18n::msg('project_folder_add').'</a></p>
 			</div>';
 
-		$return = '<div id="project_folder_form"><div id="project_folder_delete" class="design1col xform-delete">'.$return.'</div></div>';
-		return $return;
-	}
+        $return = '<div id="project_folder_form"><div id="project_folder_delete" class="design1col xform-delete">'.$return.'</div></div>';
+        return $return;
+    }
 
-	static function getAddFolderForm($project, $p = array()) 
-	{
+    public static function getAddFolderForm($project, $p = [])
+    {
+        $p['linkvars']['mode'] = 'add_folder';
 
-		$p["linkvars"]["mode"] = "add_folder";
-	
-		$return = '
+        $return = '
 	        <header>
 	          <div class="header">
-	            <h1 class="hl1">'.pz_i18n::msg("project_folder_add").'</h1>
+	            <h1 class="hl1">'.pz_i18n::msg('project_folder_add').'</h1>
 	          </div>
 	        </header>';
 
-		$xform = new rex_xform;
-		$xform->setObjectparams("real_field_names",TRUE);
-		$xform->setObjectparams("form_action", "javascript:pz_loadFormPage('project_folder_add','project_folder_add_form','".pz::url('screen','project','files',$p["linkvars"])."')");
-		$xform->setObjectparams("form_id", "project_folder_add_form");
-		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
-		
-		$node = new pz_project_root_directory($project);
-		$paths = $node->getAllPaths();
-		$xform->setValueField("pz_select_screen",	array("parent_id",pz_i18n::msg("project_file_path"),$paths,"","/",0));
-		$xform->setValidateField("pz_project_folder",array("parent_id",0, $project->getId()));
-		$xform->setValidateField("unique",array("parent_id,name,project_id", pz_i18n::msg("error_folder_not_unique"), 'pz_project_file'));
-		
-		$xform->setValueField("text",array("name",pz_i18n::msg("project_folder_name"),"","0"));
-		$xform->setValidateField("empty",array("name", pz_i18n::msg("error_folder_name_empty")));
-		$xform->setValidateField("preg_match",array("name", '/^([a-z0-9_][\\.\\-\\ ]?)*$/i', pz_i18n::msg("error_folder_name_chars")));
-		// $xform->setValueField("textarea",array("comment",pz_i18n::msg("project_folder_comment"),"","0"));
-		
-		$xform->setValueField("hidden",array("project_id",$project->getId()));
+        $xform = new rex_xform();
+        $xform->setObjectparams('real_field_names', true);
+        $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('project_folder_add','project_folder_add_form','".pz::url('screen', 'project', 'files', $p['linkvars'])."')");
+        $xform->setObjectparams('form_id', 'project_folder_add_form');
+        $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl']);
 
-		$return .= $xform->getForm();
+        $node = new pz_project_root_directory($project);
+        $paths = $node->getAllPaths();
+        $xform->setValueField('pz_select_screen',    ['parent_id', pz_i18n::msg('project_file_path'), $paths, '', '/', 0]);
+        $xform->setValidateField('pz_project_folder', ['parent_id', 0, $project->getId()]);
+        $xform->setValidateField('unique', ['parent_id,name,project_id', pz_i18n::msg('error_folder_not_unique'), 'pz_project_file']);
 
-		if($xform->getObjectparams("actions_executed")) {
+        $xform->setValueField('text', ['name', pz_i18n::msg('project_folder_name'), '', '0']);
+        $xform->setValidateField('empty', ['name', pz_i18n::msg('error_folder_name_empty')]);
+        $xform->setValidateField('preg_match', ['name', '/^([a-z0-9_][\\.\\-\\ ]?)*$/i', pz_i18n::msg('error_folder_name_chars')]);
+        // $xform->setValueField("textarea",array("comment",pz_i18n::msg("project_folder_comment"),"","0"));
 
-			$parent_id = $xform->objparams["value_pool"]["sql"]["parent_id"];
-			$name = $xform->objparams["value_pool"]["sql"]["name"];
-			
-			$node = pz_project_node::get($parent_id);
-			if($parent_id == 0)
-				$node = new pz_project_root_directory($project);
+        $xform->setValueField('hidden', ['project_id', $project->getId()]);
 
-			if($node->isDirectory())
-				$node->createDirectory($name);
+        $return .= $xform->getForm();
 
-			$return .= '<p class="xform-info">'.pz_i18n::msg("project_folder_added").'</p>';
-			$return .= pz_screen::getJSLoadFormPage('project_files_list','project_files_search_form',
-				pz::url('screen','project','files',array("mode"=>'list', 'project_id' => $project->getId(), 'file_id' => rex_request('parent_id','int')))
-				);
-				
-			$p["linkvars"]["mode"] = "add_folder";
-			$add_link = pz::url('screen','project','files',$p["linkvars"]);
-			$return .= '<div class="xform">
-				<p><a class="bt1" onclick="pz_loadPage(\'project_folder_form\',\''.$add_link.'\')" href="javascript:void(0);">+ '.pz_i18n::msg("project_folder_add").'</a></p>
+        if ($xform->getObjectparams('actions_executed')) {
+            $parent_id = $xform->objparams['value_pool']['sql']['parent_id'];
+            $name = $xform->objparams['value_pool']['sql']['name'];
+
+            $node = pz_project_node::get($parent_id);
+            if ($parent_id == 0) {
+                $node = new pz_project_root_directory($project);
+            }
+
+            if ($node->isDirectory()) {
+                $node->createDirectory($name);
+            }
+
+            $return .= '<p class="xform-info">'.pz_i18n::msg('project_folder_added').'</p>';
+            $return .= pz_screen::getJSLoadFormPage('project_files_list', 'project_files_search_form',
+                pz::url('screen', 'project', 'files', ['mode' => 'list', 'project_id' => $project->getId(), 'file_id' => rex_request('parent_id', 'int')])
+            );
+
+            $p['linkvars']['mode'] = 'add_folder';
+            $add_link = pz::url('screen', 'project', 'files', $p['linkvars']);
+            $return .= '<div class="xform">
+				<p><a class="bt1" onclick="pz_loadPage(\'project_folder_form\',\''.$add_link.'\')" href="javascript:void(0);">+ '.pz_i18n::msg('project_folder_add').'</a></p>
 				</div>';
-		}
+        }
 
-		$return = '<div id="project_folder_form"><div id="project_folder_add" class="design1col xform-add">'.$return.'</div></div>';
+        $return = '<div id="project_folder_form"><div id="project_folder_add" class="design1col xform-add">'.$return.'</div></div>';
 
-		return $return;	
-		
-	}
+        return $return;
+    }
 
-	public function getEditFolderForm($project, $p = array()) 
-	{
-		
-		$p["linkvars"]["mode"] = "edit_folder";
-	
-    	$header = '
+    public function getEditFolderForm($project, $p = [])
+    {
+        $p['linkvars']['mode'] = 'edit_folder';
+
+        $header = '
         <header>
           <div class="header">
-            <h1 class="hl1">'.pz_i18n::msg("project_folder_edit").': '.$this->file->getName().'</h1>
+            <h1 class="hl1">'.pz_i18n::msg('project_folder_edit').': '.$this->file->getName().'</h1>
           </div>
         </header>';
 
-		$xform = new rex_xform;
-		// $xform->setDebug(TRUE);
-		$xform->setObjectparams("real_field_names",TRUE);
-		$xform->setObjectparams("main_table",'pz_project_file');
-		$xform->setObjectparams("main_id",$this->file->getId());
-		$xform->setObjectparams("main_where",'id='.$this->file->getId());
-		$xform->setObjectparams('getdata',true);
-		$xform->setObjectparams("form_action", "javascript:pz_loadFormPage('project_folder_edit','project_folder_edit_form','".pz::url('screen','project','files',$p["linkvars"])."')");
-		$xform->setObjectparams("form_id", "project_folder_edit_form");
-		$xform->setObjectparams('form_showformafterupdate',1);
-		$xform->setHiddenField("file_id",$this->file->getId());
-		$xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
+        $xform = new rex_xform();
+        // $xform->setDebug(TRUE);
+        $xform->setObjectparams('real_field_names', true);
+        $xform->setObjectparams('main_table', 'pz_project_file');
+        $xform->setObjectparams('main_id', $this->file->getId());
+        $xform->setObjectparams('main_where', 'id='.$this->file->getId());
+        $xform->setObjectparams('getdata', true);
+        $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('project_folder_edit','project_folder_edit_form','".pz::url('screen', 'project', 'files', $p['linkvars'])."')");
+        $xform->setObjectparams('form_id', 'project_folder_edit_form');
+        $xform->setObjectparams('form_showformafterupdate', 1);
+        $xform->setHiddenField('file_id', $this->file->getId());
+        $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl']);
 
-		$node = new pz_project_root_directory($project);
-		$paths = $node->getAllPaths();
-		$xform->setValueField("pz_select_screen",	array("parent_id",pz_i18n::msg("project_file_path"),$paths,"","/",0));
-		$xform->setValidateField("pz_project_folder",array("parent_id", $this->file->getId(), $project->getId()));
-		$xform->setValidateField("unique",array("parent_id,name,project_id", pz_i18n::msg("error_folder_not_unique"), 'pz_project_file'));
-		
-		$xform->setValueField("text",array("name",pz_i18n::msg("project_folder_name"),"","0"));
-		$xform->setValidateField("empty",array("name", pz_i18n::msg("error_folder_name_empty")));
-		$xform->setValidateField("preg_match",array("name", '/^([a-z0-9_][\\.\\-\\ ]?)*$/i', pz_i18n::msg("error_folder_name_chars")));
-		
-		$xform->setValueField("hidden",array("project_id",$this->file->getProjectId()));
+        $node = new pz_project_root_directory($project);
+        $paths = $node->getAllPaths();
+        $xform->setValueField('pz_select_screen',    ['parent_id', pz_i18n::msg('project_file_path'), $paths, '', '/', 0]);
+        $xform->setValidateField('pz_project_folder', ['parent_id', $this->file->getId(), $project->getId()]);
+        $xform->setValidateField('unique', ['parent_id,name,project_id', pz_i18n::msg('error_folder_not_unique'), 'pz_project_file']);
 
-		$return = $xform->getForm();
+        $xform->setValueField('text', ['name', pz_i18n::msg('project_folder_name'), '', '0']);
+        $xform->setValidateField('empty', ['name', pz_i18n::msg('error_folder_name_empty')]);
+        $xform->setValidateField('preg_match', ['name', '/^([a-z0-9_][\\.\\-\\ ]?)*$/i', pz_i18n::msg('error_folder_name_chars')]);
 
-		if($xform->getObjectparams("actions_executed")) {
-			
-			$parent_id = $xform->objparams["value_pool"]["sql"]["parent_id"];
-			$name = $xform->objparams["value_pool"]["sql"]["name"];
-			
-			$node = pz_project_node::get($parent_id);
-			if($parent_id == 0)
-			{
-				$node = new pz_project_root_directory($project);
-			}
+        $xform->setValueField('hidden', ['project_id', $this->file->getProjectId()]);
 
-			if($node->isDirectory()) {
-				$this->file->moveTo($node, $name);
-			}
-			
-			$return = $header.'<p class="xform-info">'.pz_i18n::msg("project_folder_updated").'</p>'.$return;
-			$return .= pz_screen::getJSLoadFormPage('project_files_list','project_files_search_form',
-				pz::url('screen','project','files',array("mode"=>'list', 'project_id' => $project->getId(), 'file_id' => rex_request('parent_id','int')))
-				);
-		}else {
-			$return = $header.$return;	
-		}
+        $return = $xform->getForm();
 
-		if(count($this->file->getChildren()) == 0)
-		{
-			$p["linkvars"]["mode"] = "delete_folder";
-			$p["linkvars"]["file_id"] = $this->file->getId();
-	
-			$delete_link = pz::url('screen','project','files',$p["linkvars"]);
-			$return .= '<div class="xform">
-					<p><a class="bt17" onclick="check = confirm(\''.pz_i18n::msg("project_folder_confirm_delete",htmlspecialchars($this->file->getName())).'\'); if (check == true) pz_loadPage(\'project_folder_form\',\''.$delete_link.'\')" href="javascript:void(0);">- '.pz_i18n::msg("project_folder_delete").'</a></p>
+        if ($xform->getObjectparams('actions_executed')) {
+            $parent_id = $xform->objparams['value_pool']['sql']['parent_id'];
+            $name = $xform->objparams['value_pool']['sql']['name'];
+
+            $node = pz_project_node::get($parent_id);
+            if ($parent_id == 0) {
+                $node = new pz_project_root_directory($project);
+            }
+
+            if ($node->isDirectory()) {
+                $this->file->moveTo($node, $name);
+            }
+
+            $return = $header.'<p class="xform-info">'.pz_i18n::msg('project_folder_updated').'</p>'.$return;
+            $return .= pz_screen::getJSLoadFormPage('project_files_list', 'project_files_search_form',
+                pz::url('screen', 'project', 'files', ['mode' => 'list', 'project_id' => $project->getId(), 'file_id' => rex_request('parent_id', 'int')])
+            );
+        } else {
+            $return = $header.$return;
+        }
+
+        if (count($this->file->getChildren()) == 0) {
+            $p['linkvars']['mode'] = 'delete_folder';
+            $p['linkvars']['file_id'] = $this->file->getId();
+
+            $delete_link = pz::url('screen', 'project', 'files', $p['linkvars']);
+            $return .= '<div class="xform">
+					<p><a class="bt17" onclick="check = confirm(\''.pz_i18n::msg('project_folder_confirm_delete', htmlspecialchars($this->file->getName())).'\'); if (check == true) pz_loadPage(\'project_folder_form\',\''.$delete_link.'\')" href="javascript:void(0);">- '.pz_i18n::msg('project_folder_delete').'</a></p>
 					</div>';
-		}
+        }
 
-		$p["linkvars"]["mode"] = "add_folder";
-		$add_link = pz::url('screen','project','files',$p["linkvars"]);
-		$return .= '<div class="xform">
-				<p><a class="bt1" onclick="pz_loadPage(\'project_folder_form\',\''.$add_link.'\')" href="javascript:void(0);">+ '.pz_i18n::msg("project_folder_add").'</a></p>
+        $p['linkvars']['mode'] = 'add_folder';
+        $add_link = pz::url('screen', 'project', 'files', $p['linkvars']);
+        $return .= '<div class="xform">
+				<p><a class="bt1" onclick="pz_loadPage(\'project_folder_form\',\''.$add_link.'\')" href="javascript:void(0);">+ '.pz_i18n::msg('project_folder_add').'</a></p>
 				</div>';
 
-		$return = '<div id="project_folder_form"><div id="project_folder_edit" class="design1col xform-edit">'.$return.'</div></div>';
+        $return = '<div id="project_folder_form"><div id="project_folder_edit" class="design1col xform-edit">'.$return.'</div></div>';
 
-
-		return $return;	
-		
-	}
+        return $return;
+    }
 }

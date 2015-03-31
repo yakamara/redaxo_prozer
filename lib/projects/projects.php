@@ -1,41 +1,36 @@
 <?php
 
-class pz_projects extends pz_search {
+class pz_projects extends pz_search
+{
+    public $search_table = 'pz_project';
+    public static $projects = [];
 
-	public $search_table = 'pz_project';
-	static $projects = array();
+    public static function get()
+    {
+        if (count(self::$projects) > 0) {
+            return self::$projects;
+        }
 
-	static function get() {
-		
-		if (count(self::$projects)>0)
-		{
-			return self::$projects;
-		}
-		
-		$sql = pz_sql::factory();
-		$sql->setQuery('select * from pz_project order by id');
-		
-		foreach($sql->getArray() as $l)
-		{
-			$project = new pz_project($l);
-			self::$projects[$project->getId()] = $project;
-		}
+        $sql = pz_sql::factory();
+        $sql->setQuery('select * from pz_project order by id');
 
-		return self::$projects;
-		
-	}
+        foreach ($sql->getArray() as $l) {
+            $project = new pz_project($l);
+            self::$projects[$project->getId()] = $project;
+        }
 
-	static function getAsString() {
-	
-		$return = array();
-		foreach(self::get() as $project) {
-			$v = $project->getName();
-			$v = str_replace('=','',$v);
-			$v = str_replace(',','',$v);
-			$return[] = $v.'='.$project->getId();
-		}
-		return implode(",",$return);
-		
-	}
+        return self::$projects;
+    }
 
+    public static function getAsString()
+    {
+        $return = [];
+        foreach (self::get() as $project) {
+            $v = $project->getName();
+            $v = str_replace('=', '', $v);
+            $v = str_replace(',', '', $v);
+            $return[] = $v.'='.$project->getId();
+        }
+        return implode(',', $return);
+    }
 }

@@ -8,7 +8,7 @@ class pz_project_wiki_screen
     protected $pageId;
     protected $versionId;
 
-    function __construct(pz_project $project, pz_projectuser $projectuser, pz_wiki_page $page = null)
+    public function __construct(pz_project $project, pz_projectuser $projectuser, pz_wiki_page $page = null)
     {
         $this->project = $project;
         $this->projectuser = $projectuser;
@@ -19,12 +19,12 @@ class pz_project_wiki_screen
         }
     }
 
-
     // ------------------------------------------------------------------ Navigation
 
     /**
      * @param array          $p
      * @param pz_wiki_page[] $pages
+     *
      * @return string
      */
     public function getNavigationView($p = [], array $pages)
@@ -52,28 +52,28 @@ class pz_project_wiki_screen
                 <div class="body">
                     <nav class="menu">
                         <ul class="wiki-pages">';
-                        foreach ($pages as $page) {
-                            $class = '';
-                            if ($page->getId() == $this->pageId) {
-                                $class = ' active';
-                            }
-                            if ($page->isAdminPage()) {
-                                $class .= ' admin';
-                            }
-                            $tasks = '';
-                            if ($countTasks = $page->countTasks()) {
-                                $countChecked = $page->countTasksChecked();
-                                $percent = intval($countChecked / $countTasks * 100);
-                                $tasks = '
+        foreach ($pages as $page) {
+            $class = '';
+            if ($page->getId() == $this->pageId) {
+                $class = ' active';
+            }
+            if ($page->isAdminPage()) {
+                $class .= ' admin';
+            }
+            $tasks = '';
+            if ($countTasks = $page->countTasks()) {
+                $countChecked = $page->countTasksChecked();
+                $percent = intval($countChecked / $countTasks * 100);
+                $tasks = '
                                     <span class="info">(' . $percent . '%)</span>
                                     <div class="tooltip">
                                         <div class="progress"><div class="progress-bar" style="width:' . $percent . '%"></div></div>
                                         <span class="tooltip"><span class="inner">' . pz_i18n::msg('wiki_page_tasks', $countChecked, $countTasks) . '</span></span>
                                     </div>';
-                            }
-                            $return .= '<li><a class="menu-item' . $class . '" href="' . $this->url(['wiki_id' => $page->getId()], '&amp;') . '"><span>' . htmlspecialchars($page->getTitle()) . '</span>' . $tasks . '</a></li>';
-                        }
-                        $return .= '
+            }
+            $return .= '<li><a class="menu-item' . $class . '" href="' . $this->url(['wiki_id' => $page->getId()], '&amp;') . '"><span>' . htmlspecialchars($page->getTitle()) . '</span>' . $tasks . '</a></li>';
+        }
+        $return .= '
                         </ul>
                     </nav>
                 </div>
@@ -83,7 +83,6 @@ class pz_project_wiki_screen
         ';
         return $return;
     }
-
 
     // ------------------------------------------------------------------ Page
 
@@ -102,14 +101,14 @@ class pz_project_wiki_screen
                         <dd><span class="time">' . $this->page->getUpdatedFormatted() . '</span> <span class="author">' . htmlspecialchars($this->page->getUpdateUser()->getName()) . '</span></dd>
                     </dl>';
 
-            if ($this->page instanceof pz_wiki_page_version) {
-                $content .= '
+        if ($this->page instanceof pz_wiki_page_version) {
+            $content .= '
                     <dl class="wiki-meta-list">
                         <dt>' . pz_i18n::msg('wiki_page_version') . ':</dt>
                         <dd><span class="time">' . $this->page->getStampFormatted() . '</span> <span class="author">' . htmlspecialchars($this->page->getUser()->getName()) . '</span></dd>
                     </dl>';
-            }
-            $content .= '
+        }
+        $content .= '
                 </div>
             </footer>
         ';
@@ -120,7 +119,7 @@ class pz_project_wiki_screen
 
     public function getPageCreateView($p = [], $title = '')
     {
-        $xform = new rex_xform;
+        $xform = new rex_xform();
 
         $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('project_wiki_page','wiki_page_create_form','" . $this->url(['mode' => 'create_form']) . "')");
         $xform->setObjectparams('form_id', 'wiki_page_create_form');
@@ -162,7 +161,7 @@ class pz_project_wiki_screen
 
     public function getPageEditView($p = [])
     {
-        $xform = new rex_xform;
+        $xform = new rex_xform();
 
         $xform->setObjectparams('main_table', 'pz_wiki');
         $xform->setObjectparams('main_id', $this->page->getId());
@@ -461,7 +460,7 @@ class pz_project_wiki_screen
             $class = $mode == $active ? ' active' : '';
             $url = $this->url([
                 'wiki_version_id' => 'history' === $mode ? '' : $this->versionId,
-                'mode' => $mode
+                'mode' => $mode,
             ]);
             $return .= '<li><a class="tabnav-tab' . $class . '" href="javascript:pz_loadPage(\'project_wiki_page\', \'' . $url . '\')"><span>' . pz_i18n::msg('wiki_' . $mode) . '</span></a></li>';
         }
@@ -478,7 +477,7 @@ class pz_project_wiki_screen
     {
         return pz::url('screen', 'project', 'wiki', array_merge([
             'project_id' => $this->project->getId(),
-            'wiki_id' => $this->pageId
+            'wiki_id' => $this->pageId,
         ], $params), $split);
     }
 }

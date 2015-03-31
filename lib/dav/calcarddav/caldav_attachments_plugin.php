@@ -8,6 +8,6 @@ class pz_sabre_caldav_attachments_plugin extends Sabre\DAV\ServerPlugin
 
     public function getFeatures()
     {
-        return array('calendar-managed-attachments');
+        return ['calendar-managed-attachments'];
     }
 }

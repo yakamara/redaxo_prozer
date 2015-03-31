@@ -97,7 +97,7 @@ class pz_calendar_attendee extends pz_calendar_element
 
     public static function create()
     {
-        $attendee = new self;
+        $attendee = new self();
         $attendee->new = true;
         return $attendee;
     }
@@ -120,9 +120,7 @@ class pz_calendar_attendee extends pz_calendar_element
                 } else {
                     $values .= '(?,?,?,?,?,?),';
                     array_push($params, $id, $attendee->user_id, $attendee->email, $attendee->name, $attendee->status, $time);
-
                 }
-
             }
             pz_sql::factory()->setQuery('
                 INSERT INTO ' . self::TABLE . ' (event_id, user_id, email, name, status, timestamp)

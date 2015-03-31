@@ -4,8 +4,6 @@ use Sabre\CardDAV\Backend\AbstractBackend;
 use Sabre\CardDAV\Plugin;
 use Sabre\DAV\Exception\Forbidden;
 use Sabre\VObject\Component;
-use Sabre\VObject\Parameter;
-use Sabre\VObject\Property;
 use Sabre\VObject\Reader;
 
 class pz_sabre_carddav_backend extends AbstractBackend
@@ -16,27 +14,27 @@ class pz_sabre_carddav_backend extends AbstractBackend
 
     public function __construct()
     {
-        $this->knownLabels = array('WORK', 'HOME', 'IPHONE', 'CELL', 'FAX', 'PAGER', 'OTHER', 'MAIN');
+        $this->knownLabels = ['WORK', 'HOME', 'IPHONE', 'CELL', 'FAX', 'PAGER', 'OTHER', 'MAIN'];
     }
 
     public function getAddressBooksForUser($principalUri)
     {
         if (!pz::getUser()->isAdmin() && !pz::getUser()->hasPerm('carddav')) {
-            return array();
+            return [];
         }
-        return array(array(
+        return [[
             'id' => 1,
             'uri' => 'prozer_addressbook',
             'principaluri' => $principalUri,
             '{DAV:}displayname' => 'prozer',
             '{' . Plugin::NS_CARDDAV . '}addressbook-description' => '',
-            '{http://calendarserver.org/ns/}getctag' => pz::getConfig('addressbook_ctag', 0)
-        ));
+            '{http://calendarserver.org/ns/}getctag' => pz::getConfig('addressbook_ctag', 0),
+        ]];
     }
 
     public function getCards($addressbookId)
     {
-        $addresses = array($this->getGroup());
+        $addresses = [$this->getGroup()];
         foreach (pz_address::getAll() as $address) {
             if ($address->getVar('uri')) {
                 $addresses[] = $this->getCardMeta($address);
@@ -48,11 +46,11 @@ class pz_sabre_carddav_backend extends AbstractBackend
     protected function getCardMeta(pz_address $address)
     {
         $time = strtotime($address->getVar('updated'));
-        return array(
+        return [
             'uri' => $address->getVar('uri'),
             'lastmodified' => $time,
-            'etag' => '"' . $time . '"'
-        );
+            'etag' => '"' . $time . '"',
+        ];
     }
 
     public function getCard($addressBookId, $cardUri)
@@ -78,15 +76,15 @@ class pz_sabre_carddav_backend extends AbstractBackend
         $card->rev = (new DateTime(null, new DateTimeZone('UTC')))->format('Ymd\\THis\\Z');
         $card->uid = self::GROUP;
         $sql = pz_sql::factory();
-        $sql->setQuery('SELECT uri FROM pz_address WHERE created_user_id = ?', array(pz::getUser()->getId()));
+        $sql->setQuery('SELECT uri FROM pz_address WHERE created_user_id = ?', [pz::getUser()->getId()]);
         foreach ($sql as $row) {
             $card->add($card->createProperty('X-ADDRESSBOOKSERVER-MEMBER', 'urn:uuid:' . str_replace('.vcf', '', $sql->getValue('uri'))));
         }
-        return array(
+        return [
             'uri' => self::GROUP . '.vcf',
             'lastmodified' => time(),
-            'carddata' => $card->serialize()
-        );
+            'carddata' => $card->serialize(),
+        ];
     }
 
     private function getCardArray(pz_address $address)
@@ -111,11 +109,11 @@ class pz_sabre_carddav_backend extends AbstractBackend
         }
 
         $sql = pz_sql::factory();
-        $fields = $sql->getArray('SELECT * FROM pz_address_field WHERE address_id = ? ORDER BY type ASC, preferred DESC', array($address->getId()));
-        $add = array();
+        $fields = $sql->getArray('SELECT * FROM pz_address_field WHERE address_id = ? ORDER BY type ASC, preferred DESC', [$address->getId()]);
+        $add = [];
         foreach ($fields as $row) {
-            if ($row['type'] = 'IMPP' && in_array($row['value_type'], array('AIM', 'ICQ', 'Jabber', 'MSN', 'Yahoo'))) {
-                $newRow = array();
+            if ($row['type'] = 'IMPP' && in_array($row['value_type'], ['AIM', 'ICQ', 'Jabber', 'MSN', 'Yahoo'])) {
+                $newRow = [];
                 $newRow['type'] = 'X-' . strtoupper($row['value_type']);
                 $newRow['label'] = $row['label'];
                 $newRow['preferred'] = $row['preferred'];
@@ -170,11 +168,12 @@ class pz_sabre_carddav_backend extends AbstractBackend
     }
 
     /**
-     * Creates a new card
+     * Creates a new card.
      *
      * @param mixed  $addressBookId
      * @param string $cardUri
      * @param string $cardData
+     *
      * @return bool
      */
     public function createCard($addressBookId, $cardUri, $cardData)
@@ -202,11 +201,12 @@ class pz_sabre_carddav_backend extends AbstractBackend
     }
 
     /**
-     * Updates a card
+     * Updates a card.
      *
      * @param mixed  $addressBookId
      * @param string $cardUri
      * @param string $cardData
+     *
      * @return bool
      */
     public function updateCard($addressBookId, $cardUri, $cardData)
@@ -220,7 +220,7 @@ class pz_sabre_carddav_backend extends AbstractBackend
 
         $sql = $this->getSql($card);
 
-        $sql->setWhere(array('uri' => $cardUri));
+        $sql->setWhere(['uri' => $cardUri]);
         $sql->update();
 
         $address = pz_address::getByUri($cardUri);
@@ -269,12 +269,12 @@ class pz_sabre_carddav_backend extends AbstractBackend
     {
         $addressId = $address->getId();
         $sql = pz_sql::factory();
-        $sql->setQuery('DELETE FROM pz_address_field WHERE address_id = ?', array($addressId));
+        $sql->setQuery('DELETE FROM pz_address_field WHERE address_id = ?', [$addressId]);
 
         $count = 0;
-        $params = array();
-        $fields = array('EMAIL', 'TEL', 'ADR', 'X-SOCIALPROFILE', 'URL', 'IMPP', 'X-ABDATE', 'X-ABRELATEDNAMES');
-        $imppFields = array('X-AIM', 'X-ICQ', 'X-JABBER', 'X-MSN', 'X-YAHOO');
+        $params = [];
+        $fields = ['EMAIL', 'TEL', 'ADR', 'X-SOCIALPROFILE', 'URL', 'IMPP', 'X-ABDATE', 'X-ABRELATEDNAMES'];
+        $imppFields = ['X-AIM', 'X-ICQ', 'X-JABBER', 'X-MSN', 'X-YAHOO'];
         $imppIsset = isset($card->impp);
         foreach ($card->children() as $property) {
             if (!in_array($property->name, $fields) && ($imppIsset || !in_array($property->name, $imppFields))) {
@@ -283,7 +283,7 @@ class pz_sabre_carddav_backend extends AbstractBackend
 
             ++$count;
             $type = $property->name;
-            $label = array();
+            $label = [];
             $preferred = 0;
             $value = (string) $property;
             $value_type = '';
@@ -340,16 +340,17 @@ class pz_sabre_carddav_backend extends AbstractBackend
             array_push($params, $addressId, $type, $label, $preferred, $value, $value_type);
         }
         if ($count) {
-            $values = implode(',', array_pad(array(), $count, '(?, ?, ?, ?, ?, ?)'));
+            $values = implode(',', array_pad([], $count, '(?, ?, ?, ?, ?, ?)'));
             $sql->setQuery('INSERT INTO pz_address_field (address_id, type, label, preferred, value, value_type) VALUES ' . $values, $params);
         }
     }
 
     /**
-     * Deletes a card
+     * Deletes a card.
      *
      * @param mixed  $addressBookId
      * @param string $cardUri
+     *
      * @return bool
      */
     public function deleteCard($addressBookId, $cardUri)
@@ -363,11 +364,11 @@ class pz_sabre_carddav_backend extends AbstractBackend
 
     public static function import($cardData)
     {
-        $backend = new self;
+        $backend = new self();
         if (preg_match('/^(?:X-AB)?UID:(.*)(?::ABPerson)?\s?$/Umi', $cardData, $matches)) {
             $uri = $matches[1] . '.vcf';
             $sql = pz_sql::factory();
-            $sql->setQuery('SELECT id FROM pz_address WHERE uri = ?', array($uri));
+            $sql->setQuery('SELECT id FROM pz_address WHERE uri = ?', [$uri]);
             if ($sql->getRows() == 0) {
                 $backend->createCard(1, $uri, $cardData);
             } else {
@@ -382,12 +383,11 @@ class pz_sabre_carddav_backend extends AbstractBackend
 
     public static function export(pz_address $address)
     {
-        $backend = new self;
+        $backend = new self();
         $arr = $backend->getCardArray($address);
         $card = $arr['carddata'];
         return preg_replace('/^UID:(.*)\s$/im', 'X-ABUID:$1:ABPerson', $card);
     }
-
 
     public function updateAddressBook($addressBookId, \Sabre\DAV\PropPatch $propPatch)
     {
