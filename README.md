@@ -30,6 +30,7 @@ Last Changes
 #### Bugs
 
 * Labels wurde nicht richtig erstellt.
+* E-Mails in einem archivierten Projekt, kann nun auch von Projekt-User gelesen werden.
 
 
 ### Version 3.0 beta4 // 28. November 2014
