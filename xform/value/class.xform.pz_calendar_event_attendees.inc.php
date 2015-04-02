@@ -120,11 +120,12 @@ class rex_xform_pz_calendar_event_attendees extends rex_xform_abstract
         $f->setVar('html_id', $this->getHTMLId('attendee_hidden'), false);
         $attendees_output .= '<div id="'.$this->getHTMLId('attendee_hidden_div').'" class="hidden">'.$f->parse($fragment).'</div>';
 
-        $field = '<a class="bt5" href="javascript:void(0);" onclick="
-						inp = $(\'#'.$this->getHTMLId('attendee_hidden').'\').clone();
-						inp.attr({ id: \'\' });
-						$(\'#'.$this->getHTMLId('attendee_hidden_div').'\').before(inp);
-						">+ '.pz_i18n::msg('add_attendee').'</a>';
+        $onclick = 'inp = $(\'#'.$this->getHTMLId('attendee_hidden').'\').clone(); '
+                 . 'inp.removeAttr(\'id\'); '
+                 . 'inp.addClass(\'pz_address_fields_attandees_clone\'); '
+                 . '$(\'#'.$this->getHTMLId('attendee_hidden_div').'\').before(inp); ';
+
+        $field = '<a class="bt5" href="javascript:void(0);" onclick="'.$onclick.'">+ '.pz_i18n::msg('add_attendee').'</a>';
         $f = new pz_fragment();
         $f->setVar('label', '<label></label>', false);
         $f->setVar('field', $field, false);

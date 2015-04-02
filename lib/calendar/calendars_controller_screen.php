@@ -69,9 +69,7 @@ class pz_calendars_controller_screen extends pz_calendars_controller
             // edit / add
 
             case('add_calendar_event'):
-                $return = '<script>pz_toggleSection(1);</script>';
-                $return .= pz_calendar_event_screen::getAddForm($p);
-                return $return;
+                return pz_calendar_event_screen::getAddForm($p);
 
             case('edit_calendar_event'):
                 $calendar_event_id = rex_request('calendar_event_id', 'string');

@@ -2841,10 +2841,10 @@ class pz_calendar_event_screen{
 
 		function calendar_event_add_form_updater()
 		{
-			booked = $("#calendar_event_add_form #xform-formular-booked input:checkbox:checked").val();
-			allday = $("#calendar_event_add_form #xform-formular-allday input:checkbox:checked").val();
-			project_id = $("#calendar_event_add_form #xform-formular-project_id select").val();
-			project_sub_id = $("#calendar_event_add_form #xform-formular-project_sub_id select").val();
+			var booked = $("#calendar_event_add_form #xform-formular-booked input:checkbox:checked").val();
+			var allday = $("#calendar_event_add_form #xform-formular-allday input:checkbox:checked").val();
+			var project_id = $("#calendar_event_add_form #xform-formular-project_id select").val();
+			var project_sub_id = $("#calendar_event_add_form #xform-formular-project_sub_id select").val();
 
 			if(allday == 1)
 			{
@@ -2862,6 +2862,7 @@ class pz_calendar_event_screen{
 				$("#calendar_event_add_form #xform-formular-allday input").removeAttr("checked");
 				$("#calendar_event_add_form #xform-formular-allday").hide();
 				$("#calendar_event_add_form .pz_address_fields_attandees").hide();
+				$("div.pz_address_fields_attandees").find("div.data.pz_address_fields_attandees_clone").remove();
 				$("#calendar_event_add_form #xform-formular-from").show();
 				$("#calendar_event_add_form #xform-formular-to").show();
 				$("#calendar_event_add_form #xform-formular-label-id").hide();
@@ -2990,8 +2991,8 @@ class pz_calendar_event_screen{
         {
             $return = $header.$form;
         }
-
-        $return = '<div id="calendar_event_form" class="design1col"><div id="calendar_event_add" class="design1col xform-add">'.$return.'</div></div>';
+        $script = '<script>pz_toggleSection(1);</script>';
+        $return = '<div id="calendar_event_form" class="design1col"><div id="calendar_event_add" class="design1col xform-add">'.$return.'</div>'.$script.'</div>';
         return $return;
 
     }
@@ -3238,9 +3239,9 @@ class pz_calendar_event_screen{
         {
             $return = $header.$return;
         }
+        $script = '<script>pz_toggleSection(1);</script>';
+        $return = '<div id="calendar_event_form" class="design1col"><div id="calendar_event_edit" class="design1col xform-edit">'.$return.'</div>'.$script.'</div>';
 
-        $return = '<div id="calendar_event_form" class="design1col"><div id="calendar_event_edit" class="design1col xform-edit">'.$return.'</div></div>';
-        $return .= '<script>pz_toggleSection(1);</script>';
         return $return;
 
     }

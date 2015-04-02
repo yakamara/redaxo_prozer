@@ -30,7 +30,7 @@ Last Changes
 #### Bugs
 
 * Labels wurde nicht richtig erstellt.
-
+* Kalender Add Form bug behoben.
 
 ### Version 3.0 beta4 // 28. November 2014
 
