@@ -31,6 +31,7 @@ Last Changes
 
 * Labels wurde nicht richtig erstellt.
 * E-Mails in einem archivierten Projekt, kann nun auch von Projekt-User gelesen werden.
+* Verschieben eines Ganztages Termins ist nun auch möglich. 
 
 
 ### Version 3.0 beta4 // 28. November 2014
