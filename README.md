@@ -31,6 +31,8 @@ Last Changes
 
 * Labels wurde nicht richtig erstellt.
 * E-Mails in einem archivierten Projekt, kann nun auch von Projekt-User gelesen werden.
+* E-Mail Upload Bug is fixed.
+* Der Bug mit Doppelten Anhängen ist behoben.
 
 
 ### Version 3.0 beta4 // 28. November 2014

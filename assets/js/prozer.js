@@ -648,7 +648,7 @@ function pz_clip_deselect(clip_id, hidden_field)
 {
   hf = $(hidden_field);
   hf.val( hf.val().replace(clip_id+",","") );
-  $("li.qq-upload-success.clip-"+clip_id).remove();
+  $("li.qq-upload-success.clip-"+clip_id).fadeOut();
   pz_clipboard_init();
 }
 
