@@ -726,7 +726,6 @@ class pz_user
         $serialized_filter = serialize($filter);
         if ($refresh && !isset($this->cache['email_projects'][$serialized_filter])) {
             $filter[] = ['field' => 'has_emails', 'value' => 1];
-            $filter[] = ['field' => 'archived', 'value' => 0];
             $this->cache['email_projects'][$serialized_filter] = $this->_getProjects('(pu.emails = 1 OR pu.admin = 1)', true, $filter);
         }
 
@@ -810,7 +809,7 @@ class pz_user
         $filter[] = ['field' => 'spam', 'value' => 0];
         $filter[] = ['field' => 'status', 'value' => 0];
         $filter[] = ['field' => 'readed', 'value' => 0];
-        $projects = pz::getUser()->getEmailProjects();
+        $projects = pz::getUser()->getEmailProjects([['field' => 'archived', 'value' => 0]]);
 
         $pager = new pz_pager();
         pz_email::getAll($filter, $projects, [pz::getUser()], [], $pager);

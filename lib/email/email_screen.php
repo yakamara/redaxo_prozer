@@ -404,7 +404,8 @@ class pz_email_screen
         $project_name = pz_i18n::msg('please_select_project_for_email');
 
         $projects = [];
-        foreach (pz::getUser()->getEmailProjects() as $project) {
+        $filter = [['field' => 'archived', 'value' => 0]];
+        foreach (pz::getUser()->getEmailProjects($filter) as $project) {
             if ($this->email->getProjectid() == $project->getId()) {
                 $project_name = $project->getName();
             }
@@ -880,7 +881,8 @@ class pz_email_screen
         }
 
         if (!in_array('project_id', $ignore_fields)) {
-            $projects = pz::getUser()->getEmailProjects();
+            $filter = [['field' => 'archived', 'value' => 0]];
+            $projects = pz::getUser()->getEmailProjects($filter);
             $xform->setValueField('pz_select_screen', ['search_project_id', pz_i18n::msg('project'), pz_project::getProjectsAsString($projects), '', '', 0, pz_i18n::msg('please_choose')]);
         }
 
@@ -943,7 +945,8 @@ class pz_email_screen
             $xform->setValueField('pz_email_textarea', ['body', pz_i18n::msg('email_body')]);
             // $xform->setValueField("textarea",array("html",pz_i18n::msg("email_html"),"","0"));
 
-            $projects = pz::getUser()->getEmailProjects();
+            $filter = [['field' => 'archived', 'value' => 0]];
+            $projects = pz::getUser()->getEmailProjects($filter);
             $xform->setValueField('pz_select_screen', ['project_id', pz_i18n::msg('project'), pz_project::getProjectsAsString($projects), '', '', 0, pz_i18n::msg('please_choose')]);
 
             $xform->setValueField('datestamp', ['created', 'mysql', '', '0', '1']);
@@ -1042,7 +1045,8 @@ class pz_email_screen
             $xform->setValueField('pz_attachment_screen', ['clip_ids', pz_i18n::msg('email_attachments')]);
             $xform->setValueField('pz_email_textarea', ['body', pz_i18n::msg('email_body')]);
             // $xform->setValueField("textarea",array("html",pz_i18n::msg("email_html"),"","0"));
-            $projects = pz::getUser()->getEmailProjects();
+            $filter = [['field' => 'archived', 'value' => 0]];
+            $projects = pz::getUser()->getEmailProjects($filter);
             $xform->setValueField('pz_select_screen', ['project_id', pz_i18n::msg('project'), pz::getProjectsAsArray($projects), '', '', 0, pz_i18n::msg('please_choose')]);
 
             $xform->setValueField('datestamp', ['created', 'mysql', '', '0', '1']);
