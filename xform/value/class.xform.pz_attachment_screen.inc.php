@@ -23,15 +23,13 @@ class rex_xform_pz_attachment_screen extends rex_xform_abstract
 						<div id="pz_multiupload_'.$this->getId().'"></div>
 					</div>
 					<script>
+					$("#'.$this->getFieldId().'").val("");
 					function pz_createUploader_'.$this->getId().'(){
 						var uploader = new qq.FileUploader({
 							element: document.getElementById(\'pz_multiupload_'.$this->getId().'\'),
 							action: \''.pz::url('screen', 'clipboard', 'upload', ['mode' => 'file']).'\',
-
 							template: \'<div class="qq-uploader"><div class="qq-upload-drop-area"><span>'.pz_i18n::msg('files_for_upload').'</span></div><div class="qq-upload-button">'.pz_i18n::msg('dragdrop_files_for_upload').'</div><ul class="qq-uploaded-list"></ul><ul class="qq-upload-list"></ul></div>\',
-
 							fileTemplate: \'<li><span class="qq-upload-file"></span><span class="qq-upload-spinner"></span><span class="qq-upload-size"></span><a class="qq-upload-cancel" href="javascript:void(0);">'.pz_i18n::msg('dragdrop_files_exit').'</a><span class="qq-upload-failed-text">'.pz_i18n::msg('dragdrop_files_upload_failed').'</span></li>\',
-
 							removeTemplate: \'<span class="clear_link"><a href="javascript:void(0);" onclick="\'+
 							\' pz_clip_deselect($(this).parents(\\\'li\\\').attr(\\\'data-clip_id\\\'),\\\'#'.$this->getFieldId().'\\\'); return; \'+
 						  \'">'.pz_i18n::msg('dragdrop_files_remove_from_list').'</a></span>\',
@@ -56,15 +54,14 @@ class rex_xform_pz_attachment_screen extends rex_xform_abstract
 							onSubmit: function() {
 							},
 							onComplete: function(id, fileName, result) {
-								pz_hidden = $("#'.$this->getFieldId().'");
+								var pz_hidden = $("#'.$this->getFieldId().'");
 								if(result.clipdata.id) {
 					    			pz_hidden.val(pz_hidden.val()+result.clipdata.id+",");
-					    			l = $("#pz_multiupload_'.$this->getId().' .qq-upload-list").children().length - 1;
-					    			m = $("#pz_multiupload_'.$this->getId().' .qq-upload-list li:eq("+l+")");
-					    			l +" ##  "+m.attr("data-clip_id",result.clipdata.id);
-					    			m.addClass("clip-"+result.clipdata.id);
+					    			m = $("#pz_multiupload_'.$this->getId().' .qq-upload-list").find("li:eq("+ id +")");
+                                    m.attr("data-clip_id", result.clipdata.id).addClass("clip-" + result.clipdata.id);
 					    			n = m.find(".qq-upload-file");
 					    			n.html(\'<a href="/screen/clipboard/get/?mode=download_clip&clip_id=\'+result.clipdata.id+\'">\'+n.html()+\'</a>\');
+
 					    			pz_clipboard_init();
 						    	}
 							},
@@ -90,7 +87,8 @@ class rex_xform_pz_attachment_screen extends rex_xform_abstract
             $output .= '
 							fileName = uploader._formatFileName("'.$file_name.'");
 							fileSize = uploader._formatSize('.$file_size.');
-
+							var pz_hidden = $("#'.$this->getFieldId().'");
+						    pz_hidden.val(pz_hidden.val()+'.$clip->getId().'+",");
 							li = (\'<li class="qq-upload-success clip-'.$clip->getId().'" data-clip_id="'.$clip->getId().'">\'+
 								\'<span class="qq-upload-file"><a href="/screen/clipboard/get/?mode=download_clip&clip_id='.$clip->getId().'" target="_blank">\'+fileName+\'</a></span>\'+
 								\'<span class="qq-upload-size">\'+fileSize+\'\'+
@@ -99,6 +97,8 @@ class rex_xform_pz_attachment_screen extends rex_xform_abstract
 								\'">'.pz_i18n::msg('dragdrop_files_remove_from_list').'</a></span></span></li>\');
 
 							uploaded_list.append(li);
+
+
 							';
         }
 
