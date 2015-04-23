@@ -522,7 +522,7 @@ if ($REX['VERSION'] != '4' || $REX['SUBVERSION'] < '6') {
     // ----- version 3.0
 
     $c->setQuery('ALTER TABLE `pz_email_account` ADD `smtp_login` VARCHAR( 255 ) NOT NULL AFTER `smtp` ,
-ADD `smtp_password` VARCHAR( 255 ) NOT NULL AFTER `smtp_login`;';
+ADD `smtp_password` VARCHAR( 255 ) NOT NULL AFTER `smtp_login`;');
 
 
 
