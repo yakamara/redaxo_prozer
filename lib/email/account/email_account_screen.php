@@ -137,6 +137,10 @@ class pz_email_account_screen
         $xform->setValueField('text', ['login', pz_i18n::msg('email_account_login'), '', '0']);
         $xform->setValueField('text', ['password', pz_i18n::msg('email_account_password'), '', '0']);
         $xform->setValueField('text', ['smtp', pz_i18n::msg('email_account_smtp_host'), '', '0']);
+        $xform->setValueField('text', ['smtp_login', pz_i18n::msg('email_account_smtp_login'), '', '0']);
+        $xform->setValueField('text', ['smtp_password', pz_i18n::msg('email_account_smtp_password'), '', '0']);
+
+
         $xform->setValueField('textarea', ['signature', pz_i18n::msg('email_account_signature'), '', '0']);
 
         $xform->setValueField('checkbox', ['ssl', pz_i18n::msg('email_account_secure_download'), '', 1]);
@@ -180,17 +184,20 @@ class pz_email_account_screen
 
         $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl']);
 
-        $xform->setValueField('text', ['name', pz_i18n::msg('email_account_name'), '', '0', '', '', '', '', '']);
+        $xform->setValueField('text', ['name', pz_i18n::msg('email_account_name'), '', '0']);
         $xform->setValidateField('empty', ['name', pz_i18n::msg('error_email_account_name_empty')]);
-        $xform->setValueField('text', ['email', pz_i18n::msg('email_account_email'), '', '0', '', '', '', '', '']);
+        $xform->setValueField('text', ['email', pz_i18n::msg('email_account_email'), '', '0']);
 
         $xform->setValueField('pz_select_screen', ['mailboxtype', pz_i18n::msg('email_account_mailboxtype'), 'imap,pop3']);
 
-        $xform->setValueField('text', ['host', pz_i18n::msg('email_account_host'), '', '0', '', '', '', '', '']);
-        $xform->setValueField('text', ['login', pz_i18n::msg('email_account_login'), '', '0', '', '', '', '', '']);
-        $xform->setValueField('text', ['password', pz_i18n::msg('email_account_password'), '', '0', '', '', '', '', '']);
-        $xform->setValueField('text', ['smtp', pz_i18n::msg('email_account_smtp_host'), '', '0', '', '', '', '', '']);
-        $xform->setValueField('textarea', ['signature', pz_i18n::msg('email_account_signature'), '', '0', '', '', '', '', '']);
+        $xform->setValueField('text', ['host', pz_i18n::msg('email_account_host'), '', '0']);
+        $xform->setValueField('text', ['login', pz_i18n::msg('email_account_login'), '', '0']);
+        $xform->setValueField('text', ['password', pz_i18n::msg('email_account_password'), '', '0']);
+        $xform->setValueField('text', ['smtp', pz_i18n::msg('email_account_smtp_host'), '', '0']);
+        $xform->setValueField('text', ['smtp_login', pz_i18n::msg('email_account_smtp_login'), '', '0']);
+        $xform->setValueField('text', ['smtp_password', pz_i18n::msg('email_account_smtp_password'), '', '0']);
+
+        $xform->setValueField('textarea', ['signature', pz_i18n::msg('email_account_signature'), '', '0']);
 
         $xform->setValueField('checkbox', ['ssl', pz_i18n::msg('email_account_secure_download'), '', '1']);
         $xform->setValueField('checkbox', ['delete_emails', pz_i18n::msg('email_account_delete_emails'), '', '1']);

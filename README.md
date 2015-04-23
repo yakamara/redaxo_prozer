@@ -24,7 +24,11 @@ license - still unclear - will be defined soon.
 Last Changes
 -------
 
-### Version 3.0 beta5 // xx. xx 2014
+### Version 3.0 // xx. xx 2014
+
+#### Neu
+
+* Emailsetup: SMTP um eigenes Login und Passwort ergänzt
 
 
 #### Bugs

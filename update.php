@@ -12,8 +12,11 @@ $sql->setQuery('ALTER TABLE `pz_history` ADD `message` VARCHAR( 255 ) NOT NULL ;
 $sql->setQuery('ALTER TABLE `pz_wiki` DROP `stamp`;');
 $sql->setQuery('ALTER TABLE `pz_wiki` ADD `created` DATETIME NOT NULL , ADD `create_user_id` INT(10) UNSIGNED NOT NULL , ADD `updated` DATETIME NOT NULL , ADD `update_user_id` INT(10) UNSIGNED NOT NULL ;');
 $sql->setQuery('ALTER TABLE `pz_wiki` ADD `admin` TINYINT(1) NOT NULL');
-
 $sql->setQuery('ALTER TABLE `pz_calendar_alarm` ADD `default` TINYINT(1) NOT NULL ;');
+
+// Change to 3.0
+$sql->setQuery('ALTER TABLE `pz_email_account` ADD `smtp_login` VARCHAR( 255 ) NOT NULL AFTER `smtp` ,
+ADD `smtp_password` VARCHAR( 255 ) NOT NULL AFTER `smtp_login`;';
 
 // -------------------------------------------------  allways check
 $dav_path = rex_path::addonData('prozer', 'dav');

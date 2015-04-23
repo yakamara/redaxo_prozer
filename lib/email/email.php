@@ -705,9 +705,13 @@ class pz_email extends pz_model
                 $mail->WordWrap         = '1000';
                 // $mail->Encoding         = "base64";
                 $mail->Priority         = 'normal';
-                $mail->SMTPAuth         = true;
-                $mail->Username         = $email_account->getSMTPLogin();
-                $mail->Password         = $email_account->getSMTPPassword();
+                $mail->SMTPAuth         = false;
+
+                if ($email_account->getSMTPLogin() != "" && $email_account->getSMTPPassword() != "") {
+                    $mail->SMTPAuth       = true;
+                    $mail->Username         = $email_account->getSMTPLogin();
+                    $mail->Password         = $email_account->getSMTPPassword();
+                }
 
                 $mail->SetFrom($email_account->getEmail(), $email_account->getName());
                 $mail->Subject = $this->getSubject();

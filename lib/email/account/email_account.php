@@ -137,12 +137,12 @@ class pz_email_account extends pz_model
 
     public function getSMTPLogin()
     {
-        return $this->getVar('login');
+        return $this->getVar('smtp_login');
     }
 
     public function getSMTPPassword()
     {
-        return $this->getVar('password');
+        return $this->getVar('smtp_password');
     }
 
     public function getSignature()
