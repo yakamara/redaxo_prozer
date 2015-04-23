@@ -31,6 +31,8 @@ Last Changes
 
 * Labels wurde nicht richtig erstellt.
 * E-Mails in einem archivierten Projekt, kann nun auch von Projekt-User gelesen werden.
+* Das mehrfach löschen, von Anhängen, war nicht möglich.
+* Anhänge wurden nach dem Löschen, noch mit gesendet, Doppelte Anhaenge die folge.
 * Verschieben eines Ganztages Termins ist nun auch möglich. 
 
 
