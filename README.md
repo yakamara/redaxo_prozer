@@ -38,6 +38,7 @@ Last Changes
 * Kalender Add Form bug behoben.
 * Das mehrfach löschen, von Anhängen, war nicht möglich.
 * Anhänge wurden nach dem Löschen, noch mit gesendet, Doppelte Anhaenge die folge.
+* Verschieben eines Ganztages Termins ist nun auch möglich. 
 
 ### Version 3.0 beta4 // 28. November 2014
 

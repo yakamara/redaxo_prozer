@@ -1164,8 +1164,8 @@ function pz_calendarweek_rearrange_events()
       start_b = parseInt( ($(b).attr("data-event-hour-start") * 60) ) + parseInt($(b).attr("data-event-minute-start"));
       if (start_a < start_b) return -1;
       if (start_a > start_b) return 1;
-      height_a = parseInt($(a).attr("data-event-minute-duration"));;
-      height_b = parseInt($(b).attr("data-event-minute-duration"));;
+      height_a = parseInt($(a).attr("data-event-minute-duration"));
+      height_b = parseInt($(b).attr("data-event-minute-duration"));
       if (height_a > height_b) return -1;
       if (height_a < height_b) return 1;
       
@@ -1293,89 +1293,92 @@ function pz_calendarweek_rearrange_events()
 }
 
 function pz_set_calendarweek_dragresize_init() {
+    $("#calendar_events_week_list .dragable").draggable({
+        containment: "#calendar_events_week_list .calendargrid",
+        cursor: "move",
+        axis: "x,y",
+        delay: "200",
+        grid: [15, 15],
+        opacity: 0.75,
+        scroll: true,
+        start: function(event, ui) {
+            $(".draggable").css("z-index","auto");
+            $(this).css("z-index","10000");
+            box_width = $('li[data-grid="allday"]').width();
+            box_height = 15;
+            $("#calendar_events_week_list .dragable" ).draggable( "option", "grid", [box_width, box_height] );
+        },
+        stop: function(event, ui) {
+            var $_this = $(this);
+            var start_position, dd;
+            var dcp = $_this.data("calc-position");
+            var ehs = $_this.data("event-hour-start");
+            var ems = $_this.data("event-minute-start");
+            var start_minutes = parseInt( (ehs * 60) ) + parseInt(ems);
+            var cem_min = ui.position.top-start_minutes; //calendar_event_move_minutes
+            var box_width = $('li[data-grid="allday"]').width();
 
-	$("#calendar_events_week_list .dragable").draggable({
-		containment: "#calendar_events_week_list .calendargrid",
-		cursor: "move",
-		axis: "x,y",
-		delay: "200",
-		grid: [15, 15],
-		opacity: 0.75,
-		scroll: true,
-   	start: function(event, ui) {
-   		$(".draggable").css("z-index","auto");
-   		$(this).css("z-index","10000");
+            if($(this).data("calc-position")) {
+                start_position = parseInt(dcp) * box_width;
+            } else {
+                start_position = parseInt($_this.data("calc-end")) - box_width;
+            }
 
-      box_width = $('li[data-grid="allday"]').width();
-      box_height = 15;
-   		$("#calendar_events_week_list .dragable" ).draggable( "option", "grid", [box_width, box_height] );
-   		
-   	},
+            dd = parseInt ( parseInt(ui.position.left) - start_position); //  - parseInt( box_width / 2 )
+            if(dd < 0) {
+                dd = dd - box_width + 2; // weil events kleiner sein können
+            }
+            dd = parseInt (dd / box_width);
+            if(dd != 0) {
+                cem_min = cem_min + ( dd * 1440 );
+            }
+            var calendar_event_id = $(this).attr("id").replace("event-","");
+            pz_loading_start("#"+$(this).attr("id"));
+            $.get(pz_event_day_url, {
+                    mode: "move_event",
+                    calendar_event_id: calendar_event_id,
+                    calendar_event_move_minutes: cem_min
+                },
+                function(data){
+                    if(data.status == 1) {
+                        $("#event-" + calendar_event_id).replaceWith(data.calendar_event_dayview);
+                        pz_calendarweek_rearrange_events();
+                        pz_set_calendarweek_dragresize_init();
+                    } else {
+                        pz_calendarweek_rearrange_events();
+                        pz_loading_end("#event-" + calendar_event_id);
+                    }
+                }, "json");
+        }
+    });
 
-   	stop: function(event, ui) {
-      var start_minutes = parseInt( ($(this).attr("data-event-hour-start") * 60) ) + parseInt($(this).attr("data-event-minute-start"));
-    	var calendar_event_move_minutes = ui.position.top-start_minutes;
+    $( "#calendar_events_week_list .resizeable").resizable({
+        handles: "s",
+        minHeight: "15",
+        grid: [0, 15],
+        stop: function(e, ui) {
+            var calendar_event_id = $(this).attr("id").replace("event-","");
+            var calendar_event_extend_minutes = parseInt($(this).outerHeight(true)) - parseInt($(this).attr("data-event-minute-duration"));
 
-      var box_width = $('li[data-grid="allday"]').width();
-      var start_position = parseInt($(this).attr("data-calc-position")) * box_width;
-      dd = parseInt ( parseInt(ui.position.left) - start_position); //  - parseInt( box_width / 2 )
-      if(dd < 0) {
-        dd = dd - box_width + 2; // weil events kleiner sein können
-      }
-      dd = parseInt (dd / box_width);
-      if(dd != 0) {
-        calendar_event_move_minutes = calendar_event_move_minutes + ( dd * 1440 );
-      }
+            pz_loading_start("#"+$(this).attr("id"));
 
-   		var calendar_event_id = $(this).attr("id").replace("event-","");
-		  pz_loading_start("#"+$(this).attr("id"));
-		  
-   		$.get(pz_event_day_url, {
-   		  mode: "move_event", 
-   		  calendar_event_id: calendar_event_id, 
-   		  calendar_event_move_minutes: calendar_event_move_minutes,
-   		},
-   		  function(data){
-   		    if(data.status == 1) {
-   		   	  $("#event-" + calendar_event_id).replaceWith(data.calendar_event_dayview);
-   		   	  pz_calendarweek_rearrange_events();
-   		   	  pz_set_calendarweek_dragresize_init();
-   		    } else {
-   		      pz_calendarweek_rearrange_events();
-   		      pz_loading_end("#event-" + calendar_event_id);
-   		    }
-   		}, "json");
-	  }
-	});
-	
-	$( "#calendar_events_week_list .resizeable").resizable({
-		handles: "s",
-		minHeight: "15",
-		grid: [0, 15],
-		stop: function(e, ui) {
-   		var calendar_event_id = $(this).attr("id").replace("event-","");
-   		var calendar_event_extend_minutes = parseInt($(this).outerHeight(true)) - parseInt($(this).attr("data-event-minute-duration"));
-
-		  pz_loading_start("#"+$(this).attr("id"));
-
-   		$.get(pz_event_day_url, {
-	   	  mode: "extend_event_by_minutes", 
-	   		calendar_event_id: calendar_event_id, 
-	   		calendar_event_extend_minutes: calendar_event_extend_minutes,
-	   	},
-	   	  function(data){
-	   		  if(data.status == 1) {
-   		   	  $("#event-" + calendar_event_id).replaceWith(data.calendar_event_dayview);
-   		   	  pz_calendarweek_rearrange_events();
-   		   	  pz_set_calendarweek_dragresize_init();
-   		    } else {
-   		      pz_calendarweek_rearrange_events();
-   		      pz_loading_end("#event-" + calendar_event_id);
-   		    }
-	   	}, "json");
-		}
-   });
-
+            $.get(pz_event_day_url, {
+                    mode: "extend_event_by_minutes",
+                    calendar_event_id: calendar_event_id,
+                    calendar_event_extend_minutes: calendar_event_extend_minutes,
+                },
+                function(data){
+                    if(data.status == 1) {
+                        $("#event-" + calendar_event_id).replaceWith(data.calendar_event_dayview);
+                        pz_calendarweek_rearrange_events();
+                        pz_set_calendarweek_dragresize_init();
+                    } else {
+                        pz_calendarweek_rearrange_events();
+                        pz_loading_end("#event-" + calendar_event_id);
+                    }
+                }, "json");
+        }
+    });
 }
 
 
