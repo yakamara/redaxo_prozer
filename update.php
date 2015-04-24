@@ -16,7 +16,7 @@ $sql->setQuery('ALTER TABLE `pz_calendar_alarm` ADD `default` TINYINT(1) NOT NUL
 
 // Change to 3.0
 $sql->setQuery('ALTER TABLE `pz_email_account` ADD `smtp_login` VARCHAR( 255 ) NOT NULL AFTER `smtp` ,
-ADD `smtp_password` VARCHAR( 255 ) NOT NULL AFTER `smtp_login`;';
+ADD `smtp_password` VARCHAR( 255 ) NOT NULL AFTER `smtp_login`;');
 
 // -------------------------------------------------  allways check
 $dav_path = rex_path::addonData('prozer', 'dav');
