@@ -1,4 +1,5 @@
-.dragable {
+.dragable,
+.dragable2 {
   cursor: move;
 }
 
