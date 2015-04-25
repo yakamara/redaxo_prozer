@@ -27,7 +27,7 @@ class rex_xform_validate_pz_project_jobevent_id extends rex_xform_validate_abstr
                     $projects = pz::getUser()->getCalendarJobsProjects($filter);
                     $error_msg = $this->getElement(4);
                 } else {
-                    $projects = pz::getUser()->getCalendarProjects($filter);
+                    $projects = pz::getUser()->getCalendarCalProjects($filter);
                     $error_msg = $this->getElement(5);
                 }
 
