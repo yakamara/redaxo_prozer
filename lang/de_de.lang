@@ -126,6 +126,7 @@ page_project_history = Logbuch
 dragdrop_files_for_upload = Dateien zum Upload auswählen / per Drag & Drop ablegen
 dragdrop_file_for_upload = Datei zum Upload auswählen / per Drag & Drop ablegen
 file_for_upload = per Drag & Drop ablegen
+files_for_upload = per Drag & Drop ablegen
 dragdrop_files_upload_failed = fehlgeschlagen
 dragdrop_files_exit = abbrechen
 dragdrop_files_remove_from_list = aus Liste entfernen
