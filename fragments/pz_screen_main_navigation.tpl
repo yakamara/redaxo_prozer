@@ -10,7 +10,7 @@
 		if (isset($item["classes"]) && $item["classes"] != '') $class = ' '.$item["classes"];
 		echo '<li class="lev1'.$active.$class.'">';
 		
-		$a = '<a class="lev1'.$active.$class.'" href="'.$item["url"].'">'.$item["name"];
+		$a = '<a class="lev1'.$active.$class.'" href="'.$item["url"].'" title="'.pz_i18n::msg($item["name"]).'">'.pz_i18n::msg($item["name"]);
 		if (isset($item["span"]) && $item["span"] != "")
 			$a .= '<span class="info info1"><span class="inner">'.$item["span"].'</span></span>';
 		$a .= '</a>';

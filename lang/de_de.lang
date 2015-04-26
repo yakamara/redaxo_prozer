@@ -86,6 +86,8 @@ clipboard = Clipboard
 creator = Ersteller
 calendars = Kalender
 projects = Projekte
+addresses = Adressen
+tools = Tools
 
 title = Titel
 hours = Stunden
