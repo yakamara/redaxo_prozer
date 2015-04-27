@@ -2874,11 +2874,11 @@ body#login #footer ul li {
   background-color: #06a9d6;
 }
 .chzn-container .chzn-results li em {
-  background: #feffde;
+  background-color: #cfdce2;
   font-style: normal;
 }
 .chzn-container .chzn-results .highlighted em {
-  background: transparent;
+  background-color: #0083af;
 }
 .chzn-container .chzn-results .no-results {
   background: #f4f4f4;
