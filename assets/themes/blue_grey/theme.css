@@ -925,7 +925,7 @@ ul.actions li.action a.down:hover {
 
 .email.email-hasattachments section.preview {
   padding-left:17px;
-  background:url(ic_file_15.png) 0 50% no-repeat;
+  background:url(ic_file_15.png) 0 5px no-repeat;
 }
 
 .email a.add {

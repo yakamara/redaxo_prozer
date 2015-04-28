@@ -315,7 +315,7 @@ class pz_email_screen
             </header>
 
             <section class="content preview" id="email-content-preview-'.$this->email->getId().'">
-              <p>'.pz::cutText($this->email->getBody(), '60').'&nbsp;</p>
+              <p>'.pz::cutText($this->email->getBody(), '150').'&nbsp;</p>
             </section>
 
             <section class="content detail" id="email-content-detail-'.$this->email->getId().'"></section>
@@ -546,7 +546,7 @@ class pz_email_screen
             </header>
 
             <section class="content preview" id="email-content-preview-'.$this->email->getId().'">
-              <p>'.htmlspecialchars(pz::cutText($this->email->getBody(), '50')).'&nbsp;</p>
+              <p>'.htmlspecialchars(pz::cutText($this->email->getBody(), '150')).'&nbsp;</p>
             </section>
 
             <section class="content detail" id="email-content-detail-'.$this->email->getId().'"></section>

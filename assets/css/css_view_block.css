@@ -184,7 +184,7 @@ article.block footer span.label {
 
 .email.block > header {
   margin: -10px -10px 0 -10px;
-  padding: 10px;
+  padding: 10px 10px 0 10px;
 }
 .email.block header .grid2col .column.first {
   width: 60%;
@@ -209,7 +209,7 @@ article.block footer span.label {
   padding: 0;
 }
 .email.block section.content.preview {
-  margin-right: 300px;
+  margin-right: 260px;
 }
 .email.block.open section.content  {
   margin: 0;
