@@ -1767,9 +1767,12 @@ class pz_calendar_event_screen{
         $available_events = array();
         foreach($events as $event)
         {
-            if(is_object($event))
-                if($from = @$event->getFrom())
-                    $available_events[$from->format("Ymd")] = $from->format("Ymd");
+            if(is_object($event)) {
+                if($from = @$event->getFrom()) {
+                    $attandees = count($event->getAttendees());
+                    $available_events[$from->format("Ymd")] = $attandees;
+                }
+            }
         }
 
         $return .= '
@@ -1822,8 +1825,10 @@ class pz_calendar_event_screen{
                 else $classes[] = "weekday";
 
                 if($month->format("Ymd") == $today->format("Ymd")) $classes[] = "today";
+                //if($month->format("Ymd") == $day->format("Ymd")) $classes[] = "selected";
 
                 if(isset($available_events[$month->format("Ymd")])) $classes[] = "event";
+                if(isset($available_events[$month->format("Ymd")]) && $available_events[$month->format("Ymd")] > 0) $classes[] = "attendees";
 
                 if($current_month > $month->format("m")) $classes[] = "month-before";
                 elseif($current_month < $month->format("m")) $classes[] = "month-after";
