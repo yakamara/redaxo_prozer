@@ -27,7 +27,7 @@ abstract class pz_calendar_element
 
     protected function getValue($key)
     {
-        return $this->$key;
+        return stripslashes($this->$key);
     }
 
     protected function setValue($key, $value)
