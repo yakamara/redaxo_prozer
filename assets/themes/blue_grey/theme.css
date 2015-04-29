@@ -1841,15 +1841,6 @@ clear:both;
 .calendar table.overview td.month-after a {
   color: #aaabad;
 }
-.calendar table.overview td.attendees a {
-  position: relative;
-}
-.calendar table.overview td.attendees a:after {
-  content: '*';
-  position: absolute;
-  top: 0;
-  right: 0;
-}
 .calendar table.overview td.event a {
   color: #06a9d6;
 }
