@@ -517,6 +517,8 @@ comment = Kommentar
 createuser = Ersteller
 updateuser = aktualisiert von
 
+startpage = Startseite
+
 email = E-Mail
 emails = E-Mails
 calendar = Kalender
