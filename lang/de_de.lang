@@ -365,6 +365,10 @@ project_file_comment = Kommentar
 project_file_path = Pfad
 project_file_name = Name
 
+project_action_info = Projekt Information
+project_last_user_action = Letzte Aktion von
+project_last_update = Letzte Aktion
+
 add_project = Projekt anlegen
 edit_project = Projekt bearbeiten
 

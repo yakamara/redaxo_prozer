@@ -178,12 +178,14 @@ class pz_project_controller_screen extends pz_project_controller
 
         $section_1 = '';
         $section_2 = '';
+        $metaifo   = '';
 
         $p['linkvars']['mode'] = 'list';
 
         // ----------------------- editform
         $ps = new pz_project_screen($this->project);
         if ($this->projectuser->isAdmin()) {
+            $metaifo = $ps->getMetaInfoView();
             $edit_form = $ps->getEditForm($p);
         } else {
             $edit_form = $ps->getViewForm($p);
@@ -237,9 +239,9 @@ class pz_project_controller_screen extends pz_project_controller
                 break;
         }
 
-        $section_1 = $edit_form;
-        $section_2 = $entries_list;
 
+        $section_1 = $edit_form.$metaifo;
+        $section_2 = $entries_list;
         $p = [];
         $f = new pz_fragment();
         $f->setVar('header', pz_screen::getHeader(), false);

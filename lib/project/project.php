@@ -178,12 +178,14 @@ class pz_project extends pz_model
         return $stream;
     }
 
-    public function getHistoryEntries($filter = [])
+    public function getHistoryEntries($filter = [], $limit = 1000)
     {
         $filter[] = ['type' => '=', 'field' => 'project_id', 'value' => $this->getId()];
-        $return = pz_history::get($filter);
+        $return = pz_history::get($filter, $limit);
         return $return;
     }
+
+
 
     // -----------------------------
 
