@@ -697,6 +697,13 @@ class pz_user
         return $this->_getProjects('(pu.calendar_jobs = 1 OR pu.admin = 1)', true, $filter);
     }
 
+    public function getCalendarCalProjects($filter = [])
+    {
+        $filter[] = ['field' => 'has_calendar', 'value' => 1];
+        $filter[] = ['field' => 'archived', 'value' => 0];
+        return $this->_getProjects('(pu.calendar = 1 OR pu.admin = 1)', true, $filter);
+    }
+
     public function getCalDavProjects($filter = [])
     {
         $filter[] = ['field' => 'has_calendar', 'value' => 1];
