@@ -386,6 +386,26 @@ class pz
 
     // ----------- tools
 
+    public static function stripSlashes($a)
+    {
+
+        $process = array(&$a);
+        while (list($key, $val) = each($process)) {
+            foreach ($val as $k => $v) {
+                unset($process[$key][$k]);
+                if (is_array($v)) {
+                    $process[$key][stripslashes($k)] = $v;
+                    $process[] = &$process[$key][stripslashes($k)];
+                } else {
+                    $process[$key][stripslashes($k)] = stripslashes($v);
+                }
+            }
+        }
+        unset($process);
+        return $a;
+        
+    }
+
     public static function cutText($text = '', $size = 30, $ext = ' ...', $style = 'left')
     {
         if ($style == 'left') {

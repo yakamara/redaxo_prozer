@@ -2934,6 +2934,8 @@ class pz_calendar_event_screen{
             $value_pool = $xform->getObjectparams("value_pool");
             $data = $value_pool["sql"];
 
+            $data = pz::stripSlashes($data);
+
             $format = 'Y-m-d H:i:s';
             $from = DateTime::createFromFormat($format, $data["from"]);
             $to = DateTime::createFromFormat($format, $data["to"]);
@@ -3181,6 +3183,8 @@ class pz_calendar_event_screen{
 
             $value_pool = $xform->getObjectparams("value_pool");
             $data = $value_pool["sql"];
+
+            $data = pz::stripSlashes($data);
 
             $format = 'Y-m-d H:i:s';
             $from = DateTime::createFromFormat($format, $data["from"]);
