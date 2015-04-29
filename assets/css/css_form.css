@@ -194,6 +194,17 @@
 .xform .xform1.xform-submit {
   text-align: right;
 }
+.xform .xform1 .xform-select-datetime-year, 
+.xform .xform1 .xform-select-datetime-month, 
+.xform .xform1 .xform-select-datetime-day, 
+.xform .xform1 .xform-select-datetime-hour, 
+.xform .xform1 .xform-select-datetime-minute {
+    width: auto;
+    margin: 0 3px;
+}
+.xform .xform1.xform-datetime select:first-child {
+    margin-left: 0;
+}
 
 
 
