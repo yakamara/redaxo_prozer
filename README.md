@@ -5,12 +5,6 @@ project-communication-software
 license - still unclear - will be defined soon.
 
 
-#### TODOS
--------
-* bei PROZER 2.0 Versionen
-** Passwörter neu setzen
-
-
 #### Installation
 -------
 * Download and install redaxo4 / http://www.redaxo.org
@@ -24,21 +18,39 @@ license - still unclear - will be defined soon.
 Last Changes
 -------
 
-### Version 3.0 // xx. xx 2014
+### Version 3.0 // 09. Mai 2015
 
 #### Neu
 
-* Emailsetup: SMTP um eigenes Login und Passwort ergänzt
+* E-Mail-Setup: SMTP um eigenes Login und Passwort ergänzt
+* Infobox im Projekt auf der Projektübersichtsseite eingebaut
+* Navigation Title Attribute hinzugefügt
+* E-Mail Übersicht: Infotexte verlängert auf 150 Zeichen
+* Adressen können nun auch nach ID (Neuester/Ältester) Eintrag sortiert werden.
+* E-Mail Entwürfe werden nun nach Erstellungsdatum sortiert
+* CalDav: Apple Default Alarm gesetzt. Unnötige Benachrichtigungen entfallen
 
+#### Info
+
+* SabreDav Update auf 2.1.1
 
 #### Bugs
 
 * Labels wurde nicht richtig erstellt.
 * E-Mails in einem archivierten Projekt, kann nun auch von Projekt-User gelesen werden
-* Kalender Add Form bug behoben.
+* Kalender Add Form bug behoben, es wurden nicht geprüft ob das Projekt "nur" Kalender (Keine Jobs) erlaubt.
 * Das mehrfach löschen, von Anhängen, war nicht möglich.
 * Anhänge wurden nach dem Löschen, noch mit gesendet, Doppelte Anhaenge die folge.
 * Verschieben eines Ganztages Termins ist nun auch möglich. 
+* Tagestermin verschieben eingebaur
+* XForm Datetime Template hinzugefügt - Visuelle Anpassung
+* Autocompleter. Suchstring ist nun sichtbar
+* Textergänzungen und Korrekturen
+* Kalender: Addslash Problem gelöst. Texte sehen nun nicht mehr so aus: test \"\> ..
+* Projektrechte können nun nachträglich verändert werden
+* Darstellung des MOnatsnames ist nun richtig (keine doppelte utf8 kodierung mehr)
+*
+
 
 ### Version 3.0 beta4 // 28. November 2014
 
