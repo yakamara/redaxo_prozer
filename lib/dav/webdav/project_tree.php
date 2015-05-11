@@ -1,6 +1,6 @@
 <?php
 
-class pz_sabre_project_tree extends Sabre\DAV\ObjectTree
+class pz_sabre_project_tree extends Sabre\DAV\Tree
 {
     public function __construct()
     {
