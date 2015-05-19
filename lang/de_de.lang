@@ -649,6 +649,9 @@ email_account_added = E-Mail-Account wurde hinzugefügt
 email_account_edit = E-Mail-Account editieren
 
 default_email_account = E-Mail-Konto
+default_user_email_account = Default E-Mail
+default_email_account_changed = Default E-Mail-Konto wurde geändert
+default_email_account_not_changed = Default E-Mail-Konto wurde nicht geändert
 
 emails_inbox = E-Mail Inbox
 emails_outbox = E-Mail Outbox

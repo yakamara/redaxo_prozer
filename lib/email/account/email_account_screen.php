@@ -13,9 +13,9 @@ class pz_email_account_screen
 
     public function getListView($p = [])
     {
-        $edit_link = "javascript:pz_loadPage('email_account_form','".pz::url('screen', $p['controll'], $p['function'], array_merge($p['linkvars'], ['mode' => 'edit_email_account', 'email_account_id' => $this->email_account->getId()]))."')";
-
-        $del_link = "javascript:pz_loadPage('email_accounts_list','".pz::url('screen', $p['controll'], $p['function'], array_merge($p['linkvars'], ['mode' => 'delete_email_account', 'email_account_id' => $this->email_account->getId()]))."')";
+        $edit_link    = "javascript:pz_loadPage('email_account_form','".pz::url('screen',  $p['controll'], $p['function'], array_merge($p['linkvars'], ['mode' => 'edit_email_account', 'email_account_id' => $this->email_account->getId()]))."')";
+        $del_link     = "javascript:pz_loadPage('email_accounts_list','".pz::url('screen', $p['controll'], $p['function'], array_merge($p['linkvars'], ['mode' => 'delete_email_account', 'email_account_id' => $this->email_account->getId()]))."')";
+        $default_link = "javascript:pz_loadPage('email_accounts_list','".pz::url('screen', $p['controll'], $p['function'], array_merge($p['linkvars'], ['mode' => 'default_user_email_account', 'default_account_id' => $this->email_account->getId()]))."')";
 
         $last_login = $this->email_account->getLastLoginDate();
         $last_login_finished = $this->email_account->getLastLoginFinishedDate();
@@ -49,6 +49,11 @@ class pz_email_account_screen
         // last_login - start login
         // last_login_finished - letzter gelungener abruf
 
+        if (pz::getUser()->getDefaultEmailAccountId() == $this->email_account->getVar('id')) {
+            $default_button = '<a class="bt5 inactive" style="line-height: 20px; cursor: default;" href="javascript:void(0);" >' . pz_i18n::msg('default_user_email_account') . '</a>';
+        } else {
+            $default_button = '<a class="bt2" href="'.$default_link.'">'.pz_i18n::msg('default_user_email_account').'</a>';
+        }
 
         $return = '
           <article>
@@ -61,6 +66,7 @@ class pz_email_account_screen
               </a>
             </header>
             <footer>
+              ' . $default_button . '
               <a class="bt2" href="'.$del_link.'">'.pz_i18n::msg('delete').'</a>
             </footer>
           </article>

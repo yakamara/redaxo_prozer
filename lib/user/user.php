@@ -621,6 +621,26 @@ class pz_user
         return false;
     }
 
+    public function saveDefaultUserEmailAccount ($id = 0)
+    {
+        if ($id != 0 && $id == pz::getUser()->getDefaultEmailAccountId()) {
+            return false;
+        }
+
+        $sql = pz_sql::factory();
+        $sql->setTable('pz_user')
+            ->setValue('account_id', $id)
+            ->setRawValue('updated', 'NOW()')
+            ->setWhere('id = ' . pz::getUser()->getId());
+
+        $res = $sql->update();
+        if(false === (boolean) $res->hasError()) {
+            $this->sql->setValue('account_id', $id);
+            return true;
+        }
+
+        return false;
+    }
     // -------------------------------------------------------------------- Users
 
     public static function getUsers($filter = [])
