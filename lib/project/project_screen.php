@@ -209,6 +209,7 @@ class pz_project_screen
                 $project->create();
             }
             $return = $header.'<p class="xform-info">'.pz_i18n::msg('project_added').'</p>'.$return;
+            $return .= pz_screen::getJSUpdateLayer('projects_list', pz::url('projects', $p['controll'], $p['function'], ['mode' => 'list']));
         } else {
             $return = $header.$return;
         }
@@ -261,7 +262,7 @@ class pz_project_screen
 
         if ($xform->getObjectparams('actions_executed')) {
             $this->project->update();
-            $return = $header.'<p class="xform-info">'.pz_i18n::msg('project_updated').'</p>'.$return;
+            $return  = $header.'<p class="xform-info">'.pz_i18n::msg('project_updated').'</p>'.$return;
         } else {
             $return = $header.$return;
         }
