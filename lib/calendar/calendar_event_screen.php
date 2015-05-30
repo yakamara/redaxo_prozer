@@ -2986,6 +2986,8 @@ class pz_calendar_event_screen{
 
                 $return = $header.'<p class="xform-info">'.pz_i18n::msg("calendar_event_added").'</p>';
                 $return .= '<script>pz_refresh_calendar_lists();</script>';
+                $return .= pz_screen::getJSDelayedUpdateLayer('calendar_event_add', pz::url('screen', $p['controll'], $p['function'], ['mode' => 'add_calendar_event']), 6000, 'xform-info');
+
 
             }else
             {

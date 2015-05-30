@@ -148,6 +148,26 @@ class pz_screen
 		--></script>';
     }
 
+    public static function getJSDelayedUpdateLayer($layer, $link, $time = 5000, $remove=null)
+    {
+        $fadeOut = '';
+        if ($remove) {
+            $fadeOut = 'setTimeout(function (){
+                          $("#'.$layer.'").find(".'.$remove.'").fadeOut(500);
+                        }, '.($time/100*80).');';
+        }
+
+        return '<script language="Javascript">
+                <!--
+                    '.$fadeOut.'
+                    setTimeout(function (){
+                        pz_loadPage("'.$layer.'","'.$link.'")
+                    }, '.$time.');
+                -->
+                </script>';
+
+    }
+
     public static function getJSUpdatePage($link)
     {
         return '<script language="Javascript"><!--
