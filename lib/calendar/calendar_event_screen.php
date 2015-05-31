@@ -1556,11 +1556,11 @@ class pz_calendar_event_screen{
 
             $duration = (($job->getDuration()->format("%d")*24)+$job->getDuration()->format("%h")).'h ';
             if($job->getDuration()->format("%I") != 0) $duration .= $job->getDuration()->format("%I").'m';
-
+            
             $list .= '<tr>
 			            <td class="img1"><img src="'.$project->getInlineImage().'" /></td>
 			            <td>'.$project->getName().'</td>
-			            <td>'.$job->getTitle().'</td>
+			            <td><a class="title" href="javascript:pz_loadPage(\'calendar_event_form\',\'/screen/calendars/event/?mode=edit_calendar_event&calendar_event_id='.$job->getId().'\');pz_tooltipbox_close();">'.$job->getTitle().'</a></td>
 			            <td>'.$job->getDescription().'</td>
 			            <td><nobr>'.$duration.'</nobr>&nbsp;</td>
 			            <td>'.$job->getFrom()->format(pz_i18n::msg("format_d_m_y"))."<br /><nobr>".$job->getFrom()->format(pz_i18n::msg("format_h_i")).'h - '.$job->getTo()->format(pz_i18n::msg("format_h_i")).'</nobr></td>
