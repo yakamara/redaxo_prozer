@@ -622,7 +622,10 @@ class pz_user
     }
 
     // -------------------------------------------------------------------- Users
-
+    /**
+     * @param array $filter
+     * @return pz_user[] array
+     */
     public static function getUsers($filter = [])
     {
         $filter[] = ['field' => 'status', 'type' => '=', 'value' => 1];
@@ -665,23 +668,27 @@ class pz_user
         return $this->_getProjects('', true, $filter);
     }
 
-    public function getProjects($filter = [])
+    public function getProjects($filter = [], $orders = null)
     {
         // Alle nicht archivierten (archived != 1) Projekte
         // + in den man eingtragen ist (table:project_user)
 
         $filter[] = ['field' => 'archived', 'value' => 0];
         if ($this->isAdmin()) {
-            return $this->_getProjects('', false, $filter);
+            $join = false;
+            if (rex_request('search_projectuser', 'string') != '') {
+                $join = true;
+            }
+            return $this->_getProjects('', $join, $filter, $orders);
         }
 
-        return $this->_getProjects('', true, $filter);
+        return $this->_getProjects('', true, $filter, $orders);
     }
 
-    public function getMyProjects($filter = [])
+    public function getMyProjects($filter = [], $orders = null)
     {
         $filter[] = ['field' => 'archived', 'value' => 0];
-        return $this->_getProjects('', true, $filter);
+        return $this->_getProjects('', true, $filter, $orders);
     }
 
     public function getCalendarProjects($filter = [])
@@ -757,12 +764,27 @@ class pz_user
         if ($where_string != '') {
             $where[] = $where_string;
         }
+        $orderby = (empty($orderby) && !is_array($orderby))? 'p.name' : $orderby;
+
+        if(is_array($orderby))
+        {
+            $order_array = [];
+            foreach ($orderby as $order) {
+                $order_array[] = 'p.`'.$order['orderby'].'` '.$order['sort'];
+            }
+
+            $order_sql = '';
+            if (count($order_array) > 0) {
+                $order_sql = ''.implode(',', $order_array);
+            }
+            $orderby = $order_sql;
+        }
 
         $params = [];
         if ($join) {
             $join = ' INNER JOIN pz_project_user pu ON pu.project_id = p.id';
-            $where[] = 'pu.user_id = ?';
-            $params[] = $this->getId();
+            //$where[] = 'pu.user_id = ?';
+            //$params[] = $this->getId();
         }
 
         // ----- Filter
@@ -781,7 +803,12 @@ class pz_user
                     case('has_files'):
                     case('has_emails'):
                     case('label_id'):
+                    case('create_user_id'):
                         $f['field'] = 'p.'.$f['field'];
+                        $nfilter[] = $f;
+                        break;
+                    case('user_id'):
+                        $f['field'] = 'pu.'.$f['field'];
                         $nfilter[] = $f;
                         break;
                 }
