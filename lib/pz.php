@@ -26,7 +26,7 @@ class pz
         // ini_set("display_errors",1);
         // ob_start();
 
-        setlocale(LC_ALL, pz_i18n::msg('locale'));
+        setlocale(LC_ALL, [pz_i18n::msg('locale_utf8'), pz_i18n::msg('locale')]);
         date_default_timezone_set(self::getDateTimeZone()->getName());
 
         $func = rex_request('func');
