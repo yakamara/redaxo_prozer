@@ -76,7 +76,12 @@ class pz_paginate_screen
         }
 
         $show_pages = [0 => 0,1 => 1,2 => 2,3 => 3,4 => 4,5 => 5,6 => 6,7 => 7,8 => 8,9 => 9];
-        if ($page_all > count($show_pages)) {
+        $show_pages_count = count($show_pages);
+        if ($page_all == $show_pages_count && ($page_current+1) == $show_pages_count) {
+            $show_pages = array_merge($show_pages, array(10=>10));
+        }
+
+        if ($page_all > $show_pages_count) {
             $show_pages = [];
             $show_pages[0] = 0;
             $show_pages[1] = 1;
