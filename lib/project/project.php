@@ -227,7 +227,7 @@ class pz_project extends pz_model
         }
 
         $s = pz_sql::factory();
-        $projectusers = $s->getArray('select * from pz_project_user as pu where pu.project_id='.$this->getId());
+        $projectusers = $s->getArray('SELECT * FROM pz_project_user AS pu WHERE pu.project_id='.$this->getId().' ORDER BY pu.admin DESC, pu.user_id ASC');
 
         foreach ($projectusers as $projectuser) {
             $user = pz_user::get($projectuser['user_id']);
