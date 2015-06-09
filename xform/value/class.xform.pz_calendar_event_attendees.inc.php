@@ -125,10 +125,39 @@ class rex_xform_pz_calendar_event_attendees extends rex_xform_abstract
                  . 'inp.addClass(\'pz_address_fields_attandees_clone\'); '
                  . '$(\'#'.$this->getHTMLId('attendee_hidden_div').'\').before(inp); ';
 
-        $field = '<a class="bt5" href="javascript:void(0);" onclick="'.$onclick.'">+ '.pz_i18n::msg('add_attendee').'</a>';
+        $script = '
+            <script>
+                function attandeesClone () {
+                  var inp;
+                  inp = $(\'#'.$this->getHTMLId('attendee_hidden').'\').clone();
+                  inp.removeAttr(\'id\');
+                  inp.addClass(\'pz_address_fields_attandees_clone\');
+                  $(\'#'.$this->getHTMLId('attendee_hidden_div').'\').before(inp);
+                  $( ".pz_address_fields_attandees_clone .felement select" ).on(\'change\', function() {
+                     changeSelectField();
+                  });
+                }
+                function changeSelectField () {
+                  var count = 0;
+                  $( ".pz_address_fields_attandees_clone .felement select" ).each(function( index ) {
+                    if( $( this ).has(\'option\').length > 0) {
+                      if($( this ).val())
+                        count++;
+                    }
+                  });
+                  if(count == $( ".pz_address_fields_attandees_clone .felement select" ).length) {
+                    attandeesClone();
+                  }
+                }
+
+                $( document ).ready(function() { attandeesClone(); });
+            </script>
+        ';
+
+        //$field = '<a class="bt5" href="javascript:void(0);" onclick="'.$onclick.'">+ '.pz_i18n::msg('add_attendee').'</a>';
         $f = new pz_fragment();
         $f->setVar('label', '<label></label>', false);
-        $f->setVar('field', $field, false);
+        $f->setVar('field', $script, false);
         $attendees_output .= $f->parse($fragment);
 
         $output = '<div class="pz_address_fields_attandees">'.$attendees_output.'</div>';
