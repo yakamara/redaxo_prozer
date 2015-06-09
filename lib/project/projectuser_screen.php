@@ -25,6 +25,18 @@ class pz_projectuser_screen
             $ps = new pz_projectuser_screen($projectuser);
             $list .= $ps->getTableView($p, $project, $my_projectuser);
         }
+        $paginate_loader = $paginate_screen->setPaginateLoader($p, '#projectusers_list');
+
+        if ($paginate_screen->isScrollPage()) {
+            $content = '<div>
+		        <table class="projects tbl1">
+		        <tbody class="projects_table_list">
+		          '.$list.'
+		        </tbody>
+		        </table></div>'.$paginate_loader;
+
+            return $content;
+        }
 
         $content = $paginate.'
           <table class="projectuserss tbl1">
@@ -55,7 +67,7 @@ class pz_projectuser_screen
           <tbody>
             '.$list.'
           </tbody>
-          </table>';
+          </table>'.$paginate_loader;
 
         if (isset($p['info'])) {
             $content = $p['info'].$content;

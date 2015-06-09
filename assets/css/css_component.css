@@ -1320,7 +1320,29 @@ table.projects td.admin {
   width: 100px;
 }
 
-
+/* Projektteilnehmer************************************************************
+*******************************************************************************/
+#projectusers_list table.projects td:nth-child(2) {
+    width: 88px;
+}
+#projectusers_list table.projects td.project-perm-emails {
+    width: 44px;
+}
+#projectusers_list table.projects td.project-perm-calendar_events {
+    width: 116px;
+}
+#projectusers_list table.projects td.project-perm-calendar_jobs {
+    width: 94px;
+}
+#projectusers_list table.projects td.project-perm-files {
+    width: 47px;
+}
+#projectusers_list table.projects td.project-perm-admin {
+    width: 39px;
+}
+#projectusers_list table.projects td:last-child {
+    width: 67px;
+}
 /* Loader  *********************************************************************
 *******************************************************************************/
 .loader {
