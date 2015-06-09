@@ -340,10 +340,6 @@ select = auswählen
 
 projects_archive = Projektarchiv
 
-
-projects_orderby_createddesc = Erstellungsdatum, absteigend
-projects_orderby_createdasc = Erstellungsdatum, aufsteigend
-
 get_from_clipboard = + Aus dem Clipboard auswählen
 clips_exist = Es wurden {0} Clips gefunden
 copy_to_clipboard = ins Clipboard legen
@@ -499,7 +495,6 @@ createdate = Erstelldatum
 all_projects = Alle Projekte
 archived_projects = Archivierte Projekte
 project_admins = Projektverwalter
-project_admins_short = Projektver.
 myprojects = Meine Projekte
 
 duration = Dauer

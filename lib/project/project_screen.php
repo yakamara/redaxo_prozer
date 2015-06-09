@@ -63,7 +63,6 @@ class pz_project_screen
         $xform->setValueField('text', ['search_name', pz_i18n::msg('project_name')]);
         $xform->setValueField('pz_select_screen', ['search_label', pz_i18n::msg('project_label'), pz_labels::getAsString(), '', '', 0, pz_i18n::msg('please_choose')]);
         $xform->setValueField('pz_select_screen', ['search_customer', pz_i18n::msg('customer'), pz_customers::getAsString(), '', '', 0, pz_i18n::msg('please_choose')]);
-        $xform->setValueField('pz_select_screen', ['search_projectuser', pz_i18n::msg('project_admins_short'), pz::getActiveAdminUsersAsString(), '', '', 0, pz_i18n::msg('please_choose')]);
 
         if (!in_array('myprojects', $ignore_fields)) {
             $xform->setValueField('checkbox', ['search_myprojects', pz_i18n::msg('myprojects')]);

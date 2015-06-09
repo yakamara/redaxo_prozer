@@ -254,25 +254,6 @@ class pz
         return implode(',', $return);
     }
 
-    public static function getActiveAdminUsersAsString()
-    {
-
-        $sql = pz_sql::factory();
-        $query = 'SELECT * FROM pz_user WHERE id IN '
-               . '(SELECT pu.user_id FROM pz_project AS p INNER JOIN pz_project_user AS pu ON p.id = pu.project_id '
-               . 'WHERE p.archived=0 AND p.archived IS NOT NULL AND pu.`admin` GROUP BY pu.user_id) ORDER BY name;';
-        $sql->setQuery($query);
-
-        $users = [];
-        foreach ($sql->getArray() as $row) {
-            $users[$row['id']] = pz_user::get($row['id']);
-        }
-
-        self::$users = $users;
-
-        return self::getUsersAsString($users);
-    }
-
     public static function getUsersAsArray($users = null)
     {
         if (!$users) {

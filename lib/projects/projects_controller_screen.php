@@ -48,10 +48,10 @@ class pz_projects_controller_screen extends pz_projects_controller
         $filter = [];
         if (rex_request('search_name', 'string') != '') {
             $filter[] = [
-                'field' => 'name',
-                'type' => 'like',
-                'value' => rex_request('search_name', 'string'),
-            ];
+            'field' => 'name',
+            'type' => 'like',
+            'value' => rex_request('search_name', 'string'),
+        ];
         }
         if (rex_request('search_label', 'string') != '') {
             $filter[] = [
@@ -62,17 +62,10 @@ class pz_projects_controller_screen extends pz_projects_controller
         }
         if (rex_request('search_customer', 'string') != '') {
             $filter[] = [
-                'field' => 'customer_id',
-                'type' => '=',
-                'value' => rex_request('search_customer', 'string'),
-            ];
-        }
-        if (rex_request('search_projectuser', 'string') != '') {
-            $filter[] = [
-                'field' => 'user_id',
-                'type' => '=',
-                'value' => rex_request('search_projectuser', 'string'),
-            ];
+            'field' => 'customer_id',
+            'type' => '=',
+            'value' => rex_request('search_customer', 'string'),
+        ];
         }
         return $filter;
     }
@@ -81,7 +74,7 @@ class pz_projects_controller_screen extends pz_projects_controller
 
     // -------------------------------------------------------- Project Views
 
-    private function getProjectTableView($projects, $p = [], $orders = [])
+    private function getProjectTableView($projects, $p = [])
     {
         $content = '';
 
@@ -139,7 +132,6 @@ class pz_projects_controller_screen extends pz_projects_controller
         $f = new pz_fragment();
         $f->setVar('title', $p['title'], false);
         $f->setVar('content', $content, false);
-        $f->setVar('orders', $orders);
         return '<div id="projects_list" class="design2col" data-url="'.$link_refresh.'">'.$f->parse('pz_screen_list.tpl').'</div>';
     }
 
@@ -219,24 +211,14 @@ class pz_projects_controller_screen extends pz_projects_controller
         $p['linkvars']['search_customer'] = rex_request('search_customer');
         $p['linkvars']['search_label'] = rex_request('search_label');
         $p['linkvars']['search_myprojects'] = rex_request('search_myprojects');
-        $p['linkvars']['search_projectuser'] = rex_request('search_projectuser');
         $p['linkvars']['archived'] = rex_request('archived');
-
-        $p['layer_list'] = 'projects_list';
-        $orders = [];
-        $result = self::getProjectsListOrders($orders, $p);
-
-        $orders = $result['orders'];
-        $current_order = $result['current_order'];
-        $p = $result['p'];
 
         $filter = $this->getProjectFilter();
         if ($p['linkvars']['search_myprojects'] == 1) {
-            $projects = pz::getUser()->getMyProjects($filter, [$orders[$current_order]]);
+            $projects = pz::getUser()->getMyProjects($filter);
         } else {
-            $projects = pz::getUser()->getProjects($filter, [$orders[$current_order]]);
+            $projects = pz::getUser()->getProjects($filter);
         }
-
 
         $mode = rex_request('mode', 'string');
         switch ($mode) {
@@ -248,7 +230,7 @@ class pz_projects_controller_screen extends pz_projects_controller
 
             case('list'):
                 $p['linkvars']['mode'] = 'list';
-                return $this->getProjectTableView($projects, $p, $orders);
+                return $this->getProjectTableView($projects, $p);
 
             default:
                 $p['linkvars']['mode'] = 'list';
@@ -258,7 +240,7 @@ class pz_projects_controller_screen extends pz_projects_controller
                 }
 
                 $s1_content .= pz_project_screen::getProjectsSearchForm($p, $ignore_searchfields);
-                $s2_content .= $this->getProjectTableView($projects, $p, $orders);
+                $s2_content .= $this->getProjectTableView($projects, $p);
                 if (pz::getUser()->isAdmin() || pz::getUser()->hasPerm('projectsadmin')) {
                     $s1_content .= pz_project_screen::getAddForm($p);
                 }
@@ -484,28 +466,4 @@ class pz_projects_controller_screen extends pz_projects_controller
         $f->setVar('section_2', $s2_content, false);
         return $f->parse('pz_screen_main.tpl');
     }
-
-    public static function getProjectsListOrders($orders = [], $p, $ignore_fields = [])
-    {
-        $orders['createddesc'] = [ 'orderby' => 'created', 'sort' => 'desc', 'name' => pz_i18n::msg('projects_orderby_createddesc'),
-                'link' => "javascript:pz_loadPage('" . $p['layer_list'] ."', '" .
-                    pz::url($p['mediaview'], $p['controll'], $p['function'], array_merge($p['linkvars'], ['mode' => 'list', 'search_orderby' => 'createddesc'])) .
-                "')", ];
-        $orders['createdasc'] = ['orderby' => 'created', 'sort' => 'asc', 'name' => pz_i18n::msg('projects_orderby_createdasc'),
-            'link' => "javascript:pz_loadPage('" . $p['layer_list'] . "','" .
-                pz::url($p['mediaview'], $p['controll'], $p['function'], array_merge($p['linkvars'], ['mode' => 'list', 'search_orderby' => 'createdasc'])) .
-                "')", ];
-
-        $current_order = 'createddesc';
-        if (array_key_exists(rex_request('search_orderby'), $orders)) {
-            $current_order = rex_request('search_orderby');
-        }
-
-        $orders[$current_order]['active'] = true;
-
-        $p['linkvars']['search_orderby'] = $current_order;
-
-        return ['orders' => $orders, 'p' => $p, 'current_order' => $current_order];
-    }
-
 }
