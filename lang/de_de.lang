@@ -1,5 +1,6 @@
 
 locale = de_DE
+locale_utf8 = de_DE.UTF-8
 
 format_month = F Y
 format_day = d.m
