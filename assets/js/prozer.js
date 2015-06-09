@@ -1609,6 +1609,12 @@ function pz_customerplan_rearrange_events()
 }
 
 // ------ 
+function pz_refresh_jobs_list ()
+{
+    if($('.userjobs').length > 0) {
+        pz_loadPage('#jobs_list', '/screen/tools/jobs/?&mode=list');
+    }
+}
 
 function pz_refresh_calendar_lists()
 {
@@ -1617,7 +1623,9 @@ function pz_refresh_calendar_lists()
     url = $(e).attr("data-url");
     pz_loadPage(id,url);
   });
+    pz_refresh_jobs_list();
 }
+
 
 function pz_remove_calendar_events_by_id(id)
 {

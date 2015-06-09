@@ -225,6 +225,7 @@ class pz_tools_controller_screen extends pz_tools_controller
         }
 
         $section_1 = $searchform;
+        $section_1 .='<div id="calendar_event_form" class="design1col"></div>';
         $section_2 = $jobs_list;
 
         $p = [];
