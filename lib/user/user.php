@@ -782,13 +782,12 @@ class pz_user
 
         $params = [];
         if ($join) {
-            $join = ' INNER JOIN pz_project_user pu ON pu.project_id = p.id';
-            //$where[] = 'pu.user_id = ?';
-            //$params[] = $this->getId();
+            $join     = ' INNER JOIN pz_project_user pu ON pu.project_id = p.id';
+            $where[]  = 'pu.user_id = ?';
+            $params[] = $this->getId();
         }
 
         // ----- Filter
-
 
         $nfilter = [];
         foreach ($filter as $f) {
@@ -810,6 +809,9 @@ class pz_user
                     case('user_id'):
                         $f['field'] = 'pu.'.$f['field'];
                         $nfilter[] = $f;
+                        if ($this->isAdmin()) {
+                            unset($where, $params);
+                        }
                         break;
                 }
             }
