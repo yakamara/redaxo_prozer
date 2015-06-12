@@ -209,7 +209,8 @@ class pz_project_screen
                 $project->create();
             }
             $return = $header.'<p class="xform-info">'.pz_i18n::msg('project_added').'</p>'.$return;
-            $return .= pz_screen::getJSUpdateLayer('projects_list', pz::url('projects', $p['controll'], $p['function'], ['mode' => 'list']));
+            //$return .= pz_screen::getJSUpdateLayer('projects_list', pz::url('projects', $p['controll'], $p['function'], ['mode' => 'list']));
+            $return .= pz_screen::getJSUpdatePage(pz::url('screen', 'project', 'user', ['project_id' => $project_id]));
         } else {
             $return = $header.$return;
         }
