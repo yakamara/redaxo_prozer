@@ -988,6 +988,7 @@ class pz_email_screen
                             // move_replymail_to_project
 
                             $return = $header.'<p class="xform-info">'.pz_i18n::msg('email_send').'</p>';
+                            $return .= pz_screen::getJSUpdatePage(pz::url('screen', 'emails', 'inbox'));
                         }
                     }
                 } else {
