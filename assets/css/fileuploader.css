@@ -13,11 +13,15 @@
 	width: 600px; 
 	padding: 7px 0; 
 	text-align:center;    
-	background:#880000; 
+	background:#880000;
 	border-bottom:1px solid #ddd;
 	color:#fff;
 	background: -moz-linear-gradient(center top , #626D72, #AFAFAF) repeat scroll 0 0 transparent;
-	border-radius: 3px 3px 3px 3px;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(50%,#626D72), color-stop(100%,#AFAFAF)); /* Chrome,Safari4+ */
+    background: -o-linear-gradient(center top , #626D72, #AFAFAF) repeat scroll 0 0 transparent; /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(center top , #626D72, #AFAFAF) repeat scroll 0 0 transparent; /* For Firefox 3.6 to 15 */
+    background: linear-gradient(center top , #626D72, #AFAFAF) repeat scroll 0 0 transparent; /* Standard syntax */
+    border-radius: 3px 3px 3px 3px;
 }
 .qq-upload-button:hover {
 	background:#cc0000; 
@@ -37,7 +41,12 @@
     height:100%;
     min-height: 60px;
     z-index:2;
+    background:#cc0000;
     background: -moz-linear-gradient(center top , #cc0000, #FF9797) repeat scroll 0 0 transparent;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(50%,#cc0000), color-stop(100%,#FF9797)); /* Chrome,Safari4+ */
+    background: -o-linear-gradient(center top , #cc0000, #FF9797) repeat scroll 0 0 transparent; /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(center top , #cc0000, #FF9797) repeat scroll 0 0 transparent; /* For Firefox 3.6 to 15 */
+    background: linear-gradient(center top , #cc0000, #FF9797) repeat scroll 0 0 transparent; /* Standard syntax */
     text-align:center;
     border-radius: 3px 3px 3px 3px;
 }
@@ -52,7 +61,12 @@
     font-size:14px;
 }
 .qq-upload-drop-area-active {
+    background:#cc0000;
     background: -moz-linear-gradient(center top , #cc0000, #FF9797) repeat scroll 0 0 transparent;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(50%,#cc0000), color-stop(100%,#FF9797)); /* Chrome,Safari4+ */
+    background: -o-linear-gradient(center top , #cc0000, #FF9797) repeat scroll 0 0 transparent; /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(center top , #cc0000, #FF9797) repeat scroll 0 0 transparent; /* For Firefox 3.6 to 15 */
+    background: linear-gradient(center top , #cc0000, #FF9797) repeat scroll 0 0 transparent; /* Standard syntax */
 }
 
 .qq-uploaded-list,

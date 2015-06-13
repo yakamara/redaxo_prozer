@@ -781,15 +781,23 @@ qq.UploadDropZone.prototype = {
     },
     _isValidFileDrag: function(e){
         var dt = e.dataTransfer,
-            // do not check dt.types.contains in webkit, because it crashes safari 4            
-            isWebkit = navigator.userAgent.indexOf("AppleWebKit") > -1;                        
+            // do not check dt.types.contains in webkit, because it crashes safari 4
+            isWebkit = navigator.userAgent.indexOf("AppleWebKit") > -1,
+            isToolTip = (document.getElementsByClassName("tooltipbox").length > 0),
+            hasItemsWebkit = true;
+
+        if (isToolTip) return false;
+        // Safari and Chrome have items this browser can images from the browser window drop.
+        if(typeof dt.items !== 'undefined') {
+            hasItemsWebkit = dt.items.length < 2;
+        }
 
         // dt.effectAllowed is none in Safari 5
-        // dt.types.contains check is for firefox            
-        return dt && dt.effectAllowed != 'none' && 
+        // dt.types.contains check is for firefox
+        return dt && dt.effectAllowed != 'none' && hasItemsWebkit &&
             (dt.files || (!isWebkit && dt.types.contains && dt.types.contains('Files')));
-        
-    }        
+
+    }
 }; 
 
 qq.UploadButton = function(o){
