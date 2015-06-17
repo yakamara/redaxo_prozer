@@ -136,7 +136,7 @@ dragdrop_files_remove_from_list = aus Liste entfernen
 
 page_calendars_day = Tagesansicht
 page_calendars_month = Monatsansicht
-page_calendars_week = 2-Wochenansicht
+page_calendars_week = Wochenansicht
 page_calendars_list = Liste
 page_calendars_usertime = Benutzer-/Zeitansicht
 page_calendars_projectjob = Projekt-/Jobzeitansicht

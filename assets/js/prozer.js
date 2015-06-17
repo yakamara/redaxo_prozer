@@ -935,7 +935,7 @@ function pz_set_calendarday_offset()
 
 function pz_set_calendarweek_init() 
 {
-  pz_toggleSection(2);
+  // pz_toggleSection(1);
   pz_set_calendarweek_offset();
   pz_calendarweek_rearrange_events();
   pz_set_calendarweek_dragresize_init();
@@ -943,6 +943,7 @@ function pz_set_calendarweek_init()
   $(".calendar.view-week a.toggle").on('click', function() {
     pz_calendarweek_rearrange_events();
   });
+  // pz_toggleSection(1);
 
 }
 
@@ -1184,7 +1185,7 @@ function pz_calendarweek_rearrange_events()
   
       start_position = parseInt( ($(this).attr("data-event-hour-start") * 60) ) + parseInt($(this).attr("data-event-minute-start"));
       height = parseInt($(this).attr("data-event-minute-duration"));
-      end_position = start_position + height -1;
+      end_position = start_position + height - 1;
   
       $(this).css("top", start_position);
       $(this).height(height);
@@ -1277,7 +1278,7 @@ function pz_calendarweek_rearrange_events()
       
       max = c_boxwidth;
   
-      width = parseInt(max / columns);
+      width = parseInt(max / columns) - 1;
       left = parseInt(column * width) - width;
   
       $(this).width(width);

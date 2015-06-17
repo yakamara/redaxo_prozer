@@ -1028,7 +1028,7 @@ class pz_calendar_event_screen{
     static function getWeekListView($events = array(), $p = array(), $day)
     {
 
-        $days = 14;
+        $days = 7;
 
         $day_clone = clone $day;
         $day_last = clone $day;
@@ -1135,7 +1135,7 @@ class pz_calendar_event_screen{
 			<header class="header">
 			<div class="grid3col">
 				<div class="column first">
-				        <a href="javascript:void(0);" onclick="pz_toggleSection();" class="toggle bt5"><span class="icon">'.pz_i18n::msg("calendar_resize").'</span></a>
+				        <!-- <a href="javascript:void(0);" onclick="pz_toggleSection();" class="toggle bt5"><span class="icon">'.pz_i18n::msg("calendar_resize").'</span></a> -->
 				        <a class="bt2" href="'.$link_event_add.'">'.pz_i18n::msg("new_event").'</a>
 				        <a class="bt2" href="'.$link_job_add.'">'.pz_i18n::msg("new_job").'</a>
 				      </div>
@@ -1175,13 +1175,11 @@ class pz_calendar_event_screen{
         // <div class="timeline" style="top: '.$timeline.'px;"><span class="icon"></span><span class="line"></span></div>
 
         $return .= '<script language="Javascript"><!--
-
     // $(".calendar.view-week").pz_cal_week({ days: '.$days.' })
-
     pz_set_calendarweek_init();
 		--></script>';
 
-        return '<div class="design3col" id="calendar_events_week_list" data-list-type="calendar" d data-url="'.$link_refresh.'">'.$return.'</div>';
+        return '<div class="design2col" id="calendar_events_week_list" data-list-type="calendar" data-url="'.$link_refresh.'">'.$return.'</div>';
 
     }
 

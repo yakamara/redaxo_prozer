@@ -348,7 +348,7 @@ class pz_calendars_controller_screen extends pz_calendars_controller
 
         $p['headline'] = pz_i18n::msg('calendar_week_list');
 
-        $days = 14;
+        $days = 7;
 
         $s1_content = '';
         $s2_content = '';
