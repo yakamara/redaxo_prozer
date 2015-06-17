@@ -19,7 +19,9 @@ class pz_user_screen
                 <td class="img1"><img src="'.$this->user->getInlineImage().'" width="40" height="40" alt="" /></td>';
 
         if (pz::getUser()->isAdmin()) {
-            $return .= '<td><a href="javascript:pz_loadPage(\'user_form\',\''.$edit_link.'\')"><span class="title">'.$this->user->getName().'</span></a></td>';
+        
+            $comment = $this->user->getComment();
+            $return .= '<td><a href="javascript:pz_loadPage(\'user_form\',\''.$edit_link.'\')"><span class="title">'.$this->user->getName().'</span></a><br />'.nl2br(htmlspecialchars($comment)).'</td>';
         } else {
             $return .= '<td><span class="title">'.$this->user->getName().'</span></td>';
         }

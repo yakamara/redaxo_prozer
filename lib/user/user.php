@@ -209,6 +209,11 @@ class pz_user
         return pz_user::getDefaultImage();
     }
 
+    public function getComment()
+    {
+        return $this->getValue('comment');
+    }
+
     // ----------------- static
 
     public static function getDefaultImage()
