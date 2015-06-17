@@ -63,23 +63,8 @@ class pz_user_screen
                 $last_login = ' '.strftime(pz_i18n::msg('show_datetime_normal'), pz_user::getDateTime($d)->format('U')).'';
             }
 
-            /*
-            $created = "-";
-            if($this->user->getValue("created") != "")
-            {
-                  $d = DateTime::createFromFormat('Y-m-d H:i:s', $this->user->getValue("created"), pz::getDateTimeZone());
-              $created = ' '.strftime(pz_i18n::msg("show_datetime_normal"),pz_user::getDateTime($d)->format("U")).'';
-                }
-                */
+            $return .= '<td>'.$last_login.'</td>';
 
-            $return .= '<td>'.$last_login.'</td>'; // last_login
-            // $return .= '<td>'.$created.'</td>'; // created
-
-            if (pz::getUser()->getId() != $this->user->getId()) {
-                $return .= '<td><a class="bt2" href="javascript:pz_loadPage(\'users_list\',\''.$del_link.'\')"><span class="title">'.pz_i18n::msg('delete').'</span></a></td>';
-            } else {
-                $return .= '<td><span class="title"></span></td>';
-            }
         }
 
         return $return;
@@ -122,7 +107,6 @@ class pz_user_screen
               <th>'.pz_i18n::msg('carddav').'</th>
               <th>'.pz_i18n::msg('projectsadmin').'</th>
               <th>'.pz_i18n::msg('last_login').'</th>
-              <th>'.pz_i18n::msg('functions').'</th>
 				';
         }
 
@@ -395,7 +379,7 @@ class pz_user_screen
         $xform->setValueField('checkbox', ['carddav', pz_i18n::msg('carddav').' ('.pz_i18n::msg('carddav_info').')', '', '0', 'no_db']);
         $xform->setValueField('checkbox', ['projectsadmin', pz_i18n::msg('projectsadmin').' ('.pz_i18n::msg('projectsadmin_info').')', '', '0', 'no_db']);
 
-        $xform->setValueField('textarea', ['comment', pz_i18n::msg('user_comment')]);
+        $xform->setValueField('text', ['comment', pz_i18n::msg('user_comment')]);
 
         $xform->setActionField('db', ['pz_user']);
 
@@ -492,7 +476,7 @@ class pz_user_screen
         $xform->setValueField('checkbox', ['carddav', pz_i18n::msg('carddav').' ('.pz_i18n::msg('carddav_info').')', '', $this->user->hasPerm('carddav'), 'no_db']);
         $xform->setValueField('checkbox', ['projectsadmin', pz_i18n::msg('projectsadmin').' ('.pz_i18n::msg('projectsadmin_info').')', '', $this->user->hasPerm('projectsadmin'), 'no_db']);
 
-        $xform->setValueField('textarea', ['comment', pz_i18n::msg('user_comment')]);
+        $xform->setValueField('text', ['comment', pz_i18n::msg('user_comment')]);
 
         $xform->setActionField('db', ['pz_user', 'id='.$this->user->getId()]);
 
