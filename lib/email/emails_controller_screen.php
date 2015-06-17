@@ -981,6 +981,7 @@ class pz_emails_controller_screen extends pz_emails_controller
             $body .= "\n" . pz_i18n::msg('email_from') . ': ' . $email->getFromEmail();
             $body .= "\n" . pz_i18n::msg('email_original_send') . ': ' . $email->getDate();
             $body .= "\n" . pz_i18n::msg('email_to') . ': ' . $email->getToEmails();
+            $body .= "\n" . pz_i18n::msg('email_cc') . ': ' . $email->getCcEmails();
             $body .= "\n" . pz_i18n::msg('email_subject') . ': ' . $email->getSubject();
             $body .= "\n\n" . $email->getBody();
 
@@ -999,6 +1000,7 @@ class pz_emails_controller_screen extends pz_emails_controller
             $body .= "\n" . pz_i18n::msg('email_to') . ': ' . $email->getFromEmail();
             $body .= "\n" . pz_i18n::msg('email_original_send') . ': ' . $email->getDate();
             $body .= "\n" . pz_i18n::msg('email_to') . ': ' . $email->getToEmails();
+            $body .= "\n" . pz_i18n::msg('email_cc') . ': ' . $email->getCcEmails();
             $body .= "\n" . pz_i18n::msg('email_subject') . ': ' . $email->getSubject();
             $body .= "\n\n" . $email->getBody();
 
