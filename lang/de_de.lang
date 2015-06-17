@@ -575,6 +575,8 @@ webdav = WebDAV
 carddav = CardDav
 projectsadmin = Projekt- Admin
 
+last_login = Letzter Login
+
 admin_info = User anlegen, Alle Projekte einsehen können
 carddav_info = CardDav Schnittstelle verwendbar
 webdav_info = WebDav Schnittstelle verwendbar
