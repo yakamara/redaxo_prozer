@@ -630,13 +630,34 @@ class pz_eml
 
         $return = [];
         foreach ($address_array as $id => $val) {
-            // $val->personal
-            // $val->adl
             if (isset($val->mailbox) && isset($val->host) && $val->host != '.SYNTAX-ERROR.' && $val->host != 'example.com') {
                 $return[] = strtolower($val->mailbox.'@'.$val->host);
             }
         }
         return implode(',', $return);
+    }
+
+    public static function parseAddressListAsArray($address)
+    {
+        $address_array  = imap_rfc822_parse_adrlist($address, 'example.com');
+        if (!is_array($address_array) || count($address_array) < 1) {
+            return [[
+              'personal' => '',
+              'email' => $address
+            ]];
+        }
+
+        $return = [];
+        foreach ($address_array as $id => $val) {
+            if (isset($val->mailbox) && isset($val->host) && $val->host != '.SYNTAX-ERROR.' && $val->host != 'example.com') {
+                $return[] = [
+                  'email' => strtolower($val->mailbox.'@'.$val->host),
+                  'personal' =>  $val->personal
+                ];
+            }
+        }
+        
+        return $return;
     }
 
     // ---------------------------- Mail Refresh

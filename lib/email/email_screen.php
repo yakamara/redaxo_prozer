@@ -361,45 +361,77 @@ class pz_email_screen
         $link_replyall = static::getAddLink(['reply_email_id' => $this->email->getId(), 'reply_all' => 1]);
         $link_print = pz::url('screen', 'emails', 'email', ['mode' => 'view_firstbody', 'email_id' => $this->email->getId()]);
 
-        $image_from_address = pz_user::getDefaultImage();
-        $image_from_adresse_title = htmlspecialchars($this->email->getFromEmail());
 
-        if (($address = $this->email->getFromAddress())) {
-            $image_from_address = $address->getInlineImage();
-            $image_from_adresse_title = htmlspecialchars($address->getFullName());
-        }
+        $image_from = '';
+        $image_from_tooltip = '';
+        $addresses_from = pz_eml::parseAddressListAsArray($this->email->getFrom());
 
-        $image_to_address = '';
-        $image_to_adresse_title = [];
-
-        $to_emails = [];
-        if ($this->email->getSend() == 0) {
-            if (($to_user = pz_user::get($this->email->getUserId()))) {
-                $to_emails[] =    $to_user->getEmail();
-            }
-        }
-
-        if (count($to_emails) == 0) {
-            $to_emails = explode(',', $this->email->getToEmails());
-        }
-
-        if (count($to_emails) > 0) {
-            foreach ($to_emails as $to_email) {
-                if ($to_address = pz_address::getByEmail($to_email)) {
-                    if ($image_to_address == '') {
-                        $image_to_address = $to_address->getInlineImage();
-                    }
-                    $image_to_adresse_title[] = htmlspecialchars($to_address->getFullName());
-                } else {
-                    $image_to_adresse_title[] = htmlspecialchars($to_email);
+        $from_tooltip = [];
+        foreach($addresses_from as $from) {
+            if ( ($from_address = pz_address::getByEmail($from["email"])) ) {
+                $from_link = pz::url('screen', 'addresses', 'show_address', array("search_name"=>$from["email"]));
+                $from_tooltip[] =  '<a href="'.$from_link.'"></a> '.htmlspecialchars($from_address->getFullName());
+                if ($image_from == "") {
+                    $image_from = '<a href="'.$from_link.'"><img src="'.$from_address->getInlineImage().'" width="40" height="40" /></a>';
+                }
+            } else {
+                $from_link = pz::url('screen', 'addresses', 'add_address', array("search_name" => $from["personal"], "address_field_email_value[]" => $from["email"], "address_field_email_label[]" => "WORK", "name" => $from["personal"]));
+                $from_tooltip[] =  '<a href="'.$from_link.'">+ </a> '.htmlspecialchars($from["personal"]). " &lt;" . htmlspecialchars($from["email"]).'&gt;';
+                if ($image_from == "") {
+                    $image_from = '<img src="'.pz_user::getDefaultImage().'" width="40" height="40" />';
                 }
             }
         }
 
-        if ($image_to_address == '') {
-            $image_to_address = pz_user::getDefaultImage();
+        if ($image_from == "") {
+            $image_from = '<img src="'.pz_user::getDefaultImage().'" width="40" height="40" />';
         }
-        $image_to_adresse_title = implode(', ', $image_to_adresse_title);
+
+        $image_from_tooltip = implode("<br />",$from_tooltip);
+        $tooltip_from = pz_screen::getTooltipView($image_from, $image_from_tooltip);
+
+
+
+        $image_to = '';
+        $image_to_tooltip = '';
+        $addresses_to = pz_eml::parseAddressListAsArray($this->email->getTo());
+
+        $to_tooltip = [];
+        foreach($addresses_to as $to) {
+            if ( ($to_address = pz_address::getByEmail($to["email"])) ) {
+                $to_link = pz::url('screen', 'addresses', 'show_address', array("search_name"=>$to["email"]));
+                $to_tooltip[] =  '<a href="'.$to_link.'"></a> '.htmlspecialchars($to_address->getFullName());
+                if ($image_to == "") {
+                    $image_to = '<a href="'.$to_link.'"><img src="'.$to_address->getInlineImage().'" width="40" height="40" /></a>';
+                }
+            } else {
+                $to_link = pz::url('screen', 'addresses', 'add_address', array("search_name" => $to["personal"], "address_field_email_value[]" => $to["email"], "address_field_email_label[]" => "WORK", "name" => $to["personal"]));
+                $to_tooltip[] =  '<a href="'.$to_link.'">+ </a> '.htmlspecialchars($to["personal"]). " &lt;" . htmlspecialchars($to["email"]).'&gt;';
+                if ($image_to == "") {
+                    $image_to = '<img src="'.pz_user::getDefaultImage().'" width="40" height="40" />';
+                }
+            }
+        }
+
+        if ($image_to == "") {
+            $image_to = '<img src="'.pz_user::getDefaultImage().'" width="40" height="40" />';
+        }
+
+        $image_to_tooltip = implode("<br />",$to_tooltip);
+        $tooltip_to = pz_screen::getTooltipView($image_to, $image_to_tooltip);
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         $project_name = pz_i18n::msg('please_select_project_for_email');
 
@@ -515,8 +547,8 @@ class pz_email_screen
             <header>
               <div class="grid2col">
                 <div class="column first">
-                  <figure class="figure-from">'.pz_screen::getTooltipView('<img src="'.$image_from_address.'" width="40" height="40" />', htmlspecialchars($image_from_adresse_title)).'</figure>
-                  <figure class="figure-to">'.pz_screen::getTooltipView('<img src="'.$image_to_address.'" width="40" height="40" />', $image_to_adresse_title).'</figure>
+                  <figure class="figure-from">'.$tooltip_from.'</figure>
+                  <figure class="figure-to">'.$tooltip_to.'</figure>
                   <hgroup class="data">
                     <h2 class="hl7"><span class="name">'.htmlspecialchars(pz::cutText($this->email->getVar('from'))).' </span><span class="info">'.strftime(pz_i18n::msg('show_datetime_normal'), pz::getUser()->getDateTime($this->email->getDateTime())->format('U')).'</span></h2>
                     <h3 class="hl7"><a href="'.$link_open.'"><span class="title">'.htmlspecialchars($this->email->getSubject()).'</span></a></h3>

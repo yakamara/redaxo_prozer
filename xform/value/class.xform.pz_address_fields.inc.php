@@ -70,7 +70,59 @@ class rex_xform_pz_address_fields extends rex_xform_abstract
         IMPP 				WORK 	0 			ICQ 			aim:163252327
         */
 
-        if ($this->params['send'] == 1) {
+
+		// wenn nicht send == 1 und main id .. 
+
+		if ($this->params['send'] != 1 && $this->params['main_id'] != '' && $address = pz_address::get($this->params['main_id'])) {
+            foreach ($address->getFields() as $field) {
+                switch ($field->getVar('type')) {
+                    case('ADR'):  $postaddresses[] = [
+                        'value' => $field->getVar('value'),
+                        'label' => $field->getVar('label'),
+                        'preferred' => $field->getVar('preferred'),
+                        'value_type' => $field->getVar('value_type'),
+                    ]; break;
+                    case('TEL'):  $phones[] = [
+                        'value' => $field->getVar('value'),
+                        'label' => $field->getVar('label'),
+                        'preferred' => $field->getVar('preferred'),
+                        'value_type' => $field->getVar('value_type'),
+                    ]; break;
+                    case('EMAIL'):$emails[] = [
+                        'value' => $field->getVar('value'),
+                        'label' => $field->getVar('label'),
+                        'preferred' => $field->getVar('preferred'),
+                        'value_type' => $field->getVar('value_type'),
+                    ]; break;
+                    case('URL'):  $urls[] = [
+                        'value' => $field->getVar('value'),
+                        'label' => $field->getVar('label'),
+                        'preferred' => $field->getVar('preferred'),
+                        'value_type' => $field->getVar('value_type'),
+                    ]; break;
+                    case('X-SOCIALPROFILE'):  $socialprofiles[] = [
+                        'value' => $field->getVar('value'),
+                        'label' => $field->getVar('label'),
+                        'preferred' => $field->getVar('preferred'),
+                        'value_type' => $field->getVar('value_type'),
+                    ]; break;
+                    case('IMPP'): {
+                        $v = explode(':', $field->getVar('value'));
+                        $impps[] = [
+                            'value' => $field->getVar('value'),
+                            'exploded_value' => $v[1],
+                            'label' => $field->getVar('label'),
+                            'preferred' => $field->getVar('preferred'),
+                            'value_type' => $field->getVar('value_type'),
+                        ]; break;
+                    }
+
+                    // default: 	  $other[] = array("value"=>$field->getVar("value"),"label" => $field->getVar("label")); break;
+                }
+            }
+
+        } else {
+        
             // TEL
             $phone_field_labels = rex_request('address_field_phone_label', 'array');
             $phone_field_values = rex_request('address_field_phone_value', 'array');
@@ -169,56 +221,9 @@ class rex_xform_pz_address_fields extends rex_xform_abstract
                     ];
                 }
             }
-        } else {
-            if ($this->params['main_id'] != '' && $address = pz_address::get($this->params['main_id'])) {
-                foreach ($address->getFields() as $field) {
-                    switch ($field->getVar('type')) {
-                        case('ADR'):  $postaddresses[] = [
-                            'value' => $field->getVar('value'),
-                            'label' => $field->getVar('label'),
-                            'preferred' => $field->getVar('preferred'),
-                            'value_type' => $field->getVar('value_type'),
-                        ]; break;
-                        case('TEL'):  $phones[] = [
-                            'value' => $field->getVar('value'),
-                            'label' => $field->getVar('label'),
-                            'preferred' => $field->getVar('preferred'),
-                            'value_type' => $field->getVar('value_type'),
-                        ]; break;
-                        case('EMAIL'):$emails[] = [
-                            'value' => $field->getVar('value'),
-                            'label' => $field->getVar('label'),
-                            'preferred' => $field->getVar('preferred'),
-                            'value_type' => $field->getVar('value_type'),
-                        ]; break;
-                        case('URL'):  $urls[] = [
-                            'value' => $field->getVar('value'),
-                            'label' => $field->getVar('label'),
-                            'preferred' => $field->getVar('preferred'),
-                            'value_type' => $field->getVar('value_type'),
-                        ]; break;
-                        case('X-SOCIALPROFILE'):  $socialprofiles[] = [
-                            'value' => $field->getVar('value'),
-                            'label' => $field->getVar('label'),
-                            'preferred' => $field->getVar('preferred'),
-                            'value_type' => $field->getVar('value_type'),
-                        ]; break;
-                        case('IMPP'): {
-                            $v = explode(':', $field->getVar('value'));
-                            $impps[] = [
-                                'value' => $field->getVar('value'),
-                                'exploded_value' => $v[1],
-                                'label' => $field->getVar('label'),
-                                'preferred' => $field->getVar('preferred'),
-                                'value_type' => $field->getVar('value_type'),
-                            ]; break;
-                        }
-
-                        // default: 	  $other[] = array("value"=>$field->getVar("value"),"label" => $field->getVar("label")); break;
-                    }
-                }
-            }
-        }
+            
+        } 
+        
 
         $output = '<div class="split-h"></div>';
 
@@ -231,7 +236,8 @@ class rex_xform_pz_address_fields extends rex_xform_abstract
         $f->setVar('name', $name, false);
         $f->setVar('class', 'phone_field', false);
 
-        $phones_output = '<h2 class="hl2">' . pz_i18n::msg('address_phone') . '</h2>';
+		$phone_blocks = [];
+		
         foreach ($phones as $phone) {
             $select = new rex_select();
             $select->setSize(1);
@@ -251,7 +257,7 @@ class rex_xform_pz_address_fields extends rex_xform_abstract
             $f->setVar('label', $label, false);
             $f->setVar('field', $field, false);
             $f->setVar('class', 'phone_field', false);
-            $phones_output .= $f->parse($fragment);
+            $phone_blocks[] = $f->parse($fragment);
         }
 
         $select = new rex_select();
@@ -266,7 +272,8 @@ class rex_xform_pz_address_fields extends rex_xform_abstract
         $f->setVar('label', $label, false);
         $f->setVar('field', $field, false);
         $f->setVar('html_id', $this->getHTMLId('phone_hidden'), false);
-        $phones_output .= '<div id="'.$this->getHTMLId('phone_hidden_div').'" class="hidden">'.$f->parse($fragment).'</div>';
+        $phones_hidden_block = '<div id="'.$this->getHTMLId('phone_hidden_div').'" class="hidden">'.$f->parse($fragment).'</div>';
+        $phones_add_block = '<div>'.$f->parse($fragment).'</div>';
 
         $field = '<a class="bt5" href="javascript:void(0);" onclick="
 						inp = $(\'#'.$this->getHTMLId('phone_hidden').'\').clone();
@@ -276,11 +283,16 @@ class rex_xform_pz_address_fields extends rex_xform_abstract
         $f = new pz_fragment();
         $f->setVar('label', '<label></label>', false);
         $f->setVar('field', $field, false);
-        $phones_output .= $f->parse($fragment);
+        $phones_add_button .= $f->parse($fragment);
 
-        $phones_output = '<div id="pz_address_fields_phone">'.$phones_output.'</div>';
+        $phones_output = '<h2 class="hl2">' . pz_i18n::msg('address_phone') . '</h2>';
+        $phones_output .= implode("",$phone_blocks);
+        $phones_output .= $phones_add_block;
+        $phones_output .= $phones_hidden_block;
+        $phones_output .= $phones_add_button;
 
-        $output .= $phones_output.'<div class="split-h"></div>';
+        $output = '<div class="split-h"></div>'.'<div id="pz_address_fields_phone">'.$phones_output.'</div>'.'<div class="split-h"></div>';
+
 
         // Email
 
@@ -288,7 +300,7 @@ class rex_xform_pz_address_fields extends rex_xform_abstract
         $f->setVar('name', $name, false);
         $f->setVar('class', 'email_field', false);
 
-        $emails_output = '<h2 class="hl2">' . pz_i18n::msg('address_email') . '</h2>';
+		$email_blocks = [];
         foreach ($emails as $email) {
             $select = new rex_select();
             $select->setSize(1);
@@ -308,7 +320,7 @@ class rex_xform_pz_address_fields extends rex_xform_abstract
             $f->setVar('label', $label, false);
             $f->setVar('field', $field, false);
             $f->setVar('class', 'email_field', false);
-            $emails_output .= $f->parse($fragment);
+            $email_blocks[] = $f->parse($fragment);
         }
 
         $select = new rex_select();
@@ -323,7 +335,8 @@ class rex_xform_pz_address_fields extends rex_xform_abstract
         $f->setVar('label', $label, false);
         $f->setVar('field', $field, false);
         $f->setVar('html_id', $this->getHTMLId('email_hidden'), false);
-        $emails_output .= '<div id="'.$this->getHTMLId('email_hidden_div').'" class="hidden">'.$f->parse($fragment).'</div>';
+        $emails_hidden_block = '<div id="'.$this->getHTMLId('email_hidden_div').'" class="hidden">'.$f->parse($fragment).'</div>';
+		$emails_add_block = '<div>'.$f->parse($fragment).'</div>';
 
         $field = '<a class="bt5" href="javascript:void(0);" onclick="
 						inp = $(\'#'.$this->getHTMLId('email_hidden').'\').clone();
@@ -333,11 +346,15 @@ class rex_xform_pz_address_fields extends rex_xform_abstract
         $f = new pz_fragment();
         $f->setVar('label', '<label></label>', false);
         $f->setVar('field', $field, false);
-        $emails_output .= $f->parse($fragment);
+        $emails_add_button .= $f->parse($fragment);
 
-        $emails_output = '<div id="pz_address_fields_email">'.$emails_output.'</div>';
+        $emails_output = '<h2 class="hl2">' . pz_i18n::msg('address_email') . '</h2>';
+		$emails_output .= implode("",$email_blocks);
+		$emails_output .= $emails_add_block;
+		$emails_output .= $emails_hidden_block;
+		$emails_output .= $emails_add_button;
 
-        $output .= $emails_output.'<div class="split-h"></div>';
+        $output .= '<div id="pz_address_fields_email">'.$emails_output.'</div>'.'<div class="split-h"></div>';
 
         // postaddresse
 
@@ -432,7 +449,7 @@ class rex_xform_pz_address_fields extends rex_xform_abstract
         $f->setVar('name', $name, false);
         $f->setVar('class', 'url_field', false);
 
-        $urls_output = '<h2 class="hl2">' . pz_i18n::msg('address_url') . '</h2>';
+		$url_blocks = [];
         foreach ($urls as $url) {
             $select = new rex_select();
             $select->setSize(1);
@@ -452,7 +469,7 @@ class rex_xform_pz_address_fields extends rex_xform_abstract
             $f->setVar('label', $label, false);
             $f->setVar('field', $field, false);
             $f->setVar('class', 'url_field', false);
-            $urls_output .= $f->parse($fragment);
+            $url_blocks[] = $f->parse($fragment);
         }
 
         $select = new rex_select();
@@ -467,8 +484,9 @@ class rex_xform_pz_address_fields extends rex_xform_abstract
         $f->setVar('label', $label, false);
         $f->setVar('field', $field, false);
         $f->setVar('html_id', $this->getHTMLId('url_hidden'), false);
-        $urls_output .= '<div id="'.$this->getHTMLId('url_hidden_div').'" class="hidden">'.$f->parse($fragment).'</div>';
-
+		$urls_hidden_block = '<div id="'.$this->getHTMLId('url_hidden_div').'" class="hidden">'.$f->parse($fragment).'</div>';
+		$urls_add_block = '<div>'.$f->parse($fragment).'</div>';
+		
         $field = '<a class="bt5" href="javascript:void(0);" onclick="
 						inp = $(\'#'.$this->getHTMLId('url_hidden').'\').clone();
 						inp.attr({ id: \'\' });
@@ -477,11 +495,16 @@ class rex_xform_pz_address_fields extends rex_xform_abstract
         $f = new pz_fragment();
         $f->setVar('label', '<label></label>', false);
         $f->setVar('field', $field, false);
-        $urls_output .= $f->parse($fragment);
+        $urls_add_button = $f->parse($fragment);
 
-        $urls_output = '<div id="pz_address_fields_url">'.$urls_output.'</div>';
+		$urls_output = '<h2 class="hl2">' . pz_i18n::msg('address_url') . '</h2>';
+		$urls_output .= implode("", $url_blocks);
+		$urls_output .= $urls_add_block;
+		$urls_output .= $urls_hidden_block;
+		$urls_output .= $urls_add_button;
 
-        $output .= $urls_output.'<div class="split-h"></div>';
+		$output .= '<div id="pz_address_fields_url">'.$urls_output.'</div>'.'<div class="split-h"></div>';
+
 
         // X-SOCIALPROFILE $socialprofile_value_types
 
@@ -489,7 +512,7 @@ class rex_xform_pz_address_fields extends rex_xform_abstract
         $f->setVar('name', $name, false);
         $f->setVar('class', 'socialprofile_field', false);
 
-        $socialprofiles_output = '<h2 class="hl2">' . pz_i18n::msg('address_socialprofile') . '</h2>';
+        $socialprofile_blocks = [];
         foreach ($socialprofiles as $socialprofile) {
             $select = new rex_select();
             $select->setSize(1);
@@ -509,7 +532,7 @@ class rex_xform_pz_address_fields extends rex_xform_abstract
             $f->setVar('label', $label, false);
             $f->setVar('field', $field, false);
             $f->setVar('class', 'socialprofile_field', false);
-            $socialprofiles_output .= $f->parse($fragment);
+            $socialprofile_blocks[] = $f->parse($fragment);
         }
 
         $select = new rex_select();
@@ -524,7 +547,8 @@ class rex_xform_pz_address_fields extends rex_xform_abstract
         $f->setVar('label', $label, false);
         $f->setVar('field', $field, false);
         $f->setVar('html_id', $this->getHTMLId('socialprofile_hidden'), false);
-        $socialprofiles_output .= '<div id="'.$this->getHTMLId('socialprofile_hidden_div').'" class="hidden">'.$f->parse($fragment).'</div>';
+		$socialprofiles_hidden_block = '<div id="'.$this->getHTMLId('socialprofile_hidden_div').'" class="hidden">'.$f->parse($fragment).'</div>';
+		$socialprofiles_add_block = '<div>'.$f->parse($fragment).'</div>';
 
         $field = '<a class="bt5" href="javascript:void(0);" onclick="
 						inp = $(\'#'.$this->getHTMLId('socialprofile_hidden').'\').clone();
@@ -534,11 +558,18 @@ class rex_xform_pz_address_fields extends rex_xform_abstract
         $f = new pz_fragment();
         $f->setVar('label', '<label></label>', false);
         $f->setVar('field', $field, false);
-        $socialprofiles_output .= $f->parse($fragment);
+        $socialprofiles_add_button = $f->parse($fragment);
 
-        $socialprofiles_output = '<div id="pz_address_fields_socialprofile">'.$socialprofiles_output.'</div>';
+		$socialprofiles_output = '<h2 class="hl2">' . pz_i18n::msg('address_socialprofile') . '</h2>';
+		$socialprofiles_output .= implode("", $socialprofile_blocks);
+		$socialprofiles_output .= $socialprofiles_add_block;
+		$socialprofiles_output .= $socialprofiles_hidden_block;
+		$socialprofiles_output .= $socialprofiles_add_button;
 
-        $output .= $socialprofiles_output.'<div class="split-h"></div>';
+		$output .= '<div id="pz_address_fields_socialprofile">'.$socialprofiles_output.'</div>'.'<div class="split-h"></div>';
+
+
+
 
         // IMPP $impp_value_types
 
@@ -546,7 +577,7 @@ class rex_xform_pz_address_fields extends rex_xform_abstract
         $f->setVar('name', $name, false);
         $f->setVar('class', 'xform1b impp_field', false);
 
-        $impps_output = '<h2 class="hl2">' . pz_i18n::msg('address_impp') . '</h2>';
+        $impp_blocks = [];
         foreach ($impps as $impp) {
             $lselect = new rex_select();
             $lselect->setSize(1);
@@ -579,7 +610,7 @@ class rex_xform_pz_address_fields extends rex_xform_abstract
             $field = '<input class="'.$this->getHTMLClass().'" type="text" name="address_field_impp_value[]" value="'.htmlspecialchars($impp['exploded_value']).'" />';
             $f->setVar('label', $label, false);
             $f->setVar('field', $field, false);
-            $impps_output .= $f->parse($fragment);
+            $impp_blocks[] = $f->parse($fragment);
         }
 
         $lselect = new rex_select();
@@ -603,7 +634,8 @@ class rex_xform_pz_address_fields extends rex_xform_abstract
         $f->setVar('label', $label, false);
         $f->setVar('field', $field, false);
         $f->setVar('html_id', $this->getHTMLId('impp_hidden'), false);
-        $impps_output .= '<div id="'.$this->getHTMLId('impp_hidden_div').'" class="hidden">'.$f->parse($fragment).'</div>';
+        $impps_hidden_block = '<div id="'.$this->getHTMLId('impp_hidden_div').'" class="hidden">'.$f->parse($fragment).'</div>';
+		$impps_add_block = '<div>'.$f->parse($fragment).'</div>';
 
         $field = '<a class="bt5" href="javascript:void(0);" onclick="
 						inp = $(\'#'.$this->getHTMLId('impp_hidden').'\').clone();
@@ -613,11 +645,18 @@ class rex_xform_pz_address_fields extends rex_xform_abstract
         $f = new pz_fragment();
         $f->setVar('label', '<label></label>', false);
         $f->setVar('field', $field, false);
-        $impps_output .= $f->parse($fragment);
+        $impps_add_button = $f->parse($fragment);
 
-        $impps_output = '<div id="pz_address_fields_impp">'.$impps_output.'</div>';
+		$impps_output = '<h2 class="hl2">' . pz_i18n::msg('address_impp') . '</h2>';
+		$impps_output .= implode("", $impp_blocks);
+		$impps_output .= $impps_add_block;
+		$impps_output .= $impps_hidden_block;
+		$impps_output .= $impps_add_button;
 
-        $output .= $impps_output.'<div class="split-h"></div>';
+		$output .= '<div id="pz_address_fields_impp">'.$impps_output.'</div>'.'<div class="split-h"></div>';
+
+
+
 
         $this->params['form_output'][$this->getId()] = $output;
 
