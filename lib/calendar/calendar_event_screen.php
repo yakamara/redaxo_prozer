@@ -1114,7 +1114,7 @@ class pz_calendar_event_screen{
           <h1 class="hl1">'.
             pz::strftime(pz_i18n::msg("show_date_normal"), $day->getTimestamp()).' - '.
             pz::strftime(pz_i18n::msg("show_date_normal"), $day_last->getTimestamp()).
-            ' <span class="info">('.pz_i18n::msg("calendarweek").' '.pz::dateTime2dateFormat($day,"W").' / '.pz::dateTime2dateFormat($day_last,"W").')</span></h1>
+            ' <span class="info">('.pz_i18n::msg("calendarweek").' '.pz::dateTime2dateFormat($day,"W").')</span></h1>
         </div>
       </header>';
 

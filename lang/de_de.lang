@@ -717,7 +717,7 @@ new_job = Neuen Job
 calendarweek = Kalenderwoche
 calendarweek_short = KW
 calendar_day_list = Tagesansicht
-calendar_week_list = 2-Wochenansicht
+calendar_week_list = Wochenansicht
 calendar_customer_list = Kundenkalender
 
 user_add = Benutzer hinzufügen
