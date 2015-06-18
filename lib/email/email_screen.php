@@ -370,7 +370,7 @@ class pz_email_screen
         foreach($addresses_from as $from) {
             if ( ($from_address = pz_address::getByEmail($from["email"])) ) {
                 $from_link = pz::url('screen', 'addresses', 'show_address', array("search_name"=>$from["email"]));
-                $from_tooltip[] =  '<a href="'.$from_link.'"></a> '.htmlspecialchars($from_address->getFullName());
+                $from_tooltip[] =  '<a href="'.$from_link.'">&gt;</a> '.htmlspecialchars($from_address->getFullName()).' &lt;'.htmlspecialchars($from["email"]).'&gt; ';
                 if ($image_from == "") {
                     $image_from = '<a href="'.$from_link.'"><img src="'.$from_address->getInlineImage().'" width="40" height="40" /></a>';
                 }
@@ -400,7 +400,7 @@ class pz_email_screen
         foreach($addresses_to as $to) {
             if ( ($to_address = pz_address::getByEmail($to["email"])) ) {
                 $to_link = pz::url('screen', 'addresses', 'show_address', array("search_name"=>$to["email"]));
-                $to_tooltip[] =  '<a href="'.$to_link.'"></a> '.htmlspecialchars($to_address->getFullName());
+                $to_tooltip[] =  '<a href="'.$to_link.'">&gt;</a> '.htmlspecialchars($to_address->getFullName()).' &lt;'.htmlspecialchars($to["email"]).'&gt; ';
                 if ($image_to == "") {
                     $image_to = '<a href="'.$to_link.'"><img src="'.$to_address->getInlineImage().'" width="40" height="40" /></a>';
                 }
