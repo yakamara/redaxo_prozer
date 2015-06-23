@@ -12,10 +12,12 @@
 namespace Symfony\Component\OptionsResolver\Exception;
 
 /**
- * Marker interface for the Options component.
+ * Thrown when the value of an option does not match its validation rules.
+ *
+ * You should make sure a valid value is passed to the option.
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-interface ExceptionInterface
+class InvalidOptionsException extends InvalidArgumentException
 {
 }

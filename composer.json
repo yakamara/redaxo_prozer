@@ -1,7 +1,16 @@
 {
+    "name": "yakamara/prozer",
+
     "require": {
         "ircmaxell/password-compat": "~1.0",
         "sabre/dav": "~3.0",
-        "kzykhys/ciconia": "~1.0"
-    }
+        "kzykhys/ciconia": "~1.0@dev"
+    },
+
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/gharlan/Ciconia"
+        }
+    ]
 }

@@ -12,10 +12,10 @@
 namespace Symfony\Component\OptionsResolver\Exception;
 
 /**
- * Exception thrown when an invalid option is passed.
+ * Thrown when an argument is invalid.
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-class InvalidOptionsException extends \InvalidArgumentException implements ExceptionInterface
+class InvalidArgumentException extends \InvalidArgumentException implements ExceptionInterface
 {
 }

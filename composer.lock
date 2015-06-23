@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "bcdfc9cb9074c2491cf6d73ea38818ba",
+    "hash": "6b642f26dd02440a2761fef95a6e6df5",
     "packages": [
         {
             "name": "ircmaxell/password-compat",
@@ -50,26 +50,30 @@
         },
         {
             "name": "kzykhys/ciconia",
-            "version": "v1.0.3",
+            "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/kzykhys/Ciconia.git",
-                "reference": "52d43ec35a656ef1bda07fdd8398081801f960ae"
+                "url": "https://github.com/gharlan/Ciconia.git",
+                "reference": "4c30b0c5b928f8b7e21600b2f07dbb392a9033f6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kzykhys/Ciconia/zipball/52d43ec35a656ef1bda07fdd8398081801f960ae",
-                "reference": "52d43ec35a656ef1bda07fdd8398081801f960ae",
+                "url": "https://api.github.com/repos/gharlan/Ciconia/zipball/4c30b0c5b928f8b7e21600b2f07dbb392a9033f6",
+                "reference": "4c30b0c5b928f8b7e21600b2f07dbb392a9033f6",
                 "shasum": ""
             },
             "require": {
                 "php": ">5.4.0",
-                "symfony/console": ">=2.3,<2.5-dev",
-                "symfony/options-resolver": ">=2.3,<2.5-dev"
+                "symfony/console": "~2.6",
+                "symfony/options-resolver": "~2.6"
             },
             "require-dev": {
+                "kzykhys/pygments": ">=1.0",
                 "symfony/finder": ">=2.3,<2.5-dev",
                 "symfony/stopwatch": ">=2.3,<2.5-dev"
+            },
+            "suggest": {
+                "kzykhys/pygments": ">=1.0"
             },
             "bin": [
                 "bin/ciconia"
@@ -85,7 +89,6 @@
                     "": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -101,7 +104,10 @@
                 "markdown",
                 "parser"
             ],
-            "time": "2014-01-23 08:14:37"
+            "support": {
+                "source": "https://github.com/gharlan/Ciconia/tree/master"
+            },
+            "time": "2015-06-23 11:26:12"
         },
         {
             "name": "sabre/dav",
@@ -463,36 +469,40 @@
         },
         {
             "name": "symfony/console",
-            "version": "v2.4.10",
-            "target-dir": "Symfony/Component/Console",
+            "version": "v2.7.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Console.git",
-                "reference": "39dd1c85ffdfc3c5fb008019dd027af05f64ec36"
+                "reference": "564398bc1f33faf92fc2ec86859983d30eb81806"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Console/zipball/39dd1c85ffdfc3c5fb008019dd027af05f64ec36",
-                "reference": "39dd1c85ffdfc3c5fb008019dd027af05f64ec36",
+                "url": "https://api.github.com/repos/symfony/Console/zipball/564398bc1f33faf92fc2ec86859983d30eb81806",
+                "reference": "564398bc1f33faf92fc2ec86859983d30eb81806",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.3"
+                "php": ">=5.3.9"
             },
             "require-dev": {
-                "symfony/event-dispatcher": "~2.1"
+                "psr/log": "~1.0",
+                "symfony/event-dispatcher": "~2.1",
+                "symfony/phpunit-bridge": "~2.7",
+                "symfony/process": "~2.1"
             },
             "suggest": {
-                "symfony/event-dispatcher": ""
+                "psr/log": "For using the console logger",
+                "symfony/event-dispatcher": "",
+                "symfony/process": ""
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.4-dev"
+                    "dev-master": "2.7-dev"
                 }
             },
             "autoload": {
-                "psr-0": {
+                "psr-4": {
                     "Symfony\\Component\\Console\\": ""
                 }
             },
@@ -502,44 +512,46 @@
             ],
             "authors": [
                 {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                },
-                {
                     "name": "Fabien Potencier",
                     "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
                 }
             ],
             "description": "Symfony Console Component",
-            "homepage": "http://symfony.com",
-            "time": "2014-09-22 08:51:05"
+            "homepage": "https://symfony.com",
+            "time": "2015-06-10 15:30:22"
         },
         {
             "name": "symfony/options-resolver",
-            "version": "v2.4.10",
-            "target-dir": "Symfony/Component/OptionsResolver",
+            "version": "v2.7.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/OptionsResolver.git",
-                "reference": "45f5e4f9b49eef5d88d68fbd36dbf27023283e44"
+                "reference": "00aad418f1dcfca84260a63b6876211a443ed072"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/OptionsResolver/zipball/45f5e4f9b49eef5d88d68fbd36dbf27023283e44",
-                "reference": "45f5e4f9b49eef5d88d68fbd36dbf27023283e44",
+                "url": "https://api.github.com/repos/symfony/OptionsResolver/zipball/00aad418f1dcfca84260a63b6876211a443ed072",
+                "reference": "00aad418f1dcfca84260a63b6876211a443ed072",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.3"
+                "php": ">=5.3.9"
+            },
+            "require-dev": {
+                "symfony/phpunit-bridge": "~2.7"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.4-dev"
+                    "dev-master": "2.7-dev"
                 }
             },
             "autoload": {
-                "psr-0": {
+                "psr-4": {
                     "Symfony\\Component\\OptionsResolver\\": ""
                 }
             },
@@ -549,28 +561,30 @@
             ],
             "authors": [
                 {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                },
-                {
                     "name": "Fabien Potencier",
                     "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
                 }
             ],
             "description": "Symfony OptionsResolver Component",
-            "homepage": "http://symfony.com",
+            "homepage": "https://symfony.com",
             "keywords": [
                 "config",
                 "configuration",
                 "options"
             ],
-            "time": "2014-09-22 08:51:05"
+            "time": "2015-06-08 09:37:21"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "kzykhys/ciconia": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

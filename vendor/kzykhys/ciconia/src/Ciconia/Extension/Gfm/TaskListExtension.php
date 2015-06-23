@@ -44,14 +44,16 @@ class TaskListExtension extends ListExtension
                 });
             }
 
-            if ((string)$leadingLine or $item->match('/\n{2,}/')) {
+            if ((string)$leadingLine || $item->match('/\n{2,}/')) {
                 $this->getEmitter()->emit('outdent', array($item));
                 $this->getEmitter()->emit('block', array($item));
             } else {
                 $this->getEmitter()->emit('outdent', array($item));
-                $this->processList($item, $options, ++$level);
+                $this->processList($item, $options, $level + 1);
                 $item->rtrim();
-                $this->getEmitter()->emit('inline', array($item));
+                if (!$level) {
+                    $this->getEmitter()->emit('inline', array($item));
+                }
             }
 
             return $this->getRenderer()->renderListItem($item) . "\n";

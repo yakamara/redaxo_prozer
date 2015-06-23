@@ -39,7 +39,7 @@ class UrlAutoLinkExtension implements ExtensionInterface
             return "{gfm-extraction-$md5}";
         });
 
-        $text->replace('{(?<!]\(|"|<|\[)((?:https?|ftp)://[^\'">\s]+)(?!>|\"|\])}', '<\1>');
+        $text->replace('{(?<!]\(|"|<|\[)((?:https?|ftp)://[^\'"<>\s]+)(?!>|\"|\])}', '<\1>');
 
         /** @noinspection PhpUnusedParameterInspection */
         $text->replace('/\{gfm-extraction-([0-9a-f]{32})\}/m', function (Text $w, Text $md5) use (&$hashes) {
