@@ -33,7 +33,7 @@ class pz_sabre_principal_backend implements Sabre\DAVACL\PrincipalBackend\Backen
         return $this->principals[$user] = $sql->getRows() == 1 ? $this->getPrincipalBySql($sql) : null;
     }
 
-    public function findByUri($uri)
+    public function findByUri($uri, $principalPrefix)
     {
         // TODO
     }

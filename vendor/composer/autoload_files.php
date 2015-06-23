@@ -6,5 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    $vendorDir . '/sabre/uri/lib/functions.php',
+    $vendorDir . '/sabre/http/lib/functions.php',
     $vendorDir . '/ircmaxell/password-compat/lib/password.php',
 );

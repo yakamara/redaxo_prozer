@@ -4,6 +4,8 @@ class pz_sabre_auth_backend extends Sabre\DAV\Auth\Backend\AbstractBasic
 {
     protected function validateUserPass($username, $password)
     {
+        $this->principalPrefix = 'principals/users/';
+
         $sql = pz_sql::factory();
         $sql->setQuery('SELECT * FROM pz_user WHERE status = 1 AND login = ? LIMIT 2', [$username]);
 

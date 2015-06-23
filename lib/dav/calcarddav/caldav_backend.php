@@ -2,7 +2,7 @@
 
 use Sabre\CalDAV\Backend\AbstractBackend;
 use Sabre\CalDAV\Plugin;
-use Sabre\CalDAV\Property\SupportedCalendarComponentSet;
+use Sabre\CalDAV\Xml\Property\SupportedCalendarComponentSet;
 use Sabre\DAV\Exception\Forbidden;
 use Sabre\DAV\Exception\NotFound;
 use Sabre\VObject\Component;

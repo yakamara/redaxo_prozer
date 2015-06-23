@@ -5,6 +5,16 @@ namespace Sabre\DAV\PropertyStorage\Backend;
 use Sabre\DAV\PropFind;
 use Sabre\DAV\PropPatch;
 
+/**
+ * Propertystorage backend interface.
+ *
+ * Propertystorage backends must implement this interface to be used by the
+ * propertystorage plugin.
+ *
+ * @copyright Copyright (C) 2007-2015 fruux GmbH. (https://fruux.com/)
+ * @author Evert Pot (http://evertpot.com/)
+ * @license http://sabre.io/license/ Modified BSD License
+ */
 interface BackendInterface {
 
     /**
@@ -16,6 +26,9 @@ interface BackendInterface {
      * Ususually you would just want to call 'get404Properties' on this object,
      * as this will give you the _exact_ list of properties that need to be
      * fetched, and haven't yet.
+     *
+     * However, you can also support the 'allprops' property here. In that
+     * case, you should check for $propFind->isAllProps().
      *
      * @param string $path
      * @param PropFind $propFind
@@ -42,6 +55,12 @@ interface BackendInterface {
      * This method is called after a node is deleted.
      *
      * This allows a backend to clean up all associated properties.
+     *
+     * The delete method will get called once for the deletion of an entire
+     * tree.
+     *
+     * @param string $path
+     * @return void
      */
     function delete($path);
 

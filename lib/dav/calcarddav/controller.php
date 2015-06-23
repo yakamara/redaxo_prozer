@@ -17,7 +17,7 @@ class pz_calcarddav_controller extends pz_controller
         /* Directory structure */
         $tree = [
             new Sabre\DAV\SimpleCollection('principals', [new Sabre\CalDAV\Principal\Collection($principalBackend, 'users')]),
-            new Sabre\CalDAV\CalendarRootNode($principalBackend, $calendarBackend),
+            new Sabre\CalDAV\CalendarRoot($principalBackend, $calendarBackend),
             new Sabre\CardDAV\AddressBookRoot($principalBackend, $carddavBackend),
         ];
 
@@ -26,7 +26,6 @@ class pz_calcarddav_controller extends pz_controller
 
         /* Server Plugins */
         $aclPlugin = new Sabre\DAVACL\Plugin();
-        $aclPlugin->defaultUsernamePath = 'principals/users';
         $server->addPlugin($aclPlugin);
 
         $caldavPlugin = new Sabre\CalDAV\Plugin();
