@@ -2,6 +2,9 @@
 
 class pz_projects_screen
 {
+    /**
+     * @param pz_project[] $projects
+     */
     public function __construct($projects)
     {
         $this->projects = $projects;
@@ -21,6 +24,15 @@ class pz_projects_screen
                 $links[] = '<a href="'.pz::url('screen','calendars', 'day', array('project_id'=>$project->getId())).'">'.
                     '<span class="title">'.pz_i18n::msg("calendar").'</span></a>';
             */
+            /**
+             * @todo
+             * pz_project::hasWiki()
+             * Die Brechtigung, kann man derzeit noch nicht aendern.
+             */
+            if (true || $project->hasWiki()) {
+                $links[] = '<a href="'.pz::url('screen', 'project', 'wiki', ['project_id' => $project->getId()]).'">'.
+                    '<span class="title">'.pz_i18n::msg('project_wiki').'</span></a>';
+            }
             if ($project->hasCalendarJobs()) {
                 $links[] = '<a href="'.pz::url('screen', 'project', 'jobs', ['project_id' => $project->getId()]).'">'.
                     '<span class="title">'.pz_i18n::msg('jobs').'</span></a>';
@@ -42,7 +54,7 @@ class pz_projects_screen
 				<div class="wrapper">
 					<div class="links">'.implode('', $links).'</div>
 					<span class="label-color-block '.pz_label_screen::getColorClass($project->getLabelId()).'"></span>
-					<a href="'.pz::url('screen', 'project', 'view', ['project_id' => $project->getId()]).'"><span class="name">'.$project->getName().'</span></a>
+					<a href="'.pz::url('screen', 'project', 'view', ['project_id' => $project->getId()]).'"><span class="name">'.pz::cutText($project->getName(),52).'</span></a>
 				</div>
 			</li>';
 
