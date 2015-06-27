@@ -2994,7 +2994,10 @@ class pz_calendar_event_screen{
 
         }else
         {
-            $return = $header.$form;
+            $script = '<script>
+                var refreshTimeout = refreshTimeout || null;
+                if(!isEmpty(refreshTimeout)){ clearTimeout(refreshTimeout); }</script>';
+            $return = $header.$form.$script;
         }
         $script = '<script>pz_toggleSection(1);</script>';
         $return = '<div id="calendar_event_form" class="design1col"><div id="calendar_event_add" class="design1col xform-add">'.$return.'</div>'.$script.'</div>';
