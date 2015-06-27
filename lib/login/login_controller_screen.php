@@ -63,7 +63,7 @@ class pz_login_controller_screen extends pz_login_controller
 
               <div class="column last">
                 <h2>Software-Updates, Weiterentwicklung & Unterstützung</h2>
-                <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. <a href="http://prozer.org">mehr Infos auf PROZER.ORG</a></p>
+                <p>Als Open Source Software entwickeln die Anwender Prozer ständig weiter, sodass die Funktionen Up-To-Date bleiben. Es gibt regelmäßige Updates, die teils auch agenturindividuelle Wünsche beinhalten. Jede Weiterentwicklung wird geprüft und steht dann allen Anwendern zur Verfügung. So gestaltet die Anwendergemeinde von Prozer gemeinsam eine Agentursoftware, die einfach anzuwenden ist. <a href="http://prozer.org">mehr Infos auf PROZER.ORG</a></p>
                 <h2>Impressum</h2>
                 <p>Yakamara Media GmbH & Co. KG  .  Kaiserstrasse 69  .  60329 Frankfurt<br />
                 Tel.: 069 900.20.60.30  .  Fax.: 069 900.20.60.33<br />
