@@ -790,17 +790,19 @@ class pz_calendar_event_screen{
             )
         );
 
-        $link_event_add = "javascript:pz_loadPage('calendar_event_form','".pz::url("screen","calendars","event",array_merge($p["linkvars"],array("mode"=>"add_calendar_event","day"=>$day->format("Ymd"),"booked"=>0)))."')";
-        $link_job_add = "javascript:pz_loadPage('calendar_event_form','".pz::url("screen","calendars","event",array_merge($p["linkvars"],array("mode"=>"add_calendar_event","day"=>$day->format("Ymd"),"booked"=>1)))."')";
+        $add_day = ((new DateTime())->format('Ymd') != $day->format("Ymd"))? $add_day = $day->format('Ymd') : '';
+
+        $link_event_add = "javascript:pz_loadPage('calendar_event_form','".pz::url("screen","calendars","event",array_merge($p["linkvars"],["mode"=>"add_calendar_event","day"=>$add_day,"booked"=>0]))."')";
+        $link_job_add = "javascript:pz_loadPage('calendar_event_form','".pz::url("screen","calendars","event",array_merge($p["linkvars"],["mode"=>"add_calendar_event","day"=>$add_day,"booked"=>1]))."')";
 
         $day->modify('-1 day');
-        $link_previous = "javascript:pz_loadPage('calendar_events_day_list','".pz::url("screen","calendars","day",array_merge($p["linkvars"],array("mode"=>"list","day"=>$day->format("Ymd"))))."')";
+        $link_previous = "javascript:pz_loadPage('calendar_events_day_list','".pz::url("screen","calendars","day",array_merge($p["linkvars"],["mode"=>"list","day"=>$day->format("Ymd")]))."')";
         $day->modify('+2 day');
-        $link_next = "javascript:pz_loadPage('calendar_events_day_list','".pz::url("screen","calendars","day",array_merge($p["linkvars"],array("mode"=>"list","day"=>$day->format("Ymd"))))."')";
+        $link_next = "javascript:pz_loadPage('calendar_events_day_list','".pz::url("screen","calendars","day",array_merge($p["linkvars"],["mode"=>"list","day"=>$day->format("Ymd")]))."')";
         $day->modify('-1 day');
 
         $today = new DateTime();
-        $link_today = "javascript:pz_loadPage('calendar_events_day_list','".pz::url("screen","calendars","day",array_merge($p["linkvars"],array("mode"=>"list","day"=>$today->format("Ymd"))))."')";
+        $link_today = "javascript:pz_loadPage('calendar_events_day_list','".pz::url("screen","calendars","day",array_merge($p["linkvars"],["mode"=>"list","day"=>$today->format("Ymd")]))."')";
 
         $return = '
 	        <header>
