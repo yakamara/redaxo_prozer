@@ -672,6 +672,7 @@ email_to = To
 email_from = Von
 email_bcc = Bcc
 email_attachments = Anhänge
+email_attachment = E-Mail Anhägen
 email_subject = Betreff
 email_body = Textbody
 email_html = HTML Body
