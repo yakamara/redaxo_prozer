@@ -686,7 +686,7 @@ class pz_sabre_caldav_backend extends AbstractBackend
                     }
 
                     $pzAttendee = pz_calendar_attendee::create();
-                    $pzAttendee->setStatus((string) $attendee['partstat']);
+                    $pzAttendee->setStatus((string) $attendee['partstat'] ?: 'NEEDS-ACTION');
                     $pzAttendee->setEmail($email);
                     $pzAttendee->setName($name);
                     if ($userId) {
