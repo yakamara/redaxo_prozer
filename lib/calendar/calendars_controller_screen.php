@@ -132,24 +132,14 @@ class pz_calendars_controller_screen extends pz_calendars_controller
                 $attandee_status = rex_request('attandee_status', 'string', '');
                 if ($calendar_event_id > 0 && ($event = pz_calendar_event::get($calendar_event_id)) && in_array($attandee_status, pz_calendar_attendee::getStatusArray())) {
                     $save = false;
-                    $as = pz_calendar_attendee::getAll($event);
-                    if (is_array($as)) {
-                        $attandees = [];
-                        foreach ($as as $a) {
-                            $attandee = pz_calendar_attendee::create();
-                            $attandee->setUserId($a->getUserId());
-                            $attandee->setEmail($a->getEmail());
-                            $attandee->setName($a->getName());
-                            if (in_array($attandee->getEmail(), pz::getUser()->getEmails())) {
-                                $attandee->setStatus($attandee_status);
-                            } else {
-                                $attandee->setStatus($a->getStatus());
-                            }
-                            $attendees[] = $attandee;
+                    $attendees = pz_calendar_attendee::getAll($event);
+                    foreach ($attendees as $a) {
+                        if (in_array($a->getEmail(), pz::getUser()->getEmails())) {
+                            $a->setStatus($attandee_status);
                         }
-                        $event->setAttendees($attendees);
-                        pz_calendar_attendee::saveAll($event);
                     }
+                    $event->setAttendees($attendees);
+                    $event->save();
                     $cs = new pz_calendar_event_screen($event);
                     $return .= $cs->getFlyoutEventView($p, true); // disable normal functions
                     $return .= '<script>pz_tracker();</script>';

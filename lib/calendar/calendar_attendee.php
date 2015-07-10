@@ -155,6 +155,10 @@ class pz_calendar_attendee extends pz_calendar_element
         return null;
     }
 
+    /**
+     * @param pz_calendar_event $event
+     * @return self[]
+     */
     public static function getAll(pz_calendar_event $event)
     {
         $attendees = [];
