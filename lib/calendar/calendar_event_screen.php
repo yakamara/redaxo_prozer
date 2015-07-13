@@ -4,6 +4,9 @@ class pz_calendar_event_screen{
 
     public $event,$user,$user_name, $label,$project;
 
+    /** @var pz_calendar_event */
+    protected $calendar_event;
+
     function __construct($event)
     {
         $this->calendar_event = $event;
@@ -197,7 +200,7 @@ class pz_calendar_event_screen{
 
     }
 
-    public function getFlyoutEventView($p = array(), $disable_functions = false)
+    public function getFlyoutEventView($p = array(), $disable_functions = false, $disable_actions = false)
     {
 
         $from = $this->calendar_event->getFrom();
@@ -209,23 +212,25 @@ class pz_calendar_event_screen{
         $edit_classes = "";
         $edit = array();
 
-        if(pz::getUser()->getEventEditPerm($this->calendar_event))
-        {
-            $edit[] = '<li><a class="bt5" href="javascript:pz_loadPage(\'calendar_event_form\',\''.pz::url("screen","calendars","event",array_merge($p["linkvars"],array("mode"=>"edit_calendar_event","calendar_event_id"=>$this->calendar_event->getId()))).'\');pz_tooltipbox_close();">'.pz_i18n::msg("edit").'</a></li>';
+        if (!$disable_functions) {
+            if(pz::getUser()->getEventEditPerm($this->calendar_event)) {
+                $edit[] = '<li><a class="bt5" href="javascript:pz_loadPage(\'calendar_event_form\',\''.pz::url("screen","calendars","event",array_merge($p["linkvars"],array("mode"=>"edit_calendar_event","calendar_event_id"=>$this->calendar_event->getId()))).'\');pz_tooltipbox_close();">'.pz_i18n::msg("edit").'</a></li>';
+            }
 
-            $edit[] = '<li><a class="bt17" href="javascript:void(0);" onclick="check = confirm(\''.
-                str_replace(array("'","\n","\r"),array("","",""),pz_i18n::msg("calendar_event_confirm_delete",htmlspecialchars($this->calendar_event->getTitle()))).'\'); if (check == true) pz_loadPage(\'.event-flyout-view.event-'.$this->calendar_event->getId().'\',\''.pz::url("screen","calendars","event",array_merge($p["linkvars"],array("mode"=>"delete_calendar_event","calendar_event_id"=>$this->calendar_event->getId()))).'\')">'.pz_i18n::msg("delete").'</a></li>';
+            if(pz::getUser()->getEventDeletePerm($this->calendar_event)) {
+                $edit[] = '<li><a class="bt17" href="javascript:void(0);" onclick="check = confirm(\''.
+                    str_replace(array("'","\n","\r"),array("","",""),pz_i18n::msg("calendar_event_confirm_delete",htmlspecialchars($this->calendar_event->getTitle()))).'\'); if (check == true) pz_loadPage(\'.event-flyout-view.event-'.$this->calendar_event->getId().'\',\''.pz::url("screen","calendars","event",array_merge($p["linkvars"],array("mode"=>"delete_calendar_event","calendar_event_id"=>$this->calendar_event->getId()))).'\')">'.pz_i18n::msg("delete").'</a></li>';
+            }
+
+            if(!$this->calendar_event->isBooked() && !$this->calendar_event->isAllDay())
+            {
+                $edit[] = '<li><a class="bt5" href="javascript:pz_loadPage(\'.event-flyout-view.event-'.$this->calendar_event->getId().'\',\''.pz::url("screen","calendars","event",array_merge($p["linkvars"],array("mode"=>"copy2job_calendar_event","calendar_event_id"=>$this->calendar_event->getId()))).'\')">'.pz_i18n::msg("calendar_event_copy2job").'</a></li>';
+            }
         }
 
-        if(!$this->calendar_event->isBooked() && !$this->calendar_event->isAllDay())
-        {
-            $edit[] = '<li><a class="bt5" href="javascript:pz_loadPage(\'.event-flyout-view.event-'.$this->calendar_event->getId().'\',\''.pz::url("screen","calendars","event",array_merge($p["linkvars"],array("mode"=>"copy2job_calendar_event","calendar_event_id"=>$this->calendar_event->getId()))).'\')">'.pz_i18n::msg("calendar_event_copy2job").'</a></li>';
-        }
-
-        if(count($edit) > 0 && !$disable_functions)
-        {
+        if(count($edit) > 0) {
             $edit = '<div class="split-h split-h1"></div><ul class="buttons">'.implode($edit).'</ul>';
-        }else {
+        } else {
             $edit = "";
         }
 
@@ -265,22 +270,18 @@ class pz_calendar_event_screen{
 
         }
 
-        $project_name = $this->calendar_event->getProject()->getName();
-        if( $this->calendar_event->getProjectSubId() != 0 && ( $project_sub = pz_project_sub::get($this->calendar_event->getProjectSubId()) )  )
-            $project_name .= ' / '.$project_sub->getName();
+        if ($this->calendar_event->getProjectId()) {
+            $project_name = $this->calendar_event->getProject()->getName();
+            if( $this->calendar_event->getProjectSubId() != 0 && ( $project_sub = pz_project_sub::get($this->calendar_event->getProjectSubId()) )  )
+                $project_name .= ' / '.$project_sub->getName();
 
-        $event_infos[] = '<dt>'.pz_i18n::msg('project').':</dt><dd><span class="label-color-block '.pz_label_screen::getColorClass($this->calendar_event->getProject()->getLabelId()).'"></span>'.htmlspecialchars($project_name).'</dd>';
-
-        $event_infos[] = '<dt>'.pz_i18n::msg('user').':</dt><dd>'.htmlspecialchars($this->user_name).'</dd>';
-
-
-        if($this->calendar_event->hasRule())
-        {
-            $event_infos[] = '<dt>'.pz_i18n::msg('calendar_event_rule').':</dt><dd>'.pz_i18n::msg('calendar_event_has_rule').'</dd>';
-            $event_infos[] = '<dt>'.pz_i18n::msg('calendar_event_frequence').':</dt><dd>'.$this->calendar_event->getRule()->getFrequence().'</dd>';
-            $event_infos[] = '<dt>'.pz_i18n::msg('calendar_event_interval').':</dt><dd>'.$this->calendar_event->getRule()->getInterval().'</dd>';
-
+            $event_infos[] = '<dt>'.pz_i18n::msg('project').':</dt><dd><span class="label-color-block '.pz_label_screen::getColorClass($this->calendar_event->getProject()->getLabelId()).'"></span>'.htmlspecialchars($project_name).'</dd>';
         }
+
+        if ($this->calendar_event->getUserId()) {
+            $event_infos[] = '<dt>'.pz_i18n::msg('user').':</dt><dd>'.htmlspecialchars($this->user_name).'</dd>';
+        }
+
 
         $clips = "";
         $clips_array = $this->calendar_event->getClips();
@@ -306,22 +307,29 @@ class pz_calendar_event_screen{
 
 
 
-        $attandees = '';
+        $attendees = '';
         $actions = '';
 
         $user_emails = pz::getUser()->getEmails();
 
-        $as = pz_calendar_attendee::getAll($this->calendar_event);
+        $as = $this->calendar_event->getAttendees();
         if(is_array($as) && count($as)>0)
         {
 
-            $attandees .= '<div class="split-h split-h1"></div><h2>'.pz_i18n::msg('calendar_event_attendees').'</h2>';
+            $attendees .= '<div class="split-h split-h1"></div><h2>'.pz_i18n::msg('calendar_event_attendees').'</h2>';
 
             $me = null;
             $attandees_list = '';
+            /** @var pz_calendar_attendee $a */
             foreach($as as $a)
             {
-                $attandees_list .= '<li class="status-'.strtolower($a->getStatus()).'">'.$a->getName().' / '.$a->getEmail().' ['.pz_i18n::msg('calendar_event_attendee_'.strtolower($a->getStatus())).']</li>';
+                if (pz_calendar_attendee::ROLE_CHAIR === $a->getRole()) {
+                    $event_infos[] = '<dt>'.pz_i18n::msg('calendar_event_organizer').':</dt><dd>'.htmlspecialchars($a->getName()).' / '.htmlspecialchars($a->getEmail()).'</dd>';
+                    continue;
+                }
+                $attandees_list .= '<li class="status-'.strtolower($a->getStatus()).'">';
+                $attandees_list .= $a->getName().' / '.$a->getEmail().' ['.pz_i18n::msg('calendar_event_attendee_'.strtolower($a->getStatus())).']';
+                $attandees_list .= '</li>';
 
                 if(in_array($a->getEmail(),$user_emails))
                 {
@@ -330,9 +338,9 @@ class pz_calendar_event_screen{
             }
 
             if ($attandees_list != '')
-                $attandees .= '<ul>'.$attandees_list.'</ul>';
+                $attendees .= '<ul>'.$attandees_list.'</ul>';
 
-            if($me)
+            if(!$disable_actions && $me)
             {
                 $actions .= '<div class="split-h split-h1"></div><ul class="buttons">';
                 foreach(pz_calendar_attendee::getStatusArray() as $k => $v)
@@ -349,6 +357,19 @@ class pz_calendar_event_screen{
 
         }
 
+        if($this->calendar_event->hasRule())
+        {
+            $event_infos[] = '<dt>'.pz_i18n::msg('calendar_event_rule').':</dt><dd>'.pz_i18n::msg('calendar_event_has_rule').'</dd>';
+            $event_infos[] = '<dt>'.pz_i18n::msg('calendar_event_frequence').':</dt><dd>'.$this->calendar_event->getRule()->getFrequence().'</dd>';
+            $event_infos[] = '<dt>'.pz_i18n::msg('calendar_event_interval').':</dt><dd>'.$this->calendar_event->getRule()->getInterval().'</dd>';
+
+        }
+
+        $infos = '';
+        if ($event_infos) {
+            $infos = '<div class="split-h split-h1"></div><dl>'.implode("",$event_infos).'</dl>';
+        }
+
         $info_message = '';
         if(isset($p["info_message"]))
         {
@@ -361,9 +382,18 @@ class pz_calendar_event_screen{
             $warning_message = '<p class="xform-warning">'.$p["warning_message"].'</p>';
         }
 
+        $additionalActions = '';
+        if (isset($p['actions'])) {
+            $additionalActions = '<div class="split-h split-h1"></div>'.$p['actions'];
+        }
+
+        $class = '';
+        if ($this->calendar_event->getId()) {
+            $class = ' event-'.$this->calendar_event->getId();
+        }
 
         $return = 	'
-					<div class="bucket event-flyout-view event-'.$this->calendar_event->getId().'">
+					<div class="bucket event-flyout-view'.$class.'">
             <div class="content">
               <div class="output">
                 <header>
@@ -374,12 +404,13 @@ class pz_calendar_event_screen{
                   '.$info_message.'
                   '.$warning_message.'
                   '.$date_info.'
-                  <div class="split-h split-h1"></div><dl>'.implode("",$event_infos).'</dl>
+                  '.$infos.'
                   '.$clips.'
-                  '.$attandees.'
+                  '.$attendees.'
                 </div>
 
                 '.$actions.'
+                '.$additionalActions.'
                 '.$edit.'
               </div>
             </div>
@@ -881,7 +912,7 @@ class pz_calendar_event_screen{
         // $classes[] = pz_label_screen::getColorClass($this->label_id); // border color
 
         $me = false;
-        if(pz::getUser()->getId() == $this->calendar_event->getUserId())
+        if(pz::getUser()->getEventEditPerm($this->calendar_event))
             $me = true;
 
         if($this->calendar_event->isRuleEvent()) {
@@ -1554,7 +1585,7 @@ class pz_calendar_event_screen{
 
             $duration = (($job->getDuration()->format("%d")*24)+$job->getDuration()->format("%h")).'h ';
             if($job->getDuration()->format("%I") != 0) $duration .= $job->getDuration()->format("%I").'m';
-            
+
             $list .= '<tr>
 			            <td class="img1"><img src="'.$project->getInlineImage().'" /></td>
 			            <td>'.$project->getName().'</td>

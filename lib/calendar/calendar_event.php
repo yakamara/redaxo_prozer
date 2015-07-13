@@ -234,6 +234,9 @@ class pz_calendar_event extends pz_calendar_item
 
     // ---------------------------
 
+    /**
+     * @return pz_calendar_attendee[]
+     */
     public function getAttendees()
     {
         if ($this->attendees === null) {
@@ -415,6 +418,24 @@ class pz_calendar_event extends pz_calendar_item
         return new self($sql->getRow());
     }
 
+    public static function getByUri($uri, $job = false)
+    {
+        static $sql = null;
+        if (!$sql) {
+            $sql = pz_sql::factory();
+            $sql->prepareQuery('
+                SELECT *
+                FROM ' . self::TABLE . ' e
+                WHERE uri = ? AND booked = ?
+            ');
+        }
+        $sql->execute([$uri, intval($job)]);
+        if ($sql->getRows() == 0) {
+            return null;
+        }
+        return new self($sql->getRow());
+    }
+
     public static function getByProjectUri($project, $uri, $job = false)
     {
         static $sql = null;
@@ -541,7 +562,7 @@ class pz_calendar_event extends pz_calendar_item
         return $events;
     }
 
-    public static function getAttendeeEvents(DateTime $from = null, DateTime $to = null, $user = null, $ignore = [pz_calendar_attendee::DECLINED])
+    public static function getAttendeeEvents(DateTime $from = null, DateTime $to = null, $user = null, $ignore = [pz_calendar_attendee::STATUS_DECLINED])
     {
         if (!$user) {
             $user = pz::getUser();

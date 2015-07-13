@@ -459,6 +459,36 @@ class pz_emails_controller_screen extends pz_emails_controller
                 }
                 return false;
 
+            case 'import':
+                $pz_eml = $email->getProzerEml();
+                $pz_eml->setMailFilename($email->getId());
+                $element_id = rex_request('element_id', 'string', 0);
+                $project_id = rex_request('project_id', 'int', 0);
+                $action = rex_request('action', 'bool', false);
+
+                $element = $pz_eml->getElementByElementId($element_id);
+
+                $p = [];
+                if ($action) {
+                    try {
+                        $importStatus = pz_sabre_caldav_backend::getImportStatus($element->getBody());
+                        pz_sabre_caldav_backend::import($element->getBody(), $project_id);
+                        if ('CANCEL' === $importStatus['method']) {
+                            $type = 'deleted';
+                        } else {
+                            $type = $importStatus['event'] ? 'updated' : 'created';
+                        }
+                        $p['info_message'] = pz_i18n::msg('import_success_'.$type);
+                    } catch (Exception $e) {
+                        $p['warning_message'] = pz_i18n::msg('import_error');
+                    }
+                }
+
+                $importStatus = pz_sabre_caldav_backend::getImportStatus($element->getBody());
+
+                $pz_email_screen = new pz_email_screen($email);
+                return $pz_email_screen->getImportFlyoutView($element, $importStatus, $p);
+
             case 'download':
                 $pz_eml = $email->getProzerEml();
                 $pz_eml->setMailFilename($email->getId());

@@ -188,6 +188,7 @@ calendar_event_attendees = Einladungen
 add_attendee = Einladung hinzufügen
 calendar_event_attendees_unanswered = unbeantwortete Einladungen
 
+calendar_event_organizer = Organisator
 
 calendar_event_attendee_accepted = bestätigt
 calendar_event_attendee_tentative = unverbindlich
@@ -281,6 +282,20 @@ trash_current_emails = Aktuelle E-Mail-Liste in den Müll werfen
 delete_current_emails = Aktuelle E-Mail-Liste unwiderruflich löschen
 read_current_emails = Aktuelle E-Mail-Liste als gelesen markieren
 unread_current_emails = Aktuelle E-Mail-Liste als ungelesen markieren
+
+import = Importieren
+import_error_exists_other_user = Der Termin wurde bereits von einem anderen Benutzer importiert.
+import_error_exists_newer = Der Termin ist bereits in einer aktuelleren Version vorhanden.
+import_info_exists = Der Termin wurde bereits von einem anderen Benutzer importiert.
+import_info_cancel = Der Termin wurde abgesagt!
+import_create = Kalendareintrag erstellen
+import_update = Kalendareintrag aktualisieren
+import_delete = Kalendareintrag entfernen
+import_view = Zum Kalendareintrag
+import_success_created = Der Kalendareintrag wurde importiert.
+import_success_updated = Der Kalendareintrag wurde aktualisiert.
+import_success_deleted = Der Kalendareintrag wurde entfernt.
+import_error = Es ist ein Fehler aufgetreten!
 
 customers = Kunden
 customer = Kunde

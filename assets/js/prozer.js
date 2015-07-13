@@ -3,8 +3,8 @@
 var pz_mouse_x = 0;
 var pz_mouse_y = 0;
 
-$(document).ready(function() { 
-  
+$(document).ready(function() {
+
   /*
     $(window).on('resize', function() {
         $('#clipboard-list').height($(window).height()-124);
@@ -33,26 +33,30 @@ function pz_screen_select(t) {
   main = $(t).parent();
 
   if($(main).hasClass('hover')) {
-  
+
     $(main).removeClass('hover');
-    $('#overlay').remove();
+    if (!$(main).closest('.tooltipbox').length) {
+      $('#overlay').remove();
+    }
     $(main).find("a").not(".noclick").off("click");
-  
+
   } else {
-  
+
     if ($('#overlay').length == 0) { $("body").append('<div id="overlay">.</div>'); }
-    $("#overlay").on('click', { main: main }, function(e) { 
-      $(e.data.main).find("span.selected").trigger("click"); 
+    $("#overlay").on('click', { main: main }, function(e) {
+      $(e.data.main).find("span.selected").trigger("click");
     });
 
-    pz_setZIndex('#overlay');
+    if (!$(main).closest('.tooltipbox').length) {
+      pz_setZIndex('#overlay');
+    }
     $(main).addClass('hover');
     pz_setZIndex(main);
-    
+
     $(main).find("a").not(".noclick").on('click', { main: main }, function(e) {
       $(e.data.main).find("span.selected").trigger("click");
-    });   
-    
+    });
+
   }
 }
 
@@ -126,14 +130,14 @@ function pz_updateInfocounter(emails, attandees, title) {
   if (attandees == 0) {
 	  $("ul#navi-main li.calendars span").remove();
 	  $("#calendar_event_attendee_view .info-relative span").remove();
-	  
+
   } else {
 		$("ul#navi-main li.calendars span").remove().prepend('<span class="info1"><span class="inner">'+attandees+'</span></span>');
 		$("ul#navi-main li.calendars:not(:has(span))").prepend('<span class="info1"><span class="inner">'+attandees+'</span></span>');
 
 		$("#calendar_event_attendee_view .info-relative span").remove().prepend('<span class="info1"><span class="inner">'+attandees+'</span></span>');
 		$("#calendar_event_attendee_view .info-relative:not(:has(span))").prepend('<span class="info1"><span class="inner">'+attandees+'</span></span>');
-  
+
   }
   $(document).prop("title",title);
 
@@ -165,7 +169,7 @@ function pz_logIn() {
 				location.href = "/";
 			else
 			 	$("#loginbox").remove();
-			
+
 		} else {
 			$("#loginbox").replaceWith(data);
 
@@ -194,7 +198,7 @@ function pz_getLogin() {
 
 pz_zIndex = 10000;
 function pz_setZIndex(layer) {
-	pz_zIndex++;	
+	pz_zIndex++;
 	$(layer).css('zIndex',pz_zIndex);
 
 }
@@ -215,14 +219,14 @@ function pz_toggleClass(layer, toggleClass) {
 function pz_load_main(layer_id) {
 	// layer laden
 	// nach vor bringen / sichtbar machen
-	// andere sachen nach hinten legen	
+	// andere sachen nach hinten legen
 	alert("loadmain"+layer_id);
 }
 
 function pz_exec_javascript(link) {
 	$.post(link, '', function(data) {
 		$('body').append(data);
-     });	
+     });
 }
 
 function pz_loading_start(layer_id)
@@ -243,10 +247,10 @@ function pz_loadFormPage(layer_id,form_id,link)
 		layer_id = "#"+layer_id;
 
 	pz_loading_start(layer_id);
-	
+
 	if(link.indexOf("?")) link += "&pz_login_refresh=1";
 	else link += "?pz_login_refresh=1";
-	
+
 	$.post(link, $("#"+form_id).serialize(), function(data) {
 		if(pz_isLoggedIn(data))
 		{
@@ -281,17 +285,17 @@ function pz_loadPage(layer_id, link, funccall_ok, funccall_ok_params)
 function pz_paginatePage(layer_id, link, loading_layer_id, remove_layer_id)
 {
   pz_loading_start(loading_layer_id);
-  
+
   if(link.indexOf("?")) link += "&pz_login_refresh=1";
   else link += "?pz_login_refresh=1";
-  
-  $.post(link, { remove_layer_id: remove_layer_id }, function(data) 
+
+  $.post(link, { remove_layer_id: remove_layer_id }, function(data)
   {
   		if(pz_isLoggedIn(data))
   		{
   		  $(layer_id).append(data);
   		}
-  		
+
   		if(typeof remove_layer_id == "string" && remove_layer_id != "")
   		  $(remove_layer_id).remove();
 
@@ -313,9 +317,9 @@ function pz_toggleSection(section) {
     $(".section2 .design3col").each(function(i) {
       $(this).removeClass("design3col").addClass("design2col");
     });
-  
+
   }else if (section == 2) {
-  
+
     $(".section1").addClass("hidden");
     $(".section2 .design2col").each(function(i) {
       $(this).removeClass("design2col").addClass("design3col");
@@ -332,11 +336,11 @@ function pz_tooltipbox(t, url) {
   // load tooltip
   if ($(layer_id).length == 0) {
     $('.tooltipbox').remove();
-    
+
     ttop  = parseInt($(t).offset().top);
     theight = parseInt($(t).height);
     tleft = pz_mouse_x;
-  
+
     $("body").append('<div class="tooltipbox" style="display:none;position:absolute;left:'+tleft+'px;top:'+ttop+'px;" data-tooltipbox-url="'+url+'"><div class="content"><div></div></div></div>');
 
     /* $(t).addClass("bt-loading"); */
@@ -347,25 +351,25 @@ function pz_tooltipbox(t, url) {
 
     pz_setZIndex('#overlay');
     pz_setZIndex('.tooltipbox');
-    
+
 
     $.ajax({
           url: url,
           t: t,
           layer_id: layer_id,
-          success: function(data) 
+          success: function(data)
           {
-            
+
             /* $(t).removeClass("bt-loading"); */
-            
+
             $(this.layer_id).children().children().replaceWith(data);
             // $(layer_id).append('<div class="footer"></div>');
             $(this.layer_id).children().append('<p class="close"><a class="close bt5" href="javascript:void(0);" onclick="pz_tooltipbox_close()"><span class="icon"></span></a></p>');
             $(this.layer_id).addClass("tooltipbox-bottom");
-      
+
       			ttop = parseInt($(this.layer_id).css("top")) - $(this.layer_id).height() - 10;
       			tleft = parseInt($(this.layer_id).css("left")) - parseInt(($(this.layer_id).width()/2));
-      
+
             if(ttop < 0)
             {
               // top outranged
@@ -386,18 +390,18 @@ function pz_tooltipbox(t, url) {
               tleft = parseInt($(layer_id).css("left")) - parseInt(( $(this.layer_id).width()/2));
 
             }
-      
+
             $(this.layer_id).css("top",ttop).css("left",tleft).css("display","block");
-      
+
             pz_setZIndex('.tooltipbox');
-                    
+
           }
     });
 
-  }else 
+  }else
   {
     $(layer_id).remove();
-    
+
   }
 
 }
@@ -415,7 +419,7 @@ function pz_open_email(id,link) {
 	email = $("#email-"+id);
 	email_preview = $("#email-content-preview-"+id);
 	email_detail = $("#email-content-detail-"+id);
-	
+
 	if(email.hasClass('open'))
 	{
 		email.addClass('close');
@@ -429,15 +433,15 @@ function pz_open_email(id,link) {
 		email.addClass('open');
 		email_preview.hide();
 		email_detail.show();
-		
+
 		// if(email_detail.html() == "")
 		pz_loadPage("email-content-detail-"+id,link);
-		
+
 	}
-	
+
 }
 
-function pz_setEmailAutocomplete(layer) 
+function pz_setEmailAutocomplete(layer)
 {
 	$(layer)
 		// don t navigate away from the field on tab when selecting an item
@@ -477,7 +481,7 @@ function pz_setEmailAutocomplete(layer)
 				return false;
 			}
 		});
-	
+
 }
 
 function split( val ) {
@@ -487,22 +491,22 @@ function split( val ) {
 function extractLast( term ) {
 	return split( term ).pop();
 }
-		
+
 function pz_setText(layer_id, text)
 {
 
   jQuery.fn.extend({
       insertAtCaret: function(valueToInsertAtCaret)
       {
-          return this.each( function(i) 
+          return this.each( function(i)
           {
-              if ( document.selection ) 
+              if ( document.selection )
               {
                   this.focus();
                   selection = document.selection.createRange();
                   selection.text = valueToInsertAtCaret;
                   this.focus();
-              } else if ( this.selectionStart || this.selectionStart == "0" ) 
+              } else if ( this.selectionStart || this.selectionStart == "0" )
               {
                   var startPosition = this.selectionStart;
                   var endPosition = this.selectionEnd;
@@ -512,7 +516,7 @@ function pz_setText(layer_id, text)
                   this.selectionStart = startPosition + valueToInsertAtCaret.length;
                   this.selectionEnd = startPosition + valueToInsertAtCaret.length;
                   this.scrollTop = scrollTop;
-              } else 
+              } else
               {
                   this.value += valueToInsertAtCaret;
                   this.focus();
@@ -539,7 +543,7 @@ function pz_centerPopbox(popbox_width, popbox_height)
   var min_distance = 100;
   var window_height = $(window).height();
   var window_width  = $(window).width();
-  
+
   if(typeof popbox_height == "undefined")
     var popbox_height = window_height - ( 2 * min_distance );
   if(typeof popbox_width == "undefined" || popbox_width == "")
@@ -560,11 +564,11 @@ var pz_clipboard_uploaded_list_layer = "";
 var pz_clipboard_upload_list_layer = "";
 var pz_clipboard_button_layer = "";
 
-function pz_clipboard_select(button_layer, uploaded_list_layer, field_layer, upload_list_layer) 
+function pz_clipboard_select(button_layer, uploaded_list_layer, field_layer, upload_list_layer)
 {
 	if(pz_clipboard_button_layer != "")
 		$(pz_clipboard_button_layer).removeClass("current");
-	
+
 	pz_clipboard_field_layer = field_layer;
 	pz_clipboard_upload_list_layer = upload_list_layer;
 	pz_clipboard_uploaded_list_layer = uploaded_list_layer;
@@ -579,7 +583,7 @@ function pz_closeClipboard()
 {
   $('#overlay').remove();
   $('#clipboard').addClass("hidden");
-  
+
   pz_clipboard_field_layer = "";
   pz_clipboard_upload_list_layer = "";
   pz_clipboard_uploaded_list_layer = "";
@@ -587,14 +591,14 @@ function pz_closeClipboard()
 
 }
 
-function pz_loadClipboard() 
+function pz_loadClipboard()
 {
 
   if ($('#clipboard').length > 0)
   {
     $("#clipboard").remove();
-  }  
-  
+  }
+
   $("body").append('<div id="clipboard" class="popbox"></div>');
 
   if ($('#overlay').length > 0) { $('#overlay').trigger("click");  }
@@ -612,7 +616,7 @@ function pz_loadClipboard()
 
 	}
 	pz_setZIndex('#clipboard');
-	
+
 }
 
 function pz_clipboard_init()
@@ -620,8 +624,8 @@ function pz_clipboard_init()
   if(pz_clipboard_uploaded_list_layer == "")
   {
     $(".function-clip-select a").hide();
-  
-  }else 
+
+  }else
   {
     $(".function-clip-select a").show();
     $(".clips .clip").removeClass("checked");
@@ -634,7 +638,7 @@ function pz_clipboard_init()
       clip_id = $(this).attr("data-clip_id");
       $(".clip-"+clip_id).addClass("checked");
     });
-  
+
   }
 }
 
@@ -644,7 +648,7 @@ function pz_clipboard_msg(text)
   alert(text);
 }
 
-function pz_clip_deselect(clip_id, hidden_field) 
+function pz_clip_deselect(clip_id, hidden_field)
 {
   hf = $(hidden_field);
   hf.val( hf.val().replace(clip_id+",","") );
@@ -653,7 +657,7 @@ function pz_clip_deselect(clip_id, hidden_field)
 }
 
 
-function pz_clip_select(clip_id, clip_name, clip_size) 
+function pz_clip_select(clip_id, clip_name, clip_size)
 {
   if($(".qq-upload-success.clip-"+clip_id).length > 0)
   {
@@ -668,7 +672,7 @@ function pz_clip_select(clip_id, clip_name, clip_size)
 	// Filenamne noch übergeben
 	// clip_name = qq.FileUploaderBasic._formatFileName(clip_name);
 	// clip_size = qq.FileUploaderBasic._formatSize(clip_size);
-	
+
 	li = ('<li class="qq-upload-success clip-'+clip_id+'" data-clip_id="'+clip_id+'">'+
 			'<span class="qq-upload-file"><a href="/screen/clipboard/get/?mode=download_clip&clip_id='+clip_id+'" target="_blank">'+clip_name+'</span>'+
 			'<span class="qq-upload-size">'+clip_size+
@@ -678,9 +682,9 @@ function pz_clip_select(clip_id, clip_name, clip_size)
 
 	$(pz_clipboard_field_layer).val($(pz_clipboard_field_layer).val()+clip_id+",");
 	$(pz_clipboard_uploaded_list_layer).append(li);
-	
+
 	pz_clipboard_init();
-	
+
 }
 
 
@@ -698,12 +702,12 @@ function pz_set_calendar_addform_date(formdate) {
 
 // ----- day
 
-function pz_set_calendarday_init() 
+function pz_set_calendarday_init()
 {
   pz_set_calendarday_offset();
   pz_set_calendarday_dragresize_init();
   pz_calendarday_rearrange_events();
-  
+
 }
 
 function pz_calendarday_rearrange_events()
@@ -713,7 +717,7 @@ function pz_calendarday_rearrange_events()
   {
     start_position = parseInt( ($(this).attr("data-event-hour-start") * 60) ) + parseInt($(this).attr("data-event-minute-start"));
     height = parseInt($(this).attr("data-event-minute-duration"));
-    
+
     $(this).css("top", start_position);
     $(this).height(height);
     $(this).css("left", 465);
@@ -725,14 +729,14 @@ function pz_calendarday_rearrange_events()
   articles.sort(function(a,b) {
     start_a = parseInt( ($(a).attr("data-event-hour-start") * 60) ) + parseInt($(a).attr("data-event-minute-start"));
     start_b = parseInt( ($(b).attr("data-event-hour-start") * 60) ) + parseInt($(b).attr("data-event-minute-start"));
-    
+
     if (start_a < start_b) return -1;
     if (start_a > start_b) return 1;
     height_a = parseInt($(a).attr("data-event-minute-duration"));
     height_b = parseInt($(b).attr("data-event-minute-duration"));
     if (height_a > height_b) return -1;
     if (height_a < height_b) return 1;
-    
+
     return 0;
   });
 
@@ -751,13 +755,13 @@ function pz_calendarday_rearrange_events()
     $(this).css("top", start_position);
     $(this).height(height);
     $(this).attr("data-calc-end", end_position);
-    
+
   });
 
   var current_block = 0;
   var current_column = 1;
   var columns = 0;
-   
+
   articles.each(function(i,e)
   {
     calendar_event_id = $(this).attr("id").replace("event-","");
@@ -765,12 +769,12 @@ function pz_calendarday_rearrange_events()
     end_position = parseInt( $(this).attr("data-calc-end") );
 
     if (current_block == 0) {
-      
+
       // the very first element
       current_block = 1;
       current_column = 1;
       columns = 1;
-      
+
     }else {
 
       block_max_end_position = 0;
@@ -800,7 +804,7 @@ function pz_calendarday_rearrange_events()
       }
 
       if(start_position > block_max_end_position) {
-      
+
         current_block++;
         current_column = 1;
         columns = 1;
@@ -810,13 +814,13 @@ function pz_calendarday_rearrange_events()
         columns++;
         current_column = columns;
       }
-      
+
     }
 
     $(this).attr("data-calc-block", current_block);
     $(this).attr("data-calc-column", current_column);
     $(this).attr("data-calc-columns", columns);
-    
+
     $(".calendar.view-day").find('article[data-event-job="0"][data-calc-block="'+current_block+'"]').each(function(){
       $(this).attr("data-calc-columns", columns);
     });
@@ -830,7 +834,7 @@ function pz_calendarday_rearrange_events()
     block = parseInt($(this).attr("data-calc-block"));
     column = parseInt($(this).attr("data-calc-column"));
     columns = parseInt($(this).attr("data-calc-columns"));
-    
+
     max = 465;
 
     width = parseInt(max / columns);
@@ -842,7 +846,7 @@ function pz_calendarday_rearrange_events()
   });
 
   return;
-  
+
 }
 
 
@@ -873,8 +877,8 @@ function pz_set_calendarday_dragresize_init() {
 
 		  pz_loading_start("#"+$(this).prop("id"));
    		$.get(pz_event_day_url, {
-   		  mode: "move_event", 
-   		  calendar_event_id: calendar_event_id, 
+   		  mode: "move_event",
+   		  calendar_event_id: calendar_event_id,
    		  calendar_event_move_minutes: calendar_event_move_minutes,
    		},
    		  function(data){
@@ -889,7 +893,7 @@ function pz_set_calendarday_dragresize_init() {
    		}, "json");
 	  }
 	});
-	
+
 	$( "#calendar_events_day_list .resizeable").resizable({
 		handles: "s",
 		minHeight: "15",
@@ -900,8 +904,8 @@ function pz_set_calendarday_dragresize_init() {
 
 		  pz_loading_start("#"+$(this).prop("id"));
    		$.get(pz_event_day_url, {
-	   	  mode: "extend_event_by_minutes", 
-	   		calendar_event_id: calendar_event_id, 
+	   	  mode: "extend_event_by_minutes",
+	   		calendar_event_id: calendar_event_id,
 	   		calendar_event_extend_minutes: calendar_event_extend_minutes,
 	   	},
 	   	  function(data){
@@ -933,7 +937,7 @@ function pz_set_calendarday_offset()
 // Kalender - Woche
 // Termine richtig positionieren
 
-function pz_set_calendarweek_init() 
+function pz_set_calendarweek_init()
 {
   // pz_toggleSection(1);
   pz_set_calendarweek_offset();
@@ -965,10 +969,10 @@ function pz_calendarweek_rearrange_events()
   var wrapper_width = $(".view-week .wrapper").width();
   var hour_width = $(".view-week .hours li.hour").width();
   var box_width = parseInt((wrapper_width-hour_width) / days)-3;
-  
+
   // TODO: events über mehrere tage clonen, jedes event ist in jedem tag einzeln vorhanden
   // weekdays
-  
+
   $('li[data-grid="day"],li[data-grid="allday"]')
     .width(box_width)
     .attr("data-calc-offset", hour_width);
@@ -977,11 +981,11 @@ function pz_calendarweek_rearrange_events()
   // - allday block
 
   // ------- allday
-  
-  articles = $(".calendar.view-week").find('article[data-event-isallday="1"]');
-  
 
-  // Sort articles by longest !!!  
+  articles = $(".calendar.view-week").find('article[data-event-isallday="1"]');
+
+
+  // Sort articles by longest !!!
   articles.sort(function(a,b) {
     start_a = parseInt( $(a).attr("data-event-date-start") );
     start_b = parseInt( $(b).attr("data-event-date-start") );
@@ -991,11 +995,11 @@ function pz_calendarweek_rearrange_events()
     height_b = parseInt($(b).attr("data-event-minute-duration"));;
     if (height_a > height_b) return -1;
     if (height_a < height_b) return 1;
-    
+
     return 0;
   });
-  
-  
+
+
   articles.each(function(i) {
 
     $(this)
@@ -1010,19 +1014,19 @@ function pz_calendarweek_rearrange_events()
     var factor = 1;
     $('li[data-grid="day"]').each(function(i, d) {
       var c_date = $(d).attr("data-date");
-      
+
       if(started == 0 && ( d_date_start <= c_date) ) {
         started = 1;
         left = box_width * i;
       } else if (started == 1 && ( d_date_end >= c_date) ){
         factor++;
       }
-      
+
     })
-    
-    width = (factor * box_width) - 1; 
+
+    width = (factor * box_width) - 1;
     end_position = left + width;
-    
+
     $(this)
       .prependTo('.allday')
       .css("position", "absolute")
@@ -1037,38 +1041,38 @@ function pz_calendarweek_rearrange_events()
   });
 
   // calc article dependence position
-  
+
   var current_block = 0;
   var current_column = 1;
   var columns = 0;
   var max_columns = 0;
 
   articles.each(function(i,e) {
-  
+
     start_position = parseInt( $(this).css("left") );
     end_position = parseInt( $(this).attr("data-calc-end") );
 
     if (current_block == 0) {
-      
+
       // the very first element
       current_block = 1;
       current_column = 1;
       columns = 1;
-      
+
     } else {
 
       block_max_end_position = 0;
       new_column = true;
-      
+
       for (i = 1 ; i <= columns ; i++) {
-      
+
         // columns max end postion
         column_max_end_position = 0;
-        
+
         block_articles = $(".calendar.view-week").find('article[data-event-isallday="1"][data-calc-block="'+current_block+'"][data-calc-column="'+i+'"]');
 
         block_articles.each(function(ii){
-          
+
           i_end = parseInt($(this).attr("data-calc-end"));
 
           if(column_max_end_position < i_end) {
@@ -1090,7 +1094,7 @@ function pz_calendarweek_rearrange_events()
       }
 
       if (start_position > block_max_end_position) {
-      
+
         current_block++;
         current_column = 1;
         columns = 1;
@@ -1100,7 +1104,7 @@ function pz_calendarweek_rearrange_events()
         columns++;
         current_column = columns;
       }
-      
+
     }
 
     $(this).attr("data-calc-block", current_block);
@@ -1108,7 +1112,7 @@ function pz_calendarweek_rearrange_events()
     $(this).attr("data-calc-columns", columns);
 
     // $(this).find("h2").html("#"+current_block+"#row"+current_column+"#"+columns);
-    
+
     $(".calendar.view-week").find('article[data-event-isallday="1"][data-calc-block="'+current_block+'"]').each(function(){
       $(this).attr("data-calc-columns", columns);
     });
@@ -1116,14 +1120,14 @@ function pz_calendarweek_rearrange_events()
   });
 
   // set article dependence position
-  
+
   max_columns = 0;
   articles.each(function(i,e) {
     column = parseInt($(this).attr("data-calc-column"));
     columns = parseInt($(this).attr("data-calc-columns"));
     $(this).css("top", (column-1) * 20);
     if (columns > max_columns) {
-      max_columns = $(this).attr("data-calc-columns"); 
+      max_columns = $(this).attr("data-calc-columns");
     }
   });
 
@@ -1147,17 +1151,17 @@ function pz_calendarweek_rearrange_events()
   // get all days / here: 2 weeks = 14 days
 
   $('li[data-grid="day"]').each(function(i, d) {
-  
+
     // articles in one day
-  
+
     var c_day = $(d).attr("data-day");
     var c_offset_left = i * $(d).width();
     var c_boxwidth = $(d).width();
     var c_position = i;
-    
+
     $(d)
       .attr("data-calc-left", c_offset_left);
-    
+
     articles = $(".calendar.view-week").find('article[data-event-isallday="0"][data-event-day-start="'+c_day+'"]');
 
     articles.sort(function(a,b) {
@@ -1169,7 +1173,7 @@ function pz_calendarweek_rearrange_events()
       height_b = parseInt($(b).attr("data-event-minute-duration"));
       if (height_a > height_b) return -1;
       if (height_a < height_b) return 1;
-      
+
       return 0;
     });
 
@@ -1182,15 +1186,15 @@ function pz_calendarweek_rearrange_events()
         .removeAttr("data-calc-column")
         .removeAttr("data-calc-columns")
         .attr("data-calc-position", c_position);
-  
+
       start_position = parseInt( ($(this).attr("data-event-hour-start") * 60) ) + parseInt($(this).attr("data-event-minute-start"));
       height = parseInt($(this).attr("data-event-minute-duration"));
       end_position = start_position + height - 1;
-  
+
       $(this).css("top", start_position);
       $(this).height(height);
       $(this).css("left", c_offset_left);
-      
+
       $(this).attr("data-calc-end", end_position);
       $(this).show();
 
@@ -1198,99 +1202,99 @@ function pz_calendarweek_rearrange_events()
 
 
     // calc article dependence position
-  
+
     var current_block = 0;
     var current_column = 1;
     var columns = 0;
-     
+
     articles.each(function(i,e) {
       start_position = parseInt( $(this).css("top") );
       end_position = parseInt( $(this).attr("data-calc-end") );
-  
+
       if (current_block == 0) {
-        
+
         // the very first element
         current_block = 1;
         current_column = 1;
         columns = 1;
-        
+
       } else {
-  
+
         block_max_end_position = 0;
         new_column = true;
         for (i=1;i<=columns;i++) {
           // columns max end postion
           column_max_end_position = 0;
-          
+
           block_articles = $(".calendar.view-week").find('article[data-event-isallday="0"][data-event-day-start="'+c_day+'"][data-calc-block="'+current_block+'"][data-calc-column="'+i+'"]');
-          
+
           block_articles.each(function(ii){
             i_end = parseInt($(this).attr("data-calc-end"));
             if(column_max_end_position < i_end) {
               column_max_end_position = i_end;
             }
           });
-  
+
           // block max end position
           if(column_max_end_position > block_max_end_position) {
               block_max_end_position = column_max_end_position;
           };
-  
+
           // fits under column
           if (start_position > column_max_end_position && new_column) {
             current_column = i;
             new_column = false;
           }
         }
-  
+
         if(start_position > block_max_end_position) {
-        
+
           current_block++;
           current_column = 1;
           columns = 1;
-  
+
         } else if(new_column) {
-  
+
           columns++;
           current_column = columns;
         }
-        
+
       }
-  
+
       $(this).attr("data-calc-block", current_block);
       $(this).attr("data-calc-column", current_column);
       $(this).attr("data-calc-columns", columns);
-      
+
       $(".calendar.view-week").find('article[data-event-isallday="0"][data-event-day-start="'+c_day+'"][data-calc-block="'+current_block+'"]').each(function(){
         $(this).attr("data-calc-columns", columns);
       });
-  
+
     });
-    
-    
+
+
     // set article dependence position
-  
+
     articles.each(function(i,e) {
 
       block = parseInt($(this).attr("data-calc-block"));
       column = parseInt($(this).attr("data-calc-column"));
       columns = parseInt($(this).attr("data-calc-columns"));
-      
+
       max = c_boxwidth;
-  
+
       width = parseInt(max / columns) - 1;
       left = parseInt(column * width) - width;
-  
+
       $(this).width(width);
       $(this).css("left", c_offset_left+left);
-  
+
     });
 
     // end of day
-  
-  }) 
-  
-  
+
+  })
+
+
 }
 
 function pz_set_calendarweek_dragresize_init() {
@@ -1418,31 +1422,31 @@ function pz_set_calendarweek_dragresize_init() {
 
 
 
-function pz_set_customerplan_init() 
+function pz_set_customerplan_init()
 {
 
   $("#calendar_customerplan_list .draggable").draggable({
-      opacity: 0.7, 
+      opacity: 0.7,
       helper: "original",
       containment: "parent",
   		cursor: "move",
   		grid: [30, 30], // wird beim ersten drag überschrieben
   		scroll: true,
   		axis: "x",
-  		start: function(event, ui) 
+  		start: function(event, ui)
 	   	{
 	   	  c = $( this ).closest(".customerplan").find(".customerplan-days li:nth-child(2)");
 	   	  width = c.width()+1;
 	   	  height = c.height();
 	   	  $("#calendar_customerplan_list .draggable" ).draggable( "option", "grid", [width, height] );
 	   	  pz_setZIndex("#"+$(this).prop("id"));
-	   	  
+
 	   	},
-	   	drag: function(event, ui) 
+	   	drag: function(event, ui)
 	   	{
-				// during 
+				// during
 			},
-			stop: function(event, ui) 
+			stop: function(event, ui)
 	   	{
 	   	  // dropped
 
@@ -1453,9 +1457,9 @@ function pz_set_customerplan_init()
 	   	  change_position = new_position - old_position;
 
         max_days = $( this ).closest(".customerplan").attr("data-customerplan-view-days");
-        
+
         // alert(max_days + " - " + old_position + " . " + new_position);
-        
+
         if(max_days <= new_position)
         {
           new_position = old_position;
@@ -1469,32 +1473,32 @@ function pz_set_customerplan_init()
 
           $(this).removeClass("draggable");
           $(this).addClass("not-draggable");
-          
+
           calendar_event_id = $(this).attr("data-event-id");
           calendar_event_move_days = parseInt(new_position) - parseInt(old_position);
           $(this).draggable({disabled: true});
-          
+
           // update
           $.ajax({
-            url: "/screen/calendars/event/", 
+            url: "/screen/calendars/event/",
             t: this,
             old_position: old_position,
             data: {
-      	   		      mode: "move_event_by_day", 
-      	   		      calendar_event_id: calendar_event_id, 
-      	   		      calendar_event_move_days: calendar_event_move_days 
+      	   		      mode: "move_event_by_day",
+      	   		      calendar_event_id: calendar_event_id,
+      	   		      calendar_event_move_days: calendar_event_move_days
       	   		    },
       	   	dataType: "json",
 	   		    success: function(data)
 	   		    {
-	   		      
-              if(data.function_status == 1) 
+
+              if(data.function_status == 1)
               {
                 $(this.t).addClass("draggable");
                 $(this.t).removeClass("not-draggable");
                 $(this.t).draggable({disabled: false});
 
-              }else 
+              }else
               {
                 // $(this.t).addClass("not-draggable");
                 $(this.t).css("left","");
@@ -1505,11 +1509,11 @@ function pz_set_customerplan_init()
 
             }
 	   		  });
-          
+
           pz_customerplan_rearrange_events();
-          
+
         }
-	   	  
+
 	   	}
     });
 
@@ -1539,7 +1543,7 @@ function pz_customerplan_rearrange_projects()
       $(".customerplan-project[data-project-id="+e+"]").find(".customerplan-subproject-events").removeClass("hidden");
     });
   }
-  
+
   $(".customerplan-project.has-subprojects .customerplan-project-name")
     .off("click")
     .on("mouseenter",function(e) {
@@ -1548,13 +1552,13 @@ function pz_customerplan_rearrange_projects()
     })
     .on('mouseleave',function(e) {
       $(this).removeClass("active");
-  
+
     })
     .on('click', function(e) {
       t = $(this).closest(".customerplan-project");
       s = t.find(".customerplan-subproject-events");
       project_id = t.attr("data-project-id");
-      
+
       if(s.hasClass("hidden")) {
         s.removeClass("hidden");
         pz_customerplan_project_subs_open.push(project_id);
@@ -1586,7 +1590,7 @@ function pz_get_customerplan_top_position(event, level)
 
 function pz_customerplan_rearrange_events()
 {
-  $(".customerplan-project-events .customerplan-project-events-wrapper,.customerplan-subproject-events .customerplan-project-events-wrapper").each(function() 
+  $(".customerplan-project-events .customerplan-project-events-wrapper,.customerplan-subproject-events .customerplan-project-events-wrapper").each(function()
   {
     c = $( this ).closest(".customerplan").find(".customerplan-days li:nth-child(2)");
  	  width = c.width() + 1;
@@ -1609,7 +1613,7 @@ function pz_customerplan_rearrange_events()
   });
 }
 
-// ------ 
+// ------
 function pz_refresh_jobs_list ()
 {
     if($('.userjobs').length > 0) {

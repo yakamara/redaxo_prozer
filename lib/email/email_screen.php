@@ -2,6 +2,7 @@
 
 class pz_email_screen
 {
+    /** @var pz_email */
     public $email;
 
     public function __construct($email)
@@ -722,6 +723,7 @@ class pz_email_screen
 
         $attachments = [];
         $as = array_merge([$this->email->getProzerEml()], $this->email->getAttachments());
+        /** @var pz_eml $a */
         foreach ($as as $k => $a) {
             $a_download_link = pz::url('screen', 'emails', 'email', ['email_id' => $this->email->getId(), 'mode' => 'download', 'element_id' => $a->getElementId()]);
             $a_clipboard_link = pz::url('screen', 'emails', 'email', ['email_id' => $this->email->getId(), 'mode' => 'element2clipboard', 'element_id' => $a->getElementId()]);
@@ -740,7 +742,8 @@ class pz_email_screen
 
             // Spaces vermeiden
             $attachment = '';
-            $attachment .= '<li class="attachment">';
+            $messageBoxId = 'attachment-message-'.$a->getElementId();
+            $attachment .= '<li class="attachment"><div id="'.$messageBoxId.'"></div>';
             // $attachment .= '<span class="preview"><img src="'.$a->getInlineImage().'" width="20" height="20" /></span>';
 
 
@@ -753,7 +756,13 @@ class pz_email_screen
 				                  <span class="info">'.pz::readableFilesize($a->getSize()).'</span>
 				                </span>';
             $attachment .= '<ul class="functions">';
-            $attachment .= '<li class="first function"><a class="download" target="_blank" href="'.$a_download_link.'">'.pz_i18n::msg('download').'</a></li>';
+            $first = 'first ';
+            if ('ics' === $extension) {
+                $import_link = pz::url('screen', 'emails', 'email', ['email_id' => $this->email->getId(), 'mode' => 'import', 'element_id' => $a->getElementId()]);
+                $attachment .= '<li class="'.$first.'function"><a class="import" href="javascript:void(0)" onclick="pz_tooltipbox(this, \''.$import_link.'\')">'.pz_i18n::msg('import').'</a></li>';
+                $first = '';
+            }
+            $attachment .= '<li class="'.$first.'function"><a class="download" target="_blank" href="'.$a_download_link.'">'.pz_i18n::msg('download').'</a></li>';
             $attachment .= '<li class="last function">'.pz_screen::getTooltipView('<a class="clipboard" href="javascript:void(0);" onclick="pz_exec_javascript(\''.$a_clipboard_link.'\')">'.pz_i18n::msg('copy_to_clipboard').'</a>', pz_i18n::msg('copy_to_clipboard')).'</li>';
             $attachment .= '</ul>';
             $attachment .= '</li>';
@@ -847,6 +856,77 @@ class pz_email_screen
 			<section class="content detail" id="email-content-detail-'.$this->email->getId().'">
               '.$return.'
             </section>';
+    }
+
+    public function getImportFlyoutView(pz_eml $element, array $importStatus, array $p = [])
+    {
+        $event = pz_sabre_caldav_backend::getPreview($element->getBody());
+
+        $calendar_screen = new pz_calendar_event_screen($event);
+
+        $class = 'email-'.$this->email->getId().'-element-'.$element->getElementId().'-import';
+
+        $actions = '';
+        $buttons = [];
+
+        /** @var null|pz_calendar_event $existsingEvent */
+        $existsingEvent = $importStatus['event'];
+        $import_link = pz::url('screen', 'emails', 'email', ['email_id' => $this->email->getId(), 'mode' => 'import', 'action' => 1, 'element_id' => $element->getElementId()]);
+        if ('CANCEL' == $importStatus['method']) {
+            $actions .= '<p class="xform-warning">'.pz_i18n::msg('import_info_cancel').'</p>';
+
+            if ($existsingEvent && pz::getUser()->getEventDeletePerm($importStatus['event'])) {
+
+                $buttons[] = '<li><a class="bt17" href="javascript:void(0);" onclick="check = confirm(\''.
+                    str_replace(array("'","\n","\r"),array("","",""),pz_i18n::msg("calendar_event_confirm_delete",htmlspecialchars($existsingEvent->getTitle()))).'\'); if (check == true) pz_loadPage(\'.'.$class.'\',\''.$import_link.'\')">'.pz_i18n::msg("import_delete").'</a></li>';
+            }
+        } elseif (!$importStatus['importable']) {
+            if ($existsingEvent && $existsingEvent->getUserId() != pz::getUser()->getId()) {
+                $actions .= pz_i18n::msg('import_error_exists_other_user');
+            } else {
+                $actions .= pz_i18n::msg('import_error_exists_newer');
+            }
+        } elseif ($importStatus['event']) {
+            $buttons[] = '<li><a class="bt5" href="javascript:void(0);" onclick="pz_loadPage(\'.'.$class.'\',\''.$import_link.'\')">'.pz_i18n::msg("import_update").'</a></li>';
+        } else {
+            $projects = [];
+            $first = ' first';
+            foreach (pz::getUser()->getCalendarCalProjects() as $project) {
+                $projects[] = '
+                    <li class="entry'.$first.'">
+                        <a href="javascript:pz_loadPage(\'.'.$class.'\', \''.$import_link.'&amp;project_id='.$project->getId().'\')" class="wrapper">
+                            <span class="name">'.htmlspecialchars($project->getName()).'</span>
+                        </a>
+                    </li>';
+                $first = '';
+            }
+            $actions .= '<ul class="sl1">
+                    <li class="selected"><span class="email-project-name selected"  onclick="pz_screen_select(this)">'.pz_i18n::msg('import_create').'</span>
+                      <div class="flyout">
+                        <div class="content">
+                          <ul class="entries">
+                            '.implode('', $projects).'
+                          </ul>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>';
+        }
+
+        if ($existsingEvent && pz::getUser()->getEventViewPerm($existsingEvent)) {
+            $view_link = pz::url('screen', 'calendars', '', ['day' => $existsingEvent->getFrom()->format('Ymd')]);
+            $buttons[] = '<li><a class="bt5" href="'.$view_link.'">'.pz_i18n::msg("import_view").'</a></li>';
+        }
+
+        if ($buttons) {
+            $actions .= '<ul class="buttons">'.implode($buttons).'</ul>';
+        }
+
+        $p['actions'] = $actions;
+
+        $view = $calendar_screen->getFlyoutEventView($p, true, true);
+
+        return '<div class="design1col '.$class.'">'.$view.'</div>';
     }
 
     // ------------------------------------------------------------------- LINKS

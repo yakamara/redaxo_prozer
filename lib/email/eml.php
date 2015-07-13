@@ -253,6 +253,10 @@ class pz_eml
         return $elements;
     }
 
+    /**
+     * @param int $element_id
+     * @return bool|self
+     */
     public function getElementByElementId($element_id)
     {
         $elements = $this->getAllElements();
@@ -656,7 +660,7 @@ class pz_eml
                 ];
             }
         }
-        
+
         return $return;
     }
 

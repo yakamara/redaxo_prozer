@@ -3,16 +3,22 @@
 class pz_calendar_attendee extends pz_calendar_element
 {
     const TABLE = 'pz_calendar_attendee';
-    const NEEDSACTION = 'NEEDS-ACTION';
-    const ACCEPTED = 'ACCEPTED';
-    const TENTATIVE = 'TENTATIVE';
-    const DECLINED = 'DECLINED';
+
+    const ROLE_CHAIR = 'CHAIR';
+    const ROLE_REQ_PARTICIPANT = 'REQ-PARTICIPANT';
+
+    const STATUS_NEEDSACTION = 'NEEDS-ACTION';
+    const STATUS_ACCEPTED = 'ACCEPTED';
+    const STATUS_TENTATIVE = 'TENTATIVE';
+    const STATUS_DECLINED = 'DECLINED';
 
     protected $user_id = '';
 
     protected $email = '';
 
     protected $name = '';
+
+    protected $role = self::ROLE_REQ_PARTICIPANT;
 
     protected $status;
 
@@ -30,17 +36,12 @@ class pz_calendar_attendee extends pz_calendar_element
         if (isset($params['a.name'])) {
             $this->name = $params['a.name'];
         }
+        if (isset($params['a.role'])) {
+            $this->role = $params['a.role'];
+        }
         if (isset($params['a.status'])) {
             $this->status = $params['a.status'];
         }
-    }
-
-    /**
-     * @return pz_calendar_event
-     */
-    public function getEvent()
-    {
-        return $this->event;
     }
 
     public function getUserId()
@@ -70,6 +71,11 @@ class pz_calendar_attendee extends pz_calendar_element
       return $this->$key;
     }*/
 
+    public function getRole()
+    {
+        return $this->role;
+    }
+
     public function getStatus()
     {
         return $this->status;
@@ -88,6 +94,11 @@ class pz_calendar_attendee extends pz_calendar_element
     public function setName($name)
     {
         return $this->setValue('name', $name);
+    }
+
+    public function setRole($role)
+    {
+        return $this->setValue('role', $role ?: self::ROLE_REQ_PARTICIPANT);
     }
 
     public function setStatus($status)
@@ -114,18 +125,18 @@ class pz_calendar_attendee extends pz_calendar_element
             foreach ($attendees as $attendee) {
                 if ($attendee->user_id > 0) {
                     if (($user = pz_user::get($attendee->user_id))) {
-                        $values .= '(?,?,?,?,?,?),';
-                        array_push($params, $id, $user->getId(), $user->getEmail(), $user->getName(), $attendee->status, $time);
+                        $values .= '(?,?,?,?,?,?,?),';
+                        array_push($params, $id, $user->getId(), $user->getEmail(), $user->getName(), $attendee->role, $attendee->status, $time);
                     }
                 } else {
-                    $values .= '(?,?,?,?,?,?),';
-                    array_push($params, $id, $attendee->user_id, $attendee->email, $attendee->name, $attendee->status, $time);
+                    $values .= '(?,?,?,?,?,?,?),';
+                    array_push($params, $id, $attendee->user_id, $attendee->email, $attendee->name, $attendee->role, $attendee->status, $time);
                 }
             }
             pz_sql::factory()->setQuery('
-                INSERT INTO ' . self::TABLE . ' (event_id, user_id, email, name, status, timestamp)
+                INSERT INTO ' . self::TABLE . ' (event_id, user_id, email, name, role, status, timestamp)
                 VALUES ' . rtrim($values, ',') . '
-                ON DUPLICATE KEY UPDATE name = VALUES(name), status = VALUES(status), timestamp = VALUES(timestamp)
+                ON DUPLICATE KEY UPDATE name = VALUES(name), role = VALUES(role), status = VALUES(status), timestamp = VALUES(timestamp)
             ', $params);
             $and = ' AND timestamp < ' . $time;
         }
@@ -182,6 +193,6 @@ class pz_calendar_attendee extends pz_calendar_element
 
     public static function getStatusArray()
     {
-        return [self::NEEDSACTION, self::ACCEPTED, self::TENTATIVE, self::DECLINED];
+        return [self::STATUS_NEEDSACTION, self::STATUS_ACCEPTED, self::STATUS_TENTATIVE, self::STATUS_DECLINED];
     }
 }

@@ -6,6 +6,7 @@ use Sabre\CalDAV\Xml\Property\SupportedCalendarComponentSet;
 use Sabre\DAV\Exception\Forbidden;
 use Sabre\DAV\Exception\NotFound;
 use Sabre\VObject\Component;
+use Sabre\VObject\DateTimeParser;
 use Sabre\VObject\Reader;
 
 class pz_sabre_caldav_backend extends AbstractBackend
@@ -274,10 +275,28 @@ class pz_sabre_caldav_backend extends AbstractBackend
             $clip['managed-id'] = $pzClip->getId();
             $event->add($clip);
         }
-        $organizer = $pzEvent->getUserId();
         $pzAttendees = $pzEvent->getAttendees();
-        if (pz::getUser()->getId() != $organizer || count($pzAttendees) > 0) {
-            $user = pz_user::get($organizer);
+        $hasOrganizer = false;
+        foreach ($pzAttendees as $pzAttendee) {
+            $attendee = $calendar->createProperty('attendee', 'mailto:' . $pzAttendee->getEmail());
+            $attendee['cn'] = $pzAttendee->getName();
+            $attendee['partstat'] = $pzAttendee->getStatus();
+            $attendee['role'] = $pzAttendee->getRole();
+            $event->add($attendee);
+
+            if (!$hasOrganizer && pz_calendar_attendee::ROLE_CHAIR === $pzAttendee->getRole()) {
+                $hasOrganizer = true;
+                $event->organizer = 'mailto:' . $pzAttendee->getEmail();
+                $event->organizer['cn'] = $pzAttendee->getName();
+            }
+        }
+        if (!$hasOrganizer) {
+            $user = null;
+            if (pz::getUser()->getId() != $pzEvent->getUserId()) {
+                $user = pz_user::get($pzEvent->getUserId());
+            } elseif (count($pzAttendees)) {
+                $user = pz::getUser();
+            }
             if ($user) {
                 $event->organizer = 'mailto:' . $user->getEmail();
                 $event->organizer['cn'] = $user->getName();
@@ -285,16 +304,9 @@ class pz_sabre_caldav_backend extends AbstractBackend
                 $attendee['cn'] = $user->getName();
                 $attendee['partstat'] = 'ACCEPTED';
                 $attendee['role'] = 'CHAIR';
-                $event->add($attendee);
-                $userIsAttendee = false;
-                foreach ($pzAttendees as $pzAttendee) {
-                    $attendee = $calendar->createProperty('attendee', 'mailto:' . $pzAttendee->getEmail());
-                    $attendee['cn'] = $pzAttendee->getName();
-                    $attendee['partstat'] = $pzAttendee->getStatus();
-                    $event->add($attendee);
-                }
             }
         }
+
         $this->createAlarmComponents($calendar, $event, $pzEvent);
         return $event;
     }
@@ -398,7 +410,7 @@ class pz_sabre_caldav_backend extends AbstractBackend
         if ($sql->getRows() > 0) {
             pz::setConfig('calendar_etag_add/' . $objectUri, 1);
             self::incrementCtag($sql->getValue('project_id'));
-            throw new Forbidden('Forbidden!1');
+            throw new Forbidden('Forbidden!');
         }
 
         $calendar = Reader::read($calendarData);
@@ -411,20 +423,24 @@ class pz_sabre_caldav_backend extends AbstractBackend
         }
     }
 
-    private function createPzEvent($projectId, $jobs, $objectUri, $event)
+    private function createPzEvent($projectId, $jobs, $objectUri, $event, $save = true)
     {
         $pzEvent = pz_calendar_event::create();
         $this->setEventValues($projectId, $objectUri, $event, $pzEvent);
         $pzEvent->setUserId(pz::getUser()->getId());
         $pzEvent->setBooked($jobs);
-        $pzEvent->save();
+        if ($save) {
+            $pzEvent->save();
+        }
         if (!$jobs && isset($event->rrule)) {
             $pzRule = pz_calendar_rule::create($pzEvent);
             $this->setRuleValues($event, $pzRule);
-            $pzRule->save();
+            if ($save) {
+                $pzRule->save();
+            }
 
-            if (count($calendar->vevent) > 1) {
-                $events = $this->getSortedEvents($calendar->vevent);
+            if (count($event) > 1) {
+                $events = $this->getSortedEvents($event);
                 $count = count($events);
                 for ($i = 0; $i < $count; ++$i) {
                     $event = $events[$i];
@@ -435,12 +451,15 @@ class pz_sabre_caldav_backend extends AbstractBackend
                     if (isset($event->rrule) && $mode == pz_calendar_rule_event::FUTURE) {
                         $this->setRuleValues($event, $pzRule);
                     }
-                    $pzRuleEvent->save($mode);
+                    if ($save) {
+                        $pzRuleEvent->save($mode);
+                    }
                     $pzRule = $pzRuleEvent->getRule();
                 }
             }
         }
         // $pzEvent->saveToHistory('create');
+        return $pzEvent;
     }
 
     private function createPzTodo($projectId, $objectUri, $todo)
@@ -496,9 +515,42 @@ class pz_sabre_caldav_backend extends AbstractBackend
         }
     }
 
-    private function updatePzEvent($rawCalendarId, $jobs, $objectUri, Component $event)
+    private function updatePzEvent($rawCalendarId, $jobs, $objectUri, Component $event, $checkOrganizer = true)
     {
         $pzEvent = pz_calendar_event::getByProjectUri($rawCalendarId, $objectUri, $jobs);
+
+        if (!$pzEvent->isBooked() && $checkOrganizer) {
+            $organizer = $this->getEmail($event->organizer);
+            if (!in_array($organizer, $pzEvent->getUser()->getEmails())) {
+                $pzAttendees = $pzEvent->getAttendees();
+                $pzAttendee = null;
+                foreach ($pzAttendees as $a) {
+                    if ($a->getUserId() == pz::getUser()->getId()) {
+                        $pzAttendee = $a;
+                        break;
+                    }
+                }
+                if ($pzAttendee) {
+                    $emails = pz::getUser()->getEmails();
+                    foreach ($event->attendee as $attendee) {
+                        $email = $this->getEmail($attendee);
+                        if (in_array($email, $emails)) {
+                            $pzAttendee->setStatus((string) $attendee['partstat'] ?: 'NEEDS-ACTION');
+                            $pzAttendee->setEmail($email);
+                            $pzAttendee->setName($attendee['cn']);
+                        }
+                    }
+
+                    $pzEvent->setAttendees($pzAttendees);
+                }
+
+                $pzEvent->setAlarms($this->getAlarms($event));
+                $pzEvent->save();
+                $pzEvent->saveToHistory('update');
+                return;
+            }
+        }
+
         $add = $event->dtstart->getDateTime()->setTimezone(self::getDateTimeZone())->diff($pzEvent->getFrom());
         $this->setEventValues($rawCalendarId, $objectUri, $event, $pzEvent);
         $pzEvent->save();
@@ -647,56 +699,85 @@ class pz_sabre_caldav_backend extends AbstractBackend
     {
         $attendees = $event->attendee;
         $pzAttendees = [];
-        if (count($attendees) > 0) {
-            $organizer = str_ireplace('mailto:', '', strtolower($event->organizer));
-            $sqlLogin = pz_sql::factory();
-            $sqlLogin->prepareQuery('SELECT id, name, email FROM pz_user WHERE LOWER(login) = ? LIMIT 2');
-            $sqlEmail = pz_sql::factory();
-            $sqlEmail->prepareQuery('
-                SELECT DISTINCT(u.id), u.name, u.email
-                FROM pz_user u
-                LEFT JOIN pz_address_field f1
-                ON u.email = f1.value AND f1.type = "EMAIL"
-                LEFT JOIN pz_address_field f2
-                ON f1.address_id = f2.address_id AND f2.type = "EMAIL"
-                WHERE LOWER(email) = :email OR f2.value = :email
-                LIMIT 2
-            ');
-            //$userEmail = strtolower(pz::getUser()->getEmail());
-            foreach ($attendees as $attendee) {
-                $email = str_ireplace('mailto:', '', $attendee);
-                if (strtolower($email) != $organizer /*&& strtolower($email) != $userEmail*/) {
-                    $userId = '';
-                    $name = (string) $attendee['cn'];
-                    if (strpos($email, '@') === false) {
-                        $sqlLogin->execute([strtolower($name)]);
-                        if ($sqlLogin->getRows() != 1) {
-                            continue;
-                        }
-                        $name = $sqlLogin->getValue('name');
-                        $email = $sqlLogin->getValue('email');
-                        $userId = $sqlLogin->getValue('id');
-                    } else {
-                        $sqlEmail->execute([':email' => strtolower($email)]);
-                        if ($sqlEmail->getRows() == 1) {
-                            $userId = $sqlEmail->getValue('id');
-                            $name = $sqlEmail->getValue('name');
-                            $email = $sqlEmail->getValue('email');
-                        }
-                    }
+        if (count($attendees) <= 0) {
+            return $pzAttendees;
+        }
 
-                    $pzAttendee = pz_calendar_attendee::create();
-                    $pzAttendee->setStatus((string) $attendee['partstat'] ?: 'NEEDS-ACTION');
-                    $pzAttendee->setEmail($email);
-                    $pzAttendee->setName($name);
-                    if ($userId) {
-                        $pzAttendee->setUserId($userId);
-                    }
-                    $pzAttendees[] = $pzAttendee;
+        $userEmails = pz::getUser()->getEmails();
+        $organizer = $event->organizer;
+        $organizerEmail = $this->getEmail($organizer);
+        $otherOrganizer = !in_array($organizerEmail, $userEmails);
+        if ($otherOrganizer) {
+            $pzAttendee = pz_calendar_attendee::create();
+            $pzAttendee->setRole(pz_calendar_attendee::ROLE_CHAIR);
+            $pzAttendee->setStatus(pz_calendar_attendee::STATUS_ACCEPTED);
+            $pzAttendee->setEmail($organizerEmail);
+            $pzAttendee->setName((string) $organizer['cn']);
+            $pzAttendees[] = $pzAttendee;
+        }
+
+        $sqlLogin = pz_sql::factory();
+        $sqlLogin->prepareQuery('SELECT id, name, email FROM pz_user WHERE LOWER(login) = ? LIMIT 2');
+        $sqlEmail = pz_sql::factory();
+        $sqlEmail->prepareQuery('
+            SELECT DISTINCT(u.id), u.name, u.email
+            FROM pz_user u
+            LEFT JOIN pz_address_field f1
+            ON u.email = f1.value AND f1.type = "EMAIL"
+            LEFT JOIN pz_address_field f2
+            ON f1.address_id = f2.address_id AND f2.type = "EMAIL"
+            WHERE LOWER(email) = :email OR f2.value = :email
+            LIMIT 2
+        ');
+        foreach ($attendees as $attendee) {
+            $email = $this->getEmail($attendee);
+            if ($email == $organizerEmail || !$otherOrganizer && in_array($email, $userEmails)) {
+                continue;
+            }
+
+            $userId = '';
+            $name = (string) $attendee['cn'];
+            if (strpos($email, '@') === false) {
+                $sqlLogin->execute([strtolower($name)]);
+                if ($sqlLogin->getRows() != 1) {
+                    continue;
+                }
+                $name = $sqlLogin->getValue('name');
+                $email = $sqlLogin->getValue('email');
+                $userId = $sqlLogin->getValue('id');
+            } else {
+                $sqlEmail->execute([':email' => strtolower($email)]);
+                if ($sqlEmail->getRows() == 1) {
+                    $userId = $sqlEmail->getValue('id');
+                    $name = $sqlEmail->getValue('name');
+                    $email = $sqlEmail->getValue('email');
                 }
             }
+
+            $pzAttendee = pz_calendar_attendee::create();
+            $pzAttendee->setStatus((string) $attendee['partstat'] ?: 'NEEDS-ACTION');
+            $pzAttendee->setEmail($email);
+            $pzAttendee->setName($name);
+            $pzAttendee->setRole((string) $attendee['role']);
+            if ($userId) {
+                $pzAttendee->setUserId($userId);
+            }
+            $pzAttendees[] = $pzAttendee;
         }
+
         return $pzAttendees;
+    }
+
+    private function getEmail($property)
+    {
+        if (!$property) {
+            return null;
+        }
+        if ($email = (string) $property['EMAIL']) {
+            return strtolower($email);
+        }
+
+        return str_replace('mailto:', '', strtolower($property));
     }
 
     private function getAlarms(Component $component)
@@ -868,38 +949,72 @@ class pz_sabre_caldav_backend extends AbstractBackend
         self::incrementCtag($rawCalendarId);
     }
 
-    public static function import($calendarId, $data)
+    public static function getImportStatus($data)
+    {
+        $status = ['importable' => true, 'uri' => null, 'method' => null, 'event' => null];
+
+        if (!preg_match('/^UID:(.*)\s?$/Umi', $data, $matches)) {
+            return $status;
+        }
+
+        $status['uri'] = $uri = $matches[1] . '.ics';
+        $status['event'] = $event = pz_calendar_event::getByUri($uri);
+
+        if (preg_match('/^METHOD:(.*)\s?$/Umi', $data, $matches)) {
+            $status['method'] = $matches[1];
+        }
+
+        if ($event && $event->getUserId() != pz::getUser()->getId()) {
+            $status['importable'] = false;
+        } elseif ($event && 'CANCEL' !== $status['method'] && preg_match('/^DTSTAMP:(.*)\s?$/Umi', $data, $matches)) {
+            $datetime = DateTimeParser::parseDateTime($matches[1], self::getDateTimeZone());
+            if ($datetime && $datetime < $event->getUpdated()) {
+                $status['importable'] = false;
+            }
+        }
+
+        return $status;
+    }
+
+    public static function getPreview($data)
     {
         $calendar = Reader::read($data);
+        $backend = new self();
+        $event = $backend->createPzEvent(null, false, null, $calendar->vevent, false);
+        $event->setUserId(null);
+
+        return $event;
+    }
+
+    public static function import($data, $projectId = null)
+    {
+        $status = self::getImportStatus($data);
+
+        if (!$status['importable']) {
+            throw new RuntimeException('Event is not importable');
+        }
+
+        if (!$status['event'] && !$projectId) {
+            throw new RuntimeException('Missing project id for new event');
+        }
+
+        $calendar = Reader::read($data);
         foreach ($calendar->vevent as $event) {
-            if (isset($event->organizer)) {
-                $organizer = str_replace('mailto:', '', strtolower($event->organizer));
-                if ($organizer != strtolower(pz::getUser()->getEmail())) {
-                    $attendee = $calendar->createProperty('attendee', (string) $event->organizer);
-                    $attendee['cn'] = (string) $event->organizer['cn'];
-                    $attendee['partstat'] = 'ACCEPTED';
-                    $event->add($attendee);
-                    unset($event->organizer);
-                }
-            }
             unset($event->valarm);
         }
         $data = $calendar->serialize();
 
         $backend = new self();
-        if (preg_match('/^UID:(.*)\s?$/Umi', $data, $matches)) {
-            $uri = $matches[1] . '.ics';
-            $sql = pz_sql::factory();
-            $sql->setQuery('SELECT id FROM pz_calendar_event WHERE uri = ?', [$uri]);
-            if ($sql->getRows() == 0) {
-                $backend->createCalendarObject($calendarId, $uri, $data);
-            } else {
-                $backend->updateCalendarObject($calendarId, $uri, $data);
-            }
-        } else {
+        if (!$status['uri']) {
             $sql = pz_sql::factory();
             $sql->setQuery('SELECT UPPER(UUID()) as uid');
-            $backend->createCalendarObject($calendarId, $sql->getValue('uid') . '.ics', $data);
+            $backend->createCalendarObject($projectId.'_events', $sql->getValue('uid') . '.ics', $data);
+        } elseif (!$status['event']) {
+            $backend->createCalendarObject($projectId.'_events', $status['uri'], $data);
+        } elseif ('CANCEL' === $status['method']) {
+            $backend->deleteCalendarObject($status['event']->getProjectId().'_events', $status['uri']);
+        } else {
+            $backend->updatePzEvent($status['event']->getProjectId(), false, $status['uri'], $calendar->vevent, false);
         }
     }
 
@@ -911,8 +1026,6 @@ class pz_sabre_caldav_backend extends AbstractBackend
 
     private static function splitCalendarId($calendarId)
     {
-        $jobs = false;
-        $todos = false;
         $parts = array_pad(explode('_', $calendarId, 2), 2, null);
         return [$parts[0], $parts[1] == 'jobs'];
     }

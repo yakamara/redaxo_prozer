@@ -150,7 +150,7 @@ class pz_calendars_controller_screen extends pz_calendars_controller
 
             case('delete_calendar_event'):
                 $calendar_event_id = rex_request('calendar_event_id', 'string');
-                if (($event = pz_calendar_event::get($calendar_event_id)) && pz::getUser()->getEventEditPerm($event)) {
+                if (($event = pz_calendar_event::get($calendar_event_id)) && pz::getUser()->getEventDeletePerm($event)) {
                     $cs = new pz_calendar_event_screen($event);
                     $return = $cs->getDeleteForm($p);
                     $event->delete();
@@ -313,7 +313,7 @@ class pz_calendars_controller_screen extends pz_calendars_controller
                     $day
                 );
 
-                $attandee_events = pz::getUser()->getAttandeeEvents($day, null, [pz_calendar_attendee::ACCEPTED, pz_calendar_attendee::TENTATIVE, pz_calendar_attendee::DECLINED]);
+                $attandee_events = pz::getUser()->getAttandeeEvents($day, null, [pz_calendar_attendee::STATUS_ACCEPTED, pz_calendar_attendee::STATUS_TENTATIVE, pz_calendar_attendee::STATUS_DECLINED]);
                 $s1_content .= pz_calendar_event_screen::getAttendeeListView($p, $attandee_events);
                 $s1_content .= pz_calendar_event_screen::getAddForm($p);
                 break;
@@ -434,7 +434,7 @@ class pz_calendars_controller_screen extends pz_calendars_controller
                     $day
                 );
 
-                $attandee_events = pz::getUser()->getAttandeeEvents($day, null, [pz_calendar_attendee::ACCEPTED, pz_calendar_attendee::TENTATIVE, pz_calendar_attendee::DECLINED]);
+                $attandee_events = pz::getUser()->getAttandeeEvents($day, null, [pz_calendar_attendee::STATUS_ACCEPTED, pz_calendar_attendee::STATUS_TENTATIVE, pz_calendar_attendee::STATUS_DECLINED]);
 
                 $s1_content .= pz_calendar_event_screen::getAddForm($p);
                 break;

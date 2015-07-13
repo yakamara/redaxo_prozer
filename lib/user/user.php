@@ -549,7 +549,29 @@ class pz_user
         return pz_calendar_event::getJobTime($projects, $this->getId(), $from, $to);
     }
 
-    public function getEventEditPerm($event)
+    public function getEventEditPerm(pz_calendar_event $event)
+    {
+        // solange bis es eingebaut ist.
+
+        if ($event->isRuleEvent()) {
+            return false;
+        }
+
+        if ($event->getUserId() == $this->getId()) {
+            foreach ($event->getAttendees() as $attendee) {
+                if (pz_calendar_attendee::ROLE_CHAIR == $attendee->getRole() && $attendee->getUserId() != $this->getId()) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        // TODO: check if in project and/or projektadmin
+        return false;
+    }
+
+    public function getEventDeletePerm(pz_calendar_event $event)
     {
         // solange bis es eingebaut ist.
 
@@ -565,7 +587,7 @@ class pz_user
         return false;
     }
 
-    public function getEventViewPerm($event)
+    public function getEventViewPerm(pz_calendar_event $event)
     {
         // TODO:
         // wenn man im projekt dieses events ist oder besitzer des events
@@ -587,7 +609,7 @@ class pz_user
 
     public function countAttendeeEvents()
     {
-        $ignore = [pz_calendar_attendee::ACCEPTED, pz_calendar_attendee::TENTATIVE, pz_calendar_attendee::DECLINED];
+        $ignore = [pz_calendar_attendee::STATUS_ACCEPTED, pz_calendar_attendee::STATUS_TENTATIVE, pz_calendar_attendee::STATUS_DECLINED];
         $events = pz_calendar_event::getAttendeeEvents(pz::getDateTime(), null, null, $ignore);
         return count($events);
     }
@@ -763,6 +785,13 @@ class pz_user
         return $project;
     }
 
+    /**
+     * @param string $where_string
+     * @param bool   $join
+     * @param array  $filter
+     * @param string $orderby
+     * @return pz_project[]
+     */
     private function _getProjects($where_string = '', $join = true, $filter = [], $orderby = 'p.name')
     {
         $where = [];
