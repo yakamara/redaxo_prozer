@@ -498,6 +498,23 @@ class pz_user
         return implode(',', $return);
     }
 
+    /**
+     * @param int $customer_id
+     * @param array $filter
+     * @return array|bool
+     */
+    public function getCustomerProjects ($customer_id, array $filter = [])
+    {
+        $filter[] = ['field' => 'customer_id', 'value' => $customer_id];
+        $projects = $this->_getProjects('', true, $filter);
+
+        if (count($projects) == 0) {
+            return false;
+        }
+
+        return $projects;
+    }
+
     // -------------------------------------------------------------------- Clip
 
     public function getClipDownloadPerm($clip)
