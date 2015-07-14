@@ -412,6 +412,9 @@ function pz_tooltipbox_close()
   $("#overlay").remove();
 }
 
+function isEmpty(val){
+    return (val === undefined || val == null || val.length <= 0) ? true : false;
+}
 /* ******************* Emails **************** */
 
 function pz_open_email(id,link) {

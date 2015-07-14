@@ -160,9 +160,13 @@ class pz_screen
         return '<script language="Javascript">
                 <!--
                     '.$fadeOut.'
-                    setTimeout(function (){
-                        pz_loadPage("'.$layer.'","'.$link.'")
-                    }, '.$time.');
+                    var refreshTimeout;
+                    function timeoutUpdatelayer() {
+                        refreshTimeout = setTimeout(function (){
+                                            pz_loadPage("'.$layer.'","'.$link.'")
+                                        }, '.$time.');
+                    }
+                    timeoutUpdatelayer();
                 -->
                 </script>';
 

@@ -3015,7 +3015,7 @@ class pz_calendar_event_screen{
 
                 $return = $header.'<p class="xform-info">'.pz_i18n::msg("calendar_event_added").'</p>';
                 $return .= '<script>pz_refresh_calendar_lists();</script>';
-                $return .= pz_screen::getJSDelayedUpdateLayer('calendar_event_add', pz::url('screen', $p['controll'], $p['function'], ['mode' => 'add_calendar_event']), 6000, 'xform-info');
+                $return .= pz_screen::getJSDelayedUpdateLayer('calendar_event_add', pz::url('screen', $p['controll'], $p['function'], ['mode' => 'add_calendar_event', 'day' => $from->format('Ymd')]), 4000, 'xform-info');
 
 
             }else
@@ -3025,7 +3025,10 @@ class pz_calendar_event_screen{
 
         }else
         {
-            $return = $header.$form;
+            $script = '<script>
+                var refreshTimeout = refreshTimeout || null;
+                if(!isEmpty(refreshTimeout)){ clearTimeout(refreshTimeout); }</script>';
+            $return = $header.$form.$script;
         }
         $script = '<script>pz_toggleSection(1);</script>';
         $return = '<div id="calendar_event_form" class="design1col"><div id="calendar_event_add" class="design1col xform-add">'.$return.'</div>'.$script.'</div>';
