@@ -1341,29 +1341,34 @@ function pz_set_calendarweek_dragresize_init() {
             draggeleStart($(this));
         },
         stop: function(event, ui) {
-            var $_this = $(this);
-            var start_position, dd;
-            var dcp = $_this.data("calc-position");
-            var ehs = $_this.data("event-hour-start");
-            var ems = $_this.data("event-minute-start");
-            var start_minutes = parseInt( (ehs * 60) ) + parseInt(ems);
-            var cem_min = ui.position.top-start_minutes; //calendar_event_move_minutes
-            var box_width = $('li[data-grid="allday"]').width();
-            if($(this).data("calc-position")) {
-                start_position = parseInt(dcp) * box_width;
-            } else {
-                start_position = parseInt($_this.data("calc-end")) - box_width;
-            }
+          var $_this = $(this);
 
-            dd = parseInt ( parseInt(ui.position.left) - start_position); //  - parseInt( box_width / 2 )
-            if(dd < 0) {
-                dd = dd - box_width + 2; // weil events kleiner sein können
-            }
-            dd = parseInt (dd / box_width);
-            if(dd != 0) {
-                cem_min = cem_min + ( dd * 1440 );
-            }
-            draggeleRequest(cem_min, $_this, "move_event");
+          var start_position = 0, dd;
+
+          var dcp = $_this.data("calc-position");
+          var ehs = $_this.data("event-hour-start");
+          var ems = $_this.data("event-minute-start");
+
+          var start_minutes = parseInt( (ehs * 60) ) + parseInt(ems);
+          var cem_min = ui.position.top-start_minutes; //calendar_event_move_minutes
+          var box_width = $('li[data-grid="allday"]').width();
+
+          if($_this.data("calc-position") && $_this.data('event-isallday') == 0) {
+            start_position = parseInt(dcp) * box_width;
+          } else if ($_this.data('event-isallday') == 1){
+            start_position = parseInt($_this.data("calc-end")) - box_width;
+          }
+
+          dd = parseInt ( parseInt(ui.position.left) - start_position); //  - parseInt( box_width / 2 )
+
+          if(dd < 0) {
+            dd = dd - box_width + 2; // weil events kleiner sein können
+          }
+          dd = parseInt (dd / box_width);
+          if(dd != 0) {
+            cem_min = cem_min + ( dd * 1440 );
+          }
+          draggeleRequest(cem_min, $_this, "move_event");
         }
     });
 
