@@ -519,36 +519,37 @@ class pz_sabre_caldav_backend extends AbstractBackend
     {
         $pzEvent = pz_calendar_event::getByProjectUri($rawCalendarId, $objectUri, $jobs);
 
-        if (!$pzEvent->isBooked() && $checkOrganizer) {
-            $organizer = $this->getEmail($event->organizer);
-            if (!in_array($organizer, $pzEvent->getUser()->getEmails())) {
-                $pzAttendees = $pzEvent->getAttendees();
-                $pzAttendee = null;
-                foreach ($pzAttendees as $a) {
-                    if ($a->getUserId() == pz::getUser()->getId()) {
-                        $pzAttendee = $a;
-                        break;
-                    }
+        if (
+            !$pzEvent->isBooked() && $checkOrganizer &&
+            ($organizer = $this->getEmail($event->organizer)) &&
+            !in_array($organizer, $pzEvent->getUser()->getEmails())
+        ) {
+            $pzAttendees = $pzEvent->getAttendees();
+            $pzAttendee = null;
+            foreach ($pzAttendees as $a) {
+                if ($a->getUserId() == pz::getUser()->getId()) {
+                    $pzAttendee = $a;
+                    break;
                 }
-                if ($pzAttendee) {
-                    $emails = pz::getUser()->getEmails();
-                    foreach ($event->attendee as $attendee) {
-                        $email = $this->getEmail($attendee);
-                        if (in_array($email, $emails)) {
-                            $pzAttendee->setStatus((string) $attendee['partstat'] ?: 'NEEDS-ACTION');
-                            $pzAttendee->setEmail($email);
-                            $pzAttendee->setName($attendee['cn']);
-                        }
-                    }
-
-                    $pzEvent->setAttendees($pzAttendees);
-                }
-
-                $pzEvent->setAlarms($this->getAlarms($event));
-                $pzEvent->save();
-                $pzEvent->saveToHistory('update');
-                return;
             }
+            if ($pzAttendee) {
+                $emails = pz::getUser()->getEmails();
+                foreach ($event->attendee as $attendee) {
+                    $email = $this->getEmail($attendee);
+                    if (in_array($email, $emails)) {
+                        $pzAttendee->setStatus((string) $attendee['partstat'] ?: 'NEEDS-ACTION');
+                        $pzAttendee->setEmail($email);
+                        $pzAttendee->setName($attendee['cn']);
+                    }
+                }
+
+                $pzEvent->setAttendees($pzAttendees);
+            }
+
+            $pzEvent->setAlarms($this->getAlarms($event));
+            $pzEvent->save();
+            $pzEvent->saveToHistory('update');
+            return;
         }
 
         $add = $event->dtstart->getDateTime()->setTimezone(self::getDateTimeZone())->diff($pzEvent->getFrom());
