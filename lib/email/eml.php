@@ -557,8 +557,6 @@ class pz_eml
 
         if ($content_type_all = pz_eml::parseHeaderType($header, 'Content-Type')) {
 
-            // echo "<br />".$content_type_all;
-
             if (preg_match("#content-type: ([^;\ ]*)#im", $content_type_all, $content_type)) {
                 $return['content-type'] = strtolower($content_type[1]);
             }
@@ -566,24 +564,20 @@ class pz_eml
                 $return['content-type-boundary'] = str_replace(['"', "'"], '', trim($boundary[1]));
             }
 
-            /*
-                           if (preg_match('#name=(.*)#im', $content_type_all, $boundary)) {
-                               $return["content-type-name"] = str_replace(array('"',"'"),"",trim($boundary[1]));
-                           }
-                           if (preg_match('#name[ ]*=[" \']*([a-zA-Z-0-9\.-_\[\]]*)[" \';,]*#im', $header, $regs)) {
-            */
-            if (preg_match('#name[ ]*=[ ]*["\']?([a-zA-Z-0-9\.-_\[\] ]*)["\';,]?#im', $header, $regs)) {
+            if (preg_match('#name[ ]*=[ ]*["\']?([a-zA-Z0-9\.\-_\[\] ]*)["\';,]?#im', $header, $regs)) {
                 $return['content-type-name'] = (trim($regs[1])); // strtolower
             }
 
             // if (preg_match('#charset(.*)=(.*)(.*)#im', $header, $regs)) {
-            if (preg_match('#charset[ ]*=[" \']*([a-zA-Z-0-9]*)[" \';,]*#im', $header, $regs)) {
+            if (preg_match('#charset[ ]*=[" \']*([a-zA-Z0-9]*)[" \';,]*#im', $header, $regs)) {
                 $return['content-type-charset'] = strtolower(trim($regs[1]));
             }
 
-            if (preg_match('#method[ ]*=[" \']*([a-zA-Z-0-9]*)[" \';,]*#im', $header, $regs)) {
+            if (preg_match('#method[ ]*=[" \']*([a-zA-Z0-9]*)[" \';,]*#im', $header, $regs)) {
                 $return['content-type-method'] = strtolower(trim($regs[1]));
             }
+            
+            
         }
 
         return $return;
