@@ -266,18 +266,18 @@ a,
   background-position: -57px -155px;
 }
 #navi-main li.lev1 a.lev1.tools {
-  background-position: -7px -255px;
+  background-position: -6px -205px;
 }
 #navi-main li.lev1 a.lev1.tools:hover,
 #navi-main li.active a.lev1.tools {
-  background-position: -57px -255px;
+  background-position: -56px -205px;
 }
 #navi-main li.lev1 a.lev1.admin {
-  background-position: -10px -205px;
+  background-position: -7px -255px;
 }
 #navi-main li.lev1 a.lev1.admin:hover,
 #navi-main li.active a.lev1.admin {
-  background-position: -60px -205px;
+  background-position: -57px -255px;
 }
 #navi-main li.logo a {
   width: 162px;
