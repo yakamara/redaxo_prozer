@@ -569,11 +569,11 @@ class pz_eml
             }
 
             // if (preg_match('#charset(.*)=(.*)(.*)#im', $header, $regs)) {
-            if (preg_match('#charset[ ]*=[" \']*([a-zA-Z0-9]*)[" \';,]*#im', $header, $regs)) {
+            if (preg_match('#charset[ ]*=[" \']*([a-zA-Z0-9\-]*)[" \';,]*#im', $header, $regs)) {
                 $return['content-type-charset'] = strtolower(trim($regs[1]));
             }
 
-            if (preg_match('#method[ ]*=[" \']*([a-zA-Z0-9]*)[" \';,]*#im', $header, $regs)) {
+            if (preg_match('#method[ ]*=[" \']*([a-zA-Z0-9\-]*)[" \';,]*#im', $header, $regs)) {
                 $return['content-type-method'] = strtolower(trim($regs[1]));
             }
             
