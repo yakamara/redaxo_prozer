@@ -660,6 +660,7 @@ class pz_emails_controller_screen extends pz_emails_controller
 
         $p['trackerlink'] = pz::url('screen', 'emails', 'inbox', array_merge($p['linkvars'], ['mode' => 'getnew', 'date' => $tracker_date]));
         $p['javascript'] = 'pz_add_tracker("inbox_emails", "'.$p['trackerlink'].'", 5000, 0);';
+        $p['xform_warning'] = (count($filter) > 1) ? 'xform-warning' : 'xform-info';
 
         $p['list_title_links'] = [];
         $p['list_title_links'][] = $this->getTitleFunctions($p, ['delete']);
