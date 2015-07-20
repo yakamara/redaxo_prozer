@@ -422,7 +422,7 @@ class pz
         }
         unset($process);
         return $a;
-        
+
     }
 
     public static function cutText($text = '', $size = 30, $ext = ' ...', $style = 'left')
@@ -836,11 +836,17 @@ class pz
         return false;
     }
 
-    public static function getMimeTypeByFilename($file_name, $content = '')
+    public static function getExtensionByFilename($file_name)
     {
         $f = explode('.', $file_name);
         end($f);
         $ext = current($f);
+        return $ext;
+    }
+
+    public static function getMimeTypeByFilename($file_name, $content = '')
+    {
+        $ext = self::getExtensionByFilename($file_name);
         if (isset(self::$mimetypes[$ext])) {
             return self::$mimetypes[$ext];
         }

@@ -735,7 +735,7 @@ class pz_email_screen
                 $a_view_link = $a_download_link;
             }
 
-            $extension = pz::getExtensionByMimeType($a->getContentType());
+            $extension = pz::getExtensionByFilename($a->getFileName());
             $depth = '';
             $depth = str_pad('', $a->getDepth(), '_');
             $depth = str_replace('_', '__ ', $depth);
