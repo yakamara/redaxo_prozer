@@ -58,7 +58,7 @@ class pz_clipboard_controller_screen extends pz_clipboard_controller
             $mode = rex_request('mode', 'string');
             switch ($mode) {
                 case('download_clip'):
-                    if (pz::getUser()->getClipDownloadPerm($clip)) {
+                    if ($clip->checkUserperm()) {
                         $clip->saveToHistory('download');
                         return $clip->download();
                     }

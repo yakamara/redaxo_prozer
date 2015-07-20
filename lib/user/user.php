@@ -515,26 +515,6 @@ class pz_user
         return $projects;
     }
 
-    // -------------------------------------------------------------------- Clip
-
-    public function getClipDownloadPerm($clip)
-    {
-        // wenn clip von einem selbst ist
-        if ($clip->getUser()->getId() == $this->getId()) {
-            return true;
-        }
-
-        // wenn der clip in einem event ist
-        // - der ein Projekt hat, auf das man Zugreifen kann und rechte am kalender hat
-        $events = @pz_calendar_event::getEventsByClip($clip);
-        foreach ($events as $event) {
-            if ($this->getEventViewPerm($event)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     // -------------------------------------------------------------------- Cal
 
     public function getAllEvents(array $projects, DateTime $from = null, DateTime $to = null)

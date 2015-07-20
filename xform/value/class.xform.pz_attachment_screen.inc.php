@@ -10,9 +10,11 @@ class rex_xform_pz_attachment_screen extends rex_xform_abstract
         $clips = [];
         foreach ($value_ids as $value_id) {
             $value_id = (int) $value_id;
-            if (($clip = pz_clip::get($value_id)) && $clip->getUser()->getId() == pz::getUser()->getId()) {
-                $clip_ids .= $clip->getId().',';
-                $clips[] = $clip;
+            if (($clip = pz_clip::get($value_id)) ) {
+                if ($clip->checkUserperm()) {
+                  $clip_ids .= $clip->getId().',';
+                  $clips[] = $clip;
+                }
             }
         }
 

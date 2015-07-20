@@ -261,6 +261,31 @@ class pz_clip extends pz_model
         return pz_clip::get($id);
     }
 
+    public function checkUserperm() 
+    {
+        $clip_user_id = $this->getUser()->getId();
+        if (pz::getUser()->getId() == $clip_user_id) {
+          return true;
+        }
+        $users = pz::getUser()->getUsers();
+        foreach($users as $user) {
+          if ($user->getId() == $clip_user_id) {
+            return true;
+          }
+        }
+        // wenn der clip in einem event ist
+        // - der ein Projekt hat, auf das man Zugreifen kann und rechte am kalender hat
+        $events = @pz_calendar_event::getEventsByClip($this);
+        foreach ($events as $event) {
+            if (pz::getUser()->getEventViewPerm($event)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+
     public static function createAsStream($stream, $filename, $content_length, $content_type)
     {
         $clip = new pz_clip([]);

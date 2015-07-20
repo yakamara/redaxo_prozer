@@ -290,18 +290,14 @@ class pz_calendar_event_screen{
 
         $clips = "";
         $clips_array = $this->calendar_event->getClips();
-        if(count($clips_array)>0)
-        {
+        if(count($clips_array)>0) {
             $show_clips = array();
-            foreach($clips_array as $clip)
-            {
+            foreach($clips_array as $clip) {
                 $clip_name = $clip->getFilename();
-                if($clip->isReleased())
-                {
+                if($clip->isReleased()) {
                     $show_clips[] = '<li><a href="'.$clip->getUri().'">'.htmlspecialchars($clip_name).'</a></li>';
-                }else
-                {
-                    if(pz::getUser()->getClipDownloadPerm($clip))
+                } else {
+                    if($clip->checkUserperm())
                         $show_clips[] = '<li><a href="'.$clip->getDownloadLink().'">'.htmlspecialchars($clip_name).'</a> ['.pz_i18n::msg('clip_is_not_released').']</li>';
                     else
                         $show_clips[] = '<li>'.htmlspecialchars($clip_name).' ['.pz_i18n::msg('clip_is_not_released').']</li>';
