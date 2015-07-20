@@ -226,6 +226,11 @@ class pz_calendar_event_screen{
             {
                 $edit[] = '<li><a class="bt5" href="javascript:pz_loadPage(\'.event-flyout-view.event-'.$this->calendar_event->getId().'\',\''.pz::url("screen","calendars","event",array_merge($p["linkvars"],array("mode"=>"copy2job_calendar_event","calendar_event_id"=>$this->calendar_event->getId()))).'\')">'.pz_i18n::msg("calendar_event_copy2job").'</a></li>';
             }
+
+            if (!$this->calendar_event->isBooked() && !$this->calendar_event->hasRule()) {
+                $url = pz::url('screen', 'emails', 'create', array("attachment_calendar_event_id" => $this->calendar_event->getId()));
+                $edit[] = '<li><a class="bt5" href="'.$url.'">'.pz_i18n::msg('calendar_event_send_mail').'</a></li>';
+            }
         }
 
         if(count($edit) > 0) {

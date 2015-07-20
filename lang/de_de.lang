@@ -753,6 +753,7 @@ calendar_event_add = Termin hinzufügen
 calendar_event_copy = Termin kopieren
 calendar_event_copied = Job `{0}` wurde erstellt
 calendar_event_copy2job = Als Job kopieren
+calendar_event_send_mail = Als E-Mail verschicken
 calendar_event_delete = Termin löschen
 calendar_event_deleted = Termin/Job wurde gelöscht
 calendar_event_title = Titel

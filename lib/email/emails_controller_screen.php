@@ -1063,6 +1063,13 @@ class pz_emails_controller_screen extends pz_emails_controller
             */
         }
 
+        $calendar_event_id = rex_request('attachment_calendar_event_id', 'int');
+        if ($calendar_event_id && $event = pz_calendar_event::get($calendar_event_id)) {
+            $ics = pz_sabre_caldav_backend::export($event);
+            $clip = pz_clip::createAsSource($ics, $event->getUri(), rex_string::size($ics), 'text/calendar', true);
+            $_REQUEST['clip_ids'] = $clip->getId();
+        }
+
         if (isset($_REQUEST['to'])) {
             $_REQUEST['to'] = trim($_REQUEST['to'], "\n\t\0\r\x0B, ");
         }
