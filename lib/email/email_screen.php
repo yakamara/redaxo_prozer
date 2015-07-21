@@ -685,7 +685,8 @@ class pz_email_screen
             // $body .= 'only html:';
 
             $body_text = $pz_eml->getFirstText();
-            $body_text = $this->prepareOutput($body_text);
+            $body_text = pz_screen::prepareOutput($body_text);
+            $body_text = pz_email_screen::prepareQuotes($body_text, '&gt;');
             $body_text = str_replace("\n", '<br />', $body_text);
 
             $a_view_text_link = pz::url('screen', 'emails', 'email',
@@ -714,8 +715,8 @@ class pz_email_screen
             // $body .= 'only text:';
 
             $body_text = $pz_eml->getFirstText();
-            $body_text = $this->prepareOutput($body_text);
-            $body_text = $this->prepareQuotes($body_text, '&gt;');
+            $body_text = pz_screen::prepareOutput($body_text);
+            $body_text = pz_email_screen::prepareQuotes($body_text, '&gt;');
             $body_text = str_replace("\n", '<br />', $body_text);
 
             $body .= '<section class="content">'.$body_text.'</section>';
@@ -789,14 +790,14 @@ class pz_email_screen
         if ($this->email->getCcEmails() != '') {
             $cc = explode(',', htmlspecialchars($this->email->getCcEmails()));
             $cc = '<dt class="to">Cc:</dt>
-                  <dd class="to">'.$this->prepareOutput(implode(', ', $cc)).'</dd>';
+                  <dd class="to">'.pz_screen::prepareOutput(implode(', ', $cc)).'</dd>';
         }
 
         $bcc = '';
         if ($this->email->getBccEmails() != '') {
             $bcc = explode(',', htmlspecialchars($this->email->getBccEmails()));
             $bcc = '<dt class="to">Bcc:</dt>
-                  <dd class="bcc">'.$this->prepareOutput(implode(', ', $bcc)).'</dd>';
+                  <dd class="bcc">'.pz_screen::prepareOutput(implode(', ', $bcc)).'</dd>';
         }
 
         $email_header = '';
@@ -826,9 +827,9 @@ class pz_email_screen
 
             <dl class="data">
               <dt class="from">From:</dt>
-              <dd class="from">'.$this->prepareOutput($from).'</dd>
+              <dd class="from">'.pz_screen::prepareOutput($from).'</dd>
               <dt class="to">To:</dt>
-              <dd class="to">'.$this->prepareOutput(implode(', ', $to)).'</dd>
+              <dd class="to">'.pz_screen::prepareOutput(implode(', ', $to)).'</dd>
               '.$cc.'
               '.$bcc.'
             </dl>
@@ -1203,7 +1204,7 @@ class pz_email_screen
         return $return;
     }
 
-    public function prepareQuotes($text, $quote = '>')
+    static public function prepareQuotes($text, $quote = '>')
     {
         $regex = "/^((?:\h*(?:".preg_quote($quote, '/').")+\h*)*)(.*)$/m";
         preg_match_all($regex, $text, $matches, PREG_SET_ORDER);
@@ -1224,10 +1225,6 @@ class pz_email_screen
         return $text;
     }
 
-    public static function prepareOutput($text, $specialchars = true)
-    {
-        return pz_screen::prepareOutput($text, $specialchars);
-    }
 }
 
 /*
