@@ -138,7 +138,7 @@ class pz_address_screen
                 <td class="image img1"><a href="javascript:void(0)" onclick="pz_loadPage(\'address_form\',\''.$edit_link.'\')"><img src="'.$this->address->getInlineImage().'" width="40" height="40" alt="" /></a></td>
                 <td class="name"><span class="name">'.$name.'</span></td>
                 <td class="phone">'.implode('<br />', $phones).'</td>
-                <td class="email">'.pz_email_screen::prepareOutput(implode('<br />', $emails), false).'</td>
+                <td class="email">'.pz_screen::prepareOutput(implode('<br />', $emails), false).'</td>
                 <td class="label labelc'.$this->address->getVar('label_id').'"></td>
               </tr>
         ';
@@ -251,7 +251,7 @@ class pz_address_screen
 
         $emails_o = '';
         if (count($emails) > 0) {
-            $emails_o = pz_email_screen::prepareOutput('<ul><li>'.implode('</li><li>', $emails).'</li></ul>', false);
+            $emails_o = pz_screen::prepareOutput('<ul><li>'.implode('</li><li>', $emails).'</li></ul>', false);
         }
 
         // Addresses
