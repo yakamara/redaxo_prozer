@@ -198,7 +198,7 @@ class pz_project_screen
         $xform->setValueField('checkbox', ['has_emails', pz_i18n::msg('emails'), '', '1']);
         $xform->setValueField('checkbox', ['has_calendar', pz_i18n::msg('calendar_events'), '', '1']);
         $xform->setValueField('checkbox', ['has_calendar_jobs', pz_i18n::msg('calendar_jobs'), '', '1']);
-        // $xform->setValueField("checkbox",array("has_wiki",pz_i18n::msg("wiki"),"","1"));
+        $xform->setValueField("checkbox", ['has_wiki', pz_i18n::msg('wiki'),'','1']);
         $xform->setValueField('checkbox', ['has_files', pz_i18n::msg('files'), '', '1']);
 
         $xform->setActionField('db', []);
@@ -254,7 +254,7 @@ class pz_project_screen
         $xform->setValueField('checkbox', ['has_emails', pz_i18n::msg('emails'), '', '1']);
         $xform->setValueField('checkbox', ['has_calendar', pz_i18n::msg('calendar_events'), '', '1']);
         $xform->setValueField('checkbox', ['has_calendar_jobs', pz_i18n::msg('calendar_jobs'), '', '1']);
-        // $xform->setValueField("checkbox",array("has_wiki",pz_i18n::msg("wiki"),"","1"));
+        $xform->setValueField("checkbox", ['has_wiki',pz_i18n::msg('wiki'),'','1']);
         $xform->setValueField('checkbox', ['has_files', pz_i18n::msg('files'), '', '1']);
         $xform->setValueField('checkbox', ['archived', pz_i18n::msg('archived'), '', '1']);
 

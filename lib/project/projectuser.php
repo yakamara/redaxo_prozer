@@ -79,6 +79,20 @@ class pz_projectuser extends pz_model
         return $status;
     }
 
+    public function setWiki($status = 1)
+    {
+        $s = pz_sql::factory();
+        // $s->debugsql = 1;
+        $s->setTable('pz_project_user');
+        $s->setWhere(['id' => $this->getId()]);
+        $s->setValue('wiki', $status);
+        $s->update();
+
+        $this->update();
+
+        return $status;
+    }
+
     public function setCalDavEvents($status = 1)
     {
         $s = pz_sql::factory();
