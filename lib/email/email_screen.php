@@ -421,19 +421,6 @@ class pz_email_screen
         $image_to_tooltip = implode("<br />",$to_tooltip);
         $tooltip_to = pz_screen::getTooltipView($image_to, $image_to_tooltip);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
         $project_name = pz_i18n::msg('please_select_project_for_email');
 
         $projects = [];
@@ -543,6 +530,11 @@ class pz_email_screen
             unset($function_links['delete']);
         }
 
+		$subject = pz::cutText($this->email->getSubject(),45);
+		if (strlen($subject) != strlen($this->email->getSubject())) { 
+				$subject = pz_screen::getTooltipView($subject, nl2br(htmlspecialchars(wordwrap( $this->email->getSubject(), 70, "\n"))));
+		}
+
         $return = '
           <article id="email-'.$this->email->getId().'" class="email block images label email-'.$this->email->getId().$readed_class.$project_class.$status_class.$attachment_class.'">
             <header>
@@ -552,7 +544,7 @@ class pz_email_screen
                   <figure class="figure-to">'.$tooltip_to.'</figure>
                   <hgroup class="data">
                     <h2 class="hl7"><span class="name">'.htmlspecialchars(pz::cutText($this->email->getVar('from'))).' </span><span class="info">'.strftime(pz_i18n::msg('show_datetime_normal'), pz::getUser()->getDateTime($this->email->getDateTime())->format('U')).'</span></h2>
-                    <h3 class="hl7"><a href="'.$link_open.'"><span class="title">'.htmlspecialchars($this->email->getSubject()).'</span></a></h3>
+                    <h3 class="hl7"><a href="'.$link_open.'"><span class="title">'.($subject).'</span></a></h3>
                   </hgroup>
 
                  </div>
@@ -579,7 +571,7 @@ class pz_email_screen
             </header>
 
             <section class="content preview" id="email-content-preview-'.$this->email->getId().'">
-              <p>'.htmlspecialchars(pz::cutText($this->email->getBody(), '150')).'&nbsp;</p>
+              <p>'.htmlspecialchars(pz::cutText($this->email->getBody(), '110')).'&nbsp;</p>
             </section>
 
             <section class="content detail" id="email-content-detail-'.$this->email->getId().'"></section>
