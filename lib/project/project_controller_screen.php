@@ -29,6 +29,11 @@ class pz_project_controller_screen extends pz_project_controller
             unset($this->navigation['jobs']);
         }
 
+        if (!$this->project->hasWiki() || !$this->projectuser->hasWiki()) {
+            unset($this->functions['wiki']);
+            unset($this->navigation['wiki']);
+        }
+
         if ($this->projectuser->isAdmin() && $this->project->hasCalendarEvents()) {
             $this->functions[] = 'project_sub';
             $this->navigation[] = 'project_sub';
@@ -318,6 +323,22 @@ class pz_project_controller_screen extends pz_project_controller
 
                     $projectuser_screen = new pz_projectuser_screen($projectuser);
                     return $projectuser_screen->getPermTableCellView('calendar_jobs', $status, $this->projectuser);
+                }
+                return;
+            case 'toggle_wiki':
+
+                if (!$this->project->hasWiki()) {
+                    return;
+                }
+
+                if (pz::getUser()->isAdmin() ||
+                    $this->projectuser->isAdmin()
+                ) {
+                    $status = $projectuser->hasWiki() ? $status = 0 : $status = 1;
+                    $status = $projectuser->setWiki($status);
+
+                    $projectuser_screen = new pz_projectuser_screen($projectuser);
+                    return $projectuser_screen->getPermTableCellView('wiki', $status, $this->projectuser);
                 }
                 return;
 

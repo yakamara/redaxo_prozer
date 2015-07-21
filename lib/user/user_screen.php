@@ -152,6 +152,7 @@ class pz_user_screen
               <th>'.pz_i18n::msg('emails').'</th>
               <th>'.pz_i18n::msg('calendar_events').'</th>
               <th>'.pz_i18n::msg('calendar_jobs').'</th>
+              <th>'.pz_i18n::msg('wiki').'</th>
               <th>'.pz_i18n::msg('calendar_caldav').'</th>
               <th>'.pz_i18n::msg('calendar_jobs_caldav').'</th>
               <th>'.pz_i18n::msg('files').'</th>
@@ -171,6 +172,7 @@ class pz_user_screen
               <th>'.pz_i18n::msg('emails').'</th>
               <th>'.pz_i18n::msg('calendar_events').'</th>
               <th>'.pz_i18n::msg('calendar_jobs').'</th>
+              <th>'.pz_i18n::msg('wiki').'</th>
               <th>'.pz_i18n::msg('calendar_caldav').'</th>
               <th>'.pz_i18n::msg('calendar_jobs_caldav').'</th>
               <th>'.pz_i18n::msg('files').'</th>
@@ -219,6 +221,12 @@ class pz_user_screen
             $status = $projectuser->hasCalendarJobs() ? $status = 1 : $status = 0;
         }
         $td[] = $project_user_screen->getPermTableCellView('calendar_jobs', $status);
+
+        $status = 2;
+        if ($project->hasWiki() == 1) {
+            $status = $projectuser->hasWiki() ? $status = 1 : $status = 0;
+        }
+        $td[] = $project_user_screen->getPermTableCellView('wiki', $status);
 
         $status = 2;
         if ($project->hasCalendarEvents() == 1) {

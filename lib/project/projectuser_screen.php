@@ -54,6 +54,9 @@ class pz_projectuser_screen
         if ($project->hasCalendarJobs() == 1) {
             $content .= '<th>'.pz_i18n::msg('calendar_jobs').'</th>';
         }
+        if ($project->hasWiki() == 1) {
+            $content .= '<th>'.pz_i18n::msg('wiki').'</th>';
+        }
         if ($project->hasFiles() == 1) {
             $content .= '<th>'.pz_i18n::msg('files').'</th>';
         }
@@ -118,6 +121,14 @@ class pz_projectuser_screen
                 $status = $this->projectuser->hasCalendarJobs() ? $status = 1 : $status = 0;
             }
             $td[] = $this->getPermTableCellView('calendar_jobs', $status, $projectuser);
+        }
+
+        if ($this->projectuser->getProject()->hasWiki()) {
+            $status = 2;
+            if ($this->projectuser->getProject()->hasWiki() == 1) {
+                $status = $this->projectuser->hasWiki() ? $status = 1 : $status = 0;
+            }
+            $td[] = $this->getPermTableCellView('wiki', $status, $projectuser);
         }
 
         /*
@@ -265,6 +276,12 @@ class pz_projectuser_screen
             $xform->setValueField('checkbox', ['calendar_jobs', pz_i18n::msg('calendar_jobs'), '', '1']);
         } else {
             $xform->setValueField('hidden', ['calendar_jobs', '0']);
+        }
+
+        if ($project->hasWiki() == 1) {
+            $xform->setValueField('checkbox', ['wiki', pz_i18n::msg('wiki'), '', '1']);
+        } else {
+            $xform->setValueField('hidden', ['wiki', '0']);
         }
 
         if ($project->hasFiles() == 1) {
