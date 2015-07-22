@@ -65,6 +65,42 @@ class pz_wiki_page extends pz_model
         return pz::strftime(pz_i18n::msg('show_datetime_normal'), $this->getCreated()->getTimestamp());
     }
 
+    public function getPosition()
+    {
+        $positions = explode(",", $this->vars['position']);
+        
+        if (count($positions) == 2){
+            $x = (int) $positions[0];
+            $y = (int) $positions[1];
+            
+        } else {
+            $x = 0;
+            $y = 0;
+
+        }
+
+        return [$x,$y];
+    }
+
+    public function setPosition($positions)
+    {
+        $positions = explode(",", $positions);
+        
+        $x = 0;
+        $y = 0;
+        if (count($positions) == 2) {
+            $x = (int) $positions[0];
+            $y = (int) $positions[1];
+            
+        }
+        
+        if ($x<0) $x = 0;
+        if ($y<0) $y = 0;
+        
+        $this->vars["position"] = $x.",".$y;
+        
+    }
+
     /**
      * @return pz_user
      */
@@ -187,6 +223,7 @@ class pz_wiki_page extends pz_model
             $data = [
                 'title' => $this->getTitle(),
                 'text' => $this->getRawText(),
+                'position' => implode(",",$this->getPosition()),
             ];
             $sql->setValue('data', json_encode($data));
         }
@@ -202,6 +239,7 @@ class pz_wiki_page extends pz_model
         $sql->setTable('pz_wiki')
             ->setWhere(['id' => $this->getId()])
             ->setValue('vt', implode(' ', $vt))
+            ->setValue('position', implode(",",$this->getPosition()))
             ->update();
     }
 

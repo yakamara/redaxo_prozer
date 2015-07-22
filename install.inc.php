@@ -524,7 +524,12 @@ if ($REX['VERSION'] != '4' || $REX['SUBVERSION'] < '6') {
     $c->setQuery('ALTER TABLE `pz_email_account` ADD `smtp_login` VARCHAR( 255 ) NOT NULL AFTER `smtp` ,
 ADD `smtp_password` VARCHAR( 255 ) NOT NULL AFTER `smtp_login`;');
 
+
+    // ----- version 3.1
+
     $c->setQuery('ALTER TABLE `pz_calendar_attendee` ADD `role` VARCHAR( 255 ) NOT NULL DEFAULT "REQ-PARTICIPANT" AFTER `name`;');
+    $c->setQuery('ALTER TABLE `pz_wiki` ADD `position` VARCHAR( 255 ) NOT NULL AFTER `text`;');
+
 
 
 

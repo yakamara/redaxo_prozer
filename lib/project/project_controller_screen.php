@@ -4,7 +4,7 @@ class pz_project_controller_screen extends pz_project_controller
 {
     public $name = 'project';
     public $function = '';
-    public $functions = ['view' => 'view', 'user' => 'user', 'jobs' => 'jobs', 'wiki' => 'wiki', 'files' => 'files', 'emails' => 'emails', 'userperm' => 'userperm'];
+    public $functions = ['view' => 'view', 'user' => 'user', 'jobs' => 'jobs', 'wiki' => 'wiki', 'wikiboard' => 'wikiboard', 'files' => 'files', 'emails' => 'emails', 'userperm' => 'userperm'];
     public $navigation = ['view' => 'view', 'user' => 'user', 'jobs' => 'jobs', 'wiki' => 'wiki', 'files' => 'files', 'emails' => 'emails'];
     public $isVisible = false;
 
@@ -53,6 +53,7 @@ class pz_project_controller_screen extends pz_project_controller
 
         $section_1 = '';
 
+
         switch ($function) {
             // case("view"): return $this->getInfoPage($p); break;
             case 'view': return $this->getCalendarEventPage($p); break;
@@ -60,6 +61,7 @@ class pz_project_controller_screen extends pz_project_controller
             case 'userperm': return $this->getUserPerm($p); break;
             case 'jobs': return $this->getJobsPage($p);     break;
             case 'wiki': return $this->getWikiPage($p); break;
+            case 'wikiboard': return $this->getWikiboardPage($p); break;
             case 'files': return $this->getFilesPage($p); break;
             case 'emails': return $this->getEmailsPage($p); break;
             case 'project_sub': return $this->getProjectSubsPage($p); break;
@@ -552,6 +554,88 @@ class pz_project_controller_screen extends pz_project_controller
         $f->setVar('section_2', $section_2, false);
         return $f->parse('pz_screen_main.tpl');
     }
+
+
+
+    public function getWikiboardPage($p = [])
+    {
+
+        $section = "";
+        $page = null;
+
+        $id = rex_request('wiki_id', 'int');
+        if ($id) {
+            $page = pz_wiki_page::get($id);
+        }
+
+        $mode = rex_request('mode', 'string');
+
+        if ($page) {
+          switch($mode) {
+            case("move"):
+                // position x,y
+                $page->setPosition(rex_request("position"));
+                $page->update('new-position');
+                return "move".date("YmdHis");
+            default:
+          
+          }
+        }
+
+        $wikiboard = new pz_wikiboard($this->project, $this->projectuser);
+        $screen = new pz_project_wikiboard_screen($wikiboard);
+        $section = $screen->getBoardView();
+
+
+$section .= '
+<script>
+  $(function() {
+    $("#main").css("height","1000px");
+    $( ".wikiboard-page" ).draggable({ 
+      containment: "#main", 
+      scroll: true, 
+      cursor: "move", 
+      stop: function() { 
+      
+          y = parseInt($(this).css("top"));
+          x = parseInt($(this).css("left"));
+          t = $(this);
+      
+          pz_loading_start("#" + t.attr("id"));
+  
+          $.ajax({
+                  url: "/screen/project/wikiboard/",
+                  t: t,
+                  data: { 
+                    project_id: '.$wikiboard->getProject()->getId().', 
+                    mode: "move", 
+                    position: x+","+y, 
+                    wiki_id: t.attr("data-wiki-id") 
+                  },
+                  success: function(data) {
+                      pz_loading_end("#" + t.attr("id"));
+                  }
+            });
+  
+  
+      
+      } 
+    });
+  });
+</script>
+';
+
+
+        $p = [];
+        $f = new pz_fragment();
+        $f->setVar('header', pz_screen::getHeader(), false);
+        $f->setVar('function', $this->getNavigation(), false);
+        $f->setVar('section', $section, false);
+        return $f->parse('pz_screen_full.tpl');
+    }
+
+
+
 
     // -------------------------- Job
 

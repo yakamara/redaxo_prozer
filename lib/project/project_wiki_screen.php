@@ -34,7 +34,7 @@ class pz_project_wiki_screen
             <header>
                 <div class="header grid2col">
                     <div class="column first">
-                        <h1 class="hl1">Wiki</h1>
+                        <h1 class="hl1">Wiki <a href="'.pz::url('screen', 'project', 'wikiboard', ['project_id' => $this->project->getId()]).'"><span class="info">zum Wikiboard</span></a></h1>
                     </div>
                     <div class="column last">
                         <a href="' . $this->url(['mode' => 'create'], '&amp;') . '" class="bt2">' . pz_i18n::msg('wiki_add') . '</a>
@@ -82,6 +82,25 @@ class pz_project_wiki_screen
 
         ';
         return $return;
+    }
+
+    // ------------------------------------------------------------------ Page Wikiboard
+
+
+    public function getBoardView($p = [])
+    {
+
+        $info = '';
+        if ($this->page instanceof pz_wiki_page_version) {
+            $info = ' <span class="info">(' . pz_i18n::msg('wiki_page_version') . ': ' . $this->page->getStampFormatted() . ')</span> ';
+        }
+
+        $content = '<h1 class="hl2">' . htmlspecialchars($this->page->getTitle()) . $info . '</h1>';
+        // $content .= $this->page->getText();
+    
+        $positions = $this->page->getPosition();
+    
+        return '<div id="wikiboard-page-'.$this->page->getId().'" data-wiki-id="'.$this->page->getId().'" class="wikiboard-page" style="position:absolute; top:'.$positions[1].'px; left:'.$positions[0].'px; width:150px; height:80px;background-color:#ff9900;padding:10px;background: rgba(0, 0, 0, 0) linear-gradient(to bottom, #f6f6f6 0%, #eaeaea 100%) repeat scroll 0 0;border-style: solid;border-radius: 4px;box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15), 0 2px 1px rgba(0, 0, 0, 0.1), 0 3px 1px rgba(0, 0, 0, 0.05);border-width: 2px 1px 1px;border-color: #fafafa;">'.$content.'</div>';
     }
 
     // ------------------------------------------------------------------ Page

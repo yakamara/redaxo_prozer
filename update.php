@@ -18,7 +18,9 @@ $sql->setQuery('ALTER TABLE `pz_calendar_alarm` ADD `default` TINYINT(1) NOT NUL
 $sql->setQuery('ALTER TABLE `pz_email_account` ADD `smtp_login` VARCHAR( 255 ) NOT NULL AFTER `smtp` ,
 ADD `smtp_password` VARCHAR( 255 ) NOT NULL AFTER `smtp_login`;');
 
+// Change to 3.1
 $sql->setQuery('ALTER TABLE `pz_calendar_attendee` ADD `role` VARCHAR( 255 ) NOT NULL DEFAULT "REQ-PARTICIPANT" AFTER `name`;');
+$sql->setQuery('ALTER TABLE `pz_wiki` ADD `position` VARCHAR( 255 ) NOT NULL AFTER `text`;');
 
 // -------------------------------------------------  allways check
 $dav_path = rex_path::addonData('prozer', 'dav');
