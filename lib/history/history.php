@@ -27,6 +27,7 @@ class pz_history
             ['id' => 'project_file','label' => pz_i18n::msg('search_projectfiles')],
             ['id' => 'user','label' => pz_i18n::msg('search_user')],
             ['id' => 'clip','label' => pz_i18n::msg('search_clip')],
+            ['id' => 'wiki','label' => pz_i18n::msg('search_wiki')],
         ];
     }
 

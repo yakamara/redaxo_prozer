@@ -489,6 +489,7 @@ search_for_addresses = Nach Adressen suchen
 search_for_users = Nach Benutzern suchen
 search_for_clips = Nach Clips suchen
 search_for_userperms = Nach Userrechten suchen
+search_wiki = Nach Wikieinträgen suchen
 
 search_email_fulltext = Allgemein
 search_email_from = von
