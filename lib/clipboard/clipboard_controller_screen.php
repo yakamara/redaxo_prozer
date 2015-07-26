@@ -265,6 +265,14 @@ class pz_clipboard_controller_screen extends pz_clipboard_controller
                 break;
 
             case('my'):
+                switch ($mode) {
+                    case 'select_link':
+                        $p['select_link'] = function($id) {
+                            return 'replaceImage('. $id .'); pz_closeClipboard();';
+                        };
+                        break;
+                }
+
                 $return_content .= $cb_screen->getListView($cb->getMyClips($filter), $p);
                 if ($mode == 'list') {
                     return $return_content;

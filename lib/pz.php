@@ -540,7 +540,8 @@ class pz
 
     public static function makeInlineImageFromSource($data, $size = 'm', $mimetype = 'image/png', $inline = true)
     {
-        $src = @imagecreatefromstring($data);
+        $data = $data;
+        $src = imagecreatefromstring($data);
         if ($src) {
             imagealphablending($src, true);
             imagesavealpha($src, true);
@@ -604,11 +605,11 @@ class pz
             switch ($mimetype) {
                 case('image/jpeg'):
                 case('image/jpg'):
-                    imagePNG($src, null);
+                    imagejpeg($src);
                     $mimetype = 'image/jpg';
                     break;
                 default:
-                    imagePNG($src, null);
+                    imagepng($src);
                     $mimetype = 'image/png';
             }
 
