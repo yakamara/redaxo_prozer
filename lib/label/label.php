@@ -2,7 +2,12 @@
 
 class pz_label extends pz_model
 {
+    const COLOR  = '#23b3db';
+
+    const BORDER = '#1699d6';
+
     public $vars = [];
+
     public $isLabel = false;
 
     public static $var_labels = 6;
