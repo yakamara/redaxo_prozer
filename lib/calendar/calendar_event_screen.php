@@ -346,7 +346,7 @@ class pz_calendar_event_screen{
                 $actions .= '<div class="split-h split-h1"></div><ul class="buttons">';
                 foreach(pz_calendar_attendee::getStatusArray() as $k => $v)
                 {
-                    $link = 'pz_loadPage(\'.event-flyout-view.event-'.$this->calendar_event->getId().'\',\''.pz::url("screen","calendars","event",array_merge($p["linkvars"],array("mode"=>"set_attandee_status","calendar_event_id"=>$this->calendar_event->getId(),"attandee_status" => $v))).'\')';
+                    $link = 'pz_loadPage(\'.event-flyout-view.event-'.$this->calendar_event->getId().'\',\''.pz::url("screen","calendars","event",array_merge($p["linkvars"],array("mode"=>"set_attandee_status","calendar_event_id"=>$this->calendar_event->getId(),"attandee_status" => $v))).'\', pz_invitation(\'.event-'.$this->calendar_event->getId().'\', \''.$v.'\'))';
 
                     if($me->getStatus() == $v)
                         $actions .= '<li><a class="bt3" href="javascript:void(0);">'.pz_i18n::msg('calendar_event_attendee_'.strtolower($v)).'</a></li>';
