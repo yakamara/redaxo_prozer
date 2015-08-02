@@ -77,12 +77,22 @@ class pz_admin_controller_screen extends pz_admin_controller
         foreach ($projects as $project) {
             $project_ids[] = $project->getId();
         }
-
+        $customer_filter = [];
         if (rex_request('search_project_id', 'int') != 0 && ($project = pz::getUser()->getProjectById(rex_request('search_project_id', 'int')))) {
             $project_ids = [$project->getId()];
             $p['linkvars']['search_project_id'] = $project->getId();
+
+            $customer_filter[] = ['field' => 'id', 'value'=>$project->getId()];
         }
 
+        if (rex_request('search_customer_id', 'int') != 0 && ($customer_projects = pz::getUser()->getCustomerProjects(rex_request('search_customer_id', 'int'), $customer_filter))) {
+            $p['linkvars']['search_customer_id'] = rex_request('search_customer_id', 'int');
+            unset($project_ids);
+
+            foreach ($customer_projects as $cp) {
+                $project_ids[] = $cp->getId();
+            }
+        }
         // ----------------------- searchform
         $searchform = '
         <header>
@@ -105,6 +115,7 @@ class pz_admin_controller_screen extends pz_admin_controller
 
         $projects = pz::getUser()->getCalendarProjects();
         $xform->setValueField('pz_select_screen', ['search_project_id', pz_i18n::msg('project'), pz_project::getProjectsAsString($projects), '', '', 0, pz_i18n::msg('please_choose')]);
+        $xform->setValueField('pz_select_screen', ['search_customer_id', pz_i18n::msg('customer'), pz::getUser()->getCustomersAsString(), '', '', 0, pz_i18n::msg('please_choose')]);
 
         if (pz::getUser()->isAdmin()) {
             $xform->setValueField('pz_select_screen', ['search_user_id', pz_i18n::msg('user'), pz::getUsersAsArray(pz::getUser()->getUsers()), '', '', 0, pz_i18n::msg('please_choose')]);
@@ -151,6 +162,7 @@ class pz_admin_controller_screen extends pz_admin_controller
                 'search_date_from' => rex_request('search_date_from'),
                 'search_date_to' => rex_request('search_date_to'),
                 'search_project_id' => rex_request('search_project_id'),
+                'search_customer_id' => rex_request('search_customer_id'),
                 'search_user_id' => rex_request('search_user_id'),
             ]).'">'.pz_i18n::msg('excel_export').'</a>';
 
