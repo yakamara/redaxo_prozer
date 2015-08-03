@@ -316,7 +316,6 @@ class pz_project_screen
 
     public function getMetaInfoView ()
     {
-        $filter = [];
         $header = '
 	        <header>
 	          <div class="header">
@@ -324,22 +323,27 @@ class pz_project_screen
 	          </div>
 	        </header>';
 
+        $li = [];
+        $li[] = '<li><span '.$style.'>'.pz_i18n::msg('project_name').' : </span><b>'.pz::cutText($this->project->getVar('name'),40, '...', 'center').'</b></li>';
+        $li[] = '<li><span '.$style.'>'.ucfirst(pz_i18n::msg('created_by_user')).' : </span><b>'.pz_user::get($this->project->getVar('create_user_id'))->getName().'</b></li>';
+        $li[] = '<li><span '.$style.'>'.pz_i18n::msg('project_createdate').' : </span><b>'.$this->project->getVar('created').'</b></li>';
+
+        $filter = [];
         // Filter wird nicht benoetig, es wird einfach jede Aktion in der History beruecksichtigt.
         /* $filter = [ ['type' => '=', 'field' => 'control', 'value' => 'email'] ]; */
-
         $entries = $this->project->getHistoryEntries($filter, 1);
-        $entity = $entries[0]->vars;
+        if (count($entries) > 0) {
+            $entity = $entries[0]->vars;
+            $li[] = ' <li><hr><li>';
+            $li[] = '<li><span '.$style.'>'.pz_i18n::msg('project_last_user_action').' : </span><b>'.pz_user::get($entity['user_id'])->getName().'</b></li>';
+            $li[] = '<li><span '.$style.'>'.pz_i18n::msg('project_last_update').' : </span><b>'.$entity['stamp'].'</b></li>';
+        }
+
         $style = 'style="width: 35%; display: inline-block;"';
         $content = '
             <div class="xform">
-                <span '.$style.'>'.pz_i18n::msg('project_name').' : </span><b>'.$this->project->getVar('name').'</b>
-                <br><br>
                 <ul>
-                    <li><span '.$style.'>'.ucfirst(pz_i18n::msg('created_by_user')).' : </span><b>'.pz_user::get($this->project->getVar('create_user_id'))->getName().'</b></li>
-                    <li><span '.$style.'>'.pz_i18n::msg('project_createdate').' : </span><b>'.$this->project->getVar('created').'</b></li>
-                    <li><hr><li>
-                    <li><span '.$style.'>'.pz_i18n::msg('project_last_user_action').' : </span><b>'.pz_user::get($entity['user_id'])->getName().'</b></li>
-                    <li><span '.$style.'>'.pz_i18n::msg('project_last_update').' : </span><b>'.$entity['stamp'].'</b></li>
+                    '.implode("",$li).'
                 </ul>
         	</div>';
 
