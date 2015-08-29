@@ -41,6 +41,7 @@ class pz_history_screen
         $xform->setValueField('pz_select_screen', ['search_modi', pz_i18n::msg('history_modi'), pz_history::getModi(), '', '', 0, pz_i18n::msg('please_choose')]);
         $xform->setValueField('pz_select_screen', ['search_control', pz_i18n::msg('history_control'), pz_history::getControls(), '', '', 0, pz_i18n::msg('please_choose')]);
         $xform->setValueField('pz_select_screen', ['search_user_id', pz_i18n::msg('user'), pz::getUsersAsArray(pz::getUser()->getUsers()), '', '', 0, pz_i18n::msg('please_choose')]);
+        $xform->setValueField('pz_select_screen', ['search_project_id', pz_i18n::msg('project'), pz::getProjectsAsArray(pz::getUser()->getProjects()), '', '', 0, pz_i18n::msg('please_choose')]);
 
         /*
                 $projects = pz::getUser()->getProjects();

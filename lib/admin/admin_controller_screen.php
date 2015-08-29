@@ -451,6 +451,8 @@ class pz_admin_controller_screen extends pz_admin_controller
         $section_1 = '';
         $section_2 = '';
 
+        $limit = 10000;
+
         $filter = [];
 
         if (rex_request('search_date_from', 'string') != '') {
@@ -474,6 +476,14 @@ class pz_admin_controller_screen extends pz_admin_controller
             $p['linkvars']['search_user_id'] = rex_request('search_user_id', 'string');
         }
 
+
+        if (rex_request('search_project_id', 'int') != 0
+            && ($project = pz_project::get(rex_request('search_project_id', 'int')))
+        ) {
+            $filter[] = ['type' => '=', 'field' => 'project_id', 'value' => $project->getId()];
+            $p['linkvars']['search_project_id'] = rex_request('search_project_id', 'string');
+        }
+
         if (rex_request('search_modi', 'string') != '') {
             $filter[] = ['type' => '=', 'field' => 'mode', 'value' => rex_request('search_modi', 'string')];
             $p['linkvars']['search_modi'] = rex_request('search_modi', 'string');
@@ -489,7 +499,7 @@ class pz_admin_controller_screen extends pz_admin_controller
 
         $section_1 = pz_history_screen::getSearchForm($p);
 
-        $history_entries = pz_history::get($filter);
+        $history_entries = pz_history::get($filter, $limit);
         $section_2 = pz_history_screen::getListView(
             $history_entries,
             $p
