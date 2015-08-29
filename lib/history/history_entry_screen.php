@@ -53,7 +53,7 @@ class pz_history_entry_screen
 
                 break;
 
-            case('projectfile'):
+            case('project_file'):
 
                 $p['title'] = $data['name'];
                 break;

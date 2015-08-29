@@ -606,6 +606,9 @@ no_history_entries_found = Keine Einträge gefunden
 project_history = Projekt Historie
 history_modi = Nach Art suchen
 history_control = Nach Objekt suchen
+history_control_file = Dateiname
+
+fetch_all = alle Anzeigen
 
 search_login = Nach Login suchen
 search_create = Nach Erstellungen suchen

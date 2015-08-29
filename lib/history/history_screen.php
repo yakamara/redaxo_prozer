@@ -40,8 +40,11 @@ class pz_history_screen
         $xform->setValueField('pz_date_screen', ['search_date_to', pz_i18n::msg('search_date_to')]);
         $xform->setValueField('pz_select_screen', ['search_modi', pz_i18n::msg('history_modi'), pz_history::getModi(), '', '', 0, pz_i18n::msg('please_choose')]);
         $xform->setValueField('pz_select_screen', ['search_control', pz_i18n::msg('history_control'), pz_history::getControls(), '', '', 0, pz_i18n::msg('please_choose')]);
+        $xform->setValueField('text', ['search_control_file', pz_i18n::msg('history_control_file')]);
         $xform->setValueField('pz_select_screen', ['search_user_id', pz_i18n::msg('user'), pz::getUsersAsArray(pz::getUser()->getUsers()), '', '', 0, pz_i18n::msg('please_choose')]);
         $xform->setValueField('pz_select_screen', ['search_project_id', pz_i18n::msg('project'), pz::getProjectsAsArray(pz::getUser()->getProjects()), '', '', 0, pz_i18n::msg('please_choose')]);
+
+        $xform->setValueField('checkbox', ['search_fetch_all', pz_i18n::msg('fetch_all'), pz::getProjectsAsArray(pz::getUser()->getProjects()), '', '', 0, pz_i18n::msg('please_choose')]);
 
         /*
                 $projects = pz::getUser()->getProjects();
@@ -54,7 +57,18 @@ class pz_history_screen
         $xform->setValueField('submit', ['submit', pz_i18n::msg('search'), '', 'search']);
         $return .= $xform->getForm();
 
-        $return = '<div id="history_search" class="design1col xform-search" data-url="'.$link_refresh.'">'.$return.'</div>';
+        $style = " <style> #history_search #xform-formular-search_control_file { display: none; } </style> ";
+        $script = "
+        <script type='text/javascript'>
+        $( document ).ready(function() {
+            pz_history_control($('#xform-formular-search_control_file'), $('#xform-formular-field-4'), 'project_file');
+        });
+
+
+</script>
+        ";
+
+        $return = '<div id="history_search" class="design1col xform-search" data-url="'.$link_refresh.'">'.$return.$script.$style.'</div>';
         return $return;
     }
 

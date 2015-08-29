@@ -451,7 +451,7 @@ class pz_admin_controller_screen extends pz_admin_controller
         $section_1 = '';
         $section_2 = '';
 
-        $limit = 10000;
+        $limit = 2000;
 
         $filter = [];
 
@@ -492,7 +492,20 @@ class pz_admin_controller_screen extends pz_admin_controller
         if (rex_request('search_control', 'string') != '') {
             $filter[] = ['type' => '=', 'field' => 'control', 'value' => rex_request('search_control', 'string')];
             $p['linkvars']['search_control'] = rex_request('search_control', 'string');
+
+            if (rex_request('search_control_file', 'string') != '') {
+                $filter[] = ['type' => 'like', 'field' => 'data', 'value' => rex_request('search_control_file', 'string')];
+                $p['linkvars']['search_control_file'] = rex_request('search_control_file', 'string');
+            }
         }
+
+        if (rex_request('search_fetch_all', 'int') != '') {
+            $limit = null;
+
+            $p['linkvars']['search_fetch_all'] = rex_request('search_fetch_all', 'string');
+
+        }
+
 
         $mode = rex_request('mode', 'string');
         $p['linkvars']['mode'] = 'list';
