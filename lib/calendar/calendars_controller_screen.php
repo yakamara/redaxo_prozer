@@ -127,25 +127,7 @@ class pz_calendars_controller_screen extends pz_calendars_controller
                 return json_encode($return);
 
             case('set_attandee_status'):
-                $return = '';
-                $calendar_event_id = rex_request('calendar_event_id', 'string', 0);
-                $attandee_status = rex_request('attandee_status', 'string', '');
-                if ($calendar_event_id > 0 && ($event = pz_calendar_event::get($calendar_event_id)) && in_array($attandee_status, pz_calendar_attendee::getStatusArray())) {
-                    $save = false;
-                    $attendees = pz_calendar_attendee::getAll($event);
-                    foreach ($attendees as $a) {
-                        if (in_array($a->getEmail(), pz::getUser()->getEmails())) {
-                            $a->setStatus($attandee_status);
-                        }
-                    }
-                    $event->setAttendees($attendees);
-                    $event->save();
-                    $cs = new pz_calendar_event_screen($event);
-                    $return .= $cs->getFlyoutEventView($p, true); // disable normal functions
-                    $return .= '<script>pz_tracker();</script>';
-                } else {
-                    $return .= '<p class="xform-warning">'.pz_i18n::msg('calendar_event_not_exists').'</p>';
-                }
+                $return = $this->changeCalendarEventStatus($p);
                 return $return;
 
             case('delete_calendar_event'):
@@ -163,7 +145,11 @@ class pz_calendars_controller_screen extends pz_calendars_controller
                 if (($event = pz_calendar_event::get($calendar_event_id))) {
                     $cs = new pz_calendar_event_screen($event);
                     $return = $cs->getCopyForm($p);
-                    $event->copy2Job();
+
+                    if ($event->copy2Job() instanceof pz_calendar_event)  {
+                        $this->changeCalendarEventStatus($p, $calendar_event_id, 'ACCEPTED');
+                    }
+
                     return $return;
                 }
                 return '<div id="calendar_event_form"><p class="xform-warning">'.pz_i18n::msg('calendar_event_not_exists').'</p></div>';
@@ -802,5 +788,34 @@ class pz_calendars_controller_screen extends pz_calendars_controller
         $f->setVar('section_1', $s1_content, false);
         $f->setVar('section_2', $s2_content, false);
         return $f->parse('pz_screen_main.tpl');
+    }
+
+    /**
+     * @param $p
+     * @return string
+     */
+    private function changeCalendarEventStatus($p, $event_id = 0, $status = '')
+    {
+        $return = '';
+        $calendar_event_id = rex_request('calendar_event_id', 'string', $event_id);
+        $attandee_status = rex_request('attandee_status', 'string', $status);
+        if ($calendar_event_id > 0 && ($event = pz_calendar_event::get($calendar_event_id)) && in_array($attandee_status, pz_calendar_attendee::getStatusArray())) {
+            $save = false;
+            $attendees = pz_calendar_attendee::getAll($event);
+            foreach ($attendees as $a) {
+                if (in_array($a->getEmail(), pz::getUser()->getEmails())) {
+                    $a->setStatus($attandee_status);
+                }
+            }
+            $event->setAttendees($attendees);
+            $event->save();
+            $cs = new pz_calendar_event_screen($event);
+            $return .= $cs->getFlyoutEventView($p, true); // disable normal functions
+            $return .= '<script>pz_tracker();</script>';
+            return $return;
+        } else {
+            $return .= '<p class="xform-warning">' . pz_i18n::msg('calendar_event_not_exists') . '</p>';
+            return $return;
+        }
     }
 }
