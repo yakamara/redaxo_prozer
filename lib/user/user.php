@@ -521,8 +521,11 @@ class pz_user
     {
         // !! time matters
         $events = pz_calendar_event::getAll($projects, $from, $to);
+
         $jobs = $this->getJobs($projects, $from, $to);
+
         $attandee_events = pz_calendar_event::getAttendeeEvents($from, $to);
+
         $events = $events + $jobs + $attandee_events;
 
         return $events;
