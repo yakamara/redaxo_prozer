@@ -20,6 +20,9 @@ class pz_clip_screen
         }
 
         $select_link = 'pz_clip_select('.$this->clip->getId().',\''.$this->clip->getFilename().'\',\''.pz::readableFilesize($this->clip->getContentLength()).'\');';
+        if($p['select_link']){
+            $select_link = $p['select_link']($this->clip->getId());
+        }
 
         $download_link = pz::url('screen', 'clipboard', 'get', array_merge($p['linkvars'], ['mode' => 'download_clip']));
 

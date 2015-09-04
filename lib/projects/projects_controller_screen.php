@@ -470,7 +470,7 @@ class pz_projects_controller_screen extends pz_projects_controller
             case(''):
                 $labels = pz_labels::get();
                 $cs = new pz_labels_screen($labels);
-                $s2_content = $cs->getListView($p);
+                $s2_content = $cs->getListView($p, true);
                 $s1_content .= pz_label_screen::getAddForm($p);
                 break;
             default:

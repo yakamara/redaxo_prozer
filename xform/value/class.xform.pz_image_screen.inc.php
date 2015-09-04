@@ -47,23 +47,7 @@ class rex_xform_pz_image_screen extends rex_xform_abstract
 							onSubmit: function() {
 							},
 							onComplete: function(id, fileName, result) {
-								pz_hidden = $("#'.$this->getHTMLId().' #'.$this->getFieldId().'");
-								pz_image = $("#'.$this->getHTMLId().' label img");
-								if(result.clipdata.id) {
-					    			link = "'.pz::url('screen', 'clipboard', 'get', ['mode' => 'image_src']).'"+"&clip_id="+result.clipdata.id;
-					    			$.post(link, "", function(data) {
-					    				if(data == "") {
-
-					    				}else {
-					    					pz_hidden.val(data);
-					    					pz_image.attr("src",data);
-					    				}
-								     });
-
-						    	}
-						    	window.setTimeout(function(){
-									clearUploadListSuccess();
-								}, 3000);
+								replaceImage(result.clipdata.id);
 
 							},
 							maxConnections: 1
@@ -72,6 +56,25 @@ class rex_xform_pz_image_screen extends rex_xform_abstract
 
 						uploaded_list = $("#pz_multiupload_'.$this->getId().' .qq-uploaded-list");
 						uploader._filesInProgress = 0;
+					}
+					function replaceImage(clip_id){
+						pz_hidden = $("#'.$this->getHTMLId().' #'.$this->getFieldId().'");
+						pz_image = $("#'.$this->getHTMLId().' label img");
+						if(clip_id) {
+					    	link = "'.pz::url('screen', 'clipboard', 'get', ['mode' => 'image_src']).'"+"&clip_id="+clip_id;
+					    	$.post(link, "", function(data) {
+					    		if(data == "") {
+
+								}else {
+					    			pz_hidden.val(data);
+					    			pz_image.attr("src",data);
+					    		}
+							});
+
+						}
+						window.setTimeout(function(){
+							clearUploadListSuccess();
+						}, 3000);
 					}
 					jQuery(document).ready(function(){
 						pz_createUploader_'.$this->getId().'();
@@ -92,6 +95,7 @@ class rex_xform_pz_image_screen extends rex_xform_abstract
             $img = $default_image_path;
         }
 
+		$after = '<a class="bt-upload" id="'.$this->getFieldId('clipboard_button').'" href="javascript:pz_clipboard_select(\'#'.$this->getFieldId('clipboard_button').'\',\'#pz_multiupload_'.$this->getId().' .qq-uploaded-list\',\'#'.$this->getFieldId().'\', \'#pz_multiupload_'.$this->getId().' .qq-upload-list\', true )">'.pz_i18n::msg('get_from_clipboard').'</a>';
         $classes = (trim($classes) != '') ? ' class="'.trim($classes).'"' : '';
         $label = ($this->getElement(2) != '') ? '<label'.$classes.' for="' . $this->getFieldId() . '">'.
             '<img src="'.$img.'" title="' . pz_i18n::translate($this->getElement(2)) . '" width=40 height=40 />'.
@@ -101,7 +105,8 @@ class rex_xform_pz_image_screen extends rex_xform_abstract
         $name = $this->getName();
 
         $f = new pz_fragment();
-        $f->setVar('label', $label, false);
+        $f->setVar('after', $after, false);
+		$f->setVar('label', $label, false);
         $f->setVar('field', $field, false);
         $f->setVar('html_id', $html_id, false);
         $f->setVar('name', $name, false);
