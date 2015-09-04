@@ -109,6 +109,61 @@ function pz_remove_tracker(label) {
   });
 }
 
+/**
+ * @frag-seb
+ *
+ * @param event
+ * @param NEEDS-ACTION | ACCEPTED | TENTATIVE | DECLINED   status
+ */
+function pz_invitation (event, status) {
+  var $parent = $('#calendar_event_attendee_list_view');
+  var $selction = $parent.find(event);
+
+  var EventEach = function (func) {
+    var $navCalendar = $("ul#navi-main li.calendars");
+    var $contentCalendar = $("#calendar_event_attendee_view .info-relative");
+
+    var items = [$navCalendar, $contentCalendar];
+    var $inner, count;
+
+    $.each(items, function (i, item) {
+      if (item.find('.info1').length > 0) {
+        $inner = item.find('.inner');
+
+        count = func($inner);
+        if (count > 0) {
+          $inner.text(count);
+        } else {
+          item.find('.info1').remove();
+        }
+      } else {
+        var element = $('<span>0</span>');
+        if(func(element) > 0)
+          item.prepend('<span class="info1"><span class="inner">1</span></span>');
+      }
+    });
+  };
+
+  if( $selction.length == 0 ) {
+    if($parent.find('.invitation').length > 0)
+      $parent.find('.invitation').remove();
+
+    $parent.prepend('<div class="xform-warning invitation">Die Einladungen sind nicht mehr aktuell. Bitte Seite neue Laden.</div>');
+  }
+
+  if(status == 'NEEDS-ACTION') {
+    EventEach(function(i){
+      return parseInt(i.text(),10)+1;
+    });
+  }
+
+  if(status != 'NEEDS-ACTION') {
+    $selction.remove();
+    EventEach(function(i){
+      return parseInt(i.text(),10)-1;
+    });
+  }
+}
 
 /* ******************* InfoCounter **************** */
 
@@ -142,7 +197,6 @@ function pz_updateInfocounter(emails, attandees, title) {
   $(document).prop("title",title);
 
 }
-
 
 /* ******************* check Login **************** */
 
