@@ -1,6 +1,6 @@
 <?php
 
-class pz_calendar_event_screen{
+class pz_calendar_event_screen {
 
     public $event,$user,$user_name, $label,$project;
 
@@ -756,7 +756,6 @@ class pz_calendar_event_screen{
 
     // --------------------------------------------------------------- Day
 
-
     static function getDayListView($events = array(), $p = array(), $day)
     {
 
@@ -891,50 +890,94 @@ class pz_calendar_event_screen{
         return '<div class="design2col" id="calendar_events_day_list" data-list-type="calendar" data-url="'.$link_refresh.'">'.$return.'</div>';
     }
 
-    public function getEventView($day, $p = array())
+    /**
+     * @param DateTime $day
+     * @param array $p
+     * @return string
+     */
+    public function getEventView(DateTime $day, array $p = array())
     {
-
         $from = pz::getUser()->getDateTime($this->calendar_event->getFrom());
-        $to = pz::getUser()->getDateTime($this->calendar_event->getTo());
-        $duration = $this->calendar_event->getDuration();
-        $duration_in_minutes = ($duration->format("%h")*60)+$duration->format("%i");
+        $to   = pz::getUser()->getDateTime($this->calendar_event->getTo());
+
+        if ($this->calendar_event->isAllDay()) {
+            $duration_in_minutes = 0;
+            return $this->createEventView($p,  $from, $to, $duration_in_minutes);
+        }
+
+        $period  = new DateEventPeriod(new TimeframeEntity($from, $to, $day, $p['function']));
+        $manager = new TimeframeManager($period);
+
+        $event_view =[];
+
+        foreach($manager->getEventPeriod() as $event) {
+            if($manager->isWeekAndPeriod()) {
+                $event_view[] = $this->createEventView($p, $event->getFrom(), $event->getTo(), $event->getDuration());
+            }
+
+            if(!$manager->isWeekAndPeriod() && $manager->isValid($event)) {
+                return $this->createEventView($p, $event->getFrom(), $event->getTo(), $event->getDuration());
+            }
+        }
+
+        return implode('', $event_view);
+    }
+
+
+    /**
+     * @param DateTime $day
+     * @param $p
+     * @param $loop
+     * @param $from
+     * @param $to
+     * @return string
+     */
+    private function createEventView(array $p = array(),DateTime $from, DateTime $to, $duration_in_minutes)
+    {
+        /**
+         * @todo
+         *
+         * - Diff über einen Tag hinauf berechnen, nicht nur ganze Tage. (component)
+         */
+
+
         $attandees = $this->calendar_event->getAttendees();
 
         $job = 0;
-        if($this->calendar_event->isJob()) {
+        if ($this->calendar_event->isJob()) {
             $job = 1;
         }
 
         $classes = array();
         $classes[] = 'event';
-        $classes[] = 'event-'.$this->calendar_event->getId();
+        $classes[] = 'event-' . $this->calendar_event->getId();
         $classes[] = 'label';
         // $classes[] = pz_label_screen::getBorderColorClass($this->label_id); // background color
         // $classes[] = pz_label_screen::getColorClass($this->label_id); // border color
 
         $me = false;
-        if(pz::getUser()->getEventEditPerm($this->calendar_event))
+        if (pz::getUser()->getEventEditPerm($this->calendar_event))
             $me = true;
 
-        if($this->calendar_event->isRuleEvent()) {
-            $editable = '<span class="not-editable">'.pz_i18n::msg("not_editable").'</span>';
+        if ($this->calendar_event->isRuleEvent()) {
+            $editable = '<span class="not-editable">' . pz_i18n::msg("not_editable") . '</span>';
             $classes[] = "event-rule";
 
-        } else if($me) {
-            $editable = '<span class="editable">'.pz_i18n::msg("editable").'</span>';
-            if ($from->format("Ymd") == $to->format("Ymd")) {
+        } else if ($me) {
+            $editable = '<span class="editable">' . pz_i18n::msg("editable") . '</span>';
+            if ($this->calendar_event->getFrom()->format("Ymd") == $this->calendar_event->getTo()->format("Ymd")) {
                 $classes[] = "dragable";
                 $classes[] = "resizeable";
             }
 
-        }else {
-            $editable = '<span class="not-editable">'.pz_i18n::msg("not_editable").'</span>';
+        } else {
+            $editable = '<span class="not-editable">' . pz_i18n::msg("not_editable") . '</span>';
 
         }
 
-        $attachments = '<span class="has-not-attachments">'.pz_i18n::msg("has_not_attachments").'</span>';
-        if($this->calendar_event->hasClips()) {
-            $attachments = '<span class="has-attachments">'.pz_i18n::msg("has_attachments").'</span>';
+        $attachments = '<span class="has-not-attachments">' . pz_i18n::msg("has_not_attachments") . '</span>';
+        if ($this->calendar_event->hasClips()) {
+            $attachments = '<span class="has-attachments">' . pz_i18n::msg("has_attachments") . '</span>';
         }
 
         // - Termin ohne Einladungen -> für mich sichbar
@@ -947,74 +990,81 @@ class pz_calendar_event_screen{
 
         // einladung mit schraegen flaechen
 
-        if(count($attandees) > 0)
+        if (count($attandees) > 0)
             $classes[] = 'event_attandees';
 
-        if(!$me && count($attandees) > 0) {
+        if (!$me && count($attandees) > 0) {
             $for_me = false;
             $user_emails = pz::getUser()->getEmails();
-            foreach($attandees as $a)
-            {
-                if(in_array($a->getEmail(),$user_emails)) {
+            foreach ($attandees as $a) {
+                if (in_array($a->getEmail(), $user_emails)) {
                     $for_me = true;
                     $classes[] = 'event_attandees_for_me';
                 }
             }
-            if(!$for_me)
+            if (!$for_me)
                 return '';
         }
 
         $info = array();
-        $info[] = '<span class="time">'.pz::strftime(pz_i18n::msg("show_time_normal"),$from->format("U"))
-            .' - '.pz::strftime(pz_i18n::msg("show_time_normal"),$to->format("U"))
-            .'</span>';
+        $timeString = '<span class="time">%s - %s </span>';
+        $info[] = sprintf(
+            $timeString,
+            pz::strftime(pz_i18n::msg("show_time_normal"), $this->calendar_event->getFrom()->format("U")),
+            pz::strftime(pz_i18n::msg("show_time_normal"), $this->calendar_event->getTo()->format("U"))
+        );
+
+
         $info[] = $this->calendar_event->getTitle();
         $info[] = $this->user_name;
 
         $minute_start = $from->format("i");
-        if($minute_start > 44) $minute_start = 45;
-        else if($minute_start > 29) $minute_start = 30;
-        else if($minute_start > 14) $minute_start = 15;
-        else if($minute_start >= 0) $minute_start = 0;
+        if ($minute_start > 44) $minute_start = 45;
+        else if ($minute_start > 29) $minute_start = 30;
+        else if ($minute_start > 14) $minute_start = 15;
+        else if ($minute_start >= 0) $minute_start = 0;
 
         $data_attr = array();
-        $data_attr[] = 'data-event-id="'.$this->calendar_event->getId().'"';
-        $data_attr[] = 'data-event-date-start="'.$from->format("Ymd").'"';
-        $data_attr[] = 'data-event-day-start="'.$from->format("d").'"';
-        $data_attr[] = 'data-event-hour-start="'.$from->format("G").'"';
-        $data_attr[] = 'data-event-minute-start="'.$from->format("i").'"';
-        $data_attr[] = 'data-event-minute-duration="'.$duration_in_minutes.'"';
-        $data_attr[] = 'data-event-day-end="'.$to->format("d").'"';
-        $data_attr[] = 'data-event-hour-end="'.$to->format("G").'"';
-        $data_attr[] = 'data-event-minute-end="'.$to->format("i").'"';
-        $data_attr[] = 'data-event-date-end="'.$to->format("Ymd").'"';
-        $data_attr[] = 'data-event-job="'.$job.'"';
-        $data_attr[] = 'data-event-project_id="'.$this->calendar_event->getProject()->getId().'"';
-        $data_attr[] = 'data-event-user_id="'.$this->calendar_event->getUserId().'"';
-        $data_attr[] = 'data-event-attandees="'.count($attandees).'"';
+        $data_attr[] = 'data-event-id="' . $this->calendar_event->getId() . '"';
+        $data_attr[] = 'data-event-date-start="' . $from->format("Ymd") . '"';
+        $data_attr[] = 'data-event-day-start="' . $from->format("d") . '"';
+        $data_attr[] = 'data-event-hour-start="' . $from->format("G") . '"';
+        $data_attr[] = 'data-event-minute-start="' . $from->format("i") . '"';
+        $data_attr[] = 'data-event-minute-duration="' . $duration_in_minutes . '"';
+        $data_attr[] = 'data-event-day-end="' . $to->format("d") . '"';
+        $data_attr[] = 'data-event-hour-end="' . $to->format("G") . '"';
+        $data_attr[] = 'data-event-minute-end="' . $to->format("i") . '"';
+        $data_attr[] = 'data-event-date-end="' . $to->format("Ymd") . '"';
+        $data_attr[] = 'data-event-job="' . $job . '"';
+        $data_attr[] = 'data-event-project_id="' . $this->calendar_event->getProject()->getId() . '"';
+        $data_attr[] = 'data-event-user_id="' . $this->calendar_event->getUserId() . '"';
+        $data_attr[] = 'data-event-attandees="' . count($attandees) . '"';
 
-        if($this->calendar_event->isAllDay()) {
+        if ($this->calendar_event->isAllDay()) {
             $data_attr[] = 'data-event-isallday="1"';
         } else {
             $data_attr[] = 'data-event-isallday="0"';
         }
 
-        $url = pz::url("screen","calendars","event",array_merge($p["linkvars"],array("mode"=>"get_flyout_calendar_event","calendar_event_id"=>$this->calendar_event->getId())));
-        $flyout_link = "pz_tooltipbox(this, '".$url."')";
+        $url = pz::url("screen", "calendars", "event", array_merge($p["linkvars"], array("mode" => "get_flyout_calendar_event", "calendar_event_id" => $this->calendar_event->getId())));
+        $flyout_link = "pz_tooltipbox(this, '" . $url . "')";
 
         $return = '
-		    <article class="'.implode(" ",$classes).'" '.implode(" ",$data_attr).' id="event-'.$this->calendar_event->getId().'">
-		      <div class="event-info labelb'.$this->label_id.' labelc'.$this->label_id.'">
+		    <article class="' . implode(" ", $classes) . '" ' . implode(" ", $data_attr) . ' id="event-' . $this->calendar_event->getId() . '">
+		      <div class="event-info labelb' . $this->label_id . ' labelc' . $this->label_id . '">
            <header>
              <hgroup>
-               <h2 class="hl7"><a href="javascript:void(0);" onclick="'.$flyout_link.'">'.$editable.$attachments.implode(" ",$info).'</span></a></h2>
+               <h2 class="hl7"><a href="javascript:void(0);" onclick="' . $flyout_link . '">' . $editable . $attachments . implode(" ", $info) . '</span></a></h2>
              </hgroup>
            </header>
            <section class="content">
-             <p>'.$this->calendar_event->getDescription().'</p>
+             <p>' . $this->calendar_event->getDescription() . '</p>
            </section>
           </div>
 	     </article>';
+
+
+
         return $return;
     }
 
@@ -1062,7 +1112,6 @@ class pz_calendar_event_screen{
 
         $days = 7;
 
-        $day_clone = clone $day;
         $day_last = clone $day;
         $day_last->modify("+".($days-1)." days");
 
@@ -1074,7 +1123,6 @@ class pz_calendar_event_screen{
             }
         }
 
-        $return = "";
         $grid = '';
         $grid_title = '';
         for($d=0; $d < $days; $d++) {
@@ -3287,5 +3335,7 @@ class pz_calendar_event_screen{
         return $return;
 
     }
+
+
 
 }
