@@ -1705,3 +1705,13 @@ function pz_remove_calendar_events_by_id(id)
 /* *******************  **************** */
 
 
+function pz_history_control (input, select, value) {
+  select.on('change', function () {
+    if($(this).val() == value) {
+      input.show();
+    } else
+    {
+      input.hide().find('input').val('');
+    }
+  });
+}

@@ -463,6 +463,8 @@ class pz_admin_controller_screen extends pz_admin_controller
         $section_1 = '';
         $section_2 = '';
 
+        $limit = 2000;
+
         $filter = [];
 
         if (rex_request('search_date_from', 'string') != '') {
@@ -486,6 +488,14 @@ class pz_admin_controller_screen extends pz_admin_controller
             $p['linkvars']['search_user_id'] = rex_request('search_user_id', 'string');
         }
 
+
+        if (rex_request('search_project_id', 'int') != 0
+            && ($project = pz_project::get(rex_request('search_project_id', 'int')))
+        ) {
+            $filter[] = ['type' => '=', 'field' => 'project_id', 'value' => $project->getId()];
+            $p['linkvars']['search_project_id'] = rex_request('search_project_id', 'string');
+        }
+
         if (rex_request('search_modi', 'string') != '') {
             $filter[] = ['type' => '=', 'field' => 'mode', 'value' => rex_request('search_modi', 'string')];
             $p['linkvars']['search_modi'] = rex_request('search_modi', 'string');
@@ -494,14 +504,27 @@ class pz_admin_controller_screen extends pz_admin_controller
         if (rex_request('search_control', 'string') != '') {
             $filter[] = ['type' => '=', 'field' => 'control', 'value' => rex_request('search_control', 'string')];
             $p['linkvars']['search_control'] = rex_request('search_control', 'string');
+
+            if (rex_request('search_control_file', 'string') != '') {
+                $filter[] = ['type' => 'like', 'field' => 'data', 'value' => rex_request('search_control_file', 'string')];
+                $p['linkvars']['search_control_file'] = rex_request('search_control_file', 'string');
+            }
         }
+
+        if (rex_request('search_fetch_all', 'int') != '') {
+            $limit = null;
+
+            $p['linkvars']['search_fetch_all'] = rex_request('search_fetch_all', 'string');
+
+        }
+
 
         $mode = rex_request('mode', 'string');
         $p['linkvars']['mode'] = 'list';
 
         $section_1 = pz_history_screen::getSearchForm($p);
 
-        $history_entries = pz_history::get($filter);
+        $history_entries = pz_history::get($filter, $limit);
         $section_2 = pz_history_screen::getListView(
             $history_entries,
             $p

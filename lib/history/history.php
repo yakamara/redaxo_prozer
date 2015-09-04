@@ -33,10 +33,16 @@ class pz_history
 
     public static function get($filter = [], $limit = 1000)
     {
+
+        $limit_query = '';
+        if (null !== $limit) {
+            $limit_query = 'LIMIT '. $limit;
+        }
+
         $w = pz::getFilter($filter);
 
         $sql = pz_sql::factory();
-        $sql->setQuery('select * from pz_history ' . $w['where_sql'] . ' order by stamp desc LIMIT '. $limit, $w['params']);
+        $sql->setQuery('select * from pz_history ' . $w['where_sql'] . ' order by stamp desc '.$limit_query, $w['params']);
 
         $history_entries = [];
         foreach ($sql->getArray() as $l) {
