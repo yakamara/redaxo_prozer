@@ -16,7 +16,7 @@ format_h_i = H:i
 format_DdFY = D d. F Y
 
 
-show_date_long = KW %W / %A, %d. %B %Y
+show_date_long = %A, %d. %B %Y
 show_date_normal = %e. %B %Y
 show_datetime_normal = %e.%-m.%Y %H:%Mh
 show_month_long = %B %Y

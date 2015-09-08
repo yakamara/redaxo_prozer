@@ -4,7 +4,7 @@
     </nav>
     
     <ul id="navi-meta" class="sl1">
-      <li class="lev1 first date"><span class="date"><?php echo pz::strftime(pz_i18n::msg("show_date_long"),pz::getDatetime()->format("U")); ?></span></li>
+      <li class="lev1 first date"><span class="date"><?php echo pz::strftime(pz_i18n::msg("show_date_long"),pz::getDatetime()->format("U")); ?></span><br><span style="display: block; text-align: right;">(<?php echo pz_i18n::msg("calendarweek"); ?> <?php echo pz::dateTime2dateFormat(pz::getDatetime(), "W"); ?>)</span></li>
       <?php if(pz::getUser()) { ?>
       
       <!--
