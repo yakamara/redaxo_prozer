@@ -513,11 +513,17 @@ class pz_eml
         }
 
         if ($subject_all = pz_eml::parseHeaderType($header, 'Content-Disposition')) {
+        
+            $subject_all = preg_replace("/(?<=[aou])\xcc\x88/i", 'e', $subject_all);
+            $subject_all = preg_replace("/\xcc(\x88|\xa3|\x8a|\xb1|\x83|\x86|\xa7|\x8f|\x8c|\x88|\x81|\x80|\x9b|\xad)/", '', $subject_all);
+        
             if (preg_match("#content-disposition: ([^;\ ]*)#im", $subject_all, $subject)) {
                 $return['content-disposition'] = trim($subject[1]);
             }
-            if (preg_match("#[filename|filename\*]=([^;]*)#im", $subject_all, $subject)) {
-                $return['content-disposition-filename'] = str_replace(['"', "'"], '', trim($subject[1]));
+            
+            if (preg_match('#[filename|filename\*][ ]*=[ ]*["\' ]?([\w\.\-\ [\]]*)["\';,]?#uim', $subject_all, $subject)) {
+            // if (preg_match("#[filename|filename\*]=([^;]*)#im", $subject_all, $subject)) {
+                $return['content-disposition-filename'] = trim($subject[1]);
             }
         }
 
@@ -553,6 +559,9 @@ class pz_eml
 
         if ($content_type_all = pz_eml::parseHeaderType($header, 'Content-Type')) {
 
+            $content_type_all = preg_replace("/(?<=[aou])\xcc\x88/i", 'e', $content_type_all);
+            $content_type_all = preg_replace("/\xcc(\x88|\xa3|\x8a|\xb1|\x83|\x86|\xa7|\x8f|\x8c|\x88|\x81|\x80|\x9b|\xad)/", '', $content_type_all);
+
             if (preg_match("#content-type: ([^;\ ]*)#im", $content_type_all, $content_type)) {
                 $return['content-type'] = strtolower($content_type[1]);
             }
@@ -561,7 +570,7 @@ class pz_eml
             }
 
             if (preg_match('#name[ ]*=[ ]*["\' ]?([\w\.\-\ [\]]*)["\';,]?#uim', $content_type_all, $regs)) {
-                $return['content-type-name'] = (trim($regs[1])); // strtolower
+               $return['content-type-name'] = (trim($regs[1])); // strtolower
             }
 
             if (preg_match('#charset[ ]*=[" \']*([a-zA-Z0-9\-]*)[" \';,]*#im', $content_type_all, $regs)) {
