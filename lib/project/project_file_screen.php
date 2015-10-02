@@ -45,7 +45,6 @@ class pz_project_file_screen
             <footer>
               '.pz_screen::getTooltipView('<a class="clipboard" href="javascript:void(0)" onclick="'.$clipboard_link.'">'.pz_i18n::msg('copy_to_clipboard').'</a>', htmlspecialchars(pz_i18n::msg('copy_to_clipboard'))).'
 
-              <a class="bt2" href="'.pz::url('screen', 'emails', 'create', ['clip_ids' => $this->file->getId()]).'" >'.pz_i18n::msg('email_attachment').'</a>
               <a class="bt2" href="javascript:void(0)" onclick="'.$edit_link.'">'.pz_i18n::msg('project_file_edit').'</a>
             </footer>
           </article>
