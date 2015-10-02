@@ -265,16 +265,25 @@ class pz_tools_controller_screen extends pz_tools_controller
             case('add_email_account'):
                 return pz_email_account_screen::getAddForm($p);
                 break;
-
             case('delete_email_account'):
                 $email_account_id = rex_request('email_account_id', 'int', 0);
                 if ($email_account_id > 0 && $email_account = pz_email_account::get($email_account_id, pz::getUser()->getId())) {
                     $email_account->delete();
+                    if ($email_account_id > 0 && $email_account_id == pz::getUser()->getDefaultEmailAccountId()) {
+                        pz::getUser()->saveDefaultUserEmailAccount();
+                    }
                     $p['info'] = '<p class="xform-info">'.pz_i18n::msg('email_account_delete').'</p>';
                 } else {
                     $p['info'] = '<p class="xform-warning">'.pz_i18n::msg('email_account_not_exists').'</p>';
                 }
-
+            case('default_user_email_account'):
+                $default_account_id = rex_request('default_account_id', 'int', 0);
+                if (empty($email_account_id) && ($default_account_id > 0 || $default_account_id != pz::getUser()->getDefaultEmailAccountId())) {
+                    $p[ 'info' ] = '<p class="xform-info">' . pz_i18n::msg('default_email_account_not_changed') . '</p>';
+                    if (pz::getUser()->saveDefaultUserEmailAccount($default_account_id)) {
+                        $p[ 'info' ] = '<p class="xform-info">' . pz_i18n::msg('default_email_account_changed') . '</p>';
+                    }
+                }
             case('list'):
                 $email_accounts = pz::getUser()->getEmailaccounts();
                 $return .= pz_email_account_screen::getAccountsListView(
