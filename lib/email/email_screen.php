@@ -183,7 +183,9 @@ class pz_email_screen
 
         $f->setVar('orders', $orders);
         $return = $f->parse('pz_screen_list.tpl');
+
         if (count($emails) == 0) {
+            $p['xform_warning'] = (isset($p['xform_warning']))? $p['xform_warning'] :'xform-info';
             $return .= '<div class="'.$p['xform_warning'].'">'.pz_i18n::msg('no_emails_found').'</div>';
         }
 
