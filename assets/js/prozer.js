@@ -750,6 +750,33 @@ function pz_clip_select(clip_id, clip_name, clip_size)
 
 /* ******************* Calendar **************** */
 
+function pz_selected_calendar_frame(select, ids, time, day){
+  var uri,
+      $_calender = $('.calendar.view-overview'),
+      $_data = $_calender.find("[data-calendar-"+select+"='" + time + "']:not('.month-after, .month-before')"),
+      url = '/screen/calendars/'+select+'/?mode=search&project_ids='+ids+'&day=';
+
+  $_calender.find("[data-calendar-day]").removeClass('selected');
+
+  if($_data.length == 0) {
+    if(select == 'day') {
+      uri = url+time;
+
+      pz_loadPage('calendar_events_day_search', uri);
+      return;
+    }
+
+    if(select == 'week') {
+      uri = url+day;
+
+      pz_loadPage('calendar_events_week_search', uri);
+      return;
+    }
+  }
+
+  $_data.addClass('selected');
+}
+
 // ----- form
 function pz_set_calendar_addform_date(formdate) {
   $("#calendar_event_add_form input[name='from[date]']").val(formdate);

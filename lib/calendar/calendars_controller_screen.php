@@ -260,18 +260,20 @@ class pz_calendars_controller_screen extends pz_calendars_controller
                 $return = pz_calendar_event_screen::getSearch(
                     $project_ids,
                     $events,
-                    array_merge($p, ['linkvars' => ['mode' => 'search', 'project_ids' => implode(',', $project_ids)]]),
+                    array_merge($p, ['linkvars' => ['mode' => 'search', 'project_ids' => implode(',', $project_ids), 'frame' => true]]),
                     $day
                 );
+
                 return $return;
 
             case('list'):
                 $events = pz::getUser()->getAllEvents($project_ids, $day, clone $day);
                 $return = pz_calendar_event_screen::getDayListView(
                     $events,
-                    array_merge($p, ['linkvars' => ['mode' => 'list', 'project_ids' => implode(',', $project_ids), 'day' => $day->format('Ymd')]]),
+                    array_merge($p, ['linkvars' => ['mode' => 'list', 'project_ids' => implode(',', $project_ids), 'day' => $day->format('Ymd'), 'frame' => true]]),
                     $day
                 );
+
                 return $return;
 
             case(''):
@@ -287,7 +289,7 @@ class pz_calendars_controller_screen extends pz_calendars_controller
                 $s1_content .= pz_calendar_event_screen::getSearch(
                     $project_ids,
                     $events,
-                    array_merge($p, ['linkvars' => ['mode' => 'search', 'project_ids' => implode(',', $project_ids), 'day' => $day->format('Ymd')]]),
+                    array_merge($p, ['linkvars' => ['mode' => 'search', 'project_ids' => implode(',', $project_ids), 'day' => $day->format('Ymd'), 'frame' => true]]),
                     $day
                 );
 
@@ -305,6 +307,7 @@ class pz_calendars_controller_screen extends pz_calendars_controller
                 break;
 
         }
+
 
         $f = new pz_fragment();
         $f->setVar('header', pz_screen::getHeader($p), false);
@@ -354,17 +357,21 @@ class pz_calendars_controller_screen extends pz_calendars_controller
                 // $events = pz::getUser()->getAllEvents($project_ids, $month_firstday, $month_lastday);
                 $events = pz_calendar_event::getAll($project_ids, $month_firstday, $month_lastday);
 
-                return pz_calendar_event_screen::getSearch(
+                $return = pz_calendar_event_screen::getSearch(
                     $project_ids,
                     $events,
-                    array_merge($p, ['linkvars' => ['mode' => 'search', 'project_ids' => implode(',', $project_ids)]]),
+                    array_merge($p, ['linkvars' => ['mode' => 'search', 'project_ids' => implode(',', $project_ids), 'frame' => true]]),
                     $day
                 );
+
+
+
+                return $return;
 
             case('list'):
                 // $events = pz::getUser()->getAllEvents($project_ids, $day, $day_last);
                 $events = pz_calendar_event::getAll($project_ids, $day, $day_last);
-                return pz_calendar_event_screen::getWeekListView(
+                $return = pz_calendar_event_screen::getWeekListView(
                     $events,
                     array_merge(
                         $p,
@@ -377,6 +384,8 @@ class pz_calendars_controller_screen extends pz_calendars_controller
                     ),
                     $day
                 );
+
+                return $return;
 
             case(''):
 
@@ -398,6 +407,7 @@ class pz_calendars_controller_screen extends pz_calendars_controller
                             'mode' => 'search',
                             'project_ids' => implode(',', $project_ids),
                             'day' => $day->format('Ymd'),
+                            'frame' => false
                         ],
                         ]
                     ),
