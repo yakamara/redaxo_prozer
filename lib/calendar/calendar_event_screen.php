@@ -3009,7 +3009,8 @@ class pz_calendar_event_screen {
               $("#calendar_event_add_form #xform-formular-project_sub_id select option[value=\'"+v+"\']").attr("selected", true);
             }
           });
-          $("#calendar_event_add_form #xform-formular-project_sub_id select").trigger("liszt:updated");
+          //$("#calendar_event_add_form #xform-formular-project_sub_id select").trigger("liszt:updated");
+          $("#calendar_event_add_form #xform-formular-project_sub_id select").trigger("chosen:updated");
           $("#calendar_event_add_form #xform-formular-project_sub_id").show();
         }
       }

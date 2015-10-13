@@ -87,9 +87,9 @@ class pz_project_file_screen
         $p['linkvars']['file_id'] = $file_id;
 
         // alert($('select name=[name=parent_id]').val())
-        // $("#form_field").trigger("liszt:updated")
+        // $("#form_field").trigger("chosen:updated")
 
-        return "javascript:$('.section1 select[name=parent_id]').each(function(i,e){ $(this).val('".$file_id."').trigger('liszt:updated'); });pz_loadPage('".$p['layer_list']."','".pz::url($p['mediaview'], $p['controll'], $p['function'], array_merge($p['linkvars']))."')";
+        return "javascript:$('.section1 select[name=parent_id]').each(function(i,e){ $(this).val('".$file_id."').trigger('chosen:updated'); });pz_loadPage('".$p['layer_list']."','".pz::url($p['mediaview'], $p['controll'], $p['function'], array_merge($p['linkvars']))."')";
     }
 
     public static function getPathView($category, $p = [])
