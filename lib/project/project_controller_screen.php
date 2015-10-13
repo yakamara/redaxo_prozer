@@ -1038,6 +1038,23 @@ $section .= '
                 }
                 return '';
 
+            case 'addfiletoemail':
+                $file_id = rex_request('file_id', 'int', 0);
+                if ($file_id > 0 && $file = pz_project_file::get($file_id)) {
+
+                    if ($file->getProjectId() == $this->project->getId()) {
+
+                        $file_type = pz::getMimeTypeByFilename($file->getName(), $file->getContent());
+
+                        $clip = pz_clip::createAsSource($file->getContent(), $file->getName(), $file->getSize(), $file_type, false);
+
+                        $url = pz::url('screen', 'emails', 'create', ['clip_ids' => $clip->getId()]);
+                        header('Location: ' . $url);
+                        return;
+                    }
+                }
+                return '';
+
             case 'clipboardfile2clipboard2select':
                 $file_id = rex_request('file_id', 'int', 0);
                 if ($file_id > 0 && $file = pz_project_file::get($file_id)) {
