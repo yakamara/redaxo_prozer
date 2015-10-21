@@ -1627,6 +1627,8 @@ class pz_calendar_event_screen {
         $paginate_screen = new pz_paginate_screen($jobs);
         $paginate = $paginate_screen->getPlainView($p);
 
+
+
         $list = "";
         foreach($paginate_screen->getCurrentElements() as $job) {
 
@@ -1642,7 +1644,8 @@ class pz_calendar_event_screen {
 			            <td>'.$job->getDescription().'</td>
 			            <td><nobr>'.$duration.'</nobr>&nbsp;</td>
 			            <td>'.$job->getFrom()->format(pz_i18n::msg("format_d_m_y"))."<br /><nobr>".$job->getFrom()->format(pz_i18n::msg("format_h_i")).'h - '.$job->getTo()->format(pz_i18n::msg("format_h_i")).'</nobr></td>
-			            <td>'.$job->getCreated()->format(pz_i18n::msg("format_d_m_y")).'</td>
+			            <td>'.$job->getCreated()->format(pz_i18n::msg("format_d_m_y")).'
+			            <br> '.pz_i18n::msg("calendar_event_from").': <span style="width:75px; display:inline-block; overflow:hidden; margin:-4px 0" title="'.$job->getUser()->getName().'">'.$job->getUser()->getName().'</span></td>
 			          </tr>';
         }
 
