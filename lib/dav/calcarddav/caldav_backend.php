@@ -646,8 +646,10 @@ class pz_sabre_caldav_backend extends AbstractBackend
 
     private function setEventValues($calendarId, $objectUri, Component $event, pz_calendar_event $pzEvent)
     {
+        /** @var DateTime $end */
+        $end = $event->dtend->getDateTime();
         if ($event->dtend->getValueType() == 'DATE') {
-            $event->dtend->getDateTime()->modify('-1 day');
+            $end->modify('-1 day');
         }
 
         $pzEvent
@@ -659,7 +661,7 @@ class pz_sabre_caldav_backend extends AbstractBackend
             ->setDescription((string) $event->description)
             ->setUrl((string) $event->url)
             ->setFrom($event->dtstart->getDateTime()->setTimezone(self::getDateTimeZone()))
-            ->setTo($event->dtend->getDateTime()->setTimezone(self::getDateTimeZone()))
+            ->setTo($end->setTimezone(self::getDateTimeZone()))
             ->setAllDay($event->dtstart->getValueType() == 'DATE');
 
         if (!$pzEvent->isBooked()) {
