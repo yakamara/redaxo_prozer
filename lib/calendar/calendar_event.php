@@ -21,6 +21,11 @@ class pz_calendar_event extends pz_calendar_item
 
     protected $attendees;
 
+    /** @var  pz_user */
+    protected $user;
+    /** @var  pz_project */
+    protected $project;
+
     protected function __construct(array $params = [])
     {
         if (isset($params['e.id'])) {
@@ -139,6 +144,20 @@ class pz_calendar_event extends pz_calendar_item
 
     // ---------------------------
 
+    public function getUser($refesh = false)
+    {
+        if(empty($this->user_id)) {
+            return null;
+        }
+
+        if($this->user && ! $refesh) {
+            return $this->user;
+        }
+
+        $this->user = pz_user::get((int) $this->user_id, $refesh);
+
+        return $this->user;
+    }
 
     public function getLocation()
     {
