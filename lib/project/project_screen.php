@@ -316,6 +316,7 @@ class pz_project_screen
 
     public function getMetaInfoView ()
     {
+
         $header = '
 	        <header>
 	          <div class="header">
@@ -324,6 +325,7 @@ class pz_project_screen
 	        </header>';
 
         $li = [];
+        $style = '';
         $li[] = '<li><span '.$style.'>'.pz_i18n::msg('project_name').' : </span><b>'.pz::cutText($this->project->getVar('name'),40, '...', 'center').'</b></li>';
         $li[] = '<li><span '.$style.'>'.ucfirst(pz_i18n::msg('created_by_user')).' : </span><b>'.pz_user::get($this->project->getVar('create_user_id'))->getName().'</b></li>';
         $li[] = '<li><span '.$style.'>'.pz_i18n::msg('project_createdate').' : </span><b>'.$this->project->getVar('created').'</b></li>';
