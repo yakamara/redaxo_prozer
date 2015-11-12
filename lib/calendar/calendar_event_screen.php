@@ -885,6 +885,7 @@ class pz_calendar_event_screen {
         $return .= '<script language="Javascript"><!--
 		pz_set_calendarday_init();
 		pz_set_calendar_addform_date("'.pz::dateTime2dateFormat($day,"Y-m-d").'");
+		pz_selected_calendar_frame("day", "'.$p["linkvars"]["project_ids"].'", "' . $day->format('Ymd') . '");
 		--></script>';
 
         return '<div class="design2col" id="calendar_events_day_list" data-list-type="calendar" data-url="'.$link_refresh.'">'.$return.'</div>';
@@ -1257,6 +1258,7 @@ class pz_calendar_event_screen {
         $return .= '<script language="Javascript"><!--
     // $(".calendar.view-week").pz_cal_week({ days: '.$days.' })
     pz_set_calendarweek_init();
+    pz_selected_calendar_frame("week", "'.$p['linkvars']['project_ids'].'", "' . $day->format('W') . '", "' . $day->format('Ymd') . '");
 		--></script>';
 
         return '<div class="design2col" id="calendar_events_week_list" data-list-type="calendar" data-url="'.$link_refresh.'">'.$return.'</div>';
@@ -1780,6 +1782,19 @@ class pz_calendar_event_screen {
 
         $month_2->modify("-1 month");
 
+        $script_frame = '';
+        if(!empty($p['linkvars']['frame'])){
+            if($p['function'] == 'day'){
+                $format = 'Ymd';
+            }
+            if($p['function'] == 'week'){
+                $format = 'W';
+            }
+            $script_frame = '<script language="Javascript"><!--
+                pz_selected_calendar_frame("'.$p['function'].'", "'.$p["linkvars"]["project_ids"].'", "' . $day->format($format) . '", "' . $day->format('Ymd') . '");
+            --></script>';
+        }
+
         $return .= '
 	  <div class="calendar view-overview clearfix">
 
@@ -1806,6 +1821,7 @@ class pz_calendar_event_screen {
 
           <section class="content">
             '.pz_calendar_event_screen::getMonthCalendar($events, $p, $day, $month_2).'
+            '.$script_frame.'
           </section>
         </div>
       </div>
@@ -1912,7 +1928,7 @@ class pz_calendar_event_screen {
                 if($current_month > $month->format("m")) $classes[] = "month-before";
                 elseif($current_month < $month->format("m")) $classes[] = "month-after";
 
-                $return .= '<td class="'.implode(" ",$classes).'"><a href="'.$link.'">'.$month->format("j").'</a></td>';
+                $return .= '<td class="'.implode(" ",$classes).'" data-calendar-day="'.$month->format('Ymd').'" data-calendar-week="'.$month->format('W').'"><a href="'.$link.'">'.$month->format("j").'</a></td>';
             }
             $return .= '</tr>';
         }
@@ -2996,7 +3012,8 @@ class pz_calendar_event_screen {
               $("#calendar_event_add_form #xform-formular-project_sub_id select option[value=\'"+v+"\']").attr("selected", true);
             }
           });
-          $("#calendar_event_add_form #xform-formular-project_sub_id select").trigger("liszt:updated");
+          //$("#calendar_event_add_form #xform-formular-project_sub_id select").trigger("liszt:updated");
+          $("#calendar_event_add_form #xform-formular-project_sub_id select").trigger("chosen:updated");
           $("#calendar_event_add_form #xform-formular-project_sub_id").show();
         }
       }

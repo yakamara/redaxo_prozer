@@ -31,6 +31,8 @@ class rex_xform_pz_address_fields extends rex_xform_abstract
         $urls = [];
         $socialprofiles = [];
         $impps = [];
+        $phones_add_button = '';
+        $emails_add_button = '';
 
         $phone_labels = ['WORK','HOME','CELL','WORK,FAX','HOME,FAX','iPhone','PAGER','MAIN'];
         $email_labels = ['WORK','HOME','iPhone','MobileMe'];
