@@ -103,7 +103,7 @@ class pz_sabre_carddav_backend extends AbstractBackend
         $this->addToCard($card, 'x-maidenname', $address->getVar('birthname'));
         $this->addToCard($card, 'x-phonetic-last-name', $address->getVar('phonetic_name'));
         $this->addToCard($card, 'x-phonetic-first-name', $address->getVar('phonetic_firstname'));
-        if ($birthday = $address->getVar('birthday')) {
+        if (($birthday = $address->getVar('birthday')) && '0000-00-00' !== $birthday) {
             $card->bday = $birthday;
             $card->bday['value'] = 'date';
         }
