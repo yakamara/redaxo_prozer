@@ -286,7 +286,7 @@ class pz_calendar_alarm extends pz_calendar_element
                     $values .= '(CONCAT(UPPER(UUID()),"' . $i++ . '"),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?),';
                 }
                 $emails = is_array($alarm->emails) && count($alarm->emails) > 0 ? implode(',', $alarm->emails) : '';
-                array_push($params, $id, pz::getUser()->getId(), $alarm->action, $alarm->getTriggerString(), $alarm->description, $alarm->summary, $emails, $alarm->attachment, $alarm->location, $alarm->structured_location, $alarm->proximity, $alarm->default, self::sqlValue($alarm->acknowledged), $alarm->related_id, $time);
+                array_push($params, $id, pz::getUser()->getId(), $alarm->action, $alarm->getTriggerString(), $alarm->description, $alarm->summary, $emails, $alarm->attachment, $alarm->location, $alarm->structured_location, $alarm->proximity, $alarm->isDefault(), self::sqlValue($alarm->acknowledged), $alarm->related_id, $time);
             }
             pz_sql::factory()->setQuery('
                 INSERT INTO ' . self::TABLE . ' (uid, `' . $column . '`, user_id, `action`, `trigger`, description, summary, emails, attachment, location, structured_location, proximity, `default`, acknowledged, related_id, timestamp)
