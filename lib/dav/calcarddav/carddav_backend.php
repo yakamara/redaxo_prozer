@@ -76,7 +76,7 @@ class pz_sabre_carddav_backend extends AbstractBackend
         $card->rev = (new DateTime(null, new DateTimeZone('UTC')))->format('Ymd\\THis\\Z');
         $card->uid = self::GROUP;
         $sql = pz_sql::factory();
-        $sql->setQuery('SELECT uri FROM pz_address WHERE created_user_id = ?', [pz::getUser()->getId()]);
+        $sql->setQuery('SELECT uri FROM pz_address WHERE created_user_id = :id or responsible_user_id = :id', [':id' => pz::getUser()->getId()]);
         foreach ($sql as $row) {
             $card->add($card->createProperty('X-ADDRESSBOOKSERVER-MEMBER', 'urn:uuid:' . str_replace('.vcf', '', $sql->getValue('uri'))));
         }
@@ -190,6 +190,7 @@ class pz_sabre_carddav_backend extends AbstractBackend
         $sql->setValue('uri', $cardUri);
         $sql->setRawValue('created', 'NOW()');
         $sql->setValue('created_user_id', pz::getUser()->getId());
+        $sql->setValue('responsible_user_id', pz::getUser()->getId());
         $sql->insert();
 
         $address = pz_address::getByUri($cardUri);
