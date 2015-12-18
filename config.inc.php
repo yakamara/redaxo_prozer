@@ -1,7 +1,7 @@
 <?php
 
-$REX['ADDON']['version']['prozer'] = '3.0';
-$REX['ADDON']['author']['prozer'] = 'Jan Kristinus, Gregor Harlan, Thomas Blum';
+$REX['ADDON']['version']['prozer'] = '3.1';
+$REX['ADDON']['author']['prozer'] = 'Jan Kristinus, Gregor Harlan, Thomas Blum, Jochen Mandl';
 
 $REX['ADDON']['xform']['classpaths']['value']['prozer'] = rex_path::addon('prozer', 'xform/value/');
 $REX['ADDON']['xform']['classpaths']['validate']['prozer'] = rex_path::addon('prozer', 'xform/validate/');

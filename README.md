@@ -18,6 +18,49 @@ license - still unclear - will be defined soon.
 Last Changes
 -------
 
+### Version 3.1 // 18. Dezember 2015
+
+#### Neu
+
+* Button für Default E-Mail-Konto
+* Bei Erstellen eines Projekte Neuladen der Liste
+* Projektteilnehmerliste ist nun scrollbar und wird nach Admin sortiert
+* Termin hinzufügen mit refresh
+* Einladung hinzufügen mit automatischer neuem Listenpunkt
+* Jobs können in der Jobansicht direkt geändert werden
+* setlocale angepasst, so dass englische Datumstexte besser passen sollten.
+* Bei E-Mail verschicken, direkte Weiterleitung zu Inbox
+* Projekt erstellen, Weiterleitung auf Projektteilnehmerliste
+* Optische Anpassungen
+* Allgemeine Textanpassungen
+* 2-Wochenansicht -> Wochenansicht geändert
+* Neue E-Mail-Adresse kann man direkt ins Adressbuch übernehmen.
+* Wikilink ist nun auch in der Projektschnellübersicht
+* Datei aus Dateisystem ist direkt über E-Mail versendbar
+* Tools/Jobs können nun auch über Kunde und Projekt gefiltert werden
+* .ics Anhänge können importiert werden, inkl. Abgleich ob schon vorhanden
+* Verbesserung der E-Mail Extrahierung, Dateiname, Headeranalyse, Content-Type ..
+* Wikirechte ergänzt
+* Wikieintraege sind nun auch im Log abrufbar
+* Jobliste hat nun Usernamen
+* XForm-Anpassungen
+
+#### Info
+
+* SabreDav Update auf 3.0
+* Chosen Update
+
+#### Bugs
+
+* Seitenlisten wurden bei bestimmter Anzahl falsch angezeigt
+* Filupload-Browser-Bugs behoben
+* cc wird nun auch bei reply und forward beachtet
+* CalDAV Probleme korrigiert
+* CalDAV Geburtstag nur übergeben wenn vorhanden
+* CalDAV Erinnerungen wurden nicht gespeichert
+* CalDAV responsible User wird nun richtig gespeichert
+* Ganztageszeiträume wurden falsch angezeigt.
+
 ### Version 3.0 // 09. Mai 2015
 
 #### Neu
