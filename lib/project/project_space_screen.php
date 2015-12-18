@@ -1,6 +1,6 @@
 <?php
 
-class pz_project_wiki_screen
+class pz_project_space_screen
 {
     protected $project;
     protected $projectuser;
@@ -8,14 +8,13 @@ class pz_project_wiki_screen
     protected $pageId;
     protected $versionId;
 
-    public function __construct(pz_project $project, pz_projectuser $projectuser, pz_wiki_page $page = null)
+    public function __construct(pz_project $project, $page = NULL)
     {
         $this->project = $project;
-        $this->projectuser = $projectuser;
         $this->page = $page;
-        $this->pageId = $page ? $page->getId() : 0;
-        if ($page instanceof pz_wiki_page_version) {
-            $this->versionId = $page->getVersionId();
+        $this->pageId = 0;
+        if ($this->page instanceof pz_space_page) {
+            $this->pageId = $page->getId();
         }
     }
 
@@ -23,135 +22,96 @@ class pz_project_wiki_screen
 
     /**
      * @param array          $p
-     * @param pz_wiki_page[] $pages
+     * @param pz_space_page[] $pages
      *
      * @return string
      */
     public function getNavigationView($p = [], array $pages)
     {
-        $return = '
-          <div class="design1col" id="project_wiki_navigation">
-            <header>
-                <div class="header grid2col">
-                    <div class="column first">
-                        <h1 class="hl1">Wiki</h1>
-                    </div>
-                    <div class="column last">
-                        <a href="' . $this->url(['mode' => 'create'], '&amp;') . '" class="bt2">' . pz_i18n::msg('wiki_add') . '</a>
-                    </div>
-                </div>
-            </header>
-
-
-            <div class="boxed-group wiki-pages-box">
-
-                <header>
-                    <h3>Seiten <span class="info">(' . count($pages) . ')</span></h3>
-                </header>
-
-                <div class="body">
-                    <nav class="menu">
-                        <ul class="wiki-pages">';
+       $return = [];
         foreach ($pages as $page) {
-            $class = '';
-            if ($page->getId() == $this->pageId) {
-                $class = ' active';
-            }
-            if ($page->isAdminPage()) {
-                $class .= ' admin';
-            }
-            $tasks = '';
-            if ($countTasks = $page->countTasks()) {
-                $countChecked = $page->countTasksChecked();
-                $percent = intval($countChecked / $countTasks * 100);
-                $tasks = '
-                                    <span class="info">(' . $percent . '%)</span>
-                                    <div class="tooltip">
-                                        <div class="progress"><div class="progress-bar" style="width:' . $percent . '%"></div></div>
-                                        <span class="tooltip"><span class="inner">' . pz_i18n::msg('wiki_page_tasks', $countChecked, $countTasks) . '</span></span>
-                                    </div>';
-            }
-            $return .= '<li><a class="menu-item' . $class . '" href="' . $this->url(['wiki_id' => $page->getId()], '&amp;') . '"><span>' . htmlspecialchars($page->getTitle()) . '</span>' . $tasks . '</a></li>';
+            $page_screen = new pz_project_space_screen($this->project, $page);
+            $return[] = $page_screen->getPageView();
         }
-        $return .= '
-                        </ul>
-                    </nav>
-                </div>
-            </div>
-          </div>
 
-        ';
-        return $return;
+        return implode("\n",$return);
     }
 
     // ------------------------------------------------------------------ Page
 
     public function getPageView($p = [])
     {
-        $content = $this->getPageText($this->page->getText(), $this->page instanceof pz_wiki_page_version ? null : $this->page->getRawText());
+
+        $positions = $this->page->getPosition();
+
+        $content = '<div id="space-'.$this->page->getId().'" class="space-page" data-space-id="'.$this->page->getId().'"
+            style="width:200px; height:150px;background-color:'.$this->page->getColor().';padding:10px 10px; overflow:scroll;
+            position:absolute;left:'.$positions[0].'px; top:'.$positions[1].'px
+            ">
+
+        <p>
+        <b>'.htmlspecialchars($this->page->getTitle()).'</b><br />
+        '.nl2br(htmlspecialchars($this->page->getShortText())).'
+        </p>
+        </div>';
+
+        return $content;
+
+
+        $content = $this->getPageText($this->page->getText(), $this->page instanceof pz_space_page_version ? null : $this->page->getRawText());
         $content .= '
             <footer>
-                <div class="wiki-meta">
-                    <dl class="wiki-meta-list">
-                        <dt>' . pz_i18n::msg('wiki_page_created') . ':</dt>
+                <div class="space-meta">
+                    <dl class="space-meta-list">
+                        <dt>' . pz_i18n::msg('space_page_created') . ':</dt>
                         <dd><span class="time">' . $this->page->getCreatedFormatted() . '</span> <span class="author">' . htmlspecialchars($this->page->getCreateUser()->getName()) . '</span></dd>
                     </dl>
-                    <dl class="wiki-meta-list">
-                        <dt>' . pz_i18n::msg('wiki_page_updated') . ':</dt>
+                    <dl class="space-meta-list">
+                        <dt>' . pz_i18n::msg('space_page_updated') . ':</dt>
                         <dd><span class="time">' . $this->page->getUpdatedFormatted() . '</span> <span class="author">' . htmlspecialchars($this->page->getUpdateUser()->getName()) . '</span></dd>
                     </dl>';
 
-        if ($this->page instanceof pz_wiki_page_version) {
-            $content .= '
-                    <dl class="wiki-meta-list">
-                        <dt>' . pz_i18n::msg('wiki_page_version') . ':</dt>
-                        <dd><span class="time">' . $this->page->getStampFormatted() . '</span> <span class="author">' . htmlspecialchars($this->page->getUser()->getName()) . '</span></dd>
-                    </dl>';
-        }
         $content .= '
                 </div>
             </footer>
         ';
-        return $this->getPageWrapper('view', $content);
+        return $content;
     }
-
-    //protected function getPage
 
     public function getPageCreateView($p = [], $title = '')
     {
         $xform = new rex_xform();
 
-        $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('project_wiki_page','wiki_page_create_form','" . $this->url(['mode' => 'create_form']) . "')");
-        $xform->setObjectparams('form_id', 'wiki_page_create_form');
+        // $xform->setDebug();
+
+        $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('project_space_page','space_page_create_form','" . $this->url(['mode' => 'create_form']) . "')");
+        $xform->setObjectparams('form_id', 'space_page_create_form');
 
         $this->addBaseFields($xform, $title);
 
         $xform->setValueField('datestamp', ['created', 'mysql', '', '0', '1']);
         $xform->setValueField('hidden', ['create_user_id', pz::getUser()->getId()]);
 
-        $xform->setActionField('db', ['pz_wiki']);
+        $xform->setActionField('db', ['pz_space']);
 
         $content = $xform->getForm();
 
         if ($xform->getObjectparams('actions_executed')) {
-            $page = pz_wiki_page::get($xform->getObjectparams('main_id'));
-            $page->create($xform->getFieldValue('', '', 'message'));
+
+            $this->page = pz_space_page::get($xform->getObjectparams('main_id'));
+            $this->page->create($xform->getFieldValue('', '', 'created'));
+
             $content = pz_screen::getJSUpdatePage($this->url());
         }
 
         $content = '
-            <div id="project_wiki_page" class="design2col wiki article">
+            <div id="project_space_page">
                 <header>
                     <div class="header">
-                        <h1 class="hl1">' . pz_i18n::msg('wiki_add') . '</h1>
+                        <h1 class="hl1">' . pz_i18n::msg('space_add') . '</h1>
                     </div>
                 </header>
-                <nav class="tabnav">
-                    <ul class="tabnav-tabs">
-                        <li><a class="tabnav-tab active" href="#"><span>' . pz_i18n::msg('wiki_create') . '</span></a></li>
-                    </ul>
-                </nav>
-                <article class="wiki-editor">
+                <article class="space-editor">
                 ' . $content . '
                 </article>
             </div>';
@@ -163,44 +123,26 @@ class pz_project_wiki_screen
     {
         $xform = new rex_xform();
 
-        $xform->setObjectparams('main_table', 'pz_wiki');
+        $xform->setObjectparams('main_table', 'pz_space');
         $xform->setObjectparams('main_id', $this->page->getId());
         $xform->setObjectparams('main_where', 'id=' . $this->page->getId());
-        if ($this->page instanceof pz_wiki_page_version) {
-            $sql = rex_sql::factory();
-            $sql->setQuery('SELECT * FROM pz_wiki WHERE id = ' . (int) $this->pageId);
-            $sql->setValue('title', $this->page->getTitle());
-            $sql->setValue('text', $this->page->getRawText());
-            $xform->setObjectparams('sql_object', $sql);
-        }
+
         $xform->setObjectparams('getdata', true);
 
-        $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('project_wiki_page','wiki_page_edit_form','" . $this->url(['mode' => 'edit']) . "')");
-        $xform->setObjectparams('form_id', 'wiki_page_edit_form');
+        $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('project_space_page','space_page_edit_form','" . $this->url(['mode' => 'edit']) . "')");
+        $xform->setObjectparams('form_id', 'space_page_edit_form');
 
         $this->addBaseFields($xform);
 
-        $xform->setActionField('db', ['pz_wiki', 'id=' . $this->pageId]);
+        $xform->setActionField('db', ['pz_space', 'id=' . $this->pageId]);
 
-        $content = '<article class="wiki-editor">' . $xform->getForm() . '</article>';
+        $content = '<article class="space-editor">' . $xform->getForm() . '</article>';
 
         if ($xform->getObjectparams('actions_executed')) {
-            $page = pz_wiki_page::get($this->pageId);
+            $page = pz_space_page::get($this->page->getId());
             $page->update($xform->getFieldValue('', '', 'message'));
             return pz_screen::getJSUpdatePage($this->url());
         }
-
-        if (pz::getUser()->isAdmin() || $this->projectuser->isAdmin() || pz::getUser()->getId() == $this->page->getCreateUser()->getId()) {
-            $url = $this->url(['mode' => 'delete']);
-            $content .= '
-                <div class="xform">
-                    <p>
-                        <a class="bt17" href="' . pz::url() . '" onclick="if (confirm(\'' . pz_i18n::msg('wiki_page_delete_question', $this->page->getCurrent()->getTitle()) . '\')) pz_loadPage(\'project_wiki_page\', \'' . $url . '\')">- ' . pz_i18n::msg('wiki_page_delete') . '</a>
-                    </p>
-                </div>
-            ';
-        }
-
         return $this->getPageWrapper('edit', $content);
     }
 
@@ -208,26 +150,28 @@ class pz_project_wiki_screen
     {
         $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl']);
         $xform->setObjectparams('real_field_names', true);
+        $xform->setObjectparams('form_skin', "bootstrap");
 
-        $xform->setValueField('text', ['title', pz_i18n::msg('wiki_page_title'), 'default' => $title]);
-        $xform->setValidateField('empty', ['title', pz_i18n::msg('error_wiki_title_empty')]);
+        $xform->setValueField('text', ['title', pz_i18n::msg('space_page_title'), 'default' => $title]);
+        $xform->setValidateField('empty', ['title', pz_i18n::msg('error_space_title_empty')]);
 
         $xform->setValueField('html', ['open', '
-            <nav class="tabnav tabnav-down wiki-editor-tabnav" id="wiki_page_text_navi">
+            <nav class="tabnav tabnav-down space-editor-tabnav" id="space_page_text_navi">
                 <ul class="tabnav-tabs">
-                    <li><a class="tabnav-tab active" href="#wiki_page_text_edit">' . pz_i18n::msg('wiki_page_text_edit') . '</a></li>
-                    <li><a class="tabnav-tab" href="#wiki_page_text_preview">' . pz_i18n::msg('wiki_page_text_preview') . '</a></li>
-                    <li><a class="tabnav-tab" href="#wiki_page_text_help">' . pz_i18n::msg('wiki_page_text_help') . '</a></li>
+                    <li><a class="tabnav-tab active" href="#space_page_text_edit">' . pz_i18n::msg('space_page_text_edit') . '</a></li>
+                    <li><a class="tabnav-tab" href="#space_page_text_preview">' . pz_i18n::msg('space_page_text_preview') . '</a></li>
+                    <li><a class="tabnav-tab" href="#space_page_text_help">' . pz_i18n::msg('space_page_text_help') . '</a></li>
                 </ul>
             </nav>
-            <div class="wiki-editor-write-content">
-                <div id="wiki_page_text_edit">
+            <div class="space-editor-write-content">
+                <div id="space_page_text_edit">
         ']);
-        $xform->setValueField('textarea', ['text', pz_i18n::msg('wiki_page_text')]);
+        $xform->setValueField('textarea', ['shorttext', pz_i18n::msg('space_page_shorttext')]);
+        $xform->setValueField('textarea', ['text', pz_i18n::msg('space_page_text')]);
         $xform->setValueField('html', ['close', '
                 </div>
-                <div class="wiki-preview-content markdown-body" id="wiki_page_text_preview"></div>
-                <div class="markdown-body" id="wiki_page_text_help" style="display: none">
+                <div class="space-preview-content markdown-body" id="space_page_text_preview"></div>
+                <div class="markdown-body" id="space_page_text_help" style="display: none">
                     <table>
                         <thead>
                             <tr>
@@ -333,37 +277,34 @@ class pz_project_wiki_screen
                 </div>
             </div>
             <script><!--
-                $("#wiki_page_text_navi a").click(function () {
-                    $("#wiki_page_text_navi a").removeClass("active");
+                $("#space_page_text_navi a").click(function () {
+                    $("#space_page_text_navi a").removeClass("active");
                     $(this).addClass("active");
-                    $("#wiki_page_text_navi").next().find("> *").hide();
+                    $("#space_page_text_navi").next().find("> *").hide();
                     $($(this).attr("href")).show();
-                    if ("#wiki_page_text_preview" == $(this).attr("href")) {
-                        pz_loadFormPage("wiki_page_text_preview", $(this).closest("form").attr("id"), "' . $this->url(['mode' => 'preview']) . '");
+                    if ("#space_page_text_preview" == $(this).attr("href")) {
+                        pz_loadFormPage("space_page_text_preview", $(this).closest("form").attr("id"), "' . $this->url(['mode' => 'preview']) . '");
                     }
                     return false;
                 });
             --></script>
         ']);
 
-        if (pz::getUser()->isAdmin() || $this->projectuser->isAdmin()) {
-            $xform->setValueField('checkbox', ['admin', pz_i18n::msg('wiki_page_admin') . '<i class="notice">' . pz_i18n::msg('wiki_page_admin_notice') . '</i>']);
-        }
-
-        $xform->setValueField('text', ['message', pz_i18n::msg('wiki_page_message'), 'no_db' => 'no_db']);
+        $xform->setValueField("select",['color',pz_i18n::msg('space_page_position'),'#eee,#f90,#e4d836']);
 
         $xform->setValueField('datestamp', ['updated', 'mysql', '', '0', '0']);
         $xform->setValueField('hidden', ['update_user_id', pz::getUser()->getId()]);
-
         $xform->setValueField('hidden', ['project_id', $this->project->getId()]);
+        $xform->setValueField('text', ['position', pz_i18n::msg('space_page_position')]);
+
     }
 
     public function getPageTextPreview()
     {
         $text = stripslashes(rex_post('text', 'string'));
-        $text = pz_wiki_page::parseText($this->project->getId(), $text);
+        $text = pz_space_page::parseText($this->project->getId(), $text);
 
-        return '<div class="wiki-preview-content markdown-body" id="wiki_page_text_preview">' . $this->getPageText($text) . '</div>';
+        return '<div class="space-preview-content markdown-body" id="space_page_text_preview">' . $this->getPageText($text) . '</div>';
     }
 
     protected function getPageText($text, $rawText = null)
@@ -404,41 +345,10 @@ class pz_project_wiki_screen
         return $content;
     }
 
-    public function getPageHistoryView($p = [])
-    {
-        $content = '
-            <table class="tbl1">';
-        $current = true;
-        foreach ($this->page->getVersions() as $version) {
-            $urlView = $this->url(['mode' => 'view', 'wiki_version_id' => $current ? '' : $version->getVersionId()]);
-            $urlRevert = $this->url(['mode' => 'edit', 'wiki_version_id' => $version->getVersionId()]);
-            $content .= '
-                <tr>
-                    <td>' . $version->getStampFormatted() . '</td>
-                    <td>' . htmlspecialchars($version->getUser()->getName()) . '</td>
-                    <td>' . htmlspecialchars($version->getMessage()) . '</td>
-                    <td>
-                        <a class="bt2" href="javascript:pz_loadPage(\'project_wiki_page\', \'' . $urlView . '\')">' . pz_i18n::msg('wiki_view') . '</a>
-                        ' . ($current ? '' : '<a class="bt2" href="javascript:pz_loadPage(\'project_wiki_page\', \'' . $urlRevert . '\')">' . pz_i18n::msg('wiki_page_revert') . '</a>') . '
-                    </td>
-                </tr>
-            ';
-            $current = false;
-        }
-        $content .= '
-            </table>
-        ';
-        return $this->getPageWrapper('history', $content);
-    }
-
     private function getPageWrapper($active, $content)
     {
         $info = '';
         $button = '';
-        if ($this->page instanceof pz_wiki_page_version) {
-            $info = ' <span class="info">(' . pz_i18n::msg('wiki_page_version') . ': ' . $this->page->getStampFormatted() . ')</span> ';
-            $button = '<a class="bt2" href="javascript:pz_loadPage(\'project_wiki_page\', \'' . $this->url(['mode' => $active]) . '\')">' . pz_i18n::msg('wiki_page_current') . '</a>';
-        }
         $return = '
             <div id="project_wiki_page" class="design2col wiki article">
                 <header>
@@ -473,11 +383,12 @@ class pz_project_wiki_screen
         return $return;
     }
 
+
     protected function url(array $params = [], $split = '&')
     {
-        return pz::url('screen', 'project', 'wiki', array_merge([
+        return pz::url('screen', 'project', 'space', array_merge([
             'project_id' => $this->project->getId(),
-            'wiki_id' => $this->pageId,
+            'space_id' => $this->pageId,
         ], $params), $split);
     }
 }

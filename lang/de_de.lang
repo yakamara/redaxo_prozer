@@ -119,7 +119,7 @@ page_projects_labels = Labels
 page_projects_new = Neues Projekt
 
 page_project_view = Aktuelles
-page_project_user = Projektteilnehmer
+page_project_user = User
 page_project_jobs = Liste der Jobs
 page_project_wiki = Wiki
 page_project_files = Dateien
@@ -906,3 +906,15 @@ description = Beschreibung
 
 prozer_install_redaxo_version_problem = Es wird REDAXO mit mindestens Version {0} benötigt
 prozer_install_xform_version_problem = Es wird das XForm AddOn mit mindestens Version {0} benötigt
+
+
+page_project_space = Space
+space_add = Zettel hinzufügen
+error_space_title_empty = Titel fehlt
+space_page_title = Bezeichnung
+space_page_text_edit = Detailinfos eintragen
+space_page_text_preview = Voransicht
+space_page_text_help = Hilfe
+space_page_shorttext = Kurztext
+space_page_position = Position
+space_page_text = Detailinfos
