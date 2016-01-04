@@ -15,7 +15,7 @@ class pz_sabre_project_tree extends Sabre\DAV\Tree
     public function move($source, $destination)
     {
         $sourceNode = $this->getNodeForPath($source);
-        list($destinationDir, $destinationName) = Sabre\DAV\URLUtil::splitPath($destination);
+        list($destinationDir, $destinationName) = Sabre\Uri\split($destination);
         $destinationNode = $this->getNodeForPath($destinationDir);
         if (
             $sourceNode instanceof pz_sabre_project_root_collection ||
