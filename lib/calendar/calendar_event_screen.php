@@ -2962,7 +2962,6 @@ class pz_calendar_event_screen {
 				$("#calendar_event_add_form #xform-formular-allday input").removeAttr("checked");
 				$("#calendar_event_add_form #xform-formular-allday").hide();
 				$("#calendar_event_add_form .pz_address_fields_attandees").hide();
-				$("div.pz_address_fields_attandees").find("div.data.pz_address_fields_attandees_clone").remove();
 				$("#calendar_event_add_form #xform-formular-from").show();
 				$("#calendar_event_add_form #xform-formular-to").show();
 				$("#calendar_event_add_form #xform-formular-label-id").hide();
@@ -3067,7 +3066,8 @@ class pz_calendar_event_screen {
 
             if($event = pz_calendar_event::get($event->getId())) {
 
-                if(isset($data["attendees"]) && is_array($data["attendees"]))
+
+                if($data["booked"] != 1 && isset($data["attendees"]) && is_array($data["attendees"]))
                 {
                     $attendees = array();
                     foreach($data["attendees"] as $a) {
