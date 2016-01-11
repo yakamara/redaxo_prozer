@@ -428,37 +428,13 @@ class pz_calendar_event_screen {
 
     public function getBlockListView($p = array())
     {
+    
         $from = $this->calendar_event->getFrom();
         $to = $this->calendar_event->getTo();
         $duration = $this->calendar_event->getDuration();
 
         $info = "";
         $resize = '';
-
-        /*
-            $edit_classes = "";
-            $edit = array();
-
-            if(pz::getUser()->getEventEditPerm($this->calendar_event))
-            {
-                $edit[] = '<li><a class="bt5" href="javascript:pz_loadPage(\'calendar_event_form\',\''.pz::url("screen","calendars","day",array_merge($p["linkvars"],array("mode"=>"edit_calendar_event","calendar_event_id"=>$this->calendar_event->getId()))).'\')">'.pz_i18n::msg("edit").'</a></li>';
-
-                $edit[] = '<li><a class="bt17" href="javascript:void(0);" onclick="check = confirm(\''.
-                str_replace(array("'","\n","\r"),array("","",""),pz_i18n::msg("calendar_event_confirm_delete",htmlspecialchars($this->calendar_event->getTitle()))).'\'); if (check == true) pz_loadPage(\'calendar_event_form\',\''.pz::url("screen","calendars",$p["function"],array_merge($p["linkvars"],array("mode"=>"delete_calendar_event","calendar_event_id"=>$this->calendar_event->getId()))).'\')">'.pz_i18n::msg("delete").'</a></li>';
-
-            }
-
-        if(!$this->calendar_event->isBooked() && !$this->calendar_event->isAllDay())
-        {
-          $edit[] = '<li><a class="bt5" href="javascript:pz_loadPage(\'calendar_event_form\',\''.pz::url("screen","calendars","day",array_merge($p["linkvars"],array("mode"=>"copy2job_calendar_event","calendar_event_id"=>$this->calendar_event->getId()))).'\')">'.pz_i18n::msg("calendar_event_copy2job").'</a></li>';
-        }
-
-        if(count($edit) > 0)
-        {
-        }
-        $edit = '<div class="split-h split-h1"></div><ul class="buttons">'.implode($edit).'</ul>';
-        $edit = "";
-        */
 
         $date_info = '';
         if($this->calendar_event->isAllday())
@@ -472,93 +448,18 @@ class pz_calendar_event_screen {
             else
                 $date_info = $from->format("d.m.Y H:i").' - '.$to->format("d.m.Y H:i");
 
-
-
-//    $date_info = $date_info != '' ? '<h2>'.$date_info.'</h2>' : '';
-
         $text = '';
 
         if ($this->calendar_event->getDescription() != '')
             $text .= '<p>'.nl2br(htmlspecialchars($this->calendar_event->getDescription())).'</p>';
-        /*
-            $event_infos = '';
-                if($this->calendar_event->getLocation() != "")
-                    $event_infos .= '<dt>'.pz_i18n::msg('location').':</dt><dd>'.htmlspecialchars($this->calendar_event->getLocation()).'</dd>';
-
-                if($this->calendar_event->getUrl() != "")
-                {
-                  $url = $this->calendar_event->getUrl();
-                  if (substr($url, 0, 7) != 'http://' && substr($url, 0, 8) != 'https://')
-                    $url = 'http://'.$url;
-
-                    $event_infos .= '<dt>'.pz_i18n::msg("calendar_event_url").':</dt><dd><a href="'.$url.'" target="_blank">'.htmlspecialchars($url).'</a></dd>';
-                }
-
-                if($this->calendar_event->isBooked() != "")
-                    $event_infos .= '<dt>'.pz_i18n::msg('job').':</dt><dd>'.pz_i18n::msg('is_job').'</dd>';
-
-                $event_infos .= '<dt>'.pz_i18n::msg('project').':</dt><dd>'.$this->calendar_event->getProject()->getName().'</dd>';
-
-                if($this->calendar_event->hasRule())
-                {
-                    $event_infos .= '<dt>'.pz_i18n::msg('calendar_event_rule').':</dt><dd>'.pz_i18n::msg('calendar_event_has_rule').'</dd>';
-                    $event_infos .= '<dt>'.pz_i18n::msg('calendar_event_frequence').':</dt><dd>'.$this->calendar_event->getRule()->getFrequence().'</dd>';
-                    $event_infos .= '<dt>'.pz_i18n::msg('calendar_event_interval').':</dt><dd>'.$this->calendar_event->getRule()->getInterval().'</dd>';
-
-                }
-
-                $formatted .= $event_infos != '' ? '<div class="split-h split-h1"></div><dl>'.$event_infos.'</dl>' : '';
-
-                $attandees = '';
-
-                $user_emails = pz::getUser()->getEmails();
-
-                $as = pz_calendar_attendee::getAll($this->calendar_event);
-                if(is_array($as) && count($as)>0)
-                {
-
-                    $attandees .= '<div class="split-h split-h1"></div><h2>'.pz_i18n::msg('calendar_event_attendees').'</h2>';
-
-                    $me = null;
-                    $attandees_list = '';
-                    foreach($as as $a)
-                    {
-                        $attandees_list .= '<li class="status-'.strtolower($a->getStatus()).'">'.$a->getName().' / '.$a->getEmail().' ['.pz_i18n::msg('calendar_event_attendee_'.strtolower($a->getStatus())).']</li>';
-
-                        if(in_array($a->getEmail(),$user_emails))
-                        {
-                            $me = $a;
-                        }
-                    }
-
-                    if ($attandees_list != '')
-                      $attandees .= '<ul>'.$attandees_list.'</ul>';
-
-
-                  $actions = '';
-                    if($me)
-                    {
-                        $actions .= '<div class="split-h split-h1"></div><ul class="buttons">';
-                        foreach(pz_calendar_attendee::getStatusArray() as $k => $v)
-                        {
-                            $link = 'pz_loadPage(\'.event-'.$this->calendar_event->getId().'\',\''.pz::url("screen","calendars",$p["function"],array_merge($p["linkvars"],array("mode"=>"set_attandee_status","calendar_event_id"=>$this->calendar_event->getId(),"attandee_status" => $v))).'\')';
-
-
-                            if($me->getStatus() == $v)
-                                $actions .= '<li><a class="bt3" href="javascript:void(0);">'.pz_i18n::msg('calendar_event_attendee_'.strtolower($v)).'</a></li>';
-                            else
-                                $actions .= '<li><a class="bt5" href="javascript:void(0);" onclick="'.$link.'">'.pz_i18n::msg('calendar_event_attendee_'.strtolower($v)).'</a></li>';
-                        }
-                        $actions .= '</ul>';
-                    }
-
-                }
-                $formatted .= $attandees;
-        */
-        $image_from_address = $this->calendar_event->getUser()->getInlineImage();
-        $image_from_adresse_title = $this->calendar_event->getUser()->getName();
-
-
+        
+        $image_from_address = "";
+        $image_from_adresse_title = "";
+        
+        if ( ($event_user = $this->calendar_event->getUser())) {
+            $image_from_address = $this->calendar_event->getUser()->getInlineImage();
+            $image_from_adresse_title = $this->calendar_event->getUser()->getName();
+        }
 
         $classes = array();
         $classes[] = 'event';
@@ -582,11 +483,6 @@ class pz_calendar_event_screen {
           </div>
 	     </article>';
 
-        /*
-                   <footer>
-                      <a class="bt5" href="#">editieren</a>
-                    </footer>
-        */
         return $return;
 
     }
