@@ -355,9 +355,10 @@ select = auswählen
 
 projects_archive = Projektarchiv
 
-
 projects_orderby_createddesc = Erstellungsdatum, absteigend
 projects_orderby_createdasc = Erstellungsdatum, aufsteigend
+projects_orderby_namedesc = Projektname, absteigend
+projects_orderby_nameasc = Projektname, aufsteigend
 
 get_from_clipboard = + Aus dem Clipboard auswählen
 clips_exist = Es wurden {0} Clips gefunden

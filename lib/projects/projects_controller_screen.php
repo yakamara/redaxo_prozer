@@ -496,7 +496,17 @@ class pz_projects_controller_screen extends pz_projects_controller
                 pz::url($p['mediaview'], $p['controll'], $p['function'], array_merge($p['linkvars'], ['mode' => 'list', 'search_orderby' => 'createdasc'])) .
                 "')", ];
 
-        $current_order = 'createddesc';
+        $orders['nameasc'] = ['orderby' => 'name', 'sort' => 'asc', 'name' => pz_i18n::msg('projects_orderby_nameasc'),
+            'link' => "javascript:pz_loadPage('" . $p['layer_list'] . "','" .
+                pz::url($p['mediaview'], $p['controll'], $p['function'], array_merge($p['linkvars'], ['mode' => 'list', 'search_orderby' => 'nameasc'])) .
+                "')", ];
+
+        $orders['namedesc'] = ['orderby' => 'name', 'sort' => 'desc', 'name' => pz_i18n::msg('projects_orderby_namedesc'),
+            'link' => "javascript:pz_loadPage('" . $p['layer_list'] . "','" .
+                pz::url($p['mediaview'], $p['controll'], $p['function'], array_merge($p['linkvars'], ['mode' => 'list', 'search_orderby' => 'namedesc'])) .
+                "')", ];
+
+        $current_order = 'nameasc';
         if (array_key_exists(rex_request('search_orderby'), $orders)) {
             $current_order = rex_request('search_orderby');
         }
