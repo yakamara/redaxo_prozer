@@ -214,6 +214,11 @@ class pz_user
         return $this->getValue('comment');
     }
 
+    public function getDashboard()
+    {
+        return $this->getValue('dashbaord');
+    }
+
     // ----------------- static
 
     public static function getDefaultImage()
@@ -517,7 +522,7 @@ class pz_user
 
     // -------------------------------------------------------------------- Cal
 
-    public function getAllEvents(array $projects, DateTime $from = null, DateTime $to = null)
+    public function getAllEvents(array $projects, DateTimeInterface $from = null, DateTimeInterface $to = null)
     {
         // !! time matters
         $events = pz_calendar_event::getAll($projects, $from, $to);

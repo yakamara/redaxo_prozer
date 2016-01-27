@@ -532,6 +532,18 @@ ADD `smtp_password` VARCHAR( 255 ) NOT NULL AFTER `smtp_login`;');
 
 
 
+    // ----- version 3.?
+
+
+    $c->setQuery('CREATE TABLE IF NOT EXISTS `pz_dashboard` (
+      `id` int( 11 ) NOT NULL AUTO_INCREMENT ,
+      `user_id` int( 11 ) NOT NULL ,
+      `data` text NOT NULL ,
+      `stamp` datetime NOT NULL ,
+      PRIMARY KEY ( `id` )
+      ) ENGINE = MYISAM DEFAULT CHARSET = utf8;');
+
+    $c->setQuery('ALTER TABLE `pz_dashboard` ADD INDEX `user_id` (`user_id`);');
 
 
     // -------------------------------------------------- create WebDAV tmp Ordner

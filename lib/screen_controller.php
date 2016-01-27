@@ -2,7 +2,7 @@
 
 class pz_screen_controller extends pz_controller
 {
-    public static $controller = ['login', 'emails', 'projects', 'project', 'calendars', 'addresses', 'clipboard', 'tools', 'admin'];
+    public static $controller = [ 'dashboard', 'login', 'emails', 'projects', 'project', 'calendars', 'addresses', 'clipboard', 'tools', 'admin'];
     public static $controll = null;
 
     public function controller($function)

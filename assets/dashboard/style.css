@@ -1,0 +1,101 @@
+.navbar {
+    padding: 0 20px;
+}
+a:hover {
+    cursor: pointer;
+}
+input {
+
+}
+.container {
+    margin: auto;
+}
+.code-coverage {
+    color: #fff;
+    font-weight: bold;
+    float: right;
+    padding: 10px;
+}
+
+
+.controls {
+    margin-bottom: 20px;
+}
+.page-header {
+    margin-top: 20px;
+}
+ul {
+    list-style: none;
+}
+.box {
+    height: 100%;
+    border: 1px solid #ccc;
+    background-color: #fff;
+}
+.box-header {
+    background-color: #eee;
+    padding: 0 30px 0 10px;
+    border-bottom: 1px solid #ccc;
+    cursor: move;
+    position: relative;
+}
+.box-header h3 {
+    padding: 5px 0;
+    display: block;
+}
+.box-content {
+    height: 90%;
+    overflow-y: auto;
+}
+
+.box-content article.block.label {
+    padding: 10px 10px 9px 10px;
+    color: #626d72;
+    margin-bottom: 1px;
+    display: block;
+    background-color: #f6f7f7;
+    border-bottom: 1px dotted #d8d8d8;
+}
+.box-header-btns {
+    top: 15px;
+    right: 10px;
+    cursor: pointer;
+    position: absolute;
+}
+a {
+    color: #ccc;
+}
+form {
+    margin-bottom: 0;
+}
+
+.box-header-btns {
+    top: 8px;
+}
+.glyphicon {
+    color: #626d72;
+}
+.glyphicon:hover,
+.glyphicon:focus{
+    color: #5b656a;
+}
+
+.ng-scope.gridster-item .box{
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.gridster {
+    background-color: #FFF;
+    border: 1px solid #eee;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+button.btn.btn-entity-select.selected {
+    margin-bottom: 0px !important;
+}

@@ -153,6 +153,7 @@ class pz_address extends pz_model
         return $this->checkMultiLine($this->vars['note']);
     }
 
+
     public function getInlineImage()
     {
         $return = '';

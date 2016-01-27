@@ -539,7 +539,7 @@ class pz_calendar_event extends pz_calendar_item
             $wUsers = ' AND ( user_id IN (' . implode(',', $users) . ') )';
         }
 
-        // alle termine
+        // alle calendar
         $wJobs = '';
         if ($onlyJobs) {
             $wJobs = ' AND ( booked = 1)';

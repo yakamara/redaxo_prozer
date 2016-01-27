@@ -274,7 +274,7 @@ class pz_clip extends pz_model
           }
         }
         // wenn der clip in einem event ist
-        // - der ein Projekt hat, auf das man Zugreifen kann und rechte am kalender hat
+        // - der ein Projekt hat, auf das man Zugreifen kann und rechte am birthday hat
         $events = @pz_calendar_event::getEventsByClip($this);
         foreach ($events as $event) {
             if (pz::getUser()->getEventViewPerm($event)) {
