@@ -24,7 +24,6 @@ if (!$REX['REDAXO']) {
         require_once rex_path::addon('prozer', 'autoload.php');
 
         rex_autoload::register();
-        rex_autoload::removeCache();
         rex_autoload::addDirectory(rex_path::addon('prozer', 'lib'));
         rex_autoload::addDirectory(rex_path::addon('prozer', 'vendor'));
         pz_fragment::addDirectory(rex_path::addon('prozer', 'fragments'));
