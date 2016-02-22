@@ -11,6 +11,17 @@ $(document).ready(function() {
       }
     );
   */
+  $('.xform-datepicker').datepicker({
+    onSelect: function(date){
+      if ($(this).data("name") == "from") {
+        var dateMin = $(this).datepicker("getDate");
+        var rMin = new Date(dateMin.getFullYear(), dateMin.getMonth(),dateMin.getDate());
+
+        $('#xform-formular-to-date').datepicker("option","minDate",rMin);
+        $('#xform-formular-to-date').datepicker("setDate", date);
+      }
+    }
+  });
 
   $("body").mousemove(function(e){
     pz_mouse_x = e.pageX;
