@@ -749,38 +749,58 @@ function pz_clip_select(clip_id, clip_name, clip_size)
 
 
 /* ******************* Calendar **************** */
-
 function pz_selected_calendar_frame(select, ids, time, day){
-  var uri,
-      $_calender = $('.calendar.view-overview'),
-      $_data = $_calender.find("[data-calendar-"+select+"='" + time + "']:not('.month-after, .month-before')"),
-      url = '/screen/calendars/'+select+'/?mode=search&project_ids='+ids+'&day=';
+    var uri, $_data;
+    var url = '/screen/calendars/'+select+'/?mode=search&project_ids='+ids+'&day=';
+    var $_calender = $('.calendar.view-overview');
 
-  $_calender.find("[data-calendar-day]").removeClass('selected');
+    $_calender.find("[data-calendar-day]").removeClass('selected');
 
-  if($_data.length == 0) {
-    if(select == 'day') {
-      uri = url+time;
+    if (select == 'week') {
+        var first_data = $_calender.find(".first [data-calendar-"+select+"='" + time + "']");
+        var last_data = $_calender.find(".last [data-calendar-"+select+"='" + time + "']");
 
-      pz_loadPage('calendar_events_day_search', uri);
-      return;
+        if (first_data.length > last_data.length) {
+            $_data = first_data;
+        } else {
+            $_data = last_data;
+        }
     }
 
-    if(select == 'week') {
-      uri = url+day;
+    if (select == 'day') {
+        $_data = $_calender.find("[data-calendar-"+select+"='" + time + "']:not('.month-after, .month-before')");
 
-      pz_loadPage('calendar_events_week_search', uri);
-      return;
+        if($_data.length == 0) {
+            $_data = $_calender.find("[data-calendar-" + select + "='" + time + "']");
+        }
     }
-  }
 
-  $_data.addClass('selected');
+
+
+
+    if($_data.length == 0) {
+
+        if(select == 'day') {
+            uri = url+time;
+
+            pz_loadPage('calendar_events_day_search', uri);
+            return;
+        }
+
+        if(select == 'week') {
+            uri = url+day;
+
+            pz_loadPage('calendar_events_week_search', uri);
+            return;
+        }
+    }
+
+    $_data.addClass('selected');
 }
 
 // ----- form
 function pz_set_calendar_addform_date(formdate) {
-  $("#calendar_event_add_form input[name='from[date]']").val(formdate);
-  $("#calendar_event_add_form input[name='to[date]']").val(formdate);
+    $('.xform-datepicker').datepicker("setDate", formdate);
 }
 
 
