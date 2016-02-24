@@ -216,24 +216,62 @@ class pz_emails_controller_screen extends pz_emails_controller
             unset($return[$ignore_field]);
         }
 
-        $projects = [];
-        foreach (pz::getUser()->getEmailProjects() as $project) {
-            $return['project_id-'.$project->getId()] = '<li class="entry">
-			   <a href="javascript:void(0);" class="wrapper emails-project_id-'.$project->getId().'" onclick="if($(this).hasClass(\'bt-loading\')) return false; $(this).addClass(\'bt-loading\'); pz_exec_javascript(\'' . pz::url('screen', 'emails', $this->function, array_merge($p['linkvars'], ['mode' => 'move_current_emails_to_project_id', 'email_project_id' => $project->getId()])) . '\');">
-          <div class="links">
-  					<span class="title">'.pz_i18n::msg('move').'</span>
-	   		  </div>
-					<span class="name">'.htmlspecialchars($project->getName()).'</span>
+        $customers = [];
+        $elements= [];
+        $filter = [['field' => 'archived', 'value' => 0]];
+
+        $projects = pz::getUser()->getEmailProjects($filter);
+        $projectSize = count($projects);
+        foreach ($projects as $project) {
+
+            $elements['project_id-'.$project->getId()] = '<li class="entry">
+			    <a href="javascript:void(0);" class="wrapper emails-project_id-'.$project->getId().'" onclick="if($(this).hasClass(\'bt-loading\')) return false; $(this).addClass(\'bt-loading\'); pz_exec_javascript(\'' . pz::url('screen', 'emails', $this->function, array_merge($p['linkvars'], ['mode' => 'move_current_emails_to_project_id', 'email_project_id' => $project->getId()])) . '\');">
+                    <div class="links">
+  					    <span class="title">'.pz_i18n::msg('move').'</span>
+	   		        </div>
+					<span class="name" style="min-width:100%">'.htmlspecialchars($project->getName()).'</span>
 				</a>
-				</li>';
+			</li>';
+
+            if ($projectSize > 10) {
+                $customer_id = (int) $project->getCustomerId();
+                if (!isset($customers[$customer_id])) {
+                    $customers[$customer_id] = [];
+                }
+                $customers[$customer_id][] = $elements['project_id-'.$project->getId()];
+            } else {
+                $return['project_id-'.$project->getId()] = $elements['project_id-'.$project->getId()];
+            }
+
+        }
+
+        if ($projectSize > 10) {
+            foreach ($customers as $key => $value) {
+                if ($key > 0) {
+                    $customerName = pz_customer::get($customers[$key])->getName();
+                } else {
+                    $customerName = pz_i18n::msg('customer_notexists');
+                }
+
+                $return['coustomer_id-'.$key] = '<li class="entry customer" onclick="pz_toggleClass($(this),\'customer-active\');">
+                    <div class="" >
+                        <a href="javascript:void(0);" class="noclick">
+                            <span class="name" style="border:none;">'.$customerName.'</span>
+                        </a>
+                    </div>
+                    <ul class="entries">
+                      '.implode('', $elements).'
+                    </ul>
+                </li>';
+            }
         }
 
         return '
       <span class="headline-list"><ul class="sl2 sl2b selected"><li class="selected option"><span class="selected option" onclick="pz_screen_select(this);">Optionen</span>
         <div class="flyout">
           <div class="content">
-            <ul class="entries">
-              '.implode('', $return).'
+            <ul class="entries projects-customer-flyout customer-1"><li class="entry customer customer-active" onclick="pz_toggleClass($(this),\'customer-active\');">
+                  '.implode('', $return).'
             </ul>
           </div>
         </div>

@@ -782,6 +782,11 @@ class pz_user
         return [];
     }
 
+    /**
+     * @param array $filter
+     * @param bool $refresh
+     * @return pz_project[]
+     */
     public function getEmailProjects($filter = [], $refresh = true)
     {
         $serialized_filter = serialize($filter);
