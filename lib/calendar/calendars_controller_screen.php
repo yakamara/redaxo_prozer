@@ -613,7 +613,7 @@ class pz_calendars_controller_screen extends pz_calendars_controller
         $s1_content = '';
         $s2_content = '';
 
-        $request_day = rex_request('day', 'string'); // 20112019 Ymd
+        $request_day = $this->getSelectDay(); // 20112019 Ymd
         if (!$day = DateTime::createFromFormat('Ymd', $request_day)) {
             $day = new DateTime();
         }
@@ -695,7 +695,7 @@ class pz_calendars_controller_screen extends pz_calendars_controller
         $s1_content = '';
         $s2_content = '';
 
-        $request_day = rex_request('day', 'string'); // 20112019 Ymd
+        $request_day = $this->getSelectDay(); // 20112019 Ymd
         if (!$day = DateTime::createFromFormat('Ymd', $request_day)) {
             $day = new DateTime();
         }
