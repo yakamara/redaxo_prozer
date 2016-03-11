@@ -9,8 +9,8 @@ class pz_calendars_controller extends pz_controller
         }
         if (pz::getUser() && pz::getUser()->getUserPerm()->hasCalendarReadPerm()) {
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 }

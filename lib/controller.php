@@ -26,10 +26,22 @@ class pz_controller
     public function checkPerm()
     {
         if (pz::getUser() && pz::getUser()->isMe()) {
+
             return true;
-        } else {
-            return false;
         }
+
+        return false;
+    }
+
+    protected function getUserPerm($perm)
+    {
+
+        if (pz::getUser() && pz::getUser()->getUserPerm()) {
+
+            return !empty(pz::getUser()->getUserPerm()->{$perm}());
+        }
+
+        return false;
     }
 
     public function controller($func)

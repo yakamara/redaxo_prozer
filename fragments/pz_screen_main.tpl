@@ -103,7 +103,7 @@ if(isset($this->javascript) && $this->javascript != "") {
 echo $this->javascript;
 }
 if(pz::getUser()) {
-echo 'pz_add_tracker("global", "/screen/tools/tracker/", 30000, 1);';
+echo 'pz_add_tracker("global", "/screen/tracker/tracker/", 30000, 1);';
 }
 echo '
 

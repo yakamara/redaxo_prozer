@@ -329,15 +329,16 @@ class pz_user
 
     public function isMe()
     {
-        if (isset($this->user_perm)) {
-            return false;
+        if (pz::getUser() === pz::getLoginUser()) {
+            return true;
         }
-        return true;
+
+        return false;
     }
 
     public function getUserPerm()
     {
-        return $this->user_perm;
+        return isset($this->user_perm) ? $this->user_perm : null;
     }
 
     public function getUserPerms()
