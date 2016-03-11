@@ -336,6 +336,9 @@ class pz_user
         return false;
     }
 
+    /**
+     * @return pz_user_perm|null
+     */
     public function getUserPerm()
     {
         return isset($this->user_perm) ? $this->user_perm : null;
