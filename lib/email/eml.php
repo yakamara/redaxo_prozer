@@ -611,6 +611,13 @@ class pz_eml
             $v = $elements[$k]->text;
             $c = $elements[$k]->charset; // is set to default if no charset detected
 
+            // detect new charsets
+            $charsets = mb_detect_order();
+            if ($c != "default" && !in_array($c, $charsets)) {
+              $charsets[] = $c;
+              mb_detect_order($charsets);
+            }
+
             if (strtolower($c) != 'utf-8' && strtolower($c) != 'default') {
                 // it happens sometimes but is wrong "iso8859-1"
                 // correct is "iso-8859-1"
