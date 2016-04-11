@@ -61,9 +61,17 @@ class pz_calendars_controller_screen extends pz_calendars_controller
 
     // ------------------------------------------------------------------- Views
 
-    private function getEventPage($p)
+    private function getEventPage($p, $mode2 = '')
     {
-        $mode = rex_request('mode', 'string');
+        $mode = rex_request('mode', 'string', $mode2);
+
+        $write = ['add_calendar_event'];
+
+        if (!$this->hasWritePerm() && in_array($mode, $write)) {
+            $mode = '';
+        }
+
+
         switch ($mode) {
 
             // edit / add
@@ -303,7 +311,8 @@ class pz_calendars_controller_screen extends pz_calendars_controller
 
                 $attandee_events = pz::getUser()->getAttandeeEvents($day, null, [pz_calendar_attendee::STATUS_ACCEPTED, pz_calendar_attendee::STATUS_TENTATIVE, pz_calendar_attendee::STATUS_DECLINED]);
                 $s1_content .= pz_calendar_event_screen::getAttendeeListView($p, $attandee_events);
-                $s1_content .= pz_calendar_event_screen::getAddForm($p);
+                $s1_content .= $this->getEventPage($p, 'add_calendar_event'); //pz_calendar_event_screen::getAddForm($p);
+
                 break;
 
         }
@@ -314,6 +323,7 @@ class pz_calendars_controller_screen extends pz_calendars_controller
         $f->setVar('function', $this->getNavigation($p), false);
         $f->setVar('section_1', $s1_content, false);
         $f->setVar('section_2', $s2_content, false);
+
         return $f->parse('pz_screen_main.tpl');
     }
 
@@ -354,8 +364,8 @@ class pz_calendars_controller_screen extends pz_calendars_controller
                 $month_lastday = clone $day;
                 $month_lastday->modify('+1 month');
                 $month_lastday->modify('last day of this month');
-                // $events = pz::getUser()->getAllEvents($project_ids, $month_firstday, $month_lastday);
-                $events = pz_calendar_event::getAll($project_ids, $month_firstday, $month_lastday);
+                $events = pz::getUser()->getAllEvents($project_ids, $month_firstday, $month_lastday);
+                //$events = pz_calendar_event::getAll($project_ids, $month_firstday, $month_lastday);
 
                 $return = pz_calendar_event_screen::getSearch(
                     $project_ids,
@@ -432,7 +442,7 @@ class pz_calendars_controller_screen extends pz_calendars_controller
 
                 $attandee_events = pz::getUser()->getAttandeeEvents($day, null, [pz_calendar_attendee::STATUS_ACCEPTED, pz_calendar_attendee::STATUS_TENTATIVE, pz_calendar_attendee::STATUS_DECLINED]);
 
-                $s1_content .= pz_calendar_event_screen::getAddForm($p);
+                $s1_content .= $this->getEventPage($p, 'add_calendar_event'); //pz_calendar_event_screen::getAddForm($p);
                 break;
 
         }
@@ -586,7 +596,7 @@ class pz_calendars_controller_screen extends pz_calendars_controller
 
                 $attandee_events = pz::getUser()->getAttandeeEvents();
                 $s1_content .= pz_calendar_event_screen::getAttendeeListView($p, $attandee_events);
-                $s1_content .= pz_calendar_event_screen::getAddForm($p);
+                $s1_content .= $this->getEventPage($p, 'add_calendar_event'); //pz_calendar_event_screen::getAddForm($p);
                 break;
 
         }

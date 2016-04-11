@@ -561,7 +561,7 @@ class pz_user
             return false;
         }
 
-        if ($event->getUserId() == $this->getId()) {
+        if ((pz::getUser() && (pz::getUser()->isMe() || pz::getUser()->getUserPerm()->hasCalendarWritePerm())) && $event->getUserId() == $this->getId()) {
             foreach ($event->getAttendees() as $attendee) {
                 if (pz_calendar_attendee::ROLE_CHAIR == $attendee->getRole() && $attendee->getUserId() != $this->getId()) {
                     return false;
@@ -583,7 +583,7 @@ class pz_user
             return false;
         }
 
-        if ($event->getUserId() == $this->getId()) {
+        if ((pz::getUser() && (pz::getUser()->isMe() || pz::getUser()->getUserPerm()->hasCalendarWritePerm())) && $event->getUserId() == $this->getId()) {
             return true;
         }
 
@@ -979,6 +979,7 @@ class pz_user
             return false;
         }
         $email = current($emails);
+
         return $email;
     }
 }
