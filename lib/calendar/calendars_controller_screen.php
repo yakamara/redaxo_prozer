@@ -157,9 +157,10 @@ class pz_calendars_controller_screen extends pz_calendars_controller
             case('get_flyout_calendar_event'):
                 $return = '';
                 $calendar_event_id = rex_request('calendar_event_id', 'string');
+                $disable_functions = rex_request('disable_funcktions', 'bool', false);
                 if (($event = pz_calendar_event::get($calendar_event_id))) {
                     $cs = new pz_calendar_event_screen($event);
-                    $return .= '<div id="calendar_event_view" class="design1col">'.$cs->getFlyoutEventView($p).'</div>';
+                    $return .= '<div id="calendar_event_view" class="design1col">'.$cs->getFlyoutEventView($p, $disable_functions).'</div>';
                     $return .= '<script>$("#calendar_event_view .flyout").css("display","block");</script>';
                 } else {
                     $return .= '<div id="calendar_event_view" class="design1col"><p class="xform-warning">'.pz_i18n::msg('calendar_event_not_exists').'</p></div>';

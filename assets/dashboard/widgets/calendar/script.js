@@ -76,7 +76,7 @@ angular.module('Dashboard')
 			var day = moment(calendar.from).format('YYYYMMDD');
 
 
-			pz_tooltipbox(selector, "/screen/calendars/event/?mode=get_flyout_calendar_event&project_ids=&day="+day+"&calendar_event_id="+ calendar.id);
+			pz_tooltipbox(selector, "/screen/calendars/event/?mode=get_flyout_calendar_event&project_ids=&disable_funcktions=true&day="+day+"&calendar_event_id="+ calendar.id);
 		};
 
 		$scope.$watch('widget.day', function(newDay) {
