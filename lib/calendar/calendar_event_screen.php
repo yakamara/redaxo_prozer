@@ -1791,7 +1791,7 @@ class pz_calendar_event_screen {
         $month->modify("first day of this month");
         $month->modify("-".($month->format("N"))." days");
 
-        for($i = 0; $i < 5; $i++)
+        for($i = 0; $i < 6; $i++)
         {
             $return .= '<tr>';
             for($j=0;$j<7;$j++)
