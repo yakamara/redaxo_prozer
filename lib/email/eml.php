@@ -521,7 +521,7 @@ class pz_eml
                 $return['content-disposition'] = trim($subject[1]);
             }
             
-            if (preg_match('#[filename|filename\*][ ]*=[ ]*["\' ]?([\w\.\-\ [\]]*)["\';,]?#uim', $subject_all, $subject)) {
+            if (preg_match('#[filename|filename\*][ ]*=[ ]*["\' ]?([\w\.\-\ \:\+[\]]*)["\';,]?#uim', $subject_all, $subject)) {
             // if (preg_match("#[filename|filename\*]=([^;]*)#im", $subject_all, $subject)) {
                 $return['content-disposition-filename'] = trim($subject[1]);
             }
@@ -569,7 +569,7 @@ class pz_eml
                 $return['content-type-boundary'] = str_replace(['"', "'"], '', trim($boundary[1]));
             }
 
-            if (preg_match('#name[ ]*=[ ]*["\' ]?([\w\.\-\ [\]]*)["\';,]?#uim', $content_type_all, $regs)) {
+            if (preg_match('#name[ ]*=[ ]*["\' ]?([\w\.\-\ \:\+[\]]*)["\';,]?#uim', $content_type_all, $regs)) {
                $return['content-type-name'] = (trim($regs[1])); // strtolower
             }
 
