@@ -2802,6 +2802,7 @@ class pz_calendar_event_screen {
 
         $xform->setValueField("pz_datetime_screen",array("from",pz_i18n::msg("calendar_event_from")));
         $xform->setValueField("pz_datetime_screen",array("to",pz_i18n::msg("calendar_event_to")));
+
         $xform->setValueField("pz_calendar_event_attendees",array("attendees",pz_i18n::msg("calendar_event_attendees")));
         $xform->setValueField("pz_attachment_screen",array("clip_ids",pz_i18n::msg("calendar_event_attachments")));
         $xform->setValueField("text",array("location",pz_i18n::msg("calendar_event_location")));

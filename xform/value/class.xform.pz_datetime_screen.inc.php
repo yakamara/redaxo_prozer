@@ -84,7 +84,7 @@ class rex_xform_pz_datetime_screen extends rex_xform_abstract
 
         // ----------------------------------------------------------------
 
-        $calendar = '<input id="'.$this->getHtmlId('date').'" class="xform-date" type="text" name="'.$this->getFieldName('date').'" value="'.$date.'"  />
+        $calendar = '<input id="'.$this->getHtmlId('date').'" class="xform-date xform-datepicker" data-name="'. $this->getName() .'" type="text" name="'.$this->getFieldName('date').'" value="'.$date.'"  />
 
                 <ul class="sl3 fsl3">
                   <li class="first last selected"><a class="selected tooltip calendar bt2" href="javascript:void(0);" onclick="$(\'#'.$this->getHtmlId('date').'\').focus();"><span class="icon"></span><span class="tooltip"><span class="inner">'.pz_i18n::msg('calendar').'</span></span></a>
