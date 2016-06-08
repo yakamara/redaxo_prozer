@@ -304,6 +304,7 @@ class pz_clip extends pz_model
         $clip = $clip->create($filename, $content_length, $content_type, $hidden);
         rex_dir::create(dirname($clip->getPath()));
         file_put_contents($clip->getPath(), $filesource);
+
         return $clip;
     }
 

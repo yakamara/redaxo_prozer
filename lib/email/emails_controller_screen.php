@@ -1096,6 +1096,14 @@ class pz_emails_controller_screen extends pz_emails_controller
                 } else {
                     $p['info'] = '<p class="xform-warning">' . pz_i18n::msg('email_account_not_exists') . '</p>';
                 }
+                $email_id = rex_request('email_id', 'int', 0);
+                // TODO - permission prüfen
+                if ($email = pz_email::get($email_id)) {
+                    $email->delete();
+                    $p['info'] = '<p class="xform-info">' . pz_i18n::msg('email_account_delete') . '</p>';
+                } else {
+                    $p['info'] = '<p class="xform-warning">' . pz_i18n::msg('email_account_not_exists') . '</p>';
+                }
 
                 $return = '<script language="Javascript">';
                 $return .= 'pz_hide(".email-' . $email->getId() . '");';

@@ -504,7 +504,7 @@ function pz_setEmailAutocomplete(layer)
 		// don t navigate away from the field on tab when selecting an item
 		.on( "keydown", function( event ) {
 			if ( event.keyCode === $.ui.keyCode.TAB &&
-					$( this ).data( "autocomplete" ).menu.active ) {
+                $( this ).attr('autocomplete') == 'on') {
 				event.preventDefault();
 			}
 		})
