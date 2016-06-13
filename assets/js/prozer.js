@@ -280,7 +280,7 @@ function pz_load_main(layer_id) {
 function pz_exec_javascript(link) {
 	$.post(link, '', function(data) {
 		$('body').append(data);
-     });
+    });
 }
 
 function pz_loading_start(layer_id)
@@ -313,7 +313,7 @@ function pz_loadFormPage(layer_id,form_id,link)
 			$(layer_id).fadeIn("fast");
 		}
 		pz_loading_end(layer_id);
-  });
+    });
 }
 
 function pz_loadPage(layer_id, link, funccall_ok, funccall_ok_params)

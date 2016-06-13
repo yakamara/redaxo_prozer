@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: Jochen Mandl
- * Date: 31.08.15
- * Time: 21:23
- */
-
 class TimeframeFactroy implements TimeframeFactroyInterface
 {
     /**

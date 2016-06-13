@@ -26,8 +26,9 @@ if (!$REX['REDAXO']) {
         rex_autoload::register();
         rex_autoload::addDirectory(rex_path::addon('prozer', 'lib'));
         rex_autoload::addDirectory(rex_path::addon('prozer', 'vendor'));
-
         pz_fragment::addDirectory(rex_path::addon('prozer', 'fragments'));
+
+        rex_autoload::addDirectory(rex_path::addon('prozer', 'component'));
 
         pz_i18n::addDirectory(rex_path::addon('prozer', 'lang'));
 

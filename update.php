@@ -22,6 +22,18 @@ ADD `smtp_password` VARCHAR( 255 ) NOT NULL AFTER `smtp_login`;');
 $sql->setQuery('ALTER TABLE `pz_calendar_attendee` ADD `role` VARCHAR( 255 ) NOT NULL DEFAULT "REQ-PARTICIPANT" AFTER `name`;');
 $sql->setQuery('ALTER TABLE `pz_wiki` ADD `position` VARCHAR( 255 ) NOT NULL AFTER `text`;');
 
+// Change to 3.
+
+$sql->setQuery('CREATE TABLE IF NOT EXISTS `pz_dashboard` (
+  `id` int( 11 ) NOT NULL AUTO_INCREMENT ,
+  `user_id` int( 11 ) NOT NULL ,
+  `data` text NOT NULL ,
+  `stamp` datetime NOT NULL ,
+  PRIMARY KEY ( `id` )
+  ) ENGINE = MYISAM DEFAULT CHARSET = utf8;');
+
+$sql->setQuery('ALTER TABLE `pz_dashboard` ADD INDEX `user_id` (`user_id`);');
+
 // -------------------------------------------------  allways check
 $dav_path = rex_path::addonData('prozer', 'dav');
 rex_dir::create($dav_path);

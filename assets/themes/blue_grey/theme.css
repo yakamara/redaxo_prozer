@@ -1,5 +1,4 @@
 
-
 /*   ***********************************************************************
 *******************************************************************************/
 body {
@@ -236,6 +235,12 @@ a,
 }
 #navi-main li.active a.login:hover {
   background-position: -50px 0px;
+}
+#navi-main li.lev1 a.lev1.dashboard {
+  background-position: -10px -5px;
+}
+#navi-main li.lev1 a.lev1.dashboard:hover {
+  background-position: -60px -5px;
 }
 #navi-main li.lev1 a.lev1.emails {
   background-position: -10px -5px;
@@ -3011,6 +3016,57 @@ body#login #footer ul li {
 .chosen-rtl.chosen-container-single.chosen-with-drop .chosen-single div b {
   background-position: -12px 2px;
 }
+
+
+/* ############################################################# */
+
+.btn .caret{
+  margin-left: 40px;
+  background: url(dropdown.png) 100% 6px no-repeat;
+  border: none;
+  width: 21px;
+  height: 24px;
+}
+
+.page-header{
+  color: #292c2e;
+  font-family:  "Tahoma", "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
+  font-size: 12px;
+  line-height: 18px;
+  border: none;
+}
+
+.dropdown-menu {
+  border: 1px solid #aaa;
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  color: #626d72;
+}
+button.btn.btn-entity-select.selected {
+  font-size: 12px;
+  background: #cbcbcb;
+
+  background: -moz-linear-gradient(top, #e7e7e7, #d0d0d0);
+  background: -webkit-gradient(linear, left top, left bottom, from(#e7e7e7), to(#d0d0d0));
+  background: -webkit-linear-gradient(top, #e7e7e7, #d0d0d0);
+  background: -o-linear-gradient(top, #e7e7e7, #d0d0d0);
+  background: -ms-linear-gradient(top, #e7e7e7, #d0d0d0);
+  background: linear-gradient(top, #e7e7e7, #d0d0d0);
+  color: #626d72;
+  border: 1px solid #aaa;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  /* border-radius: 3px; */
+  line-height: 23px;
+  display: block;
+  padding: 0 0 0 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-bottom: 15px;
+}
+
+/* ############################################################# */
 
 /* @end */
 /* @group Retina compatibility */
