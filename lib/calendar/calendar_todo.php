@@ -132,7 +132,7 @@ class pz_calendar_todo extends pz_calendar_item
 
     public function save()
     {
-        $sql = pz_sql::factory()
+        $sql = rex_sql::factory()
             ->setTable(self::TABLE);
         $ignore = ['alarms'];
         foreach (array_keys($this->changed) as $key) {
@@ -175,7 +175,7 @@ class pz_calendar_todo extends pz_calendar_item
 
     public function delete()
     {
-        pz_sql::factory()->setQuery('
+        rex_sql::factory()->setQuery('
             DELETE t, al, r
             FROM ' . self::TABLE . ' t
             LEFT JOIN ' . pz_calendar_alarm::TABLE . ' al
@@ -199,7 +199,7 @@ class pz_calendar_todo extends pz_calendar_item
     {
         static $sql = null;
         if (!$sql) {
-            $sql = pz_sql::factory();
+            $sql = rex_sql::factory();
             $sql->prepareQuery('
                 SELECT *
                 FROM ' . self::TABLE . ' t
@@ -222,7 +222,7 @@ class pz_calendar_todo extends pz_calendar_item
         $params = $projects;
         $wInClause = implode(',', array_pad([], count($projects), '?'));
 
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $sql->setQuery('
             SELECT *
             FROM ' . self::TABLE . ' t
@@ -240,7 +240,7 @@ class pz_calendar_todo extends pz_calendar_item
     {
         static $sql = null;
         if (!$sql) {
-            $sql = pz_sql::factory();
+            $sql = rex_sql::factory();
             $sql->prepareQuery('
                 SELECT *
                 FROM ' . self::TABLE . ' t
@@ -259,11 +259,11 @@ class pz_calendar_todo extends pz_calendar_item
      *
      * @return self[]
      *
-     * @throws pz_sql_exception
+     * @throws rex_sql_exception
      */
     public static function getAllBase($project)
     {
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $sql->setQuery('
             SELECT *
             FROM ' . self::TABLE . ' t

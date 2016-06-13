@@ -23,7 +23,7 @@ class pz_email_account extends pz_model
             $where .= ' and user_id = '.$user_id;
         }
 
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         // $sql->debugsql = 1;
         $sql->setQuery('select * from pz_email_account '.$where.' LIMIT 2');
 
@@ -184,7 +184,7 @@ class pz_email_account extends pz_model
             $sql_where = ' where '.implode(' AND ', $where);
         }
 
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         // $sql->debugsql = 1;
         $es = $sql->getArray('select * from pz_email_account '.$sql_where, $params);
 
@@ -208,7 +208,7 @@ class pz_email_account extends pz_model
 
     public function delete()
     {
-        $d = pz_sql::factory();
+        $d = rex_sql::factory();
         $d->setTable('pz_email_account');
         $d->setWhere(['id' => $this->getid()]);
         $d->delete();
@@ -227,7 +227,7 @@ class pz_email_account extends pz_model
             return pz_i18n::msg('email_account_last_login_working');
         }
 
-        $u = pz_sql::factory();
+        $u = rex_sql::factory();
         $u->setTable('pz_email_account');
         $u->setWhere(['id' => $this->getId()]);
         $u->setValue('last_login', date('Y-m-d H:i:s'));
@@ -364,7 +364,7 @@ class pz_email_account extends pz_model
 
             $login_failed = -1;
 
-            $u = pz_sql::factory();
+            $u = rex_sql::factory();
             $u->setTable('pz_email_account');
             $u->setWhere(['id' => $this->getId()]);
             $u->setValue('last_login_finished', date('Y-m-d H:i:s'));
@@ -373,7 +373,7 @@ class pz_email_account extends pz_model
         } else {
             $login_failed = 1;
 
-            $u = pz_sql::factory();
+            $u = rex_sql::factory();
             $u->setTable('pz_email_account');
             $u->setWhere(['id' => $this->getId()]);
             $u->setValue('login_failed', $login_failed);

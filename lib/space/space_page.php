@@ -142,7 +142,7 @@ class pz_space_page extends pz_model
 
     public static function get($id)
     {
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $sql->setQuery(self::getBaseQuery() . 'id = ? LIMIT 2', [$id]);
         if ($sql->getRows() != 1) {
             return null;
@@ -153,7 +153,7 @@ class pz_space_page extends pz_model
 
     public static function getStart($project_id)
     {
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $sql->setQuery(self::getBaseQuery() . 'project_id = ? ORDER BY created LIMIT 1', [$project_id]);
         if ($sql->getRows() != 1) {
             return null;
@@ -167,7 +167,7 @@ class pz_space_page extends pz_model
         $pages = [];
         if ($start = self::getStart($project_id)) {
             $pages[] = $start;
-            $sql = pz_sql::factory();
+            $sql = rex_sql::factory();
             $sql->setQuery(self::getBaseQuery() . 'project_id = ? AND id != ? ORDER BY title', [$project_id, $start->getId()]);
             foreach ($sql->getArray() as $row) {
                 $pages[] = new self($row);
@@ -195,7 +195,7 @@ class pz_space_page extends pz_model
 
     public function saveToHistory($mode = 'update', $message = '')
     {
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $sql->setTable('pz_history')
             ->setValue('control', 'space')
             ->setValue('data_id', $this->getId())
@@ -219,7 +219,7 @@ class pz_space_page extends pz_model
 
     private function updatePosition()
     {
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $sql->setTable('pz_space')
             ->setWhere(['id' => $this->getId()])
             ->setValue('position', implode(",",$this->getPosition()))
@@ -242,7 +242,7 @@ class pz_space_page extends pz_model
         $this->vars['updated'] = new DateTime();
         $this->saveToHistory('delete');
 
-        pz_sql::factory()->setQuery('
+        rex_sql::factory()->setQuery('
             DELETE
             FROM pz_space
             WHERE id = ?

@@ -12,7 +12,7 @@ class pz_customers
             return self::$customers;
         }
 
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         // $sql->debugsql = 1;
         $sql->setQuery('select * from pz_customer where archived=0 and archived IS NOT NULL order by name');
 
@@ -30,7 +30,7 @@ class pz_customers
             return self::$activeCustomers;
         }
 
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $sql->setQuery('select * from pz_customer where id in (select customer_id from pz_project where archived=0 and archived IS NOT NULL) and archived=0 and archived IS NOT NULL order by name');
 
         foreach ($sql->getArray() as $l) {

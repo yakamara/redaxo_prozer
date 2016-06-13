@@ -21,21 +21,21 @@ class pz_login_controller_screen extends pz_login_controller
 
     public function getLoginForm($p = [])
     {
-        $xform = new rex_xform();
-        $xform->setObjectparams('real_field_names', 1);
-        $xform->setObjectparams('form_id', 'login_form');
-        $xform->setValueField('objparams', ['form_action', 'javascript:pz_logIn()']);
+        $yform = new rex_yform();
+        $yform->setObjectparams('real_field_names', 1);
+        $yform->setObjectparams('form_id', 'login_form');
+        $yform->setValueField('objparams', ['form_action', 'javascript:pz_logIn()']);
 
-        $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl']);
-        $xform->setValueField('text', ['login', pz_i18n::msg('login')]);
-        $xform->setValueField('password', ['password', pz_i18n::msg('password')]);
-        $xform->setValueField('checkbox', ['stay', pz_i18n::msg('stay')]);
+        $yform->setValueField('objparams', ['fragment', 'pz_screen_yform.tpl']);
+        $yform->setValueField('text', ['login', pz_i18n::msg('login')]);
+        $yform->setValueField('password', ['password', pz_i18n::msg('password')]);
+        $yform->setValueField('checkbox', ['stay', pz_i18n::msg('stay')]);
 
-        $xform->setValidateField('pz_auth', ['login', 'password', 'stay', pz_i18n::msg('pz_login_please'), pz_i18n::msg('pz_login_enterloginpsw'), pz_i18n::msg('pz_login_failed')]);
+        $yform->setValidateField('pz_auth', ['login', 'password', 'stay', pz_i18n::msg('pz_login_please'), pz_i18n::msg('pz_login_enterloginpsw'), pz_i18n::msg('pz_login_failed')]);
 
-        $return = '<div id="pz_login" >'.$xform->getForm().'</div>'; // style="display:none;"
+        $return = '<div id="pz_login" >'.$yform->getForm().'</div>'; // style="display:none;"
 
-        if ($xform->getObjectparams('actions_executed')) {
+        if ($yform->getObjectparams('actions_executed')) {
             return 1;
         }
         $return = '<div id="loginbox" class="popbox">'.$return.'</div>';

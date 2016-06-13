@@ -244,7 +244,7 @@ class pz_login
 
     public function checkLogin()
     {
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $userId = $this->getSessionVar('UID');
         $cookiename = 'pz_user_'. sha1($this->systemId.pz::getProperty('instname'));
 
@@ -324,7 +324,7 @@ class pz_login
                 // wenn login daten eingegeben dann checken
                 // auf error seite verweisen und message schreiben
 
-                $this->user = pz_sql::factory($this->DB);
+                $this->user = rex_sql::factory($this->DB);
                 $this->user->debugsql = 1;
                 $this->user->setQuery($this->loginQuery, [':login' => $this->userLogin]);
                 if ($this->user->getRows() == 1 && self::passwordVerify($this->userPassword, $this->user->getValue($this->passwordColumn), true)) {
@@ -339,7 +339,7 @@ class pz_login
                 // wenn kein login und kein logout dann nach sessiontime checken
                 // message schreiben und falls falsch auf error verweisen
 
-                $this->user = pz_sql::factory($this->DB);
+                $this->user = rex_sql::factory($this->DB);
 
                 $this->user->setQuery($this->userQuery, [':id' => $this->getSessionVar('UID')]);
                 if ($this->user->getRows() == 1) {

@@ -246,7 +246,7 @@ class pz_config
         // take care, so we are able to write a cache file on shutdown
         // (check here, since exceptions in shutdown functions are not visible to the user)
         if (!is_writable(dirname(PZ_CONFIG_FILE_CACHE))) {
-            throw new pz_exception('rex-config: cache dir "' . dirname(PZ_CONFIG_FILE_CACHE) . '" is not writable!');
+            throw new rex_exception('rex-config: cache dir "' . dirname(PZ_CONFIG_FILE_CACHE) . '" is not writable!');
         }
 
         // save cache on shutdown
@@ -292,7 +292,7 @@ class pz_config
      */
     private static function loadFromDb()
     {
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $sql->setQuery('SELECT * FROM pz_config');
 
         self::$data = [];
@@ -307,7 +307,7 @@ class pz_config
     private static function generateCache()
     {
         if (rex_file::putCache(PZ_CONFIG_FILE_CACHE, self::$data) <= 0) {
-            throw new pz_exception('rex-config: unable to write cache file ' . PZ_CONFIG_FILE_CACHE);
+            throw new rex_exception('rex-config: unable to write cache file ' . PZ_CONFIG_FILE_CACHE);
         }
     }
 
@@ -339,7 +339,7 @@ class pz_config
      */
     private static function saveToDb()
     {
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         // $sql->setDebug();
 
         // remove all deleted data

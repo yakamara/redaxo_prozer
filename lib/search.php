@@ -180,7 +180,7 @@ class pz_search extends pz_controller
 
         pz::debug($query_counter_sql);
 
-        $q = pz_sql::factory();
+        $q = rex_sql::factory();
         // $q->setQuery($query_counter_sql);
         $q->setQuery($query_counter_sql, $ps_replaces);
 
@@ -196,7 +196,7 @@ class pz_search extends pz_controller
         }
 
         $query_sql = 'select * '.$relevance.' from '.$this->getSearchTable().$where.' order by '.$this->search_order_value.' LIMIT '.$pos.','.$this->search_list_amount;
-        $q = pz_sql::factory();
+        $q = rex_sql::factory();
         // $q->setQuery($query_sql);
         $q->setQuery($query_sql, $ps_replaces);
 

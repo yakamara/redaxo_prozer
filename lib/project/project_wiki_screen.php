@@ -119,23 +119,23 @@ class pz_project_wiki_screen
 
     public function getPageCreateView($p = [], $title = '')
     {
-        $xform = new rex_xform();
+        $yform = new rex_yform();
 
-        $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('project_wiki_page','wiki_page_create_form','" . $this->url(['mode' => 'create_form']) . "')");
-        $xform->setObjectparams('form_id', 'wiki_page_create_form');
+        $yform->setObjectparams('form_action', "javascript:pz_loadFormPage('project_wiki_page','wiki_page_create_form','" . $this->url(['mode' => 'create_form']) . "')");
+        $yform->setObjectparams('form_id', 'wiki_page_create_form');
 
-        $this->addBaseFields($xform, $title);
+        $this->addBaseFields($yform, $title);
 
-        $xform->setValueField('datestamp', ['created', 'mysql', '', '0', '1']);
-        $xform->setValueField('hidden', ['create_user_id', pz::getUser()->getId()]);
+        $yform->setValueField('datestamp', ['created', 'mysql', '', '0', '1']);
+        $yform->setValueField('hidden', ['create_user_id', pz::getUser()->getId()]);
 
-        $xform->setActionField('db', ['pz_wiki']);
+        $yform->setActionField('db', ['pz_wiki']);
 
-        $content = $xform->getForm();
+        $content = $yform->getForm();
 
-        if ($xform->getObjectparams('actions_executed')) {
-            $page = pz_wiki_page::get($xform->getObjectparams('main_id'));
-            $page->create($xform->getFieldValue('', '', 'message'));
+        if ($yform->getObjectparams('actions_executed')) {
+            $page = pz_wiki_page::get($yform->getObjectparams('main_id'));
+            $page->create($yform->getFieldValue('', '', 'message'));
             $content = pz_screen::getJSUpdatePage($this->url());
         }
 
@@ -161,39 +161,39 @@ class pz_project_wiki_screen
 
     public function getPageEditView($p = [])
     {
-        $xform = new rex_xform();
+        $yform = new rex_yform();
 
-        $xform->setObjectparams('main_table', 'pz_wiki');
-        $xform->setObjectparams('main_id', $this->page->getId());
-        $xform->setObjectparams('main_where', 'id=' . $this->page->getId());
+        $yform->setObjectparams('main_table', 'pz_wiki');
+        $yform->setObjectparams('main_id', $this->page->getId());
+        $yform->setObjectparams('main_where', 'id=' . $this->page->getId());
         if ($this->page instanceof pz_wiki_page_version) {
             $sql = rex_sql::factory();
             $sql->setQuery('SELECT * FROM pz_wiki WHERE id = ' . (int) $this->pageId);
             $sql->setValue('title', $this->page->getTitle());
             $sql->setValue('text', $this->page->getRawText());
-            $xform->setObjectparams('sql_object', $sql);
+            $yform->setObjectparams('sql_object', $sql);
         }
-        $xform->setObjectparams('getdata', true);
+        $yform->setObjectparams('getdata', true);
 
-        $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('project_wiki_page','wiki_page_edit_form','" . $this->url(['mode' => 'edit']) . "')");
-        $xform->setObjectparams('form_id', 'wiki_page_edit_form');
+        $yform->setObjectparams('form_action', "javascript:pz_loadFormPage('project_wiki_page','wiki_page_edit_form','" . $this->url(['mode' => 'edit']) . "')");
+        $yform->setObjectparams('form_id', 'wiki_page_edit_form');
 
-        $this->addBaseFields($xform);
+        $this->addBaseFields($yform);
 
-        $xform->setActionField('db', ['pz_wiki', 'id=' . $this->pageId]);
+        $yform->setActionField('db', ['pz_wiki', 'id=' . $this->pageId]);
 
-        $content = '<article class="wiki-editor">' . $xform->getForm() . '</article>';
+        $content = '<article class="wiki-editor">' . $yform->getForm() . '</article>';
 
-        if ($xform->getObjectparams('actions_executed')) {
+        if ($yform->getObjectparams('actions_executed')) {
             $page = pz_wiki_page::get($this->pageId);
-            $page->update($xform->getFieldValue('', '', 'message'));
+            $page->update($yform->getFieldValue('', '', 'message'));
             return pz_screen::getJSUpdatePage($this->url());
         }
 
         if (pz::getUser()->isAdmin() || $this->projectuser->isAdmin() || pz::getUser()->getId() == $this->page->getCreateUser()->getId()) {
             $url = $this->url(['mode' => 'delete']);
             $content .= '
-                <div class="xform">
+                <div class="yform">
                     <p>
                         <a class="bt17" href="' . pz::url() . '" onclick="if (confirm(\'' . pz_i18n::msg('wiki_page_delete_question', $this->page->getCurrent()->getTitle()) . '\')) pz_loadPage(\'project_wiki_page\', \'' . $url . '\')">- ' . pz_i18n::msg('wiki_page_delete') . '</a>
                     </p>
@@ -204,15 +204,15 @@ class pz_project_wiki_screen
         return $this->getPageWrapper('edit', $content);
     }
 
-    protected function addBaseFields(rex_xform $xform, $title = null)
+    protected function addBaseFields(rex_yform $yform, $title = null)
     {
-        $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl']);
-        $xform->setObjectparams('real_field_names', true);
+        $yform->setValueField('objparams', ['fragment', 'pz_screen_yform.tpl']);
+        $yform->setObjectparams('real_field_names', true);
 
-        $xform->setValueField('text', ['title', pz_i18n::msg('wiki_page_title'), 'default' => $title]);
-        $xform->setValidateField('empty', ['title', pz_i18n::msg('error_wiki_title_empty')]);
+        $yform->setValueField('text', ['title', pz_i18n::msg('wiki_page_title'), 'default' => $title]);
+        $yform->setValidateField('empty', ['title', pz_i18n::msg('error_wiki_title_empty')]);
 
-        $xform->setValueField('html', ['open', '
+        $yform->setValueField('html', ['open', '
             <nav class="tabnav tabnav-down wiki-editor-tabnav" id="wiki_page_text_navi">
                 <ul class="tabnav-tabs">
                     <li><a class="tabnav-tab active" href="#wiki_page_text_edit">' . pz_i18n::msg('wiki_page_text_edit') . '</a></li>
@@ -223,8 +223,8 @@ class pz_project_wiki_screen
             <div class="wiki-editor-write-content">
                 <div id="wiki_page_text_edit">
         ']);
-        $xform->setValueField('textarea', ['text', pz_i18n::msg('wiki_page_text')]);
-        $xform->setValueField('html', ['close', '
+        $yform->setValueField('textarea', ['text', pz_i18n::msg('wiki_page_text')]);
+        $yform->setValueField('html', ['close', '
                 </div>
                 <div class="wiki-preview-content markdown-body" id="wiki_page_text_preview"></div>
                 <div class="markdown-body" id="wiki_page_text_help" style="display: none">
@@ -347,15 +347,15 @@ class pz_project_wiki_screen
         ']);
 
         if (pz::getUser()->isAdmin() || $this->projectuser->isAdmin()) {
-            $xform->setValueField('checkbox', ['admin', pz_i18n::msg('wiki_page_admin') . '<i class="notice">' . pz_i18n::msg('wiki_page_admin_notice') . '</i>']);
+            $yform->setValueField('checkbox', ['admin', pz_i18n::msg('wiki_page_admin') . '<i class="notice">' . pz_i18n::msg('wiki_page_admin_notice') . '</i>']);
         }
 
-        $xform->setValueField('text', ['message', pz_i18n::msg('wiki_page_message'), 'no_db' => 'no_db']);
+        $yform->setValueField('text', ['message', pz_i18n::msg('wiki_page_message'), 'no_db' => 'no_db']);
 
-        $xform->setValueField('datestamp', ['updated', 'mysql', '', '0', '0']);
-        $xform->setValueField('hidden', ['update_user_id', pz::getUser()->getId()]);
+        $yform->setValueField('datestamp', ['updated', 'mysql', '', '0', '0']);
+        $yform->setValueField('hidden', ['update_user_id', pz::getUser()->getId()]);
 
-        $xform->setValueField('hidden', ['project_id', $this->project->getId()]);
+        $yform->setValueField('hidden', ['project_id', $this->project->getId()]);
     }
 
     public function getPageTextPreview()

@@ -8,7 +8,7 @@ class pz_user
     /**
      * SQL instance.
      *
-     * @var pz_sql
+     * @var rex_sql
      */
     protected $sql;
 
@@ -107,7 +107,7 @@ class pz_user
         self::$roleClass = $class;
     }
 
-    public function __construct(pz_sql $sql)
+    public function __construct(rex_sql $sql)
     {
         $this->sql = $sql;
         $this->setRoleClass('pz_user_role');
@@ -227,7 +227,7 @@ class pz_user
             return pz_user::$users[$id];
         }
 
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $sql->setQuery('SELECT * FROM pz_user WHERE id = ? LIMIT 2', [$id]);
         $user = null;
         if ($sql->getRows() == 1) {
@@ -257,7 +257,7 @@ class pz_user
     {
         $fields = ['id', 'name', 'status', 'login', 'login_tries', 'lasttrydate', 'last_login', 'session_id', 'cookiekey', 'admin', 'created', 'updated', 'address_id', 'email', 'account_id', 'config', 'perms', 'comment'];
 
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $sql->setTable('pz_history')
             ->setValue('control', 'user')
             ->setValue('func', $func)
@@ -301,7 +301,7 @@ class pz_user
     public function passwordHash($password)
     {
         $password = pz_login::passwordHash($password);
-        $u = pz_sql::factory();
+        $u = rex_sql::factory();
         // $u->debugsql = 1;
         $u->setTable('pz_user');
         $u->setWhere(['id' => $this->getId()]);
@@ -389,7 +389,7 @@ class pz_user
             }
         }
 
-        $u = pz_sql::factory();
+        $u = rex_sql::factory();
         // $u->debugsql = 1;
         $u->setTable('pz_user');
         $u->setWhere(['id' => $this->getId()]);
@@ -414,7 +414,7 @@ class pz_user
 
     public function saveConfig()
     {
-        $u = pz_sql::factory();
+        $u = rex_sql::factory();
         // $u->debugsql = 1;
         $u->setTable('pz_user');
         $u->setWhere(['id' => $this->getId()]);
@@ -474,7 +474,7 @@ class pz_user
 
         $filter_return = pz::getFilter($nfilter, $where, $params);
 
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         // $sql->debugsql = 1;
         $sql->setQuery('SELECT c.* FROM pz_customer c '.$filter_return['where_sql'].' ORDER BY c.name', $filter_return['params']);
 
@@ -654,7 +654,7 @@ class pz_user
             return false;
         }
 
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $sql->setTable('pz_user')
             ->setValue('account_id', $id)
             ->setRawValue('updated', 'NOW()')
@@ -878,7 +878,7 @@ class pz_user
         $params = $f['params'];
         $where_sql = $f['where_sql'];
 
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $sql->setQuery('SELECT p.* FROM pz_project p'. $join .' '. $where_sql .' ORDER BY '.$orderby, $params);
         $projects = [];
         foreach ($sql->getArray() as $row) {

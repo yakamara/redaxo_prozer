@@ -390,19 +390,19 @@ class pz_address_screen
           </div>
         </header>';
 
-        $xform = new rex_xform();
-        $xform->setObjectparams('real_field_names', true);
-        $xform->setObjectparams('form_name', 'pz_address_search_form');
-        $xform->setObjectparams('form_showformafterupdate', true);
+        $yform = new rex_yform();
+        $yform->setObjectparams('real_field_names', true);
+        $yform->setObjectparams('form_name', 'pz_address_search_form');
+        $yform->setObjectparams('form_showformafterupdate', true);
 
-        $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('addresses_list','addresses_search_form','".pz::url('screen', 'addresses', $p['function'], ['mode' => 'list'])."')");
-        $xform->setObjectparams('form_id', 'addresses_search_form');
-        $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl', 'runtime']);
-        $xform->setValueField('text', ['search_name', pz_i18n::msg('project_name')]);
-        $xform->setValueField('submit', ['submit', pz_i18n::msg('search'), '', 'search']);
-        $return .= $xform->getForm();
+        $yform->setObjectparams('form_action', "javascript:pz_loadFormPage('addresses_list','addresses_search_form','".pz::url('screen', 'addresses', $p['function'], ['mode' => 'list'])."')");
+        $yform->setObjectparams('form_id', 'addresses_search_form');
+        $yform->setValueField('objparams', ['fragment', 'pz_screen_yform.tpl', 'runtime']);
+        $yform->setValueField('text', ['search_name', pz_i18n::msg('project_name')]);
+        $yform->setValueField('submit', ['submit', pz_i18n::msg('search'), '', 'search']);
+        $return .= $yform->getForm();
 
-        $return = '<div id="addresses_search" class="design1col xform-search">'.$return.'</div>';
+        $return = '<div id="addresses_search" class="design1col yform-search">'.$return.'</div>';
         return $return;
     }
 
@@ -415,20 +415,20 @@ class pz_address_screen
 	          </div>
 	        </header>';
 
-        $xform = new rex_xform();
-        // $xform->setDebug(TRUE);
-        $xform->setObjectparams('real_field_names', true);
-        $xform->setObjectparams('form_name', 'pz_address_add_form');
-        $xform->setObjectparams('main_table', 'pz_address');
-        $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('address_add','address_add_form','".pz::url('screen', 'addresses', $p['function'], ['mode' => 'add_address'])."')");
-        $xform->setObjectparams('form_id', 'address_add_form');
-        $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl']);
+        $yform = new rex_yform();
+        // $yform->setDebug(TRUE);
+        $yform->setObjectparams('real_field_names', true);
+        $yform->setObjectparams('form_name', 'pz_address_add_form');
+        $yform->setObjectparams('main_table', 'pz_address');
+        $yform->setObjectparams('form_action', "javascript:pz_loadFormPage('address_add','address_add_form','".pz::url('screen', 'addresses', $p['function'], ['mode' => 'add_address'])."')");
+        $yform->setObjectparams('form_id', 'address_add_form');
+        $yform->setValueField('objparams', ['fragment', 'pz_screen_yform.tpl']);
 
-        $xform->setValueField('pz_address_image_screen', ['photo', pz_i18n::msg('photo'), pz_address::getDefaultImage()]);
-        $xform->setValueField('pz_recommend_text', ['prefix', pz_i18n::msg('address_prefix'), 'options' => pz_i18n::msg('address_suffix_labels')]);
-        $xform->setValueField('text', ['firstname', pz_i18n::msg('address_firstname')]);
-        $xform->setValueField('text', ['name', pz_i18n::msg('address_name')]);
-        $xform->setValueField('text', ['suffix', pz_i18n::msg('address_suffix')]);
+        $yform->setValueField('pz_address_image_screen', ['photo', pz_i18n::msg('photo'), pz_address::getDefaultImage()]);
+        $yform->setValueField('pz_recommend_text', ['prefix', pz_i18n::msg('address_prefix'), 'options' => pz_i18n::msg('address_suffix_labels')]);
+        $yform->setValueField('text', ['firstname', pz_i18n::msg('address_firstname')]);
+        $yform->setValueField('text', ['name', pz_i18n::msg('address_name')]);
+        $yform->setValueField('text', ['suffix', pz_i18n::msg('address_suffix')]);
 
         /*
             _ TODO
@@ -437,44 +437,44 @@ class pz_address_screen
             birthname
         */
 
-        $xform->setValueField('text', ['company', pz_i18n::msg('address_company')]);
-        $xform->setValueField('checkbox', ['is_company', pz_i18n::msg('address_is_company')]);
-        $xform->setValueField('text', ['title', pz_i18n::msg('address_title')]);
-        $xform->setValueField('text', ['department', pz_i18n::msg('address_department')]);
-        $xform->setValueField('date', ['birthday', pz_i18n::msg('address_birthday'), '', '', '', '', '', '', pz_i18n::msg('error_address_enter_birthday')]);
-        $xform->setValueField('pz_select_screen', ['responsible_user_id', pz_i18n::msg('responsible_user'), pz::getUsersAsString(), '', pz::getUser()->getId(), 0]);
+        $yform->setValueField('text', ['company', pz_i18n::msg('address_company')]);
+        $yform->setValueField('checkbox', ['is_company', pz_i18n::msg('address_is_company')]);
+        $yform->setValueField('text', ['title', pz_i18n::msg('address_title')]);
+        $yform->setValueField('text', ['department', pz_i18n::msg('address_department')]);
+        $yform->setValueField('date', ['birthday', pz_i18n::msg('address_birthday'), '', '', '', '', '', '', pz_i18n::msg('error_address_enter_birthday')]);
+        $yform->setValueField('select', ['responsible_user_id', pz_i18n::msg('responsible_user'), pz::getUsersAsString(), '', pz::getUser()->getId(), 0]);
 
-        $xform->setValueField('pz_address_fields', ['fields']);
-        $xform->setValueField('textarea', ['note', pz_i18n::msg('address_note')]);
+        $yform->setValueField('pz_address_fields', ['fields']);
+        $yform->setValueField('textarea', ['note', pz_i18n::msg('address_note')]);
 
-        $xform->setValueField('datestamp', ['created', 'mysql', '', '0', '1']);
-        $xform->setValueField('datestamp', ['updated', 'mysql', '', '0', '0']);
+        $yform->setValueField('datestamp', ['created', 'mysql', '', '0', '1']);
+        $yform->setValueField('datestamp', ['updated', 'mysql', '', '0', '0']);
 
-        $xform->setValueField('hidden', ['created_user_id', pz::getUser()->getId()]);
-        $xform->setValueField('hidden', ['updated_user_id', pz::getUser()->getId()]);
+        $yform->setValueField('hidden', ['created_user_id', pz::getUser()->getId()]);
+        $yform->setValueField('hidden', ['updated_user_id', pz::getUser()->getId()]);
 
-        $xform->setValidateField('empty', ['name', pz_i18n::msg('error_address_enter_name')]);
+        $yform->setValidateField('empty', ['name', pz_i18n::msg('error_address_enter_name')]);
 
-        $xform->setActionField('db', []);
+        $yform->setActionField('db', []);
 
-        $return = $xform->getForm();
+        $return = $yform->getForm();
 
-        if ($xform->getObjectparams('actions_executed')) {
-            $address_id = $xform->getObjectparams('main_id');
+        if ($yform->getObjectparams('actions_executed')) {
+            $address_id = $yform->getObjectparams('main_id');
             if ($address = pz_address::get($address_id)) {
                 $address->create();
-                // $return = $header.'<p class="xform-info">'.pz_i18n::msg("address_added").'</p>';
+                // $return = $header.'<p class="yform-info">'.pz_i18n::msg("address_added").'</p>';
                 $return .= pz_screen::getJSUpdateLayer('addresses_list', pz::url('screen', 'addresses', $p['function'], ['mode' => 'list']));
 
                 $r = new pz_address_screen($address);
                 $return .= $r->getEditForm($p);
             } else {
-                $return = $header.'<p class="xform-warning">'.pz_i18n::msg('error_address_added_failed').'</p>';
+                $return = $header.'<p class="yform-warning">'.pz_i18n::msg('error_address_added_failed').'</p>';
             }
         } else {
             $return = $header.$return;
         }
-        $return = '<div id="address_form"><div id="address_add" class="design1col xform-add">'.$return.'</div></div>';
+        $return = '<div id="address_form"><div id="address_add" class="design1col yform-add">'.$return.'</div></div>';
 
         return $return;
     }
@@ -490,9 +490,9 @@ class pz_address_screen
 
         $fullname = $this->address->getFullName();
 
-        $return = $header.'<p class="xform-info">'.str_replace(["'", "\n", "\r"], ['', '', ''], pz_i18n::msg('address_deleted', htmlspecialchars($fullname))).'</p>';
+        $return = $header.'<p class="yform-info">'.str_replace(["'", "\n", "\r"], ['', '', ''], pz_i18n::msg('address_deleted', htmlspecialchars($fullname))).'</p>';
         $return .= pz_screen::getJSLoadFormPage('addresses_list', 'addresses_search_form', pz::url('screen', 'addresses', $p['function'], ['mode' => 'list']));
-        $return = '<div id="address_form"><div id="address_delete" class="design1col xform-delete">'.$return.'</div></div>';
+        $return = '<div id="address_form"><div id="address_delete" class="design1col yform-delete">'.$return.'</div></div>';
 
         return $return;
     }
@@ -506,39 +506,39 @@ class pz_address_screen
 	          </div>
 	        </header>';
 
-        $xform = new rex_xform();
-        // $xform->setDebug(TRUE);
-        $xform->setObjectparams('real_field_names', true);
-        $xform->setObjectparams('main_table', 'pz_address');
-        $xform->setObjectparams('main_id', $this->address->getId());
-        $xform->setObjectparams('main_where', 'id='.$this->address->getId());
-        $xform->setObjectparams('getdata', true);
-        $xform->setHiddenField('address_id', $this->address->getId());
-        $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('address_edit','address_edit_form','".pz::url('screen', 'addresses', $p['function'], ['mode' => 'edit_address'])."')");
-        $xform->setObjectparams('form_id', 'address_edit_form');
-        $xform->setObjectparams('form_showformafterupdate', 1);
+        $yform = new rex_yform();
+        // $yform->setDebug(TRUE);
+        $yform->setObjectparams('real_field_names', true);
+        $yform->setObjectparams('main_table', 'pz_address');
+        $yform->setObjectparams('main_id', $this->address->getId());
+        $yform->setObjectparams('main_where', 'id='.$this->address->getId());
+        $yform->setObjectparams('getdata', true);
+        $yform->setHiddenField('address_id', $this->address->getId());
+        $yform->setObjectparams('form_action', "javascript:pz_loadFormPage('address_edit','address_edit_form','".pz::url('screen', 'addresses', $p['function'], ['mode' => 'edit_address'])."')");
+        $yform->setObjectparams('form_id', 'address_edit_form');
+        $yform->setObjectparams('form_showformafterupdate', 1);
 
-        $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl']);
+        $yform->setValueField('objparams', ['fragment', 'pz_screen_yform.tpl']);
 
-        $xform->setValueField('pz_address_image_screen', ['photo', pz_i18n::msg('photo'), pz_address::getDefaultImage()]);
+        $yform->setValueField('pz_address_image_screen', ['photo', pz_i18n::msg('photo'), pz_address::getDefaultImage()]);
 
-        $xform->setValueField('pz_recommend_text', ['prefix', pz_i18n::msg('address_prefix'), 'options' => pz_i18n::msg('address_suffix_labels')]);
-        $xform->setValueField('text', ['firstname', pz_i18n::msg('address_firstname')]);
-        $xform->setValueField('text', ['name', pz_i18n::msg('address_name')]);
-        $xform->setValueField('text', ['suffix', pz_i18n::msg('address_suffix')]);
-        $xform->setValueField('text', ['company', pz_i18n::msg('address_company')]);
+        $yform->setValueField('pz_recommend_text', ['prefix', pz_i18n::msg('address_prefix'), 'options' => pz_i18n::msg('address_suffix_labels')]);
+        $yform->setValueField('text', ['firstname', pz_i18n::msg('address_firstname')]);
+        $yform->setValueField('text', ['name', pz_i18n::msg('address_name')]);
+        $yform->setValueField('text', ['suffix', pz_i18n::msg('address_suffix')]);
+        $yform->setValueField('text', ['company', pz_i18n::msg('address_company')]);
 
-        $xform->setValueField('checkbox', ['is_company', pz_i18n::msg('address_is_company')]);
-        $xform->setValueField('text', ['title', pz_i18n::msg('address_title')]);
-        $xform->setValueField('text', ['department', pz_i18n::msg('address_department')]);
-        $xform->setValueField('date', ['birthday', pz_i18n::msg('address_birthday'), '', '', '', '', '', '', pz_i18n::msg('error_address_enter_birthday')]);
-        $xform->setValueField('pz_select_screen', ['responsible_user_id', pz_i18n::msg('responsible_user'), pz::getUsersAsString(), '', pz::getUser()->getId(), 0]);
-        $xform->setValueField('pz_address_fields', ['fields']);
-        $xform->setValueField('textarea', ['note', pz_i18n::msg('address_note')]);
+        $yform->setValueField('checkbox', ['is_company', pz_i18n::msg('address_is_company')]);
+        $yform->setValueField('text', ['title', pz_i18n::msg('address_title')]);
+        $yform->setValueField('text', ['department', pz_i18n::msg('address_department')]);
+        $yform->setValueField('date', ['birthday', pz_i18n::msg('address_birthday'), '', '', '', '', '', '', pz_i18n::msg('error_address_enter_birthday')]);
+        $yform->setValueField('select', ['responsible_user_id', pz_i18n::msg('responsible_user'), pz::getUsersAsString(), '', pz::getUser()->getId(), 0]);
+        $yform->setValueField('pz_address_fields', ['fields']);
+        $yform->setValueField('textarea', ['note', pz_i18n::msg('address_note')]);
 
-        $xform->setValueField('datestamp', ['updated', 'mysql', '', '0', '0']);
+        $yform->setValueField('datestamp', ['updated', 'mysql', '', '0', '0']);
 
-        $xform->setValueField('hidden', ['updated_user_id', pz::getUser()->getId()]);
+        $yform->setValueField('hidden', ['updated_user_id', pz::getUser()->getId()]);
 
         if (pz_user::get($this->address->getVar('created_user_id'))) {
             $show = pz_user::get($this->address->getVar('created_user_id'))->getName();
@@ -546,7 +546,7 @@ class pz_address_screen
             $d = DateTime::createFromFormat('Y-m-d H:i:s', $this->address->getVar('created'), pz::getDateTimeZone());
             $show .= ' ('.strftime(pz_i18n::msg('show_datetime_normal'), pz_user::getDateTime($d)->format('U')).')';
 
-            $xform->setValueField('pz_show_screen', ['created_user_id', pz_i18n::msg('created_by_user'), $show]);
+            $yform->setValueField('pz_show_screen', ['created_user_id', pz_i18n::msg('created_by_user'), $show]);
         }
 
         if (pz_user::get($this->address->getVar('updated_user_id'))) {
@@ -555,18 +555,18 @@ class pz_address_screen
             $d = DateTime::createFromFormat('Y-m-d H:i:s', $this->address->getVar('updated'), pz::getDateTimeZone());
             $show .= ' ('.strftime(pz_i18n::msg('show_datetime_normal'), pz_user::getDateTime($d)->format('U')).')';
 
-            $xform->setValueField('pz_show_screen', ['updated_user_id', pz_i18n::msg('updated_by_user'), $show]);
+            $yform->setValueField('pz_show_screen', ['updated_user_id', pz_i18n::msg('updated_by_user'), $show]);
         }
 
-        $xform->setValidateField('empty', ['name', pz_i18n::msg('error_address_enter_name')]);
-        $xform->setActionField('db', ['pz_address', 'id='.$this->address->getId()]);
-        $return = $xform->getForm();
+        $yform->setValidateField('empty', ['name', pz_i18n::msg('error_address_enter_name')]);
+        $yform->setActionField('db', ['pz_address', 'id='.$this->address->getId()]);
+        $return = $yform->getForm();
 
-        if ($xform->getObjectparams('actions_executed')) {
+        if ($yform->getObjectparams('actions_executed')) {
             $this->address = pz_address::get($this->address->getId());
             $this->address->update();
 
-            $return = $header.'<p class="xform-info">'.pz_i18n::msg('address_updated').'</p>'.$return;
+            $return = $header.'<p class="yform-info">'.pz_i18n::msg('address_updated').'</p>'.$return;
             $return .= pz_screen::getJSLoadFormPage('addresses_list', 'addresses_search_form', pz::url('screen', 'addresses', $p['function'], ['mode' => 'list']));
         } else {
             $return = $header.$return;
@@ -574,11 +574,11 @@ class pz_address_screen
 
         $delete_link = pz::url('screen', 'addresses', $p['function'], ['address_id' => $this->address->getId(), 'mode' => 'delete_address']);
 
-        $return .= '<div class="xform">
+        $return .= '<div class="yform">
 				<p><a class="bt17" onclick="check = confirm(\''.pz_i18n::msg('address_confirm_delete', htmlspecialchars($this->address->getFullName())).'\'); if (check == true) pz_loadPage(\'address_form\',\''.$delete_link.'\')" href="javascript:void(0);">- '.pz_i18n::msg('delete_address').'</a></p>
 				</div>';
 
-        $return = '<div id="address_form"><div id="address_edit" class="design1col xform-edit">'.$return.'</div></div>';
+        $return = '<div id="address_form"><div id="address_edit" class="design1col yform-edit">'.$return.'</div></div>';
 
         return $return;
     }

@@ -11,7 +11,7 @@ license - still unclear - will be defined soon.
 * Log In REDAXO Backend www.domain.de/redaxo
 * SetUp Domain in System-AddOn: www.domain.de
 * Install and activate PHPMailer-AddOn
-* Go To AddON "Installer" and load and install newest version of XForm and Prozer
+* Go To AddON "Installer" and load and install newest version of yform and Prozer
 * Prozer will be now available in the frontend. Login with admin/admin
 
 
@@ -43,7 +43,7 @@ Last Changes
 * Wikirechte ergänzt
 * Wikieintraege sind nun auch im Log abrufbar
 * Jobliste hat nun Usernamen
-* XForm-Anpassungen
+* yform-Anpassungen
 
 #### Info
 
@@ -86,7 +86,7 @@ Last Changes
 * Anhänge wurden nach dem Löschen, noch mit gesendet, Doppelte Anhaenge die folge.
 * Verschieben eines Ganztages Termins ist nun auch möglich. 
 * Tagestermin verschieben eingebaur
-* XForm Datetime Template hinzugefügt - Visuelle Anpassung
+* yform Datetime Template hinzugefügt - Visuelle Anpassung
 * Autocompleter. Suchstring ist nun sichtbar
 * Textergänzungen und Korrekturen
 * Kalender: Addslash Problem gelöst. Texte sehen nun nicht mehr so aus: test \"\> ..

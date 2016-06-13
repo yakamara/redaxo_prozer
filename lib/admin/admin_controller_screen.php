@@ -101,31 +101,31 @@ class pz_admin_controller_screen extends pz_admin_controller
           </div>
         </header>';
 
-        $xform = new rex_xform();
-        $xform->setObjectparams('real_field_names', true);
-        $xform->setObjectparams('form_showformafterupdate', true);
-        $xform->setObjectparams('form_action',
+        $yform = new rex_yform();
+        $yform->setObjectparams('real_field_names', true);
+        $yform->setObjectparams('form_showformafterupdate', true);
+        $yform->setObjectparams('form_action',
             "javascript:pz_loadFormPage('jobs_list','job_search_form','".pz::url($p['mediaview'], $p['controll'], $this->function)."')");
-        $xform->setObjectparams('form_id', 'job_search_form');
-        $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl', 'runtime']);
-        $xform->setValueField('text', ['search_title', pz_i18n::msg('title')]);
+        $yform->setObjectparams('form_id', 'job_search_form');
+        $yform->setValueField('objparams', ['fragment', 'pz_screen_yform.tpl', 'runtime']);
+        $yform->setValueField('text', ['search_title', pz_i18n::msg('title')]);
 
-        $xform->setValueField('pz_date_screen', ['search_date_from', pz_i18n::msg('search_date_from')]);
-        $xform->setValueField('pz_date_screen', ['search_date_to', pz_i18n::msg('search_date_to')]);
+        $yform->setValueField('pz_date_screen', ['search_date_from', pz_i18n::msg('search_date_from')]);
+        $yform->setValueField('pz_date_screen', ['search_date_to', pz_i18n::msg('search_date_to')]);
 
         $projects = pz::getUser()->getCalendarProjects();
-        $xform->setValueField('pz_select_screen', ['search_project_id', pz_i18n::msg('project'), pz_project::getProjectsAsString($projects), '', '', 0, pz_i18n::msg('please_choose')]);
-        $xform->setValueField('pz_select_screen', ['search_customer_id', pz_i18n::msg('customer'), pz::getUser()->getCustomersAsString(), '', '', 0, pz_i18n::msg('please_choose')]);
+        $yform->setValueField('select', ['search_project_id', pz_i18n::msg('project'), pz_project::getProjectsAsString($projects), '', '', 0, pz_i18n::msg('please_choose')]);
+        $yform->setValueField('select', ['search_customer_id', pz_i18n::msg('customer'), pz::getUser()->getCustomersAsString(), '', '', 0, pz_i18n::msg('please_choose')]);
 
         if (pz::getUser()->isAdmin()) {
-            $xform->setValueField('pz_select_screen', ['search_user_id', pz_i18n::msg('user'), pz::getUsersAsArray(pz::getUser()->getUsers()), '', '', 0, pz_i18n::msg('please_choose')]);
+            $yform->setValueField('select', ['search_user_id', pz_i18n::msg('user'), pz::getUsersAsArray(pz::getUser()->getUsers()), '', '', 0, pz_i18n::msg('please_choose')]);
         }
 
-        $xform->setValueField('submit', ['submit', pz_i18n::msg('search'), '', 'search']);
-        $xform->setValueField('hidden', ['mode', 'list']);
-        $searchform .= $xform->getForm();
+        $yform->setValueField('submit', ['submit', pz_i18n::msg('search'), '', 'search']);
+        $yform->setValueField('hidden', ['mode', 'list']);
+        $searchform .= $yform->getForm();
 
-        $searchform = '<div id="job_search" class="design1col xform-search">'.$searchform.'</div>';
+        $searchform = '<div id="job_search" class="design1col yform-search">'.$searchform.'</div>';
 
         // ----------------------- jobliste
 
@@ -219,20 +219,20 @@ class pz_admin_controller_screen extends pz_admin_controller
           </div>
         </header>';
 
-        $xform = new rex_xform();
-        $xform->setObjectparams('real_field_names', true);
-        $xform->setObjectparams('form_showformafterupdate', true);
-        $xform->setObjectparams('form_action',
+        $yform = new rex_yform();
+        $yform->setObjectparams('real_field_names', true);
+        $yform->setObjectparams('form_showformafterupdate', true);
+        $yform->setObjectparams('form_action',
             "javascript:pz_loadFormPage('userperms_list','userperm_search_form','".pz::url($p['mediaview'], $p['controll'], $this->function)."')");
-        $xform->setObjectparams('form_id', 'userperm_search_form');
-        $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl', 'runtime']);
+        $yform->setObjectparams('form_id', 'userperm_search_form');
+        $yform->setValueField('objparams', ['fragment', 'pz_screen_yform.tpl', 'runtime']);
 
-        $xform->setValueField('pz_select_screen', ['search_user_id', pz_i18n::msg('user'), pz::getUsersAsArray(pz::getUser()->getUsers()), '', $user->getId(), 0]);
+        $yform->setValueField('select', ['search_user_id', pz_i18n::msg('user'), pz::getUsersAsArray(pz::getUser()->getUsers()), '', $user->getId(), 0]);
 
-        $xform->setValueField('submit', ['submit', pz_i18n::msg('search'), '', 'search']);
-        $xform->setValueField('hidden', ['mode', 'list']);
+        $yform->setValueField('submit', ['submit', pz_i18n::msg('search'), '', 'search']);
+        $yform->setValueField('hidden', ['mode', 'list']);
 
-        $searchform .= '<div id="userperm_search" class="design1col xform-search">'.$xform->getForm().'</form>';
+        $searchform .= '<div id="userperm_search" class="design1col yform-search">'.$yform->getForm().'</form>';
 
         $section_1 = $searchform;
         $section_2 = '';
@@ -351,13 +351,13 @@ class pz_admin_controller_screen extends pz_admin_controller
 
         $section_1 = '
 			<div id="server_info">
-				<div id="server_view" class="design1col xform-edit">
+				<div id="server_view" class="design1col yform-edit">
 		        <header>
 		          <div class="header">
 		            <h1 class="hl1">Server - Info</h1>
 		          </div>
         		</header>
-        		<div class="xform">
+        		<div class="yform">
         			Domain: <b>'.pz::getServerUrl().'</b>
         			<br /><br />REDAXO Version: <b>'.pz::getProperty('redaxo_version').'</b>
         			<br />Prozer Version: <b>'.pz::getProperty('version').'</b>
@@ -423,31 +423,31 @@ class pz_admin_controller_screen extends pz_admin_controller
           </div>
         </header>';
 
-        $xform = new rex_xform();
-        $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('system_edit','system_edit_form','".pz::url($p['mediaview'], 'admin', $p['function'], ['mode' => 'edit_system'])."')");
-        $xform->setObjectparams('form_id', 'system_edit_form');
-        $xform->setObjectparams('form_showformafterupdate', 1);
-        $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl']);
-        $xform->setValueField('text', ['system_page_title', pz_i18n::msg('page_title'), pz::getConfig('page_title')]);
+        $yform = new rex_yform();
+        $yform->setObjectparams('form_action', "javascript:pz_loadFormPage('system_edit','system_edit_form','".pz::url($p['mediaview'], 'admin', $p['function'], ['mode' => 'edit_system'])."')");
+        $yform->setObjectparams('form_id', 'system_edit_form');
+        $yform->setObjectparams('form_showformafterupdate', 1);
+        $yform->setValueField('objparams', ['fragment', 'pz_screen_yform.tpl']);
+        $yform->setValueField('text', ['system_page_title', pz_i18n::msg('page_title'), pz::getConfig('page_title')]);
 
         $themes = [];
         foreach (pz_screen::getThemes() as $theme => $path) {
             $themes[] = $theme;
         }
 
-        $xform->setValueField('pz_select_screen', ['system_page_theme', pz_i18n::msg('page_theme'), implode(',', $themes), '', pz_screen::getTheme(), 0]);
+        $yform->setValueField('select', ['system_page_theme', pz_i18n::msg('page_theme'), implode(',', $themes), '', pz_screen::getTheme(), 0]);
 
-        $return = $xform->getForm();
+        $return = $yform->getForm();
 
-        if ($xform->getObjectparams('actions_executed')) {
-            pz::setConfig('page_title', $xform->objparams['value_pool']['email']['system_page_title']);
-            pz::setConfig('page_theme', $xform->objparams['value_pool']['email']['system_page_theme']);
+        if ($yform->getObjectparams('actions_executed')) {
+            pz::setConfig('page_title', $yform->objparams['value_pool']['email']['system_page_title']);
+            pz::setConfig('page_theme', $yform->objparams['value_pool']['email']['system_page_theme']);
 
-            $return = $header.'<p class="xform-info">'.pz_i18n::msg('system_info_updated').'</p>'.$return;
+            $return = $header.'<p class="yform-info">'.pz_i18n::msg('system_info_updated').'</p>'.$return;
         } else {
             $return = $header.$return;
         }
-        $return = '<div id="user_form"><div id="system_edit" class="design1col xform-edit">'.$return.'</div></div>';
+        $return = '<div id="user_form"><div id="system_edit" class="design1col yform-edit">'.$return.'</div></div>';
 
         return $return;
     }

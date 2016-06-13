@@ -31,98 +31,98 @@
 
 /* Form 1 **********************************************************************
 *******************************************************************************/
-.xform {
+.yform {
   padding: 7px 15px 15px 15px;
 }
-.xform1.data:after, 
-.xform1.action:after {
+.yform1.data:after,
+.yform1.action:after {
   clear: both;
   content: '.';
   display: block;
   height: 0;
   visibility: hidden;
 }
-.xform1.data {
+.yform1.data {
   clear: both;
   width: 100%;
   margin-top: 10px;
 }
-.xform form dl.form1.data:first-child {
+.yform form dl.form1.data:first-child {
   margin-top: 0;
 }
-.xform1.data .fafter, 
-.xform1.data .fbefore, 
-.xform1.data .fextra {
+.yform1.data .fafter,
+.yform1.data .fbefore,
+.yform1.data .fextra {
   clear: both;
   display: block;
 }
-.xform1.data .flabel, 
-.xform1.data .felement {
+.yform1.data .flabel,
+.yform1.data .felement {
   display: block;
   float: left;
   width: 80px;
 }
-.xform1.data .felement {
+.yform1.data .felement {
   float: right;
   width: 253px;
 }
-.xform1.data-indent .flabel {
+.yform1.data-indent .flabel {
   width: 60px;
   margin-left: 20px;
 }
-.xform1-reverse.data .flabel, 
-.xform1-reverse.data .felement {
+.yform1-reverse.data .flabel,
+.yform1-reverse.data .felement {
   float: left;
   width: 80px;
 }
-.xform1-reverse.data .flabel {
+.yform1-reverse.data .flabel {
   float: right;
   width: 253px;
 }
-.xform1b.data .flabel {
+.yform1b.data .flabel {
   width: 174px;
 }
-.xform1b.data .felement {
+.yform1b.data .felement {
   width: 163px;
 }
-.xform1b.data label {
+.yform1b.data label {
   margin-right: 3px;
 }
 
 /* Checkbox Reverse */
-.xform1-reverse.xform-checkbox .flabel {
+.yform1-reverse.yform-checkbox .flabel {
   width: 248px;
   max-width: 248px;
 }
-.xform1-reverse.xform-checkbox .felement {
+.yform1-reverse.yform-checkbox .felement {
   width: 82px;
   max-width: 82px;
   text-align: right;
 }
 
 /* Captcha */
-.xform1.xform-captcha .fextra .xform-captcha {
+.yform1.yform-captcha .fextra .yform-captcha {
   display: block;
   margin-left: 88px;
   padding-top: 5px;
 }
-.xform1.xform-captcha .fextra .xform-captcha img {
+.yform1.yform-captcha .fextra .yform-captcha img {
 }
 
-.xform1.action {
+.yform1.action {
   text-align: right;
 }
-.xform1.action li {
+.yform1.action li {
   display: inline;
 }
 
-#calendar_event_add_form .xform-textarea textarea,
-#calendar_event_edit_form .xform-textarea textarea {
+#calendar_event_add_form .yform-textarea textarea,
+#calendar_event_edit_form .yform-textarea textarea {
   height:45px;
 }
 
-#calendar_event_add_form .xform-textarea textarea[name=description],
-#calendar_event_edit_form .xform-textarea textarea[name=description] {
+#calendar_event_add_form .yform-textarea textarea[name=description],
+#calendar_event_edit_form .yform-textarea textarea[name=description] {
   height: 45px;
 }
 
@@ -132,14 +132,14 @@
 
 /* Form - Elemente *************************************************************
 *******************************************************************************/
-.xform .xform1.xform-date input[type=text],  
-.xform .xform1.xform-number input[type=number], 
-.xform .xform1 input[type=text], 
-.xform .xform1 input[type=password], 
-.xform .xform1 select[multiple=multiple], 
-.xform .xform1 textarea, 
-.xform .xform2 input[type=text], 
-.xform .xform2 textarea {
+.yform .yform1.yform-date input[type=text],
+.yform .yform1.yform-number input[type=number],
+.yform .yform1 input[type=text],
+.yform .yform1 input[type=password],
+.yform .yform1 select[multiple=multiple],
+.yform .yform1 textarea,
+.yform .yform2 input[type=text],
+.yform .yform2 textarea {
   width: 252px;
   max-width: 252px;
   height: 22px;
@@ -155,54 +155,54 @@
   box-sizing: border-box;
   font-size: 100%;
 }
-.xform .xform1 select {
+.yform .yform1 select {
   width: 252px;
   max-width: 252px;
 }
-.xform .xform1 select[multiple=multiple] {
+.yform .yform1 select[multiple=multiple] {
   height: auto;
 }
-.xform .xform1 textarea, 
-.xform .xform2 textarea {
+.yform .yform1 textarea,
+.yform .yform2 textarea {
   padding-top: 6px;
   padding-bottom: 6px;
   height: 100px;
 }
-.xform .xform2 textarea {
+.yform .yform2 textarea {
   height: 50px;
 }
 
-.xform .xform1.xform-date input[type=text], 
-.xform .xform2 input[type=text],  
-.xform .xform2 textarea {
+.yform .yform1.yform-date input[type=text],
+.yform .yform2 input[type=text],
+.yform .yform2 textarea {
   float: left;
   width: 82px;
   max-width: 82px;
   margin-right: 6px;
 }
-.xform .xform1.xform-number input[type=number] {
+.yform .yform1.yform-number input[type=number] {
   float: left;
   width: 42px;
   max-width: 42px;
   margin-right: 6px;
 }
-.xform .xform1b input[type=text] {
+.yform .yform1b input[type=text] {
   width: 163px;
   max-width: 163px;
 }
 
-.xform .xform1.xform-submit {
+.yform .yform1.yform-submit {
   text-align: right;
 }
-.xform .xform1 .xform-select-datetime-year, 
-.xform .xform1 .xform-select-datetime-month, 
-.xform .xform1 .xform-select-datetime-day, 
-.xform .xform1 .xform-select-datetime-hour, 
-.xform .xform1 .xform-select-datetime-minute {
+.yform .yform1 .yform-select-datetime-year,
+.yform .yform1 .yform-select-datetime-month,
+.yform .yform1 .yform-select-datetime-day,
+.yform .yform1 .yform-select-datetime-hour,
+.yform .yform1 .yform-select-datetime-minute {
     width: auto;
     margin: 0 3px;
 }
-.xform .xform1.xform-datetime select:first-child {
+.yform .yform1.yform-datetime select:first-child {
     margin-left: 0;
 }
 
@@ -242,26 +242,26 @@
 /* Formular 2 spaltig **********************************************************
 *******************************************************************************/
 
-.design2col .xform1.data.xform-checkbox .flabel,
-.design2col .xform .felement,
-.design2col .xform .xform1.xform-date input[type="text"], 
-.design2col .xform .xform1.xform-number input[type="number"], 
-.design2col .xform .xform1 input[type="text"], 
-.design2col .xform .xform1 input[type="password"], 
-.design2col .xform .xform1 select[multiple="multiple"], 
-.design2col .xform .xform1 textarea, 
-.design2col .xform .xform2 input[type="text"], 
-.design2col .xform .xform2 textarea {
+.design2col .yform1.data.yform-checkbox .flabel,
+.design2col .yform .felement,
+.design2col .yform .yform1.yform-date input[type="text"],
+.design2col .yform .yform1.yform-number input[type="number"],
+.design2col .yform .yform1 input[type="text"],
+.design2col .yform .yform1 input[type="password"],
+.design2col .yform .yform1 select[multiple="multiple"],
+.design2col .yform .yform1 textarea,
+.design2col .yform .yform2 input[type="text"],
+.design2col .yform .yform2 textarea {
   width: 600px;
   max-width: 600px;
 }
-.design2col .xform .xform1 select {
+.design2col .yform .yform1 select {
   width: 600px;
   max-width: 600px;
 }
 
-.design2col .xform .xform-checkbox .felement,
-.design2col .xform1.data .flabel {
+.design2col .yform .yform-checkbox .felement,
+.design2col .yform1.data .flabel {
     width: 100px;
 }
 
@@ -269,68 +269,68 @@
 
 /* Einfaches Suchform **********************************************************
 *******************************************************************************/
-.xform-search-small {
+.yform-search-small {
   padding: 0 10px 9px 10px;
   overflow: hidden;
 }
-.xform-search-small .data {
+.yform-search-small .data {
   margin-top: 9px;
 }
-.xform-search-small .data .flabel, 
-.xform-search-small .data .felement {
+.yform-search-small .data .flabel,
+.yform-search-small .data .felement {
   float: none;
   width: auto;
 }
-.xform-search-small .data.xform-text {
+.yform-search-small .data.yform-text {
   float: left;
 }
-.xform-search-small .data.xform-submit {
+.yform-search-small .data.yform-submit {
   float: right;
 }
-.xform-search-small .data.xform-text input[type="text"] {
+.yform-search-small .data.yform-text input[type="text"] {
   width: 100%;
 }
 
-.popbox .xform-search-small {
+.popbox .yform-search-small {
   width:270px;
   display:block;
   float:right;
 }
 
-.popbox .xform-search-small .data.xform-text {
+.popbox .yform-search-small .data.yform-text {
   float: left;
   width: 230px;
 }
-.popbox .xform-search-small .data.xform-text:after {
+.popbox .yform-search-small .data.yform-text:after {
   clear: none;
 }
-.popbox .xform-search-small .data.xform-text .flabel {
+.popbox .yform-search-small .data.yform-text .flabel {
   display: none;
 }
-.popbox .xform-search-small .data.xform-submit {
+.popbox .yform-search-small .data.yform-submit {
   clear: none;
   float: left;
   margin: 7px 0 0 10px;
   width: auto;
 }
-.popbox .xform-search-small .data.xform-submit input {
+.popbox .yform-search-small .data.yform-submit input {
   width: 22px;
 }
 
 
 
 
-.xform .data .flabel .notice {
+.yform .data .flabel .notice {
     margin-left: 5px;
     margin-right: 5px;
     color: #626d72;
     font-style: normal;
     font-weight: 400;
 }
-.xform .data .flabel .notice:first-child {
+.yform .data .flabel .notice:first-child {
     margin-left: 0;
 }
-.xform .data .flabel .notice:last-child {
+.yform .data .flabel .notice:last-child {
     margin-left: 5px;
     margin-right: 0;
 }

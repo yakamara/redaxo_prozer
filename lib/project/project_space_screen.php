@@ -80,26 +80,26 @@ class pz_project_space_screen
 
     public function getPageCreateView($p = [], $title = '')
     {
-        $xform = new rex_xform();
+        $yform = new rex_yform();
 
-        // $xform->setDebug();
+        // $yform->setDebug();
 
-        $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('project_space_page','space_page_create_form','" . $this->url(['mode' => 'create_form']) . "')");
-        $xform->setObjectparams('form_id', 'space_page_create_form');
+        $yform->setObjectparams('form_action', "javascript:pz_loadFormPage('project_space_page','space_page_create_form','" . $this->url(['mode' => 'create_form']) . "')");
+        $yform->setObjectparams('form_id', 'space_page_create_form');
 
-        $this->addBaseFields($xform, $title);
+        $this->addBaseFields($yform, $title);
 
-        $xform->setValueField('datestamp', ['created', 'mysql', '', '0', '1']);
-        $xform->setValueField('hidden', ['create_user_id', pz::getUser()->getId()]);
+        $yform->setValueField('datestamp', ['created', 'mysql', '', '0', '1']);
+        $yform->setValueField('hidden', ['create_user_id', pz::getUser()->getId()]);
 
-        $xform->setActionField('db', ['pz_space']);
+        $yform->setActionField('db', ['pz_space']);
 
-        $content = $xform->getForm();
+        $content = $yform->getForm();
 
-        if ($xform->getObjectparams('actions_executed')) {
+        if ($yform->getObjectparams('actions_executed')) {
 
-            $this->page = pz_space_page::get($xform->getObjectparams('main_id'));
-            $this->page->create($xform->getFieldValue('', '', 'created'));
+            $this->page = pz_space_page::get($yform->getObjectparams('main_id'));
+            $this->page->create($yform->getFieldValue('', '', 'created'));
 
             $content = pz_screen::getJSUpdatePage($this->url());
         }
@@ -121,41 +121,41 @@ class pz_project_space_screen
 
     public function getPageEditView($p = [])
     {
-        $xform = new rex_xform();
+        $yform = new rex_yform();
 
-        $xform->setObjectparams('main_table', 'pz_space');
-        $xform->setObjectparams('main_id', $this->page->getId());
-        $xform->setObjectparams('main_where', 'id=' . $this->page->getId());
+        $yform->setObjectparams('main_table', 'pz_space');
+        $yform->setObjectparams('main_id', $this->page->getId());
+        $yform->setObjectparams('main_where', 'id=' . $this->page->getId());
 
-        $xform->setObjectparams('getdata', true);
+        $yform->setObjectparams('getdata', true);
 
-        $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('project_space_page','space_page_edit_form','" . $this->url(['mode' => 'edit']) . "')");
-        $xform->setObjectparams('form_id', 'space_page_edit_form');
+        $yform->setObjectparams('form_action', "javascript:pz_loadFormPage('project_space_page','space_page_edit_form','" . $this->url(['mode' => 'edit']) . "')");
+        $yform->setObjectparams('form_id', 'space_page_edit_form');
 
-        $this->addBaseFields($xform);
+        $this->addBaseFields($yform);
 
-        $xform->setActionField('db', ['pz_space', 'id=' . $this->pageId]);
+        $yform->setActionField('db', ['pz_space', 'id=' . $this->pageId]);
 
-        $content = '<article class="space-editor">' . $xform->getForm() . '</article>';
+        $content = '<article class="space-editor">' . $yform->getForm() . '</article>';
 
-        if ($xform->getObjectparams('actions_executed')) {
+        if ($yform->getObjectparams('actions_executed')) {
             $page = pz_space_page::get($this->page->getId());
-            $page->update($xform->getFieldValue('', '', 'message'));
+            $page->update($yform->getFieldValue('', '', 'message'));
             return pz_screen::getJSUpdatePage($this->url());
         }
         return $this->getPageWrapper('edit', $content);
     }
 
-    protected function addBaseFields(rex_xform $xform, $title = null)
+    protected function addBaseFields(rex_yform $yform, $title = null)
     {
-        $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl']);
-        $xform->setObjectparams('real_field_names', true);
-        $xform->setObjectparams('form_skin', "bootstrap");
+        $yform->setValueField('objparams', ['fragment', 'pz_screen_yform.tpl']);
+        $yform->setObjectparams('real_field_names', true);
+        $yform->setObjectparams('form_skin', "bootstrap");
 
-        $xform->setValueField('text', ['title', pz_i18n::msg('space_page_title'), 'default' => $title]);
-        $xform->setValidateField('empty', ['title', pz_i18n::msg('error_space_title_empty')]);
+        $yform->setValueField('text', ['title', pz_i18n::msg('space_page_title'), 'default' => $title]);
+        $yform->setValidateField('empty', ['title', pz_i18n::msg('error_space_title_empty')]);
 
-        $xform->setValueField('html', ['open', '
+        $yform->setValueField('html', ['open', '
             <nav class="tabnav tabnav-down space-editor-tabnav" id="space_page_text_navi">
                 <ul class="tabnav-tabs">
                     <li><a class="tabnav-tab active" href="#space_page_text_edit">' . pz_i18n::msg('space_page_text_edit') . '</a></li>
@@ -166,9 +166,9 @@ class pz_project_space_screen
             <div class="space-editor-write-content">
                 <div id="space_page_text_edit">
         ']);
-        $xform->setValueField('textarea', ['shorttext', pz_i18n::msg('space_page_shorttext')]);
-        $xform->setValueField('textarea', ['text', pz_i18n::msg('space_page_text')]);
-        $xform->setValueField('html', ['close', '
+        $yform->setValueField('textarea', ['shorttext', pz_i18n::msg('space_page_shorttext')]);
+        $yform->setValueField('textarea', ['text', pz_i18n::msg('space_page_text')]);
+        $yform->setValueField('html', ['close', '
                 </div>
                 <div class="space-preview-content markdown-body" id="space_page_text_preview"></div>
                 <div class="markdown-body" id="space_page_text_help" style="display: none">
@@ -290,12 +290,12 @@ class pz_project_space_screen
             --></script>
         ']);
 
-        $xform->setValueField("select",['color',pz_i18n::msg('space_page_position'),'#eee,#f90,#e4d836']);
+        $yform->setValueField("select",['color',pz_i18n::msg('space_page_position'),'#eee,#f90,#e4d836']);
 
-        $xform->setValueField('datestamp', ['updated', 'mysql', '', '0', '0']);
-        $xform->setValueField('hidden', ['update_user_id', pz::getUser()->getId()]);
-        $xform->setValueField('hidden', ['project_id', $this->project->getId()]);
-        $xform->setValueField('text', ['position', pz_i18n::msg('space_page_position')]);
+        $yform->setValueField('datestamp', ['updated', 'mysql', '', '0', '0']);
+        $yform->setValueField('hidden', ['update_user_id', pz::getUser()->getId()]);
+        $yform->setValueField('hidden', ['project_id', $this->project->getId()]);
+        $yform->setValueField('text', ['position', pz_i18n::msg('space_page_position')]);
 
     }
 

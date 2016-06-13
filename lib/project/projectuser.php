@@ -26,7 +26,7 @@ class pz_projectuser extends pz_model
 
     public static function get($user, $project)
     {
-        $s = pz_sql::factory();
+        $s = rex_sql::factory();
         // $s->debugsql = 1;
         $projectusers = $s->getArray('select * from pz_project_user as pu where pu.project_id= ?  and pu.user_id= ?', [$project->getId(), $user->getId()]);
 
@@ -39,7 +39,7 @@ class pz_projectuser extends pz_model
 
     public function setEmails($status = 1)
     {
-        $s = pz_sql::factory();
+        $s = rex_sql::factory();
         // $s->debugsql = 1;
         $s->setTable('pz_project_user');
         $s->setWhere(['id' => $this->getId()]);
@@ -53,7 +53,7 @@ class pz_projectuser extends pz_model
 
     public function setCalendarEvents($status = 1)
     {
-        $s = pz_sql::factory();
+        $s = rex_sql::factory();
         // $s->debugsql = 1;
         $s->setTable('pz_project_user');
         $s->setWhere(['id' => $this->getId()]);
@@ -67,7 +67,7 @@ class pz_projectuser extends pz_model
 
     public function setCalendarJobs($status = 1)
     {
-        $s = pz_sql::factory();
+        $s = rex_sql::factory();
         // $s->debugsql = 1;
         $s->setTable('pz_project_user');
         $s->setWhere(['id' => $this->getId()]);
@@ -81,7 +81,7 @@ class pz_projectuser extends pz_model
 
     public function setWiki($status = 1)
     {
-        $s = pz_sql::factory();
+        $s = rex_sql::factory();
         // $s->debugsql = 1;
         $s->setTable('pz_project_user');
         $s->setWhere(['id' => $this->getId()]);
@@ -95,7 +95,7 @@ class pz_projectuser extends pz_model
 
     public function setCalDavEvents($status = 1)
     {
-        $s = pz_sql::factory();
+        $s = rex_sql::factory();
         // $s->debugsql = 1;
         $s->setTable('pz_project_user');
         $s->setWhere(['id' => $this->getId()]);
@@ -109,7 +109,7 @@ class pz_projectuser extends pz_model
 
     public function setCalDavJobs($status = 1)
     {
-        $s = pz_sql::factory();
+        $s = rex_sql::factory();
         // $s->debugsql = 1;
         $s->setTable('pz_project_user');
         $s->setWhere(['id' => $this->getId()]);
@@ -123,7 +123,7 @@ class pz_projectuser extends pz_model
 
     public function setFiles($status = 1)
     {
-        $s = pz_sql::factory();
+        $s = rex_sql::factory();
         // $s->debugsql = 1;
         $s->setTable('pz_project_user');
         $s->setWhere(['id' => $this->getId()]);
@@ -137,7 +137,7 @@ class pz_projectuser extends pz_model
 
     public function setWebDav($status = 1)
     {
-        $s = pz_sql::factory();
+        $s = rex_sql::factory();
         // $s->debugsql = 1;
         $s->setTable('pz_project_user');
         $s->setWhere(['id' => $this->getId()]);
@@ -151,7 +151,7 @@ class pz_projectuser extends pz_model
 
     public function setAdmin($status = 1)
     {
-        $s = pz_sql::factory();
+        $s = rex_sql::factory();
         // $s->debugsql = 1;
         $s->setTable('pz_project_user');
         $s->setWhere(['id' => $this->getId()]);
@@ -277,7 +277,7 @@ class pz_projectuser extends pz_model
     public function create()
     {
         if ($this->hasCalendarEvents() || $this->hasCalendarJobs()) {
-            $s = pz_sql::factory();
+            $s = rex_sql::factory();
             $s->setTable('pz_project_user');
             $s->setWhere(['id' => $this->getId()]);
             if ($this->hasCalendarEvents()) {
@@ -295,7 +295,7 @@ class pz_projectuser extends pz_model
     {
         $this->saveToHistory('update');
 
-        $a = pz_sql::factory();
+        $a = rex_sql::factory();
         // $a->debugsql = 1;
         $a->setTable('pz_project_user');
         $a->setWhere(
@@ -311,7 +311,7 @@ class pz_projectuser extends pz_model
 
     public function saveToHistory($mode = 'update')
     {
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $sql->setTable('pz_history')
             ->setValue('control', 'projectuser')
             ->setValue('project_id', $this->project->getId())

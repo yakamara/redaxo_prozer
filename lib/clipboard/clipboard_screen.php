@@ -11,19 +11,19 @@ class pz_clipboard_screen
 
     public function getSearchForm($p)
     {
-        $xform = new rex_xform();
-        $xform->setDebug(true);
-        $xform->setValueField('objparams', ['form_wrap', '<div class="xform xform-search-small">#</div>']);
-        $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('clipboard_list','clipboard_search_form','".pz::url('screen', 'clipboard', 'my', ['mode' => 'list'])."')");
-        $xform->setObjectparams('form_id', 'clipboard_search_form');
-        $xform->setObjectparams('form_showformafterupdate', 1);
-        $xform->setObjectparams('real_field_names', true);
-        $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl']);
-        $xform->setValueField('text', ['search_name', pz_i18n::msg('label_title')]);
-        $xform->setValueField('submit', ['submit', pz_i18n::msg('ok')]);
-        $xform_search = $xform->getForm();
+        $yform = new rex_yform();
+        $yform->setDebug(true);
+        $yform->setValueField('objparams', ['form_wrap', '<div class="yform yform-search-small">#</div>']);
+        $yform->setObjectparams('form_action', "javascript:pz_loadFormPage('clipboard_list','clipboard_search_form','".pz::url('screen', 'clipboard', 'my', ['mode' => 'list'])."')");
+        $yform->setObjectparams('form_id', 'clipboard_search_form');
+        $yform->setObjectparams('form_showformafterupdate', 1);
+        $yform->setObjectparams('real_field_names', true);
+        $yform->setValueField('objparams', ['fragment', 'pz_screen_yform.tpl']);
+        $yform->setValueField('text', ['search_name', pz_i18n::msg('label_title')]);
+        $yform->setValueField('submit', ['submit', pz_i18n::msg('ok')]);
+        $yform_search = $yform->getForm();
 
-        return $xform_search;
+        return $yform_search;
     }
 
     public function getListView($clips, $p)

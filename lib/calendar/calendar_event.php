@@ -132,7 +132,7 @@ class pz_calendar_event extends pz_calendar_item
 
     public function getEventsByClip($clip)
     {
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $sql->setQuery('SELECT * FROM ' . self::TABLE . ' e WHERE FIND_IN_SET( ? , e.clip_ids )', [$clip->getId()]);
 
         $events = [];
@@ -294,7 +294,7 @@ class pz_calendar_event extends pz_calendar_item
 
     public function save()
     {
-        $sql = pz_sql::factory()
+        $sql = rex_sql::factory()
             ->setTable(self::TABLE);
         $ignore = ['attendees', 'alarms'];
         foreach (array_keys($this->changed) as $key) {
@@ -365,7 +365,7 @@ class pz_calendar_event extends pz_calendar_item
     {
         $data = [];
         if ($mode != 'delete') {
-            $sql = pz_sql::factory();
+            $sql = rex_sql::factory();
             $sql->setQuery('SELECT * FROM ' . self::TABLE . ' WHERE id = ?', [$this->id]);
             $arr = $sql->getArray();
             $data = $arr[0];
@@ -381,7 +381,7 @@ class pz_calendar_event extends pz_calendar_item
                 $data['rule']['exception_events'] = $sql->getArray();
             }
         }
-        pz_sql::factory()
+        rex_sql::factory()
             ->setTable('pz_history')
             ->setValue('control', 'calendar_event')
             ->setValue('project_id', $this->getProjectId())
@@ -395,7 +395,7 @@ class pz_calendar_event extends pz_calendar_item
 
     protected static function _delete($where, array $params)
     {
-        pz_sql::factory()->setQuery('
+        rex_sql::factory()->setQuery('
             DELETE e, at, al
             FROM ' . self::TABLE . ' e
             LEFT JOIN ' . pz_calendar_attendee::TABLE . ' at
@@ -423,7 +423,7 @@ class pz_calendar_event extends pz_calendar_item
 
         static $sql = null;
         if (!$sql) {
-            $sql = pz_sql::factory();
+            $sql = rex_sql::factory();
             $sql->prepareQuery('
                 SELECT *
                 FROM ' . self::TABLE . ' e
@@ -441,7 +441,7 @@ class pz_calendar_event extends pz_calendar_item
     {
         static $sql = null;
         if (!$sql) {
-            $sql = pz_sql::factory();
+            $sql = rex_sql::factory();
             $sql->prepareQuery('
                 SELECT *
                 FROM ' . self::TABLE . ' e
@@ -459,7 +459,7 @@ class pz_calendar_event extends pz_calendar_item
     {
         static $sql = null;
         if (!$sql) {
-            $sql = pz_sql::factory();
+            $sql = rex_sql::factory();
             $sql->prepareQuery('
                 SELECT *
                 FROM ' . self::TABLE . ' e
@@ -553,7 +553,7 @@ class pz_calendar_event extends pz_calendar_item
             $wFulltext = ' AND vt LIKE ? ';
         }
 
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         // $sql->debugsql = 1;
         $sql->setQuery('
             SELECT *
@@ -617,7 +617,7 @@ class pz_calendar_event extends pz_calendar_item
             $wIgnore = 'NOT IN (' . implode(',', array_pad([], count($ignore), '?')) . ')';
         }
 
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         // $sql->debugsql = 1;
         $sql->setQuery('
             SELECT *
@@ -651,7 +651,7 @@ class pz_calendar_event extends pz_calendar_item
         }
         $params[] = $user_id;
 
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $sql->setQuery('
             SELECT TIME_FORMAT(SEC_TO_TIME(SUM(UNIX_TIMESTAMP(`to`) - UNIX_TIMESTAMP(`from`))), "PT%HH%iM%sS") AS time
             FROM ' . self::TABLE . '
@@ -677,7 +677,7 @@ class pz_calendar_event extends pz_calendar_item
             $params[] = pz::getUser()->getId();
             $params[] = pz::getUser()->getId();
         }
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $sql->setQuery('
             SELECT *
             FROM ' . self::TABLE . ' e
@@ -695,7 +695,7 @@ class pz_calendar_event extends pz_calendar_item
 
     public static function resetProjectSubs($project_sub_id)
     {
-        $s = pz_sql::factory();
+        $s = rex_sql::factory();
         $s->setQuery('update ' . self::TABLE . ' set project_sub_id = 0 where project_sub_id = ?', [$project_sub_id]);
     }
 

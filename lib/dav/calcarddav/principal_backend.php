@@ -9,7 +9,7 @@ class pz_sabre_principal_backend implements Sabre\DAVACL\PrincipalBackend\Backen
         $principals = [];
 
         if (in_array($prefixPath, ['principals', 'principals/users', 'users'])) {
-            $sql = pz_sql::factory();
+            $sql = rex_sql::factory();
             $sql->setQuery('SELECT id, login, name, email FROM pz_user WHERE status = 1');
 
             foreach ($sql as $row) {
@@ -27,7 +27,7 @@ class pz_sabre_principal_backend implements Sabre\DAVACL\PrincipalBackend\Backen
             return $this->principals[$user];
         }
 
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $sql->setQuery('SELECT id, login, name, email FROM pz_user WHERE status = 1 AND login = ? LIMIT 2', [$user]);
 
         return $this->principals[$user] = $sql->getRows() == 1 ? $this->getPrincipalBySql($sql) : null;
@@ -38,7 +38,7 @@ class pz_sabre_principal_backend implements Sabre\DAVACL\PrincipalBackend\Backen
         // TODO
     }
 
-    private function getPrincipalBySql(pz_sql $sql)
+    private function getPrincipalBySql(rex_sql $sql)
     {
         return [
             'id' => $sql->getValue('id'),

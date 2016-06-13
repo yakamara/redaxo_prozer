@@ -27,7 +27,7 @@ class pz_clipboard
 
         $return = pz::getFilter($filter);
 
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         // $sql->debugsql = 1;
         $clips_array = $sql->getArray('SELECT c.* FROM pz_clipboard as c '.$return['where_sql'].' ORDER BY c.id desc', $return['params']);
 

@@ -348,7 +348,7 @@ footer .setting .last > ul,
 .flyout .entries .entry .wrapper:hover {
   cursor: pointer;
 }
-.flyout .entries .entry .xform-checkbox {
+.flyout .entries .entry .yform-checkbox {
   margin-right: 4px;
 }
 .flyout .entries .entry .name {

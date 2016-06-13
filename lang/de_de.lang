@@ -906,7 +906,7 @@ name = Name
 description = Beschreibung
 
 prozer_install_redaxo_version_problem = Es wird REDAXO mit mindestens Version {0} benötigt
-prozer_install_xform_version_problem = Es wird das XForm AddOn mit mindestens Version {0} benötigt
+prozer_install_yform_version_problem = Es wird das yform AddOn mit mindestens Version {0} benötigt
 
 
 page_project_space = Space

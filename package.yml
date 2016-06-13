@@ -1,0 +1,10 @@
+package: prozer
+version: '4.0.0'
+author: Jan Kristinus
+supportpage: www.prozer.org
+
+requires:
+    redaxo: '^5.0.0'
+    packages:
+        yform/manager: '^1.0'
+        phpmailer: '^2.0.0'

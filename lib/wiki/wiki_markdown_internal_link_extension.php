@@ -36,7 +36,7 @@ class pz_wiki_markdown_internal_link_extension implements Ciconia\Extension\Exte
             return "{gfm-extraction-$md5}";
         });
 
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $sql->prepareQuery('SELECT id FROM pz_wiki WHERE project_id = ? AND title = ?');
         $text->replace('{\[\[(?:([^\]]*)\|)?([^\]]*)\]\]}', function (Text $complete, Text $title, Text $pageTitle) use ($sql) {
             if ($title->isEmpty()) {

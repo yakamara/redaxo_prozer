@@ -15,7 +15,7 @@ class pz_api_controller extends pz_controller
         $pz_login->setLogin($login, $digest);
         // $pz_login->checkLogin();
 
-        $check_query = pz_sql::factory();
+        $check_query = rex_sql::factory();
         $check_query->setQuery('select * from pz_user where login = ? and digest = ?', [$login, $digest]);
 
         if ($check_query->getRows() == 1) {

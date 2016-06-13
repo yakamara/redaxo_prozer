@@ -20,7 +20,7 @@ class pz_user_role implements rex_user_role_interface
 
     public static function get($id)
     {
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $sql->setQuery('SELECT perms FROM pz_user_role WHERE id = ?', [$id]);
         if ($sql->getRows() == 0) {
             return null;

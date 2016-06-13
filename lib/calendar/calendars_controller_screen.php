@@ -77,7 +77,7 @@ class pz_calendars_controller_screen extends pz_calendars_controller
                     $cs = new pz_calendar_event_screen($event);
                     return $cs->getEditForm($p);
                 }
-                return '<div id="calendar_event_form"><p class="xform-warning">'.pz_i18n::msg('calendar_event_not_exists').'</p></div>';
+                return '<div id="calendar_event_form"><p class="yform-warning">'.pz_i18n::msg('calendar_event_not_exists').'</p></div>';
 
             // inside functions
             /*
@@ -138,7 +138,7 @@ class pz_calendars_controller_screen extends pz_calendars_controller
                     $event->delete();
                     return $return;
                 }
-                return '<div id="calendar_event_form"><p class="xform-warning">'.pz_i18n::msg('calendar_event_not_exists').'</p></div>';
+                return '<div id="calendar_event_form"><p class="yform-warning">'.pz_i18n::msg('calendar_event_not_exists').'</p></div>';
 
             case('copy2job_calendar_event'):
                 $calendar_event_id = rex_request('calendar_event_id', 'string');
@@ -152,7 +152,7 @@ class pz_calendars_controller_screen extends pz_calendars_controller
 
                     return $return;
                 }
-                return '<div id="calendar_event_form"><p class="xform-warning">'.pz_i18n::msg('calendar_event_not_exists').'</p></div>';
+                return '<div id="calendar_event_form"><p class="yform-warning">'.pz_i18n::msg('calendar_event_not_exists').'</p></div>';
 
             case('get_flyout_calendar_event'):
                 $return = '';
@@ -162,7 +162,7 @@ class pz_calendars_controller_screen extends pz_calendars_controller
                     $return .= '<div id="calendar_event_view" class="design1col">'.$cs->getFlyoutEventView($p).'</div>';
                     $return .= '<script>$("#calendar_event_view .flyout").css("display","block");</script>';
                 } else {
-                    $return .= '<div id="calendar_event_view" class="design1col"><p class="xform-warning">'.pz_i18n::msg('calendar_event_not_exists').'</p></div>';
+                    $return .= '<div id="calendar_event_view" class="design1col"><p class="yform-warning">'.pz_i18n::msg('calendar_event_not_exists').'</p></div>';
                 }
                 return $return;
 
@@ -824,7 +824,7 @@ class pz_calendars_controller_screen extends pz_calendars_controller
             $return .= '<script>pz_tracker();</script>';
             return $return;
         } else {
-            $return .= '<p class="xform-warning">' . pz_i18n::msg('calendar_event_not_exists') . '</p>';
+            $return .= '<p class="yform-warning">' . pz_i18n::msg('calendar_event_not_exists') . '</p>';
             return $return;
         }
     }

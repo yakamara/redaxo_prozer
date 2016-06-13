@@ -162,27 +162,27 @@ class pz_tools_controller_screen extends pz_tools_controller
           </div>
         </header>';
 
-        $xform = new rex_xform();
-        $xform->setObjectparams('real_field_names', true);
-        $xform->setObjectparams('form_showformafterupdate', true);
-        $xform->setObjectparams('form_action',
+        $yform = new rex_yform();
+        $yform->setObjectparams('real_field_names', true);
+        $yform->setObjectparams('form_showformafterupdate', true);
+        $yform->setObjectparams('form_action',
             "javascript:pz_loadFormPage('jobs_list','job_search_form','".pz::url('screen', 'tools', $this->function)."')");
-        $xform->setObjectparams('form_id', 'job_search_form');
-        $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl', 'runtime']);
-        $xform->setValueField('text', ['search_title', pz_i18n::msg('title')]);
+        $yform->setObjectparams('form_id', 'job_search_form');
+        $yform->setValueField('objparams', ['fragment', 'pz_screen_yform.tpl', 'runtime']);
+        $yform->setValueField('text', ['search_title', pz_i18n::msg('title')]);
 
-        $xform->setValueField('pz_date_screen', ['search_date_from', pz_i18n::msg('search_date_from')]);
-        $xform->setValueField('pz_date_screen', ['search_date_to', pz_i18n::msg('search_date_to')]);
+        $yform->setValueField('pz_date_screen', ['search_date_from', pz_i18n::msg('search_date_from')]);
+        $yform->setValueField('pz_date_screen', ['search_date_to', pz_i18n::msg('search_date_to')]);
 
         $projects = pz::getUser()->getCalendarProjects();
-        $xform->setValueField('pz_select_screen', ['search_project_id', pz_i18n::msg('project'), pz_project::getProjectsAsString($projects), '', '', 0, pz_i18n::msg('please_choose')]);
-        $xform->setValueField('pz_select_screen', ['search_customer_id', pz_i18n::msg('customer'), pz::getUser()->getCustomersAsString(), '', '', 0, pz_i18n::msg('please_choose')]);
+        $yform->setValueField('select', ['search_project_id', pz_i18n::msg('project'), pz_project::getProjectsAsString($projects), '', '', 0, pz_i18n::msg('please_choose')]);
+        $yform->setValueField('select', ['search_customer_id', pz_i18n::msg('customer'), pz::getUser()->getCustomersAsString(), '', '', 0, pz_i18n::msg('please_choose')]);
 
-        $xform->setValueField('submit', ['submit', pz_i18n::msg('search'), '', 'search']);
-        $xform->setValueField('hidden', ['mode', 'list']);
-        $searchform .= $xform->getForm();
+        $yform->setValueField('submit', ['submit', pz_i18n::msg('search'), '', 'search']);
+        $yform->setValueField('hidden', ['mode', 'list']);
+        $searchform .= $yform->getForm();
 
-        $searchform = '<div id="job_search" class="design1col xform-search">'.$searchform.'</div>';
+        $searchform = '<div id="job_search" class="design1col yform-search">'.$searchform.'</div>';
 
         // ----------------------- jobliste
 
@@ -272,16 +272,16 @@ class pz_tools_controller_screen extends pz_tools_controller
                     if ($email_account_id > 0 && $email_account_id == pz::getUser()->getDefaultEmailAccountId()) {
                         pz::getUser()->saveDefaultUserEmailAccount();
                     }
-                    $p['info'] = '<p class="xform-info">'.pz_i18n::msg('email_account_delete').'</p>';
+                    $p['info'] = '<p class="yform-info">'.pz_i18n::msg('email_account_delete').'</p>';
                 } else {
-                    $p['info'] = '<p class="xform-warning">'.pz_i18n::msg('email_account_not_exists').'</p>';
+                    $p['info'] = '<p class="yform-warning">'.pz_i18n::msg('email_account_not_exists').'</p>';
                 }
             case('default_user_email_account'):
                 $default_account_id = rex_request('default_account_id', 'int', 0);
                 if (empty($email_account_id) && ($default_account_id > 0 || $default_account_id != pz::getUser()->getDefaultEmailAccountId())) {
-                    $p[ 'info' ] = '<p class="xform-info">' . pz_i18n::msg('default_email_account_not_changed') . '</p>';
+                    $p[ 'info' ] = '<p class="yform-info">' . pz_i18n::msg('default_email_account_not_changed') . '</p>';
                     if (pz::getUser()->saveDefaultUserEmailAccount($default_account_id)) {
-                        $p[ 'info' ] = '<p class="xform-info">' . pz_i18n::msg('default_email_account_changed') . '</p>';
+                        $p[ 'info' ] = '<p class="yform-info">' . pz_i18n::msg('default_email_account_changed') . '</p>';
                     }
                 }
             case('list'):
@@ -298,7 +298,7 @@ class pz_tools_controller_screen extends pz_tools_controller
                     $cs = new pz_email_account_screen($email_account);
                     return $cs->getEditForm($p);
                 } else {
-                    return '<p class="xform-warning">'.pz_i18n::msg('email_account_not_exists').'</p>';
+                    return '<p class="yform-warning">'.pz_i18n::msg('email_account_not_exists').'</p>';
                 }
                 break;
             case(''):

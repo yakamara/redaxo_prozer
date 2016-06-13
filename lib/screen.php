@@ -61,11 +61,11 @@ class pz_screen
     {
         $themes = [
             'blue_grey' => '/assets/addons/prozer/themes/blue_grey',
-//      'magneto_dark' => '/assets/addons/prozer/themes/magneto_dark',
             'mountain' => '/assets/addons/prozer/themes/mountain',
         ];
 
-        $themes = rex_register_extension_point('PROZER_THEMES', $themes, []);
+        $ep = new rex_extension_point('PROZER_THEMES', $themes, []);
+        rex_extension::registerPoint($ep);
 
         return $themes;
     }

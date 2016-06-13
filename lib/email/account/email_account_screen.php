@@ -119,55 +119,55 @@ class pz_email_account_screen
           </div>
         </header>';
 
-        $xform = new rex_xform();
-        // $xform->setDebug(TRUE);
+        $yform = new rex_yform();
+        // $yform->setDebug(TRUE);
 
-        $xform->setObjectparams('main_table', 'pz_email_account');
-        $xform->setObjectparams('main_id', $this->email_account->getId());
-        $xform->setObjectparams('main_where', 'id='.$this->email_account->getId());
-        $xform->setObjectparams('getdata', true);
-        $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('email_account_edit','email_account_edit_form','".pz::url('screen', $p['controll'], $p['function'], ['mode' => 'edit_email_account'])."')");
-        $xform->setObjectparams('form_id', 'email_account_edit_form');
-        $xform->setObjectparams('form_showformafterupdate', 1);
+        $yform->setObjectparams('main_table', 'pz_email_account');
+        $yform->setObjectparams('main_id', $this->email_account->getId());
+        $yform->setObjectparams('main_where', 'id='.$this->email_account->getId());
+        $yform->setObjectparams('getdata', true);
+        $yform->setObjectparams('form_action', "javascript:pz_loadFormPage('email_account_edit','email_account_edit_form','".pz::url('screen', $p['controll'], $p['function'], ['mode' => 'edit_email_account'])."')");
+        $yform->setObjectparams('form_id', 'email_account_edit_form');
+        $yform->setObjectparams('form_showformafterupdate', 1);
 
-        $xform->setHiddenField('email_account_id', $this->email_account->getId());
-        $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl']);
+        $yform->setHiddenField('email_account_id', $this->email_account->getId());
+        $yform->setValueField('objparams', ['fragment', 'pz_screen_yform.tpl']);
 
-        $xform->setValueField('text', ['name', pz_i18n::msg('email_account_name'), '', '0']);
-        $xform->setValidateField('empty', ['name', pz_i18n::msg('error_email_account_name_empty')]);
-        $xform->setValueField('text', ['email', pz_i18n::msg('email_account_email'), '', '0']);
+        $yform->setValueField('text', ['name', pz_i18n::msg('email_account_name'), '', '0']);
+        $yform->setValidateField('empty', ['name', pz_i18n::msg('error_email_account_name_empty')]);
+        $yform->setValueField('text', ['email', pz_i18n::msg('email_account_email'), '', '0']);
 
-        $xform->setValueField('pz_select_screen', ['mailboxtype', pz_i18n::msg('email_account_mailboxtype'), 'imap,pop3']);
+        $yform->setValueField('select', ['mailboxtype', pz_i18n::msg('email_account_mailboxtype'), 'imap,pop3']);
 
-        $xform->setValueField('text', ['host', pz_i18n::msg('email_account_host'), '', '0']);
-        $xform->setValueField('text', ['login', pz_i18n::msg('email_account_login'), '', '0']);
-        $xform->setValueField('text', ['password', pz_i18n::msg('email_account_password'), '', '0']);
-        $xform->setValueField('text', ['smtp', pz_i18n::msg('email_account_smtp_host'), '', '0']);
-        $xform->setValueField('text', ['smtp_login', pz_i18n::msg('email_account_smtp_login'), '', '0']);
-        $xform->setValueField('text', ['smtp_password', pz_i18n::msg('email_account_smtp_password'), '', '0']);
+        $yform->setValueField('text', ['host', pz_i18n::msg('email_account_host'), '', '0']);
+        $yform->setValueField('text', ['login', pz_i18n::msg('email_account_login'), '', '0']);
+        $yform->setValueField('text', ['password', pz_i18n::msg('email_account_password'), '', '0']);
+        $yform->setValueField('text', ['smtp', pz_i18n::msg('email_account_smtp_host'), '', '0']);
+        $yform->setValueField('text', ['smtp_login', pz_i18n::msg('email_account_smtp_login'), '', '0']);
+        $yform->setValueField('text', ['smtp_password', pz_i18n::msg('email_account_smtp_password'), '', '0']);
 
 
-        $xform->setValueField('textarea', ['signature', pz_i18n::msg('email_account_signature'), '', '0']);
+        $yform->setValueField('textarea', ['signature', pz_i18n::msg('email_account_signature'), '', '0']);
 
-        $xform->setValueField('checkbox', ['ssl', pz_i18n::msg('email_account_secure_download'), '', 1]);
-        $xform->setValueField('checkbox', ['delete_emails', pz_i18n::msg('email_account_delete_emails'), '', 1]);
-        $xform->setValueField('checkbox', ['status', pz_i18n::msg('active'), '', 1]);
+        $yform->setValueField('checkbox', ['ssl', pz_i18n::msg('email_account_secure_download'), '', 1]);
+        $yform->setValueField('checkbox', ['delete_emails', pz_i18n::msg('email_account_delete_emails'), '', 1]);
+        $yform->setValueField('checkbox', ['status', pz_i18n::msg('active'), '', 1]);
 
-        $xform->setValueField('datestamp', ['created', 'mysql', '', '0', '1']);
-        $xform->setValueField('datestamp', ['updated', 'mysql', '', '0', '0']);
+        $yform->setValueField('datestamp', ['created', 'mysql', '', '0', '1']);
+        $yform->setValueField('datestamp', ['updated', 'mysql', '', '0', '0']);
 
-        $xform->setActionField('db', ['pz_email_account', 'id='.$this->email_account->getId()]);
+        $yform->setActionField('db', ['pz_email_account', 'id='.$this->email_account->getId()]);
 
-        $return = $xform->getForm();
+        $return = $yform->getForm();
 
-        if ($xform->getObjectparams('actions_executed')) {
+        if ($yform->getObjectparams('actions_executed')) {
             $this->email_account->update();
-            $return = $header.'<p class="xform-info">'.pz_i18n::msg('email_account_updated').'</p>'.$return;
+            $return = $header.'<p class="yform-info">'.pz_i18n::msg('email_account_updated').'</p>'.$return;
             $return .= pz_screen::getJSUpdateLayer('email_accounts_list', pz::url('screen', $p['controll'], $p['function'], ['mode' => 'list']));
         } else {
             $return = $header.$return;
         }
-        $return = '<div id="email_account_form"><div id="email_account_edit" class="design1col xform-edit">'.$return.'</div></div>';
+        $return = '<div id="email_account_form"><div id="email_account_edit" class="design1col yform-edit">'.$return.'</div></div>';
 
         return $return;
     }
@@ -181,55 +181,55 @@ class pz_email_account_screen
 	          </div>
 	        </header>';
 
-        $xform = new rex_xform();
-        // $xform->setDebug(TRUE);
+        $yform = new rex_yform();
+        // $yform->setDebug(TRUE);
 
-        $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('email_account_add','email_account_add_form','".pz::url('screen', $p['controll'], $p['function'], ['mode' => 'add_email_account'])."')");
-        $xform->setObjectparams('form_id', 'email_account_add_form');
-        $xform->setObjectparams('form_showformafterupdate', 1);
+        $yform->setObjectparams('form_action', "javascript:pz_loadFormPage('email_account_add','email_account_add_form','".pz::url('screen', $p['controll'], $p['function'], ['mode' => 'add_email_account'])."')");
+        $yform->setObjectparams('form_id', 'email_account_add_form');
+        $yform->setObjectparams('form_showformafterupdate', 1);
 
-        $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl']);
+        $yform->setValueField('objparams', ['fragment', 'pz_screen_yform.tpl']);
 
-        $xform->setValueField('text', ['name', pz_i18n::msg('email_account_name'), '', '0']);
-        $xform->setValidateField('empty', ['name', pz_i18n::msg('error_email_account_name_empty')]);
-        $xform->setValueField('text', ['email', pz_i18n::msg('email_account_email'), '', '0']);
+        $yform->setValueField('text', ['name', pz_i18n::msg('email_account_name'), '', '0']);
+        $yform->setValidateField('empty', ['name', pz_i18n::msg('error_email_account_name_empty')]);
+        $yform->setValueField('text', ['email', pz_i18n::msg('email_account_email'), '', '0']);
 
-        $xform->setValueField('pz_select_screen', ['mailboxtype', pz_i18n::msg('email_account_mailboxtype'), 'imap,pop3']);
+        $yform->setValueField('select', ['mailboxtype', pz_i18n::msg('email_account_mailboxtype'), 'imap,pop3']);
 
-        $xform->setValueField('text', ['host', pz_i18n::msg('email_account_host'), '', '0']);
-        $xform->setValueField('text', ['login', pz_i18n::msg('email_account_login'), '', '0']);
-        $xform->setValueField('text', ['password', pz_i18n::msg('email_account_password'), '', '0']);
-        $xform->setValueField('text', ['smtp', pz_i18n::msg('email_account_smtp_host'), '', '0']);
-        $xform->setValueField('text', ['smtp_login', pz_i18n::msg('email_account_smtp_login'), '', '0']);
-        $xform->setValueField('text', ['smtp_password', pz_i18n::msg('email_account_smtp_password'), '', '0']);
+        $yform->setValueField('text', ['host', pz_i18n::msg('email_account_host'), '', '0']);
+        $yform->setValueField('text', ['login', pz_i18n::msg('email_account_login'), '', '0']);
+        $yform->setValueField('text', ['password', pz_i18n::msg('email_account_password'), '', '0']);
+        $yform->setValueField('text', ['smtp', pz_i18n::msg('email_account_smtp_host'), '', '0']);
+        $yform->setValueField('text', ['smtp_login', pz_i18n::msg('email_account_smtp_login'), '', '0']);
+        $yform->setValueField('text', ['smtp_password', pz_i18n::msg('email_account_smtp_password'), '', '0']);
 
-        $xform->setValueField('textarea', ['signature', pz_i18n::msg('email_account_signature'), '', '0']);
+        $yform->setValueField('textarea', ['signature', pz_i18n::msg('email_account_signature'), '', '0']);
 
-        $xform->setValueField('checkbox', ['ssl', pz_i18n::msg('email_account_secure_download'), '', '1']);
-        $xform->setValueField('checkbox', ['delete_emails', pz_i18n::msg('email_account_delete_emails'), '', '1']);
-        $xform->setValueField('checkbox', ['status', pz_i18n::msg('active'), '', '1']);
+        $yform->setValueField('checkbox', ['ssl', pz_i18n::msg('email_account_secure_download'), '', '1']);
+        $yform->setValueField('checkbox', ['delete_emails', pz_i18n::msg('email_account_delete_emails'), '', '1']);
+        $yform->setValueField('checkbox', ['status', pz_i18n::msg('active'), '', '1']);
 
-        $xform->setValueField('datestamp', ['created', 'mysql', '', '0', '1']);
-        $xform->setValueField('datestamp', ['updated', 'mysql', '', '0', '0']);
+        $yform->setValueField('datestamp', ['created', 'mysql', '', '0', '1']);
+        $yform->setValueField('datestamp', ['updated', 'mysql', '', '0', '0']);
 
-        $xform->setValueField('hidden', ['user_id', pz::getUser()->getId()]);
+        $yform->setValueField('hidden', ['user_id', pz::getUser()->getId()]);
 
-        $xform->setActionField('db', ['pz_email_account']);
+        $yform->setActionField('db', ['pz_email_account']);
 
-        $return = $xform->getForm();
+        $return = $yform->getForm();
 
-        if ($xform->getObjectparams('actions_executed')) {
-            $customer_id = $xform->getObjectparams('main_id');
+        if ($yform->getObjectparams('actions_executed')) {
+            $customer_id = $yform->getObjectparams('main_id');
             if ($customer = pz_customer::get($customer_id)) {
                 $customer->create();
             }
-            $return = $header.'<p class="xform-info">'.pz_i18n::msg('email_account_added').'</p>';
+            $return = $header.'<p class="yform-info">'.pz_i18n::msg('email_account_added').'</p>';
             $return .= pz_screen::getJSUpdateLayer('email_accounts_list', pz::url('screen', $p['controll'], $p['function'], ['mode' => 'list']));
         } else {
             $return = $header.$return;
         }
 
-        $return = '<div id="email_account_form"><div id="email_account_add" class="design1col xform-add">'.$return.'</div></div>';
+        $return = '<div id="email_account_form"><div id="email_account_add" class="design1col yform-add">'.$return.'</div></div>';
 
         return $return;
     }

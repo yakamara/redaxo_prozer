@@ -25,7 +25,7 @@
         <li class="selected<?php echo ($this->class_selected != '') ? ' '.$this->class_selected : ''; ?>"><span class="selected"><?php echo $this->selected; ?></span>
         
         <?php
-          // Flayout nur anzeigen, wenn Entries vorhanden (XForm disabled wird nichts uebergeben)
+          // Flayout nur anzeigen, wenn Entries vorhanden (yform disabled wird nichts uebergeben)
           if (count($this->entries) > 0)
           {
         ?>
@@ -69,7 +69,7 @@
                   if (isset($entry['checkbox']) && $entry['checkbox'] != '')
                   {
                     $tag = 'label';
-                    $entry_checkbox = '<span class="xform-checkbox">'.$entry['checkbox'].'</span>';
+                    $entry_checkbox = '<span class="yform-checkbox">'.$entry['checkbox'].'</span>';
                     
                     if (isset($entry['attributes']['href']))
                       unset($entry['attributes']['href']);

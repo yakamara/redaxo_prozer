@@ -51,29 +51,29 @@ class pz_project_screen
 	          </div>
 	        </header>';
 
-        $xform = new rex_xform();
-        $xform->setObjectparams('real_field_names', true);
-        $xform->setObjectparams('form_showformafterupdate', true);
+        $yform = new rex_yform();
+        $yform->setObjectparams('real_field_names', true);
+        $yform->setObjectparams('form_showformafterupdate', true);
 
-        $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('projects_list','project_search_form','".pz::url('screen', 'projects', $p['function'], ['mode' => 'list'])."')");
-        $xform->setObjectparams('form_id', 'project_search_form');
-        $xform->setObjectparams('form_name', 'project_search_form');
+        $yform->setObjectparams('form_action', "javascript:pz_loadFormPage('projects_list','project_search_form','".pz::url('screen', 'projects', $p['function'], ['mode' => 'list'])."')");
+        $yform->setObjectparams('form_id', 'project_search_form');
+        $yform->setObjectparams('form_name', 'project_search_form');
 
-        $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl', 'runtime']);
-        $xform->setValueField('text', ['search_name', pz_i18n::msg('project_name')]);
-        $xform->setValueField('pz_select_screen', ['search_label', pz_i18n::msg('project_label'), pz_labels::getAsString(), '', '', 0, pz_i18n::msg('please_choose')]);
-        $xform->setValueField('pz_select_screen', ['search_customer', pz_i18n::msg('customer'), pz_customers::getAsString(), '', '', 0, pz_i18n::msg('please_choose')]);
-        $xform->setValueField('pz_select_screen', ['search_projectuser', pz_i18n::msg('project_admins_short'), pz::getActiveAdminUsersAsString(), '', '', 0, pz_i18n::msg('please_choose')]);
+        $yform->setValueField('objparams', ['fragment', 'pz_screen_yform.tpl', 'runtime']);
+        $yform->setValueField('text', ['search_name', pz_i18n::msg('project_name')]);
+        $yform->setValueField('select', ['search_label', pz_i18n::msg('project_label'), pz_labels::getAsString(), '', '', 0, pz_i18n::msg('please_choose')]);
+        $yform->setValueField('select', ['search_customer', pz_i18n::msg('customer'), pz_customers::getAsString(), '', '', 0, pz_i18n::msg('please_choose')]);
+        $yform->setValueField('select', ['search_projectuser', pz_i18n::msg('project_admins_short'), pz::getActiveAdminUsersAsString(), '', '', 0, pz_i18n::msg('please_choose')]);
 
         if (!in_array('myprojects', $ignore_fields)) {
-            $xform->setValueField('checkbox', ['search_myprojects', pz_i18n::msg('myprojects')]);
+            $yform->setValueField('checkbox', ['search_myprojects', pz_i18n::msg('myprojects')]);
         }
 
-        // $xform->setValueField('pz_date_screen',array('search_datetime', pz_i18n::msg('createdate')));
-        $xform->setValueField('submit', ['submit', pz_i18n::msg('search'), '', 'search']);
-        $return .= $xform->getForm();
+        // $yform->setValueField('pz_date_screen',array('search_datetime', pz_i18n::msg('createdate')));
+        $yform->setValueField('submit', ['submit', pz_i18n::msg('search'), '', 'search']);
+        $return .= $yform->getForm();
 
-        $return = '<div id="project_search" class="design1col xform-search">'.$return.'</div>';
+        $return = '<div id="project_search" class="design1col yform-search">'.$return.'</div>';
         return $return;
     }
 
@@ -172,50 +172,50 @@ class pz_project_screen
 	          </div>
 	        </header>';
 
-        $xform = new rex_xform();
-        // $xform->setDebug(TRUE);
+        $yform = new rex_yform();
+        // $yform->setDebug(TRUE);
 
-        $xform->setObjectparams('main_table', 'pz_project');
-        $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('project_add','project_add_form','".pz::url('screen', 'projects', 'all', ['mode' => 'add_form'])."')");
+        $yform->setObjectparams('main_table', 'pz_project');
+        $yform->setObjectparams('form_action', "javascript:pz_loadFormPage('project_add','project_add_form','".pz::url('screen', 'projects', 'all', ['mode' => 'add_form'])."')");
 
-        $xform->setObjectparams('form_id', 'project_add_form');
+        $yform->setObjectparams('form_id', 'project_add_form');
 
         $filter = [];
         $filter[] = ['field' => 'archived', 'value' => 0, 'type' => '='];
         $customer_string = pz::getUser()->getCustomersAsString($filter);
 
-        $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl']);
-        $xform->setValueField('text', ['name', pz_i18n::msg('project_name'), '', '0']);
-        $xform->setValidateField('empty', ['name', pz_i18n::msg('error_project_enter_name')]);
-        $xform->setValueField('textarea', ['description', pz_i18n::msg('project_description'), '', '0']);
-        $xform->setValueField('pz_select_screen', ['label_id', pz_i18n::msg('project_label'), pz_labels::getAsString(), '', '', 0]);
-        $xform->setValueField('datestamp', ['created', 'mysql', '', '0', '1']);
-        $xform->setValueField('datestamp', ['updated', 'mysql', '', '0', '0']);
-        $xform->setValueField('pz_select_screen', ['customer_id', pz_i18n::msg('project_customer'), $customer_string, '', '', 0, pz_i18n::msg('please_choose')]);
-        $xform->setValueField('hidden', ['create_user_id', pz::getUser()->getId()]);
-        $xform->setValueField('hidden', ['update_user_id', pz::getUser()->getId()]);
-        $xform->setValueField('hidden', ['archived', 0]);
-        $xform->setValueField('checkbox', ['has_emails', pz_i18n::msg('emails'), '', '1']);
-        $xform->setValueField('checkbox', ['has_calendar', pz_i18n::msg('calendar_events'), '', '1']);
-        $xform->setValueField('checkbox', ['has_calendar_jobs', pz_i18n::msg('calendar_jobs'), '', '1']);
-        $xform->setValueField("checkbox", ['has_wiki', pz_i18n::msg('wiki'),'','1']);
-        $xform->setValueField('checkbox', ['has_files', pz_i18n::msg('files'), '', '1']);
+        $yform->setValueField('objparams', ['fragment', 'pz_screen_yform.tpl']);
+        $yform->setValueField('text', ['name', pz_i18n::msg('project_name'), '', '0']);
+        $yform->setValidateField('empty', ['name', pz_i18n::msg('error_project_enter_name')]);
+        $yform->setValueField('textarea', ['description', pz_i18n::msg('project_description'), '', '0']);
+        $yform->setValueField('select', ['label_id', pz_i18n::msg('project_label'), pz_labels::getAsString(), '', '', 0]);
+        $yform->setValueField('datestamp', ['created', 'mysql', '', '0', '1']);
+        $yform->setValueField('datestamp', ['updated', 'mysql', '', '0', '0']);
+        $yform->setValueField('select', ['customer_id', pz_i18n::msg('project_customer'), $customer_string, '', '', 0, pz_i18n::msg('please_choose')]);
+        $yform->setValueField('hidden', ['create_user_id', pz::getUser()->getId()]);
+        $yform->setValueField('hidden', ['update_user_id', pz::getUser()->getId()]);
+        $yform->setValueField('hidden', ['archived', 0]);
+        $yform->setValueField('checkbox', ['has_emails', pz_i18n::msg('emails'), '', '1']);
+        $yform->setValueField('checkbox', ['has_calendar', pz_i18n::msg('calendar_events'), '', '1']);
+        $yform->setValueField('checkbox', ['has_calendar_jobs', pz_i18n::msg('calendar_jobs'), '', '1']);
+        $yform->setValueField("checkbox", ['has_wiki', pz_i18n::msg('wiki'),'','1']);
+        $yform->setValueField('checkbox', ['has_files', pz_i18n::msg('files'), '', '1']);
 
-        $xform->setActionField('db', []);
-        $return = $xform->getForm();
+        $yform->setActionField('db', []);
+        $return = $yform->getForm();
 
-        if ($xform->getObjectparams('actions_executed')) {
-            $project_id = $xform->getObjectparams('main_id');
+        if ($yform->getObjectparams('actions_executed')) {
+            $project_id = $yform->getObjectparams('main_id');
             if ($project = pz_project::get($project_id)) {
                 $project->create();
             }
-            $return = $header.'<p class="xform-info">'.pz_i18n::msg('project_added').'</p>'.$return;
+            $return = $header.'<p class="yform-info">'.pz_i18n::msg('project_added').'</p>'.$return;
             //$return .= pz_screen::getJSUpdateLayer('projects_list', pz::url('projects', $p['controll'], $p['function'], ['mode' => 'list']));
             $return .= pz_screen::getJSUpdatePage(pz::url('screen', 'project', 'user', ['project_id' => $project_id]));
         } else {
             $return = $header.$return;
         }
-        $return = '<div id="project_add" class="design1col xform-add">'.$return.'</div>';
+        $return = '<div id="project_add" class="design1col yform-add">'.$return.'</div>';
 
         return $return;
     }
@@ -229,47 +229,47 @@ class pz_project_screen
 	          </div>
 	        </header>';
 
-        $xform = new rex_xform();
-        // $xform->setDebug(TRUE);
+        $yform = new rex_yform();
+        // $yform->setDebug(TRUE);
 
-        $xform->setObjectparams('real_field_names', true);
-        $xform->setObjectparams('main_table', 'pz_project');
-        $xform->setObjectparams('main_id', $this->project->getId());
-        $xform->setObjectparams('main_where', 'id='.$this->project->getId());
-        $xform->setObjectparams('getdata', true);
-        $xform->setHiddenField('project_id', $this->project->getId());
+        $yform->setObjectparams('real_field_names', true);
+        $yform->setObjectparams('main_table', 'pz_project');
+        $yform->setObjectparams('main_id', $this->project->getId());
+        $yform->setObjectparams('main_where', 'id='.$this->project->getId());
+        $yform->setObjectparams('getdata', true);
+        $yform->setHiddenField('project_id', $this->project->getId());
 
-        $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('project_edit','project_edit_form','".pz::url('screen', 'project', 'view', ['mode' => 'edit_form'])."')");
-        $xform->setObjectparams('form_id', 'project_edit_form');
-        $xform->setObjectparams('form_showformafterupdate', 1);
+        $yform->setObjectparams('form_action', "javascript:pz_loadFormPage('project_edit','project_edit_form','".pz::url('screen', 'project', 'view', ['mode' => 'edit_form'])."')");
+        $yform->setObjectparams('form_id', 'project_edit_form');
+        $yform->setObjectparams('form_showformafterupdate', 1);
 
-        $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl']);
-        $xform->setValueField('text', ['name', pz_i18n::msg('project_name'), '', '0', '', '', '', '', '']);
-        $xform->setValidateField('empty', ['name', pz_i18n::msg('error_project_enter_name')]);
-        $xform->setValueField('textarea', ['description', pz_i18n::msg('project_description'), '', '0', '', '', '', '', '']);
-        $xform->setValueField('pz_select_screen', ['label_id', pz_i18n::msg('project_label'), pz_labels::getAsString(), '', '', '0']);
-        $xform->setValueField('datestamp', ['updated', 'mysql', '', '0', '0']);
-        $xform->setValueField('pz_select_screen', ['customer_id', pz_i18n::msg('project_customer'), pz_customers::getAsString(), '', '', 0, pz_i18n::msg('please_choose')]);
-        $xform->setValueField('hidden', ['update_user_id', pz::getUser()->getId()]);
-        $xform->setValueField('checkbox', ['has_emails', pz_i18n::msg('emails'), '', '1']);
-        $xform->setValueField('checkbox', ['has_calendar', pz_i18n::msg('calendar_events'), '', '1']);
-        $xform->setValueField('checkbox', ['has_calendar_jobs', pz_i18n::msg('calendar_jobs'), '', '1']);
-        $xform->setValueField("checkbox", ['has_wiki',pz_i18n::msg('wiki'),'','1']);
-        $xform->setValueField('checkbox', ['has_files', pz_i18n::msg('files'), '', '1']);
-        $xform->setValueField('checkbox', ['archived', pz_i18n::msg('archived'), '', '1']);
+        $yform->setValueField('objparams', ['fragment', 'pz_screen_yform.tpl']);
+        $yform->setValueField('text', ['name', pz_i18n::msg('project_name'), '', '0', '', '', '', '', '']);
+        $yform->setValidateField('empty', ['name', pz_i18n::msg('error_project_enter_name')]);
+        $yform->setValueField('textarea', ['description', pz_i18n::msg('project_description'), '', '0', '', '', '', '', '']);
+        $yform->setValueField('select', ['label_id', pz_i18n::msg('project_label'), pz_labels::getAsString(), '', '', '0']);
+        $yform->setValueField('datestamp', ['updated', 'mysql', '', '0', '0']);
+        $yform->setValueField('select', ['customer_id', pz_i18n::msg('project_customer'), pz_customers::getAsString(), '', '', 0, pz_i18n::msg('please_choose')]);
+        $yform->setValueField('hidden', ['update_user_id', pz::getUser()->getId()]);
+        $yform->setValueField('checkbox', ['has_emails', pz_i18n::msg('emails'), '', '1']);
+        $yform->setValueField('checkbox', ['has_calendar', pz_i18n::msg('calendar_events'), '', '1']);
+        $yform->setValueField('checkbox', ['has_calendar_jobs', pz_i18n::msg('calendar_jobs'), '', '1']);
+        $yform->setValueField("checkbox", ['has_wiki',pz_i18n::msg('wiki'),'','1']);
+        $yform->setValueField('checkbox', ['has_files', pz_i18n::msg('files'), '', '1']);
+        $yform->setValueField('checkbox', ['archived', pz_i18n::msg('archived'), '', '1']);
 
-        $xform->setActionField('db', ['pz_project', 'id='.$this->project->getId()]);
+        $yform->setActionField('db', ['pz_project', 'id='.$this->project->getId()]);
 
-        $return = $xform->getForm();
+        $return = $yform->getForm();
 
-        if ($xform->getObjectparams('actions_executed')) {
+        if ($yform->getObjectparams('actions_executed')) {
             $this->project->update();
-            $return  = $header.'<p class="xform-info">'.pz_i18n::msg('project_updated').'</p>'.$return;
+            $return  = $header.'<p class="yform-info">'.pz_i18n::msg('project_updated').'</p>'.$return;
         } else {
             $return = $header.$return;
         }
 
-        $return = '<div id="project_edit" class="design1col xform-edit">'.$return.'</div>';
+        $return = '<div id="project_edit" class="design1col yform-edit">'.$return.'</div>';
 
         return $return;
     }
@@ -283,33 +283,33 @@ class pz_project_screen
 	          </div>
 	        </header>';
 
-        $xform = new rex_xform();
-        $xform->setObjectparams('main_table', 'pz_project');
-        $xform->setObjectparams('main_id', $this->project->getId());
-        $xform->setObjectparams('main_where', 'id='.$this->project->getId());
-        $xform->setObjectparams('getdata', true);
-        $xform->setObjectparams('form_id', 'project_view_form');
-        $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl']);
-        $xform->setValueField('objparams', ['submit_btn_show', false]);
+        $yform = new rex_yform();
+        $yform->setObjectparams('main_table', 'pz_project');
+        $yform->setObjectparams('main_id', $this->project->getId());
+        $yform->setObjectparams('main_where', 'id='.$this->project->getId());
+        $yform->setObjectparams('getdata', true);
+        $yform->setObjectparams('form_id', 'project_view_form');
+        $yform->setValueField('objparams', ['fragment', 'pz_screen_yform.tpl']);
+        $yform->setValueField('objparams', ['submit_btn_show', false]);
 
-        $xform->setValueField('text', ['name', pz_i18n::msg('project_name'), '', '0', 'disabled' => true]);
-        $xform->setValueField('textarea', ['description', pz_i18n::msg('project_description'), '', '0', 'disabled' => true]);
+        $yform->setValueField('text', ['name', pz_i18n::msg('project_name'), '', '0', 'disabled' => true]);
+        $yform->setValueField('textarea', ['description', pz_i18n::msg('project_description'), '', '0', 'disabled' => true]);
 
         /*
-                // $xform->setValueField("pz_select_screen",array("label_id",pz_i18n::msg("project_label"),pz_labels::getAsString(), '', '', '0','disabled'=>TRUE));
-                // $xform->setValueField("pz_select_screen",array("customer_id",pz_i18n::msg("project_customer"),pz_customers::getAsString(),"","",1,pz_i18n::msg("please_choose"),'disabled'=>TRUE));
+                // $yform->setValueField("select",array("label_id",pz_i18n::msg("project_label"),pz_labels::getAsString(), '', '', '0','disabled'=>TRUE));
+                // $yform->setValueField("select",array("customer_id",pz_i18n::msg("project_customer"),pz_customers::getAsString(),"","",1,pz_i18n::msg("please_choose"),'disabled'=>TRUE));
 
 
-                $xform->setValueField("checkbox",array("has_calendar",pz_i18n::msg("calendar"),"","1"));
-                $xform->setValueField("checkbox",array("has_wiki",pz_i18n::msg("wiki"),"","1"));
-                $xform->setValueField("checkbox",array("has_files",pz_i18n::msg("files"),"","1"));
-                $xform->setValueField("checkbox",array("has_emails",pz_i18n::msg("emails"),"","1"));
-                $xform->setValueField("checkbox",array("archived",pz_i18n::msg("archived"),"","1"));
+                $yform->setValueField("checkbox",array("has_calendar",pz_i18n::msg("calendar"),"","1"));
+                $yform->setValueField("checkbox",array("has_wiki",pz_i18n::msg("wiki"),"","1"));
+                $yform->setValueField("checkbox",array("has_files",pz_i18n::msg("files"),"","1"));
+                $yform->setValueField("checkbox",array("has_emails",pz_i18n::msg("emails"),"","1"));
+                $yform->setValueField("checkbox",array("archived",pz_i18n::msg("archived"),"","1"));
         */
 
-        $return = $header.$xform->getForm();
+        $return = $header.$yform->getForm();
 
-        $return = '<div id="project_view" class="design1col xform-view">'.$return.'</div>';
+        $return = '<div id="project_view" class="design1col yform-view">'.$return.'</div>';
 
         return $return;
     }
@@ -343,7 +343,7 @@ class pz_project_screen
 
         $style = 'style="width: 35%; display: inline-block;"';
         $content = '
-            <div class="xform">
+            <div class="yform">
                 <ul>
                     '.implode("",$li).'
                 </ul>

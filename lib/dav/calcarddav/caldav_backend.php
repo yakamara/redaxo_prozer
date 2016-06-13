@@ -401,7 +401,7 @@ class pz_sabre_caldav_backend extends AbstractBackend
     {
         list($rawCalendarId, $jobs) = self::splitCalendarId($calendarId);
 
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $sql->setQuery('
             SELECT project_id FROM ' . pz_calendar_event::TABLE . ' WHERE project_id = :project_id AND uri = :uri AND user_id != :user_id
             UNION
@@ -507,7 +507,7 @@ class pz_sabre_caldav_backend extends AbstractBackend
             $this->setRuleValues($todo, $pzRule);
             $pzRule->save();
         } elseif ($hasRule) {
-            pz_sql::factory()->setQuery('
+            rex_sql::factory()->setQuery('
                 DELETE r
                 FROM ' . pz_calendar_rule::TABLE . ' r
                 WHERE r.todo_id = ?
@@ -587,7 +587,7 @@ class pz_sabre_caldav_backend extends AbstractBackend
                 $eventIn = implode(',', array_fill(0, count($eventIds), '?'));
                 $ruleIn = implode(',', array_fill(0, count($ruleIds), '?'));
                 $params = array_merge($ruleIds, $eventIds);
-                pz_sql::factory()->setQuery('
+                rex_sql::factory()->setQuery('
                     DELETE e, at, al
                     FROM ' . pz_calendar_event::TABLE . ' e
                     LEFT JOIN ' . pz_calendar_attendee::TABLE . ' at
@@ -598,7 +598,7 @@ class pz_sabre_caldav_backend extends AbstractBackend
                 ', $params);
             }
         } elseif ($hasRule) {
-            pz_sql::factory()->setQuery('
+            rex_sql::factory()->setQuery('
                 DELETE r, e, at, al
                 FROM ' . pz_calendar_rule::TABLE . ' r
                 LEFT JOIN ' . pz_calendar_event::TABLE . ' e
@@ -719,9 +719,9 @@ class pz_sabre_caldav_backend extends AbstractBackend
             $pzAttendees[] = $pzAttendee;
         }
 
-        $sqlLogin = pz_sql::factory();
+        $sqlLogin = rex_sql::factory();
         $sqlLogin->prepareQuery('SELECT id, name, email FROM pz_user WHERE LOWER(login) = ? LIMIT 2');
-        $sqlEmail = pz_sql::factory();
+        $sqlEmail = rex_sql::factory();
         $sqlEmail->prepareQuery('
             SELECT DISTINCT(u.id), u.name, u.email
             FROM pz_user u
@@ -916,7 +916,7 @@ class pz_sabre_caldav_backend extends AbstractBackend
     {
         list($rawCalendarId, $jobs) = self::splitCalendarId($calendarId);
 
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
 
         $pzEvent = pz_calendar_event::getByProjectUri($rawCalendarId, $objectUri, $jobs);
 
@@ -1009,7 +1009,7 @@ class pz_sabre_caldav_backend extends AbstractBackend
 
         $backend = new self();
         if (!$status['uri']) {
-            $sql = pz_sql::factory();
+            $sql = rex_sql::factory();
             $sql->setQuery('SELECT UPPER(UUID()) as uid');
             $backend->createCalendarObject($projectId.'_events', $sql->getValue('uid') . '.ics', $data);
         } elseif (!$status['event']) {
@@ -1091,7 +1091,7 @@ END:VCALENDAR';
     {
         list($calendarId, $jobs, $todos) = self::splitCalendarId($calendarId);
 
-        $sql = pz_sql::factory()
+        $sql = rex_sql::factory()
             ->setTable('pz_project_user')
             ->setWhere(['project_id' => $calendarId, 'user_id' => pz::getUser()->getId()]);
         if ($jobs) {

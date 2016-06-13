@@ -21,7 +21,7 @@ class pz_project_directory extends pz_project_node
         $params[] = $this->getId();
         $sql_files = 'SELECT * FROM pz_project_file WHERE project_id = ? AND parent_id = ? AND is_directory = 0 ORDER BY '.implode(',', $order_sql).' LIMIT 1000'; // without LIMIT UNION wont work
 
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         // $sql->debugsql = 1;
         $array = $sql->getArray('('.$sql_folder.') UNION ALL ('.$sql_files.')', $params);
         $children = [];
@@ -33,7 +33,7 @@ class pz_project_directory extends pz_project_node
 
     public function getChild($name)
     {
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $params = [$this->vars['project_id'], $name, $this->getId()];
         $array = $sql->getArray('SELECT * FROM pz_project_file WHERE project_id = ? AND name = ? AND parent_id = ? LIMIT 2', $params);
         if (count($array) != 1) {
@@ -79,7 +79,7 @@ class pz_project_directory extends pz_project_node
             return false;
         }
 
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $sql->setTable('pz_project_file')
             ->setValue('name', $name)
             ->setValue('parent_id', $this->getId())
@@ -118,17 +118,17 @@ class pz_project_root_directory extends pz_project_directory
 
     public function moveTo(pz_project_directory $destination, $name = null)
     {
-        throw new pz_exception('The project root directory can not be moved!');
+        throw new rex_exception('The project root directory can not be moved!');
     }
 
     public function delete()
     {
-        throw new pz_exception('The project root directory can not be deleted!');
+        throw new rex_exception('The project root directory can not be deleted!');
     }
 
     public function getAllPaths()
     {
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $ps = $sql->getArray('SELECT id, name, parent_id FROM pz_project_file WHERE project_id = '. $this->getProjectId() .' AND is_directory = 1 ORDER BY name');
         $paths = [];
         foreach ($ps as $p) {

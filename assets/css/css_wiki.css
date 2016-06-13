@@ -38,7 +38,7 @@
 
 
 
-.wiki-editor .xform {
+.wiki-editor .yform {
     padding: 0;
     background-color: transparent;
     border: 0;
@@ -46,37 +46,37 @@
 .wiki-editor .data .flabel {
     font-weight: 700;
 }
-.wiki-editor .data.xform-text .flabel, 
-.wiki-editor .data.xform-textarea .flabel {
+.wiki-editor .data.yform-text .flabel,
+.wiki-editor .data.yform-textarea .flabel {
     display: block;
     float: none;
 }
-.wiki-editor .data.xform-text input[type="text"], 
-.wiki-editor .data.xform-text .felement, 
-.wiki-editor .data.xform-textarea .felement, 
-.wiki-editor .data.xform-textarea textarea {
+.wiki-editor .data.yform-text input[type="text"],
+.wiki-editor .data.yform-text .felement,
+.wiki-editor .data.yform-textarea .felement,
+.wiki-editor .data.yform-textarea textarea {
     max-width: none;
     width: 100%;
     height: auto;
     padding-top: 5px;
     padding-bottom: 5px;
 }
-.wiki-editor .data.xform-checkbox .felement {
+.wiki-editor .data.yform-checkbox .felement {
     width: 20px;
 }
-.wiki-editor .xform1.data.xform-checkbox .flabel {
+.wiki-editor .yform1.data.yform-checkbox .flabel {
     max-width: none;
     width: 680px;
 }
-.wiki-editor .data.xform-text input[type="text"], 
-.wiki-editor .data.xform-textarea textarea {
+.wiki-editor .data.yform-text input[type="text"],
+.wiki-editor .data.yform-textarea textarea {
     border-right-width: 1px;
     border-right-style: solid;
     border-bottom-width: 1px;
     border-bottom-style: solid;
     border-color: #d8d8d8 !important;
 }
-.wiki-editor .data.xform-textarea textarea {
+.wiki-editor .data.yform-textarea textarea {
     height: 390px;
     resize: vertical;
     font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;

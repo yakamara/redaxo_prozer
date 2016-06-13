@@ -41,7 +41,7 @@ class pz_history
 
         $w = pz::getFilter($filter);
 
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $sql->setQuery('select * from pz_history ' . $w['where_sql'] . ' order by stamp desc '.$limit_query, $w['params']);
 
         $history_entries = [];

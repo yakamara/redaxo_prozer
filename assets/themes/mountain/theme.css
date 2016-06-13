@@ -199,14 +199,14 @@ a.bt3:hover, a.bt3.active {
 	border-color: #86a20b;
 }
 
-input.xform-submit.search[type="submit"] {
+input.yform-submit.search[type="submit"] {
 	padding-left: 25px;
 }
 
 a.bt2,
-.xform-submit[type="submit"],
-.xform-search-small input[type="submit"], 
-input.xform-submit.search[type="submit"] {
+.yform-submit[type="submit"],
+.yform-search-small input[type="submit"],
+input.yform-submit.search[type="submit"] {
 	font-family: "Open Sans Condensed" !important;
 	font-weight: 600;
 	text-transform: uppercase;
@@ -220,17 +220,17 @@ input.xform-submit.search[type="submit"] {
 	font-size: 14px;
 	line-height: 21px;
 }
-.xform-search-small input[type="submit"] {
+.yform-search-small input[type="submit"] {
 	text-indent: -1000em;
 }
-input.xform-submit.search[type="submit"] {
+input.yform-submit.search[type="submit"] {
 	padding-left: 25px;
 	background-position: 5px 50%;
 }
 
 a.bt2:hover, 
 /* li:hover a.bt2, --- wg. customer-list in kommentar */
-.xform-submit[type="submit"]:hover {
+.yform-submit[type="submit"]:hover {
 	background-color: #1d598f;
 	background: -moz-linear-gradient(top, #1d598f 50%, #003F75 50%);
 	background: -webkit-gradient(linear, 0 0, 0 100%, from(#1d598f), color-stop(50%, #1d598f), color-stop(50%, #003F75));
@@ -239,8 +239,8 @@ a.bt2:hover,
 	background: linear-gradient(top, #1d598f 50%, #003F75 50%);
 	border-color: #003F75;
 }
-.xform-search-small input[type="submit"]:hover, 
-input.xform-submit.search[type="submit"]:hover {
+.yform-search-small input[type="submit"]:hover,
+input.yform-submit.search[type="submit"]:hover {
 	background: #1d598f url(ic_magnifier_013_013.png) 50% 50% no-repeat;
 	background: url(ic_magnifier_013_013.png) 50% 50% no-repeat, -moz-linear-gradient(top, #1d598f 50%, #003F75 50%);
 	background: url(ic_magnifier_013_013.png) 50% 50% no-repeat, -webkit-gradient(linear, 0 0, 0 100%, from(#1d598f), color-stop(50%, #1d598f), color-stop(50%, #003F75));
@@ -249,7 +249,7 @@ input.xform-submit.search[type="submit"]:hover {
 	background: url(ic_magnifier_013_013.png) 50% 50% no-repeat, linear-gradient(top, #1d598f 50%, #003F75 50%);
 	border-color: #003F75;
 }
-input.xform-submit.search[type="submit"]:hover {
+input.yform-submit.search[type="submit"]:hover {
 	background-position: 5px 50%;
 }
 
@@ -413,10 +413,10 @@ a.bt17.inactive:hover {
 	background-image: url(bt_upload.png);
 	background-repeat: repeat;
 }
-.xform1.data .bt-upload {
+.yform1.data .bt-upload {
 	margin-left: 85px;
 }
-.design2col .xform1.data .bt-upload {
+.design2col .yform1.data .bt-upload {
 	margin-left: 129px;
 }
 
@@ -434,35 +434,35 @@ a.bt17.inactive:hover {
 	box-shadow: 0px 0px 4px #989799;
 }
 
-.xform .xform1.xform-date input[type=text],
-.xform .xform1.xform-number input[type=number],
-.xform .xform1 input[type=text],
-.xform .xform1 input[type=password],
-.xform .xform1 select[multiple=multiple],
-.xform .xform1 textarea,
-.xform .xform2 input[type=text],
-.xform .xform2 textarea {
+.yform .yform1.yform-date input[type=text],
+.yform .yform1.yform-number input[type=number],
+.yform .yform1 input[type=text],
+.yform .yform1 input[type=password],
+.yform .yform1 select[multiple=multiple],
+.yform .yform1 textarea,
+.yform .yform2 input[type=text],
+.yform .yform2 textarea {
 	background: #f7f7f7;
 	border: 1px solid #B6B6B6;
 	border-radius: 3px;
 }
-.xform input[type="text"]:hover,
-.xform input[type="text"]:focus,
-.xform input[type="number"]:hover,
-.xform input[type="number"]:focus,
-.xform input[type="password"]:hover,
-.xform input[type="password"]:focus,
-.xform textarea:hover, .xform textarea:focus {
+.yform input[type="text"]:hover,
+.yform input[type="text"]:focus,
+.yform input[type="number"]:hover,
+.yform input[type="number"]:focus,
+.yform input[type="password"]:hover,
+.yform input[type="password"]:focus,
+.yform textarea:hover, .yform textarea:focus {
 	border: 1px solid #828282 !important;
 }
-.xform .xform1.xform-date input[type=text]:focus,
-.xform .xform1.xform-number input[type=number]:focus,
-.xform .xform1 input[type=text]:focus,
-.xform .xform1 input[type=password]:focus,
-.xform .xform1 select[multiple=multiple]:focus,
-.xform .xform1 textarea:focus,
-.xform .xform2 input[type=text]:focus,
-.xform .xform2 textarea:focus {
+.yform .yform1.yform-date input[type=text]:focus,
+.yform .yform1.yform-number input[type=number]:focus,
+.yform .yform1 input[type=text]:focus,
+.yform .yform1 input[type=password]:focus,
+.yform .yform1 select[multiple=multiple]:focus,
+.yform .yform1 textarea:focus,
+.yform .yform2 input[type=text]:focus,
+.yform .yform2 textarea:focus {
 	color: #404040;
 	background: white;
 	border: 1px solid #808080 !important;
@@ -472,7 +472,7 @@ a.bt17.inactive:hover {
 	outline: none;
 }   
 a.bt2,
-.xform-submit[type="submit"] {
+.yform-submit[type="submit"] {
 	background: #86a20b;
 	padding: 0 10px;
 	line-height: 26px;
@@ -489,7 +489,7 @@ a.bt2,
 	border-color: #86a20b;
 }
 a.bt2:hover, 
-.xform-submit[type="submit"]:hover {
+.yform-submit[type="submit"]:hover {
 	background-color: #1d598f;
 	background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0) 51%, rgba(0, 0, 0, 0.05));
 	background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0) 51%, rgba(0, 0, 0, 0.05));
@@ -609,10 +609,10 @@ article.open {
 	background-color: #86A20B !important;
 }
 
-.xform-info, 
-.xform-warning, 
-.xform > .xform-warning, 
-.xform label.xform-warning {
+.yform-info,
+.yform-warning,
+.yform > .yform-warning,
+.yform label.yform-warning {
 	padding: 2px 5px;
 	background-color: #00ae57;
 	color: #fff;
@@ -732,7 +732,7 @@ ul.sl1 li.selected span.selected {
 .calendar table.overview td.today a {
 	border-color: #86A20B;
 }
-.xform .xform1.xform-date input[type=text], .xform .xform2 input[type=text], .xform .xform2 textarea {
+.yform .yform1.yform-date input[type=text], .yform .yform2 input[type=text], .yform .yform2 textarea {
 	margin-right: 1px;
 }
 .data.sl1-navi-butler .sl1, .data.fdate1-sl3-sl1-navi-butler .sl3 {
@@ -894,26 +894,26 @@ ul.sl1.light li.selected span.selected {
 .setting .first > ul {
 	margin-left: 0;
 }
-#email_form .xform,
-#emails_search .xform,
-#project_add .xform,
-#project_search .xform,
-#calendar_event_add .xform,
-#project_edit .xform,
-#address_edit .xform,
-#addresses_search .xform,
-#address_add .xform,
-#user_form .xform,
-#user_form2 .xform,
-#user_edit_password .xform,
-#job_search .xform,
-#api_view .xform,
-#user_perm_add .xform,
-#users_search .xform,
-#history_search .xform,
-#email_account_add .xform,
-#server_view .xform,
-#area_section2 .xform {
+#email_form .yform,
+#emails_search .yform,
+#project_add .yform,
+#project_search .yform,
+#calendar_event_add .yform,
+#project_edit .yform,
+#address_edit .yform,
+#addresses_search .yform,
+#address_add .yform,
+#user_form .yform,
+#user_form2 .yform,
+#user_edit_password .yform,
+#job_search .yform,
+#api_view .yform,
+#user_perm_add .yform,
+#users_search .yform,
+#history_search .yform,
+#email_account_add .yform,
+#server_view .yform,
+#area_section2 .yform {
 	background: rgba(255, 255, 255, 0.4);
 	border: 1px solid #d8d8d8;
 }

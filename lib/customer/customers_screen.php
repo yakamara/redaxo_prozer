@@ -18,19 +18,19 @@ class pz_customers_screen
 	          </div>
 	        </header>';
 
-        $xform = new rex_xform();
-        $xform->setObjectparams('real_field_names', true);
-        $xform->setObjectparams('form_showformafterupdate', true);
-        $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('customers_list','customer_search_form','".pz::url('screen', 'projects', 'customers', ['mode' => 'list'])."')");
-        $xform->setObjectparams('form_id', 'customer_search_form');
+        $yform = new rex_yform();
+        $yform->setObjectparams('real_field_names', true);
+        $yform->setObjectparams('form_showformafterupdate', true);
+        $yform->setObjectparams('form_action', "javascript:pz_loadFormPage('customers_list','customer_search_form','".pz::url('screen', 'projects', 'customers', ['mode' => 'list'])."')");
+        $yform->setObjectparams('form_id', 'customer_search_form');
 
-        $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl', 'runtime']);
-        $xform->setValueField('text', ['search_name', pz_i18n::msg('project_name')]);
-        $xform->setValueField('checkbox', ['archived', pz_i18n::msg('archived'), '', '0']);
-        $xform->setValueField('submit', ['submit', pz_i18n::msg('search'), '', 'search']);
-        $return .= $xform->getForm();
+        $yform->setValueField('objparams', ['fragment', 'pz_screen_yform.tpl', 'runtime']);
+        $yform->setValueField('text', ['search_name', pz_i18n::msg('project_name')]);
+        $yform->setValueField('checkbox', ['archived', pz_i18n::msg('archived'), '', '0']);
+        $yform->setValueField('submit', ['submit', pz_i18n::msg('search'), '', 'search']);
+        $return .= $yform->getForm();
 
-        $return = '<div id="customer_search" class="design1col xform-search">'.$return.'</div>';
+        $return = '<div id="customer_search" class="design1col yform-search">'.$return.'</div>';
 
         return $return;
     }

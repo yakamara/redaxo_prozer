@@ -4,7 +4,7 @@
     "require": {
         "ircmaxell/password-compat": "~1.0",
         "sabre/dav": "~3.0",
-        "kzykhys/ciconia": "~1.0@dev"
+        "kzykhys/ciconia": "~1.0@dev",
     },
 
     "repositories": [

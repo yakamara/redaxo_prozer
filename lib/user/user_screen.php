@@ -260,18 +260,18 @@ class pz_user_screen
           </div>
         </header>';
 
-        $xform = new rex_xform();
-        $xform->setObjectparams('real_field_names', true);
-        $xform->setObjectparams('form_showformafterupdate', true);
-        $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('users_list','users_search_form','".pz::url($p['mediaview'], $p['controll'], $p['function'])."')");
-        $xform->setObjectparams('form_id', 'users_search_form');
-        $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl', 'runtime']);
-        $xform->setValueField('text', ['search_name', pz_i18n::msg('name')]);
-        $xform->setValueField('submit', ['submit', pz_i18n::msg('search'), '', 'search']);
-        $xform->setValueField('hidden', ['mode', 'list']);
-        $searchform = $xform->getForm();
+        $yform = new rex_yform();
+        $yform->setObjectparams('real_field_names', true);
+        $yform->setObjectparams('form_showformafterupdate', true);
+        $yform->setObjectparams('form_action', "javascript:pz_loadFormPage('users_list','users_search_form','".pz::url($p['mediaview'], $p['controll'], $p['function'])."')");
+        $yform->setObjectparams('form_id', 'users_search_form');
+        $yform->setValueField('objparams', ['fragment', 'pz_screen_yform.tpl', 'runtime']);
+        $yform->setValueField('text', ['search_name', pz_i18n::msg('name')]);
+        $yform->setValueField('submit', ['submit', pz_i18n::msg('search'), '', 'search']);
+        $yform->setValueField('hidden', ['mode', 'list']);
+        $searchform = $yform->getForm();
 
-        $return = '<div id="users_search" class="design1col xform-search">'.$header.$searchform.'</div>';
+        $return = '<div id="users_search" class="design1col yform-search">'.$header.$searchform.'</div>';
 
         return $return;
     }
@@ -340,9 +340,9 @@ class pz_user_screen
 
         $return = $header;
 
-        $return .= '<div class="xform">'.pz_i18n::msg('api_info', $this->user->getAPIKey()).'</div>';
+        $return .= '<div class="yform">'.pz_i18n::msg('api_info', $this->user->getAPIKey()).'</div>';
 
-        $return = '<div id="api_form"><div id="api_view" class="design1col xform-edit">'.$return.'</div></div>';
+        $return = '<div id="api_form"><div id="api_view" class="design1col yform-edit">'.$return.'</div></div>';
 
         return $return;
     }
@@ -358,59 +358,59 @@ class pz_user_screen
           </div>
         </header>';
 
-        $xform = new rex_xform();
-        // $xform->setDebug(TRUE);
+        $yform = new rex_yform();
+        // $yform->setDebug(TRUE);
 
-        $xform->setObjectparams('main_table', 'pz_user');
-        $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('user_form','user_add_form','".pz::url($p['mediaview'], $p['controll'], $p['function'], ['mode' => 'add_user'])."')");
-        $xform->setObjectparams('form_id', 'user_add_form');
+        $yform->setObjectparams('main_table', 'pz_user');
+        $yform->setObjectparams('form_action', "javascript:pz_loadFormPage('user_form','user_add_form','".pz::url($p['mediaview'], $p['controll'], $p['function'], ['mode' => 'add_user'])."')");
+        $yform->setObjectparams('form_id', 'user_add_form');
 
-        $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl']);
-        $xform->setValueField('text', ['name', pz_i18n::msg('name')]);
-        $xform->setValidateField('empty', ['name', pz_i18n::msg('error_name_empty')]);
-        $xform->setValueField('text', ['login', pz_i18n::msg('login')]);
-        $xform->setValidateField('empty', ['login', pz_i18n::msg('error_login_empty')]);
-        $xform->setValidateField('unique', ['login', pz_i18n::msg('error_login_unique')]);
-        $xform->setValueField('text', ['password', pz_i18n::msg('password')]);
+        $yform->setValueField('objparams', ['fragment', 'pz_screen_yform.tpl']);
+        $yform->setValueField('text', ['name', pz_i18n::msg('name')]);
+        $yform->setValidateField('empty', ['name', pz_i18n::msg('error_name_empty')]);
+        $yform->setValueField('text', ['login', pz_i18n::msg('login')]);
+        $yform->setValidateField('empty', ['login', pz_i18n::msg('error_login_empty')]);
+        $yform->setValidateField('unique', ['login', pz_i18n::msg('error_login_unique')]);
+        $yform->setValueField('text', ['password', pz_i18n::msg('password')]);
 
-        $xform->setValueField('text', ['email', pz_i18n::msg('email')]);
-        $xform->setValidateField('empty', ['email', pz_i18n::msg('error_email_empty')]);
-        $xform->setValidateField('unique', ['email', pz_i18n::msg('error_email_unique')]);
+        $yform->setValueField('text', ['email', pz_i18n::msg('email')]);
+        $yform->setValidateField('empty', ['email', pz_i18n::msg('error_email_empty')]);
+        $yform->setValidateField('unique', ['email', pz_i18n::msg('error_email_unique')]);
 
-        $xform->setValueField('checkbox', ['status', pz_i18n::msg('active'), '', '0']);
-        $xform->setValueField('checkbox', ['admin', pz_i18n::msg('admin').' ('.pz_i18n::msg('admin_info').')', '', '0']);
+        $yform->setValueField('checkbox', ['status', pz_i18n::msg('active'), '', '0']);
+        $yform->setValueField('checkbox', ['admin', pz_i18n::msg('admin').' ('.pz_i18n::msg('admin_info').')', '', '0']);
 
-        $xform->setValueField('datestamp', ['created', 'mysql', '', '0', '1']);
-        $xform->setValueField('datestamp', ['updated', 'mysql', '', '0', '0']);
+        $yform->setValueField('datestamp', ['created', 'mysql', '', '0', '1']);
+        $yform->setValueField('datestamp', ['updated', 'mysql', '', '0', '0']);
 
-        $xform->setValueField('checkbox', ['webdav', pz_i18n::msg('webdav').' ('.pz_i18n::msg('webdav_info').')', '', '0', 'no_db']);
-        $xform->setValueField('checkbox', ['carddav', pz_i18n::msg('carddav').' ('.pz_i18n::msg('carddav_info').')', '', '0', 'no_db']);
-        $xform->setValueField('checkbox', ['projectsadmin', pz_i18n::msg('projectsadmin').' ('.pz_i18n::msg('projectsadmin_info').')', '', '0', 'no_db']);
+        $yform->setValueField('checkbox', ['webdav', pz_i18n::msg('webdav').' ('.pz_i18n::msg('webdav_info').')', '', '0', 'no_db']);
+        $yform->setValueField('checkbox', ['carddav', pz_i18n::msg('carddav').' ('.pz_i18n::msg('carddav_info').')', '', '0', 'no_db']);
+        $yform->setValueField('checkbox', ['projectsadmin', pz_i18n::msg('projectsadmin').' ('.pz_i18n::msg('projectsadmin_info').')', '', '0', 'no_db']);
 
-        $xform->setValueField('text', ['comment', pz_i18n::msg('user_comment')]);
+        $yform->setValueField('text', ['comment', pz_i18n::msg('user_comment')]);
 
-        $xform->setActionField('db', ['pz_user']);
+        $yform->setActionField('db', ['pz_user']);
 
-        $return = $xform->getForm();
+        $return = $yform->getForm();
 
-        if ($xform->getObjectparams('actions_executed')) {
-            $user_id = $xform->getObjectparams('main_id');
+        if ($yform->getObjectparams('actions_executed')) {
+            $user_id = $yform->getObjectparams('main_id');
             if ($user = pz_user::get($user_id)) {
-                $webdav = $xform->objparams['value_pool']['email']['webdav'];
+                $webdav = $yform->objparams['value_pool']['email']['webdav'];
                 if ($webdav == 1) {
                     $user->addPerm('webdav');
                 } else {
                     $user->removePerm('webdav');
                 }
 
-                $carddav = $xform->objparams['value_pool']['email']['carddav'];
+                $carddav = $yform->objparams['value_pool']['email']['carddav'];
                 if ($carddav == 1) {
                     $user->addPerm('carddav');
                 } else {
                     $user->removePerm('carddav');
                 }
 
-                $projectsadmin = $xform->objparams['value_pool']['email']['projectsadmin'];
+                $projectsadmin = $yform->objparams['value_pool']['email']['projectsadmin'];
                 if ($projectsadmin == 1) {
                     $user->addPerm('projectsadmin');
                 } else {
@@ -419,19 +419,19 @@ class pz_user_screen
 
                 $user->savePerm();
 
-                if ($xform->objparams['value_pool']['email']['password'] != '') {
-                    $user->passwordHash($xform->objparams['value_pool']['email']['password']);
+                if ($yform->objparams['value_pool']['email']['password'] != '') {
+                    $user->passwordHash($yform->objparams['value_pool']['email']['password']);
                 }
                 $user->update();
 
                 $user->create();
             }
-            $return = $header.'<p class="xform-info">'.pz_i18n::msg('user_added').'</p>'.$return;
+            $return = $header.'<p class="yform-info">'.pz_i18n::msg('user_added').'</p>'.$return;
             $return .= pz_screen::getJSLoadFormPage('users_list', 'users_search_form', pz::url($p['mediaview'], $p['controll'], $p['function'], ['mode' => 'list']));
         } else {
             $return = $header.$return;
         }
-        $return = '<div id="user_form"><div id="user_add" class="design1col xform-edit">'.$return.'</div></div>';
+        $return = '<div id="user_form"><div id="user_add" class="design1col yform-edit">'.$return.'</div></div>';
 
         return $return;
     }
@@ -445,67 +445,67 @@ class pz_user_screen
           </div>
         </header>';
 
-        $xform = new rex_xform();
-        // $xform->setDebug(TRUE);
+        $yform = new rex_yform();
+        // $yform->setDebug(TRUE);
 
-        $xform->setObjectparams('main_table', 'pz_user');
-        $xform->setObjectparams('main_id', $this->user->getId());
-        $xform->setObjectparams('main_where', 'id='.$this->user->getId());
-        $xform->setObjectparams('getdata', true);
+        $yform->setObjectparams('main_table', 'pz_user');
+        $yform->setObjectparams('main_id', $this->user->getId());
+        $yform->setObjectparams('main_where', 'id='.$this->user->getId());
+        $yform->setObjectparams('getdata', true);
 
-        $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('user_form','user_edit_form','".pz::url($p['mediaview'], $p['controll'], $p['function'], ['mode' => 'edit_user'])."')");
-        $xform->setObjectparams('form_id', 'user_edit_form');
-        $xform->setObjectparams('form_showformafterupdate', 1);
+        $yform->setObjectparams('form_action', "javascript:pz_loadFormPage('user_form','user_edit_form','".pz::url($p['mediaview'], $p['controll'], $p['function'], ['mode' => 'edit_user'])."')");
+        $yform->setObjectparams('form_id', 'user_edit_form');
+        $yform->setObjectparams('form_showformafterupdate', 1);
 
-        $xform->setHiddenField('user_id', $this->user->getId());
+        $yform->setHiddenField('user_id', $this->user->getId());
 
-        $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl']);
-        $xform->setValueField('text', ['name', pz_i18n::msg('name')]);
-        $xform->setValidateField('empty', ['name', pz_i18n::msg('error_name_empty')]);
+        $yform->setValueField('objparams', ['fragment', 'pz_screen_yform.tpl']);
+        $yform->setValueField('text', ['name', pz_i18n::msg('name')]);
+        $yform->setValidateField('empty', ['name', pz_i18n::msg('error_name_empty')]);
 
-        $xform->setValueField('text', ['login', pz_i18n::msg('login')]);
-        $xform->setValidateField('empty', ['login', pz_i18n::msg('error_login_empty')]);
-        $xform->setValidateField('unique', ['login', pz_i18n::msg('error_login_unique')]);
+        $yform->setValueField('text', ['login', pz_i18n::msg('login')]);
+        $yform->setValidateField('empty', ['login', pz_i18n::msg('error_login_empty')]);
+        $yform->setValidateField('unique', ['login', pz_i18n::msg('error_login_unique')]);
 
-        $xform->setValueField('password', ['password', pz_i18n::msg('password'), '', 'no_db']);
+        $yform->setValueField('password', ['password', pz_i18n::msg('password'), '', 'no_db']);
 
-        $xform->setValueField('text', ['email', pz_i18n::msg('email')]);
-        $xform->setValidateField('empty', ['email', pz_i18n::msg('error_email_empty')]);
-        $xform->setValidateField('unique', ['email', pz_i18n::msg('error_email_unique')]);
+        $yform->setValueField('text', ['email', pz_i18n::msg('email')]);
+        $yform->setValidateField('empty', ['email', pz_i18n::msg('error_email_empty')]);
+        $yform->setValidateField('unique', ['email', pz_i18n::msg('error_email_unique')]);
 
         if ($this->user->getId() != pz::getUser()->getId()) {
         }
-        $xform->setValueField('checkbox', ['status', pz_i18n::msg('active'), '', '0']);
-        $xform->setValueField('checkbox', ['admin', pz_i18n::msg('admin').' ('.pz_i18n::msg('admin_info').')', '', '0']);
+        $yform->setValueField('checkbox', ['status', pz_i18n::msg('active'), '', '0']);
+        $yform->setValueField('checkbox', ['admin', pz_i18n::msg('admin').' ('.pz_i18n::msg('admin_info').')', '', '0']);
 
-        $xform->setValueField('datestamp', ['updated', 'mysql', '', '0', '0']);
+        $yform->setValueField('datestamp', ['updated', 'mysql', '', '0', '0']);
 
-        $xform->setValueField('checkbox', ['webdav', pz_i18n::msg('webdav').' ('.pz_i18n::msg('webdav_info').')', '', $this->user->hasPerm('webdav'), 'no_db']);
-        $xform->setValueField('checkbox', ['carddav', pz_i18n::msg('carddav').' ('.pz_i18n::msg('carddav_info').')', '', $this->user->hasPerm('carddav'), 'no_db']);
-        $xform->setValueField('checkbox', ['projectsadmin', pz_i18n::msg('projectsadmin').' ('.pz_i18n::msg('projectsadmin_info').')', '', $this->user->hasPerm('projectsadmin'), 'no_db']);
+        $yform->setValueField('checkbox', ['webdav', pz_i18n::msg('webdav').' ('.pz_i18n::msg('webdav_info').')', '', $this->user->hasPerm('webdav'), 'no_db']);
+        $yform->setValueField('checkbox', ['carddav', pz_i18n::msg('carddav').' ('.pz_i18n::msg('carddav_info').')', '', $this->user->hasPerm('carddav'), 'no_db']);
+        $yform->setValueField('checkbox', ['projectsadmin', pz_i18n::msg('projectsadmin').' ('.pz_i18n::msg('projectsadmin_info').')', '', $this->user->hasPerm('projectsadmin'), 'no_db']);
 
-        $xform->setValueField('text', ['comment', pz_i18n::msg('user_comment')]);
+        $yform->setValueField('text', ['comment', pz_i18n::msg('user_comment')]);
 
-        $xform->setActionField('db', ['pz_user', 'id='.$this->user->getId()]);
+        $yform->setActionField('db', ['pz_user', 'id='.$this->user->getId()]);
 
-        $return = $xform->getForm();
+        $return = $yform->getForm();
 
-        if ($xform->getObjectparams('actions_executed')) {
-            $webdav = $xform->objparams['value_pool']['email']['webdav'];
+        if ($yform->getObjectparams('actions_executed')) {
+            $webdav = $yform->objparams['value_pool']['email']['webdav'];
             if ($webdav == 1) {
                 $this->user->addPerm('webdav');
             } else {
                 $this->user->removePerm('webdav');
             }
 
-            $carddav = $xform->objparams['value_pool']['email']['carddav'];
+            $carddav = $yform->objparams['value_pool']['email']['carddav'];
             if ($carddav == 1) {
                 $this->user->addPerm('carddav');
             } else {
                 $this->user->removePerm('carddav');
             }
 
-            $projectsadmin = $xform->objparams['value_pool']['email']['projectsadmin'];
+            $projectsadmin = $yform->objparams['value_pool']['email']['projectsadmin'];
             if ($projectsadmin == 1) {
                 $this->user->addPerm('projectsadmin');
             } else {
@@ -515,18 +515,18 @@ class pz_user_screen
             $this->user->savePerm();
 
             $this->user = pz_user::get($this->user->getId(), true);
-            if ($xform->objparams['value_pool']['email']['password'] != '') {
-                $this->user->passwordHash($xform->objparams['value_pool']['email']['password']);
+            if ($yform->objparams['value_pool']['email']['password'] != '') {
+                $this->user->passwordHash($yform->objparams['value_pool']['email']['password']);
             }
 
             $this->user->update();
 
-            $return = $header.'<p class="xform-info">'.pz_i18n::msg('user_updated').'</p>'.$return;
+            $return = $header.'<p class="yform-info">'.pz_i18n::msg('user_updated').'</p>'.$return;
             $return .= pz_screen::getJSLoadFormPage('users_list', 'users_search_form', pz::url($p['mediaview'], $p['controll'], $p['function'], ['mode' => 'list']));
         } else {
             $return = $header.$return;
         }
-        $return = '<div id="user_form"><div id="user_edit" class="design1col xform-edit">'.$return.'</div></div>';
+        $return = '<div id="user_form"><div id="user_edit" class="design1col yform-edit">'.$return.'</div></div>';
 
         return $return;
     }
@@ -540,55 +540,55 @@ class pz_user_screen
           </div>
         </header>';
 
-        $xform = new rex_xform();
+        $yform = new rex_yform();
 
-        $xform->setObjectparams('main_table', 'pz_user');
-        $xform->setObjectparams('main_id', $this->user->getId());
-        $xform->setObjectparams('main_where', 'id='.$this->user->getId());
-        $xform->setObjectparams('getdata', true);
+        $yform->setObjectparams('main_table', 'pz_user');
+        $yform->setObjectparams('main_id', $this->user->getId());
+        $yform->setObjectparams('main_where', 'id='.$this->user->getId());
+        $yform->setObjectparams('getdata', true);
 
-        $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('user_form','user_edit_form','".pz::url($p['mediaview'], $p['controll'], $p['function'], ['mode' => 'edit_user'])."')");
-        $xform->setObjectparams('form_id', 'user_edit_form');
-        $xform->setObjectparams('form_showformafterupdate', 1);
+        $yform->setObjectparams('form_action', "javascript:pz_loadFormPage('user_form','user_edit_form','".pz::url($p['mediaview'], $p['controll'], $p['function'], ['mode' => 'edit_user'])."')");
+        $yform->setObjectparams('form_id', 'user_edit_form');
+        $yform->setObjectparams('form_showformafterupdate', 1);
 
-        $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl']);
-        $xform->setValueField('text', ['name', pz_i18n::msg('name')]);
-        $xform->setValidateField('empty', ['name', pz_i18n::msg('error_name_empty')]);
+        $yform->setValueField('objparams', ['fragment', 'pz_screen_yform.tpl']);
+        $yform->setValueField('text', ['name', pz_i18n::msg('name')]);
+        $yform->setValidateField('empty', ['name', pz_i18n::msg('error_name_empty')]);
 
-        $xform->setValueField('text', ['login', pz_i18n::msg('login')]);
-        $xform->setValidateField('empty', ['login', pz_i18n::msg('error_login_empty')]);
-        $xform->setValidateField('unique', ['login', pz_i18n::msg('error_login_unique')]);
+        $yform->setValueField('text', ['login', pz_i18n::msg('login')]);
+        $yform->setValidateField('empty', ['login', pz_i18n::msg('error_login_empty')]);
+        $yform->setValidateField('unique', ['login', pz_i18n::msg('error_login_unique')]);
 
-        $xform->setValueField('text', ['email', pz_i18n::msg('email')]);
-        $xform->setValidateField('empty', ['email', pz_i18n::msg('error_email_empty')]);
-        $xform->setValidateField('unique', ['email', pz_i18n::msg('error_email_unique')]);
+        $yform->setValueField('text', ['email', pz_i18n::msg('email')]);
+        $yform->setValidateField('empty', ['email', pz_i18n::msg('error_email_empty')]);
+        $yform->setValidateField('unique', ['email', pz_i18n::msg('error_email_unique')]);
 
-        $xform->setValueField('pz_select_screen', ['account_id', pz_i18n::msg('default_email_account'), pz::getUser()->getEmailaccountsAsString(), '', '', 0]);
+        $yform->setValueField('select', ['account_id', pz_i18n::msg('default_email_account'), pz::getUser()->getEmailaccountsAsString(), '', '', 0]);
 
         $startpages = [];
         $startpages[] = ['id' => 'projects','label' => pz_i18n::msg('projects')];
         $startpages[] = ['id' => 'emails','label' => pz_i18n::msg('emails')];
         $startpages[] = ['id' => 'calendars','label' => pz_i18n::msg('calendars')];
 
-        $xform->setValueField('pz_select_screen', ['startpage', pz_i18n::msg('default_startpage_account'), $startpages, 'no_db', $this->user->getConfig('startpage'), 0]);
+        $yform->setValueField('select', ['startpage', pz_i18n::msg('default_startpage_account'), $startpages, 'no_db', $this->user->getConfig('startpage'), 0]);
 
-        $xform->setValueField('datestamp', ['updated', 'mysql', '', '0', '0']);
+        $yform->setValueField('datestamp', ['updated', 'mysql', '', '0', '0']);
 
-        $xform->setActionField('db', ['pz_user', 'id='.$this->user->getId()]);
+        $yform->setActionField('db', ['pz_user', 'id='.$this->user->getId()]);
 
-        $return = $xform->getForm();
+        $return = $yform->getForm();
 
-        if ($xform->getObjectparams('actions_executed')) {
+        if ($yform->getObjectparams('actions_executed')) {
             $this->user = pz_user::get($this->user->getId(), true);
-            $this->user->setConfig('startpage', $xform->objparams['value_pool']['email']['startpage']);
+            $this->user->setConfig('startpage', $yform->objparams['value_pool']['email']['startpage']);
             $this->user->saveConfig();
             $this->user->update();
-            $return = $header.'<p class="xform-info">'.pz_i18n::msg('user_updated').'</p>'.$return;
+            $return = $header.'<p class="yform-info">'.pz_i18n::msg('user_updated').'</p>'.$return;
             // $return .= pz_screen::getJSLoadFormPage('users_list','users_search_form',pz::url('screen','tools','users',array("mode"=>'list')));
         } else {
             $return = $header.$return;
         }
-        $return = '<div id="user_form"><div id="user_edit" class="design1col xform-edit">'.$return.'</div></div>';
+        $return = '<div id="user_form"><div id="user_edit" class="design1col yform-edit">'.$return.'</div></div>';
 
         return $return;
     }
@@ -602,42 +602,42 @@ class pz_user_screen
           </div>
         </header>';
 
-        $xform = new rex_xform();
+        $yform = new rex_yform();
 
-        $xform->setObjectparams('main_table', 'pz_user');
-        $xform->setObjectparams('main_id', $this->user->getId());
-        $xform->setObjectparams('main_where', 'id='.$this->user->getId());
-        $xform->setObjectparams('getdata', true);
+        $yform->setObjectparams('main_table', 'pz_user');
+        $yform->setObjectparams('main_id', $this->user->getId());
+        $yform->setObjectparams('main_where', 'id='.$this->user->getId());
+        $yform->setObjectparams('getdata', true);
 
-        $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('user_form_2','user_edit_password_form','".pz::url($p['mediaview'], $p['controll'], $p['function'], ['mode' => 'edit_password'])."')");
-        $xform->setObjectparams('form_id', 'user_edit_password_form');
-        $xform->setObjectparams('form_showformafterupdate', 1);
+        $yform->setObjectparams('form_action', "javascript:pz_loadFormPage('user_form_2','user_edit_password_form','".pz::url($p['mediaview'], $p['controll'], $p['function'], ['mode' => 'edit_password'])."')");
+        $yform->setObjectparams('form_id', 'user_edit_password_form');
+        $yform->setObjectparams('form_showformafterupdate', 1);
 
-        $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl']);
+        $yform->setValueField('objparams', ['fragment', 'pz_screen_yform.tpl']);
 
-        $xform->setValueField('password', ['password', pz_i18n::msg('password'), '', 'no_db']);
-        $xform->setValueField('password', ['password_2', pz_i18n::msg('password_reenter'), '', 'no_db']);
+        $yform->setValueField('password', ['password', pz_i18n::msg('password'), '', 'no_db']);
+        $yform->setValueField('password', ['password_2', pz_i18n::msg('password_reenter'), '', 'no_db']);
 
-        $xform->setValidateField('empty', ['password', pz_i18n::msg('error_password_empty')]);
+        $yform->setValidateField('empty', ['password', pz_i18n::msg('error_password_empty')]);
 
-        $xform->setValidateField('compare', ['password', 'password_2', pz_i18n::msg('error_passwords_different')]);
+        $yform->setValidateField('compare', ['password', 'password_2', pz_i18n::msg('error_passwords_different')]);
 
-        $return = $xform->getForm();
+        $return = $yform->getForm();
 
-        if ($xform->getObjectparams('actions_executed')) {
+        if ($yform->getObjectparams('actions_executed')) {
             $this->user = pz_user::get($this->user->getId(), true); // refresh data
 
-            if ($xform->objparams['value_pool']['email']['password'] != '') {
-                $this->user->passwordHash($xform->objparams['value_pool']['email']['password']);
+            if ($yform->objparams['value_pool']['email']['password'] != '') {
+                $this->user->passwordHash($yform->objparams['value_pool']['email']['password']);
             }
 
             $this->user->update();
             // $this->user->hashPassword();
-            $return = $header.'<p class="xform-info">'.pz_i18n::msg('user_password_updated').'</p>'.$return;
+            $return = $header.'<p class="yform-info">'.pz_i18n::msg('user_password_updated').'</p>'.$return;
         } else {
             $return = $header.$return;
         }
-        $return = '<div id="user_form_2"><div id="user_edit_password" class="design1col xform-edit">'.$return.'</div></div>';
+        $return = '<div id="user_form_2"><div id="user_edit_password" class="design1col yform-edit">'.$return.'</div></div>';
 
         return $return;
     }

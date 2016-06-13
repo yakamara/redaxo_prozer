@@ -432,9 +432,9 @@ class pz_project_controller_screen extends pz_project_controller
 
             case 'delete':
                 if ($this->project->deleteUser(rex_request('projectuser_id'))) {
-                    $p['info'] = '<p class="xform-info">' . pz_i18n::msg('projectuser_deleted') . '</p>';
+                    $p['info'] = '<p class="yform-info">' . pz_i18n::msg('projectuser_deleted') . '</p>';
                 } else {
-                    $p['info'] = '<p class="xform-warning">' . pz_i18n::msg('projectuser_deleted_failed') . '</p>';
+                    $p['info'] = '<p class="yform-warning">' . pz_i18n::msg('projectuser_deleted_failed') . '</p>';
                 }
 
             case 'list':
@@ -493,7 +493,7 @@ class pz_project_controller_screen extends pz_project_controller
                 $page = pz_wiki_page::get($id);
             }
             if ($page && 'tasklist' === $mode && $text = rex_post('text', 'string')) {
-                $sql = pz_sql::factory();
+                $sql = rex_sql::factory();
                 $sql->setQuery('UPDATE pz_wiki SET text = ?, update_user_id = ?, updated = NOW() WHERE id = ?', [stripslashes($text), pz::getUser()->getId(), $page->getId()]);
                 $page = pz_wiki_page::get($page->getId());
                 $page->update(pz_i18n::msg('wiki_page_tasklist_update'));
@@ -577,7 +577,7 @@ class pz_project_controller_screen extends pz_project_controller
                 $page = pz_wiki_page::get($id);
             }
             if ($page && 'tasklist' === $mode && $text = rex_post('text', 'string')) {
-                $sql = pz_sql::factory();
+                $sql = rex_sql::factory();
                 $sql->setQuery('UPDATE pz_wiki SET text = ?, update_user_id = ?, updated = NOW() WHERE id = ?', [stripslashes($text), pz::getUser()->getId(), $page->getId()]);
                 $page = pz_wiki_page::get($page->getId());
                 $page->update(pz_i18n::msg('wiki_page_tasklist_update'));
@@ -887,22 +887,22 @@ var click = {
               </div>
             </header>';
 
-        $xform = new rex_xform();
-        $xform->setObjectparams('real_field_names', true);
-        $xform->setObjectparams('form_showformafterupdate', true);
-        $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('projectjobs_list','projectjob_search_form','" . pz::url('screen', 'project', $this->function) . "')");
-        $xform->setObjectparams('form_id', 'projectjob_search_form');
-        $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl', 'runtime']);
-        $xform->setValueField('text', ['search_title', pz_i18n::msg('title')]);
-        $xform->setValueField('pz_date_screen', ['search_date_from', pz_i18n::msg('search_date_from')]);
-        $xform->setValueField('pz_date_screen', ['search_date_to', pz_i18n::msg('search_date_to')]);
+        $yform = new rex_yform();
+        $yform->setObjectparams('real_field_names', true);
+        $yform->setObjectparams('form_showformafterupdate', true);
+        $yform->setObjectparams('form_action', "javascript:pz_loadFormPage('projectjobs_list','projectjob_search_form','" . pz::url('screen', 'project', $this->function) . "')");
+        $yform->setObjectparams('form_id', 'projectjob_search_form');
+        $yform->setValueField('objparams', ['fragment', 'pz_screen_yform.tpl', 'runtime']);
+        $yform->setValueField('text', ['search_title', pz_i18n::msg('title')]);
+        $yform->setValueField('pz_date_screen', ['search_date_from', pz_i18n::msg('search_date_from')]);
+        $yform->setValueField('pz_date_screen', ['search_date_to', pz_i18n::msg('search_date_to')]);
 
-        $xform->setValueField('submit', ['submit', pz_i18n::msg('search'), '', 'search']);
-        $xform->setValueField('hidden', ['mode', 'list']);
-        $xform->setValueField('hidden', ['project_id', $this->project->getId()]);
-        $searchform .= $xform->getForm();
+        $yform->setValueField('submit', ['submit', pz_i18n::msg('search'), '', 'search']);
+        $yform->setValueField('hidden', ['mode', 'list']);
+        $yform->setValueField('hidden', ['project_id', $this->project->getId()]);
+        $searchform .= $yform->getForm();
 
-        $searchform = '<div id="projectjob_search" class="design1col xform-search">' . $searchform . '</div>';
+        $searchform = '<div id="projectjob_search" class="design1col yform-search">' . $searchform . '</div>';
 
         // ----------------------- jobliste
 
@@ -1234,7 +1234,7 @@ var click = {
                         return '<script>pz_loadClipboard();</script>';
                     }
                 } else {
-                    return '<p class="xform-warning">' . pz_i18n::msg('file_not_exists') . '</p>';
+                    return '<p class="yform-warning">' . pz_i18n::msg('file_not_exists') . '</p>';
                 }
 
             case 'clipboardfile2clipboard':
@@ -1275,7 +1275,7 @@ var click = {
                         return $return;
                     }
                 } else {
-                    return '<p class="xform-warning">' . pz_i18n::msg('folder_not_exists') . '</p>';
+                    return '<p class="yform-warning">' . pz_i18n::msg('folder_not_exists') . '</p>';
                 }
                 return '';
 
@@ -1290,7 +1290,7 @@ var click = {
                         return $cs->getEditFolderForm($this->project, $p);
                     }
                 } else {
-                    return '<p class="xform-warning">' . pz_i18n::msg('folder_not_exists') . '</p>';
+                    return '<p class="yform-warning">' . pz_i18n::msg('folder_not_exists') . '</p>';
                 }
                 return '';
 
@@ -1317,7 +1317,7 @@ var click = {
                         return $cs->getEditFileForm($this->project, $p);
                     }
                 } else {
-                    return '<p class="xform-warning">' . pz_i18n::msg('file_not_exists') . '</p>';
+                    return '<p class="yform-warning">' . pz_i18n::msg('file_not_exists') . '</p>';
                 }
                 break;
 
@@ -1331,7 +1331,7 @@ var click = {
                         return $return;
                     }
                 } else {
-                    return '<p class="xform-warning">' . pz_i18n::msg('folder_not_exists') . '</p>';
+                    return '<p class="yform-warning">' . pz_i18n::msg('folder_not_exists') . '</p>';
                 }
                 return '';
 
@@ -1419,7 +1419,7 @@ var click = {
                     $cs = new pz_project_sub_screen($project_sub);
                     return $cs->getEditForm($p);
                 }
-                return '<div id="project_sub_form"><p class="xform-warning">' . pz_i18n::msg('project_sub_not_found') . '</p></div>';
+                return '<div id="project_sub_form"><p class="yform-warning">' . pz_i18n::msg('project_sub_not_found') . '</p></div>';
 
             case 'project_sub_info':
                 $project_sub_id = rex_request('project_sub_id', 'int', 0);
@@ -1427,7 +1427,7 @@ var click = {
                     $cs = new pz_project_sub_screen($project_sub);
                     $section_2 = $cs->getInfoPage($p);
                 }
-                return '<div id="project_sub_form"><p class="xform-warning">' . pz_i18n::msg('project_sub_not_found') . '</p></div>';
+                return '<div id="project_sub_form"><p class="yform-warning">' . pz_i18n::msg('project_sub_not_found') . '</p></div>';
 
             default:
                 $project_subs = $this->project->getProjectSubs();

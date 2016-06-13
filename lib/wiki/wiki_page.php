@@ -132,7 +132,7 @@ class pz_wiki_page extends pz_model
 
     public static function get($id)
     {
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $sql->setQuery(self::getBaseQuery() . 'id = ? LIMIT 2', [$id]);
         if ($sql->getRows() != 1) {
             return null;
@@ -143,7 +143,7 @@ class pz_wiki_page extends pz_model
 
     public static function getStart($project_id)
     {
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $sql->setQuery(self::getBaseQuery() . 'project_id = ? ORDER BY created LIMIT 1', [$project_id]);
         if ($sql->getRows() != 1) {
             return null;
@@ -157,7 +157,7 @@ class pz_wiki_page extends pz_model
         $pages = [];
         if ($start = self::getStart($project_id)) {
             $pages[] = $start;
-            $sql = pz_sql::factory();
+            $sql = rex_sql::factory();
             $sql->setQuery(self::getBaseQuery() . 'project_id = ? AND id != ? ORDER BY title', [$project_id, $start->getId()]);
             foreach ($sql->getArray() as $row) {
                 $pages[] = new self($row);
@@ -177,7 +177,7 @@ class pz_wiki_page extends pz_model
 
     public function getVersion($id)
     {
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $sql->setQuery('SELECT * FROM pz_history WHERE control = "wiki" AND data_id = ? AND id = ? LIMIT 2', [$this->getId(), $id]);
         if ($sql->getRows() != 1) {
             return null;
@@ -192,7 +192,7 @@ class pz_wiki_page extends pz_model
     public function getVersions()
     {
         $versions = [];
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $sql->setQuery('SELECT * FROM pz_history WHERE control = "wiki" AND data_id = ? ORDER BY stamp DESC', [$this->getId()]);
         foreach ($sql->getArray() as $row) {
             $versions[] = new pz_wiki_page_version($this, $row);
@@ -210,7 +210,7 @@ class pz_wiki_page extends pz_model
 
     public function saveToHistory($mode = 'update', $message = '')
     {
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $sql->setTable('pz_history')
             ->setValue('control', 'wiki')
             ->setValue('data_id', $this->getId())
@@ -235,7 +235,7 @@ class pz_wiki_page extends pz_model
         $vt = [];
         $vt[] = $this->getTitle();
         $vt[] = $this->getRawText();
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $sql->setTable('pz_wiki')
             ->setWhere(['id' => $this->getId()])
             ->setValue('vt', implode(' ', $vt))
@@ -260,7 +260,7 @@ class pz_wiki_page extends pz_model
         $this->vars['updated'] = new DateTime();
         $this->saveToHistory('delete');
 
-        pz_sql::factory()->setQuery('
+        rex_sql::factory()->setQuery('
             DELETE
             FROM pz_wiki
             WHERE id = ?

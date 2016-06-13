@@ -148,7 +148,7 @@ function pz_invitation (event, status) {
     if($parent.find('.invitation').length > 0)
       $parent.find('.invitation').remove();
 
-    $parent.prepend('<div class="xform-warning invitation">Die Einladungen sind nicht mehr aktuell. Bitte Seite neue Laden.</div>');
+    $parent.prepend('<div class="yform-warning invitation">Die Einladungen sind nicht mehr aktuell. Bitte Seite neue Laden.</div>');
   }
 
   if(status == 'NEEDS-ACTION') {

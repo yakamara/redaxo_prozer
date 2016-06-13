@@ -272,18 +272,18 @@ class pz_project_file_screen
           </div>
         </header>';
 
-        $xform = new rex_xform();
-        $xform->setObjectparams('real_field_names', true);
-        $xform->setObjectparams('form_showformafterupdate', true);
-        $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('project_files_list','project_files_search_form','".pz::url('screen', 'project', $this->function)."')");
-        $xform->setObjectparams('form_id', 'project_files_search_form');
-        $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl', 'runtime']);
-        $xform->setValueField('text', ['search_name', pz_i18n::msg('name')]);
-        $xform->setValueField('hidden', ['mode', 'list']);
-        $xform->setValueField('hidden', ['project_id', $this->project->getId()]);
-        $searchform .= $xform->getForm();
+        $yform = new rex_yform();
+        $yform->setObjectparams('real_field_names', true);
+        $yform->setObjectparams('form_showformafterupdate', true);
+        $yform->setObjectparams('form_action', "javascript:pz_loadFormPage('project_files_list','project_files_search_form','".pz::url('screen', 'project', $this->function)."')");
+        $yform->setObjectparams('form_id', 'project_files_search_form');
+        $yform->setValueField('objparams', ['fragment', 'pz_screen_yform.tpl', 'runtime']);
+        $yform->setValueField('text', ['search_name', pz_i18n::msg('name')]);
+        $yform->setValueField('hidden', ['mode', 'list']);
+        $yform->setValueField('hidden', ['project_id', $this->project->getId()]);
+        $searchform .= $yform->getForm();
 
-        $searchform = '<div id="project_files_search" class="design1col xform-search">'.$searchform.'</div>';
+        $searchform = '<div id="project_files_search" class="design1col yform-search">'.$searchform.'</div>';
 
         return $searchform;
     }
@@ -294,7 +294,7 @@ class pz_project_file_screen
     {
         $p['linkvars']['mode'] = 'add_file';
         $add_link = pz::url('screen', 'project', 'files', $p['linkvars']);
-        $return = '<div class="xform">
+        $return = '<div class="yform">
 				<p><a class="bt1" onclick="pz_loadPage(\'project_file_form\',\''.$add_link.'\')" href="javascript:void(0);">+ '.pz_i18n::msg('project_file_add').'</a></p>
 				</div>';
         return $return;
@@ -306,7 +306,7 @@ class pz_project_file_screen
         $p['linkvars']['file_id'] = $this->file->getId();
 
         $delete_link = pz::url('screen', 'project', 'files', $p['linkvars']);
-        $return = '<div class="xform">
+        $return = '<div class="yform">
 					<p><a class="bt17" onclick="check = confirm(\''.pz_i18n::msg('project_file_confirm_delete', htmlspecialchars($this->file->getName())).'\'); if (check == true) pz_loadPage(\'project_file_form\',\''.$delete_link.'\')" href="javascript:void(0);">- '.pz_i18n::msg('project_file_delete').'</a></p>
 					</div>';
         return $return;
@@ -322,14 +322,14 @@ class pz_project_file_screen
 	            <h1 class="hl1">'.pz_i18n::msg('project_file_delete').'</h1>
 	          </div>
 	        </header>';
-        $return = $header.'<p class="xform-info">'.pz_i18n::msg('project_file_deleted', htmlspecialchars($this->file->getName())).'</p>';
+        $return = $header.'<p class="yform-info">'.pz_i18n::msg('project_file_deleted', htmlspecialchars($this->file->getName())).'</p>';
         $return .= pz_screen::getJSLoadFormPage('project_files_list', 'project_files_search_form',
             pz::url('screen', 'project', 'files', ['mode' => 'list', 'project_id' => $project->getId(), 'file_id' => $this->file->getParentId()])
         );
 
         $return .= pz_project_file_screen::getAddFileLink($p);
 
-        $return = '<div id="project_file_form"><div id="project_file_delete" class="design1col xform-delete">'.$return.'</div></div>';
+        $return = '<div id="project_file_form"><div id="project_file_delete" class="design1col yform-delete">'.$return.'</div></div>';
         return $return;
     }
 
@@ -344,35 +344,35 @@ class pz_project_file_screen
 	          </div>
 	        </header>';
 
-        $xform = new rex_xform();
-        // $xform->setDebug(TRUE);
-        $xform->setObjectparams('real_field_names', true);
-        $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('project_file_add','project_file_add_form','".pz::url('screen', 'project', 'files', $p['linkvars'])."')");
-        $xform->setObjectparams('form_id', 'project_file_add_form');
-        $xform->setObjectparams('form_name', 'projectfile');
-        $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl']);
-        $xform->setValueField('pz_attachment_screen', ['clip_ids', pz_i18n::msg('project_files')]);
-        $xform->setValidateField('empty', ['clip_ids', pz_i18n::msg('error_files_no_files_selected')]);
+        $yform = new rex_yform();
+        // $yform->setDebug(TRUE);
+        $yform->setObjectparams('real_field_names', true);
+        $yform->setObjectparams('form_action', "javascript:pz_loadFormPage('project_file_add','project_file_add_form','".pz::url('screen', 'project', 'files', $p['linkvars'])."')");
+        $yform->setObjectparams('form_id', 'project_file_add_form');
+        $yform->setObjectparams('form_name', 'projectfile');
+        $yform->setValueField('objparams', ['fragment', 'pz_screen_yform.tpl']);
+        $yform->setValueField('pz_attachment_screen', ['clip_ids', pz_i18n::msg('project_files')]);
+        $yform->setValidateField('empty', ['clip_ids', pz_i18n::msg('error_files_no_files_selected')]);
 
         $node = new pz_project_root_directory($project);
         $paths = $node->getAllPaths();
-        $xform->setValueField('pz_select_screen',    ['parent_id', pz_i18n::msg('project_file_path'), $paths, '', '/', 0]);
-        $xform->setValidateField('pz_project_folder', ['parent_id', 0, $project->getId(), pz_i18n::msg('error_folder_name_parent'), pz_i18n::msg('error_folder_project_id')]);
-        $xform->setValueField('textarea', ['comment', pz_i18n::msg('project_file_comment'), '', '0']);
+        $yform->setValueField('select',    ['parent_id', pz_i18n::msg('project_file_path'), $paths, '', '/', 0]);
+        $yform->setValidateField('pz_project_folder', ['parent_id', 0, $project->getId(), pz_i18n::msg('error_folder_name_parent'), pz_i18n::msg('error_folder_project_id')]);
+        $yform->setValueField('textarea', ['comment', pz_i18n::msg('project_file_comment'), '', '0']);
 
-        // $xform->setActionField("db",array());
-        $return .= $xform->getForm();
+        // $yform->setActionField("db",array());
+        $return .= $yform->getForm();
 
-        if ($xform->getObjectparams('actions_executed')) {
-            $parent_id = $xform->objparams['value_pool']['sql']['parent_id'];
-            $comment = $xform->objparams['value_pool']['sql']['comment'];
+        if ($yform->getObjectparams('actions_executed')) {
+            $parent_id = $yform->objparams['value_pool']['sql']['parent_id'];
+            $comment = $yform->objparams['value_pool']['sql']['comment'];
 
             $node = pz_project_node::get($parent_id);
             if ($parent_id == 0) {
                 $node = new pz_project_root_directory($project);
             }
 
-            $clip_ids = explode(',', $xform->objparams['value_pool']['sql']['clip_ids']);
+            $clip_ids = explode(',', $yform->objparams['value_pool']['sql']['clip_ids']);
             $clips = [];
             foreach ($clip_ids as $clip_id) {
                 $clip_id = (int) $clip_id;
@@ -385,13 +385,13 @@ class pz_project_file_screen
                 }
             }
 
-            $return .= '<p class="xform-info">'.pz_i18n::msg('project_file_added').'</p>';
+            $return .= '<p class="yform-info">'.pz_i18n::msg('project_file_added').'</p>';
             $return .= pz_project_file_screen::getAddFileLink($p);
             $return .= pz_screen::getJSLoadFormPage('project_files_list', 'project_files_search_form',
                 pz::url('screen', 'project', 'files', ['mode' => 'list', 'project_id' => $project->getId(), 'file_id' => $parent_id])
             );
         }
-        $return = '<div id="project_file_form"><div id="project_file_add" class="design1col xform-add">'.$return.'</div></div>';
+        $return = '<div id="project_file_form"><div id="project_file_add" class="design1col yform-add">'.$return.'</div></div>';
 
         return $return;
     }
@@ -409,38 +409,38 @@ class pz_project_file_screen
           </div>
         </header>';
 
-        $xform = new rex_xform();
-        // $xform->setDebug(TRUE);
-        $xform->setObjectparams('real_field_names', true);
-        $xform->setObjectparams('main_table', 'pz_project_file');
-        $xform->setObjectparams('main_id', $this->file->getId());
-        $xform->setObjectparams('main_where', 'id='.$this->file->getId());
-        $xform->setObjectparams('getdata', true);
-        $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('project_file_edit','project_file_edit_form','".pz::url('screen', 'project', 'files', $p['linkvars'])."')");
-        $xform->setObjectparams('form_id', 'project_file_edit_form');
-        $xform->setObjectparams('form_name', 'project_file_edit_form');
+        $yform = new rex_yform();
+        // $yform->setDebug(TRUE);
+        $yform->setObjectparams('real_field_names', true);
+        $yform->setObjectparams('main_table', 'pz_project_file');
+        $yform->setObjectparams('main_id', $this->file->getId());
+        $yform->setObjectparams('main_where', 'id='.$this->file->getId());
+        $yform->setObjectparams('getdata', true);
+        $yform->setObjectparams('form_action', "javascript:pz_loadFormPage('project_file_edit','project_file_edit_form','".pz::url('screen', 'project', 'files', $p['linkvars'])."')");
+        $yform->setObjectparams('form_id', 'project_file_edit_form');
+        $yform->setObjectparams('form_name', 'project_file_edit_form');
 
-        $xform->setObjectparams('form_showformafterupdate', 1);
-        $xform->setHiddenField('file_id', $this->file->getId());
-        $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl']);
+        $yform->setObjectparams('form_showformafterupdate', 1);
+        $yform->setHiddenField('file_id', $this->file->getId());
+        $yform->setValueField('objparams', ['fragment', 'pz_screen_yform.tpl']);
 
         $node = new pz_project_root_directory($project);
         $paths = $node->getAllPaths();
-        $xform->setValueField('pz_select_screen',    ['parent_id', pz_i18n::msg('project_file_path'), $paths, '', '/', 0]);
+        $yform->setValueField('select',    ['parent_id', pz_i18n::msg('project_file_path'), $paths, '', '/', 0]);
 
-        $xform->setValidateField('pz_project_folder', ['parent_id', 0, $project->getId()]);
-        $xform->setValidateField('unique', ['parent_id,name,project_id', pz_i18n::msg('error_file_not_unique'), 'pz_project_file']);
+        $yform->setValidateField('pz_project_folder', ['parent_id', 0, $project->getId()]);
+        $yform->setValidateField('unique', ['parent_id,name,project_id', pz_i18n::msg('error_file_not_unique'), 'pz_project_file']);
 
-        $xform->setValueField('showvalue', ['name', pz_i18n::msg('project_file_name'), '', '0']);
-        $xform->setValueField('textarea', ['comment', pz_i18n::msg('project_file_comment'), '', '0']);
-        $xform->setValueField('hidden', ['project_id', $this->file->getProjectId()]);
+        $yform->setValueField('showvalue', ['name', pz_i18n::msg('project_file_name'), '', '0']);
+        $yform->setValueField('textarea', ['comment', pz_i18n::msg('project_file_comment'), '', '0']);
+        $yform->setValueField('hidden', ['project_id', $this->file->getProjectId()]);
 
-        $return = $xform->getForm();
+        $return = $yform->getForm();
 
-        if ($xform->getObjectparams('actions_executed')) {
-            $this->file->setComment($xform->objparams['value_pool']['sql']['comment']);
+        if ($yform->getObjectparams('actions_executed')) {
+            $this->file->setComment($yform->objparams['value_pool']['sql']['comment']);
 
-            $parent_id = $xform->objparams['value_pool']['sql']['parent_id'];
+            $parent_id = $yform->objparams['value_pool']['sql']['parent_id'];
             if ($this->file->getParentId() != $parent_id) {
                 $node = pz_project_node::get($parent_id);
                 if ($parent_id == 0) {
@@ -452,7 +452,7 @@ class pz_project_file_screen
                 }
             }
 
-            $return = $header.'<p class="xform-info">'.pz_i18n::msg('project_file_updated').'</p>'.$return;
+            $return = $header.'<p class="yform-info">'.pz_i18n::msg('project_file_updated').'</p>'.$return;
             $return .= pz_screen::getJSLoadFormPage('project_files_list', 'project_files_search_form',
                 pz::url('screen', 'project', 'files', ['mode' => 'list', 'project_id' => $project->getId(), 'file_id' => rex_request('parent_id', 'int')])
             );
@@ -466,7 +466,7 @@ class pz_project_file_screen
         $return .= pz_project_file_screen::getAddFileLink($p);
         $return .= $this->getDeleteFileLink($p);
 
-        $return = '<div id="project_file_form"><div id="project_file_edit" class="design1col xform-edit">'.$return.'</div></div>';
+        $return = '<div id="project_file_form"><div id="project_file_edit" class="design1col yform-edit">'.$return.'</div></div>';
 
         return $return;
     }
@@ -481,18 +481,18 @@ class pz_project_file_screen
 	            <h1 class="hl1">'.pz_i18n::msg('project_folder_delete').'</h1>
 	          </div>
 	        </header>';
-        $return = $header.'<p class="xform-info">'.pz_i18n::msg('project_folder_deleted', htmlspecialchars($this->file->getName())).'</p>';
+        $return = $header.'<p class="yform-info">'.pz_i18n::msg('project_folder_deleted', htmlspecialchars($this->file->getName())).'</p>';
         $return .= pz_screen::getJSLoadFormPage('project_files_list', 'project_files_search_form',
             pz::url('screen', 'project', 'files', ['mode' => 'list', 'project_id' => $project->getId(), 'file_id' => $this->file->getParentId()])
         );
 
         $p['linkvars']['mode'] = 'add_folder';
         $add_link = pz::url('screen', 'project', 'files', $p['linkvars']);
-        $return .= '<div class="xform">
+        $return .= '<div class="yform">
 			<p><a class="bt1" onclick="pz_loadPage(\'project_folder_form\',\''.$add_link.'\')" href="javascript:void(0);">+ '.pz_i18n::msg('project_folder_add').'</a></p>
 			</div>';
 
-        $return = '<div id="project_folder_form"><div id="project_folder_delete" class="design1col xform-delete">'.$return.'</div></div>';
+        $return = '<div id="project_folder_form"><div id="project_folder_delete" class="design1col yform-delete">'.$return.'</div></div>';
         return $return;
     }
 
@@ -507,30 +507,30 @@ class pz_project_file_screen
 	          </div>
 	        </header>';
 
-        $xform = new rex_xform();
-        $xform->setObjectparams('real_field_names', true);
-        $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('project_folder_add','project_folder_add_form','".pz::url('screen', 'project', 'files', $p['linkvars'])."')");
-        $xform->setObjectparams('form_id', 'project_folder_add_form');
-        $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl']);
+        $yform = new rex_yform();
+        $yform->setObjectparams('real_field_names', true);
+        $yform->setObjectparams('form_action', "javascript:pz_loadFormPage('project_folder_add','project_folder_add_form','".pz::url('screen', 'project', 'files', $p['linkvars'])."')");
+        $yform->setObjectparams('form_id', 'project_folder_add_form');
+        $yform->setValueField('objparams', ['fragment', 'pz_screen_yform.tpl']);
 
         $node = new pz_project_root_directory($project);
         $paths = $node->getAllPaths();
-        $xform->setValueField('pz_select_screen',    ['parent_id', pz_i18n::msg('project_file_path'), $paths, '', '/', 0]);
-        $xform->setValidateField('pz_project_folder', ['parent_id', 0, $project->getId()]);
-        $xform->setValidateField('unique', ['parent_id,name,project_id', pz_i18n::msg('error_folder_not_unique'), 'pz_project_file']);
+        $yform->setValueField('select',    ['parent_id', pz_i18n::msg('project_file_path'), $paths, '', '/', 0]);
+        $yform->setValidateField('pz_project_folder', ['parent_id', 0, $project->getId()]);
+        $yform->setValidateField('unique', ['parent_id,name,project_id', pz_i18n::msg('error_folder_not_unique'), 'pz_project_file']);
 
-        $xform->setValueField('text', ['name', pz_i18n::msg('project_folder_name'), '', '0']);
-        $xform->setValidateField('empty', ['name', pz_i18n::msg('error_folder_name_empty')]);
-        $xform->setValidateField('preg_match', ['name', '/^([a-z0-9_][\\.\\-\\ ]?)*$/i', pz_i18n::msg('error_folder_name_chars')]);
-        // $xform->setValueField("textarea",array("comment",pz_i18n::msg("project_folder_comment"),"","0"));
+        $yform->setValueField('text', ['name', pz_i18n::msg('project_folder_name'), '', '0']);
+        $yform->setValidateField('empty', ['name', pz_i18n::msg('error_folder_name_empty')]);
+        $yform->setValidateField('preg_match', ['name', '/^([a-z0-9_][\\.\\-\\ ]?)*$/i', pz_i18n::msg('error_folder_name_chars')]);
+        // $yform->setValueField("textarea",array("comment",pz_i18n::msg("project_folder_comment"),"","0"));
 
-        $xform->setValueField('hidden', ['project_id', $project->getId()]);
+        $yform->setValueField('hidden', ['project_id', $project->getId()]);
 
-        $return .= $xform->getForm();
+        $return .= $yform->getForm();
 
-        if ($xform->getObjectparams('actions_executed')) {
-            $parent_id = $xform->objparams['value_pool']['sql']['parent_id'];
-            $name = $xform->objparams['value_pool']['sql']['name'];
+        if ($yform->getObjectparams('actions_executed')) {
+            $parent_id = $yform->objparams['value_pool']['sql']['parent_id'];
+            $name = $yform->objparams['value_pool']['sql']['name'];
 
             $node = pz_project_node::get($parent_id);
             if ($parent_id == 0) {
@@ -541,19 +541,19 @@ class pz_project_file_screen
                 $node->createDirectory($name);
             }
 
-            $return .= '<p class="xform-info">'.pz_i18n::msg('project_folder_added').'</p>';
+            $return .= '<p class="yform-info">'.pz_i18n::msg('project_folder_added').'</p>';
             $return .= pz_screen::getJSLoadFormPage('project_files_list', 'project_files_search_form',
                 pz::url('screen', 'project', 'files', ['mode' => 'list', 'project_id' => $project->getId(), 'file_id' => rex_request('parent_id', 'int')])
             );
 
             $p['linkvars']['mode'] = 'add_folder';
             $add_link = pz::url('screen', 'project', 'files', $p['linkvars']);
-            $return .= '<div class="xform">
+            $return .= '<div class="yform">
 				<p><a class="bt1" onclick="pz_loadPage(\'project_folder_form\',\''.$add_link.'\')" href="javascript:void(0);">+ '.pz_i18n::msg('project_folder_add').'</a></p>
 				</div>';
         }
 
-        $return = '<div id="project_folder_form"><div id="project_folder_add" class="design1col xform-add">'.$return.'</div></div>';
+        $return = '<div id="project_folder_form"><div id="project_folder_add" class="design1col yform-add">'.$return.'</div></div>';
 
         return $return;
     }
@@ -569,36 +569,36 @@ class pz_project_file_screen
           </div>
         </header>';
 
-        $xform = new rex_xform();
-        // $xform->setDebug(TRUE);
-        $xform->setObjectparams('real_field_names', true);
-        $xform->setObjectparams('main_table', 'pz_project_file');
-        $xform->setObjectparams('main_id', $this->file->getId());
-        $xform->setObjectparams('main_where', 'id='.$this->file->getId());
-        $xform->setObjectparams('getdata', true);
-        $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('project_folder_edit','project_folder_edit_form','".pz::url('screen', 'project', 'files', $p['linkvars'])."')");
-        $xform->setObjectparams('form_id', 'project_folder_edit_form');
-        $xform->setObjectparams('form_showformafterupdate', 1);
-        $xform->setHiddenField('file_id', $this->file->getId());
-        $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl']);
+        $yform = new rex_yform();
+        // $yform->setDebug(TRUE);
+        $yform->setObjectparams('real_field_names', true);
+        $yform->setObjectparams('main_table', 'pz_project_file');
+        $yform->setObjectparams('main_id', $this->file->getId());
+        $yform->setObjectparams('main_where', 'id='.$this->file->getId());
+        $yform->setObjectparams('getdata', true);
+        $yform->setObjectparams('form_action', "javascript:pz_loadFormPage('project_folder_edit','project_folder_edit_form','".pz::url('screen', 'project', 'files', $p['linkvars'])."')");
+        $yform->setObjectparams('form_id', 'project_folder_edit_form');
+        $yform->setObjectparams('form_showformafterupdate', 1);
+        $yform->setHiddenField('file_id', $this->file->getId());
+        $yform->setValueField('objparams', ['fragment', 'pz_screen_yform.tpl']);
 
         $node = new pz_project_root_directory($project);
         $paths = $node->getAllPaths();
-        $xform->setValueField('pz_select_screen',    ['parent_id', pz_i18n::msg('project_file_path'), $paths, '', '/', 0]);
-        $xform->setValidateField('pz_project_folder', ['parent_id', $this->file->getId(), $project->getId()]);
-        $xform->setValidateField('unique', ['parent_id,name,project_id', pz_i18n::msg('error_folder_not_unique'), 'pz_project_file']);
+        $yform->setValueField('select',    ['parent_id', pz_i18n::msg('project_file_path'), $paths, '', '/', 0]);
+        $yform->setValidateField('pz_project_folder', ['parent_id', $this->file->getId(), $project->getId()]);
+        $yform->setValidateField('unique', ['parent_id,name,project_id', pz_i18n::msg('error_folder_not_unique'), 'pz_project_file']);
 
-        $xform->setValueField('text', ['name', pz_i18n::msg('project_folder_name'), '', '0']);
-        $xform->setValidateField('empty', ['name', pz_i18n::msg('error_folder_name_empty')]);
-        $xform->setValidateField('preg_match', ['name', '/^([a-z0-9_][\\.\\-\\ ]?)*$/i', pz_i18n::msg('error_folder_name_chars')]);
+        $yform->setValueField('text', ['name', pz_i18n::msg('project_folder_name'), '', '0']);
+        $yform->setValidateField('empty', ['name', pz_i18n::msg('error_folder_name_empty')]);
+        $yform->setValidateField('preg_match', ['name', '/^([a-z0-9_][\\.\\-\\ ]?)*$/i', pz_i18n::msg('error_folder_name_chars')]);
 
-        $xform->setValueField('hidden', ['project_id', $this->file->getProjectId()]);
+        $yform->setValueField('hidden', ['project_id', $this->file->getProjectId()]);
 
-        $return = $xform->getForm();
+        $return = $yform->getForm();
 
-        if ($xform->getObjectparams('actions_executed')) {
-            $parent_id = $xform->objparams['value_pool']['sql']['parent_id'];
-            $name = $xform->objparams['value_pool']['sql']['name'];
+        if ($yform->getObjectparams('actions_executed')) {
+            $parent_id = $yform->objparams['value_pool']['sql']['parent_id'];
+            $name = $yform->objparams['value_pool']['sql']['name'];
 
             $node = pz_project_node::get($parent_id);
             if ($parent_id == 0) {
@@ -609,7 +609,7 @@ class pz_project_file_screen
                 $this->file->moveTo($node, $name);
             }
 
-            $return = $header.'<p class="xform-info">'.pz_i18n::msg('project_folder_updated').'</p>'.$return;
+            $return = $header.'<p class="yform-info">'.pz_i18n::msg('project_folder_updated').'</p>'.$return;
             $return .= pz_screen::getJSLoadFormPage('project_files_list', 'project_files_search_form',
                 pz::url('screen', 'project', 'files', ['mode' => 'list', 'project_id' => $project->getId(), 'file_id' => rex_request('parent_id', 'int')])
             );
@@ -622,18 +622,18 @@ class pz_project_file_screen
             $p['linkvars']['file_id'] = $this->file->getId();
 
             $delete_link = pz::url('screen', 'project', 'files', $p['linkvars']);
-            $return .= '<div class="xform">
+            $return .= '<div class="yform">
 					<p><a class="bt17" onclick="check = confirm(\''.pz_i18n::msg('project_folder_confirm_delete', htmlspecialchars($this->file->getName())).'\'); if (check == true) pz_loadPage(\'project_folder_form\',\''.$delete_link.'\')" href="javascript:void(0);">- '.pz_i18n::msg('project_folder_delete').'</a></p>
 					</div>';
         }
 
         $p['linkvars']['mode'] = 'add_folder';
         $add_link = pz::url('screen', 'project', 'files', $p['linkvars']);
-        $return .= '<div class="xform">
+        $return .= '<div class="yform">
 				<p><a class="bt1" onclick="pz_loadPage(\'project_folder_form\',\''.$add_link.'\')" href="javascript:void(0);">+ '.pz_i18n::msg('project_folder_add').'</a></p>
 				</div>';
 
-        $return = '<div id="project_folder_form"><div id="project_folder_edit" class="design1col xform-edit">'.$return.'</div></div>';
+        $return = '<div id="project_folder_form"><div id="project_folder_edit" class="design1col yform-edit">'.$return.'</div></div>';
 
         return $return;
     }

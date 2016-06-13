@@ -120,17 +120,17 @@ class pz_user_perm_screen
           </div>
         </header>';
 
-        $xform = new rex_xform();
-        // $xform->setDebug(TRUE);
+        $yform = new rex_yform();
+        // $yform->setDebug(TRUE);
 
-        $xform->setObjectparams('main_table', 'pz_user_perm');
-        $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('user_perm_form','user_perm_add_form','".pz::url('screen', 'tools', 'perms', ['mode' => 'add_user_perm'])."')");
-        $xform->setObjectparams('form_id', 'user_perm_add_form');
+        $yform->setObjectparams('main_table', 'pz_user_perm');
+        $yform->setObjectparams('form_action', "javascript:pz_loadFormPage('user_perm_form','user_perm_add_form','".pz::url('screen', 'tools', 'perms', ['mode' => 'add_user_perm'])."')");
+        $yform->setObjectparams('form_id', 'user_perm_add_form');
 
-        $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl']);
+        $yform->setValueField('objparams', ['fragment', 'pz_screen_yform.tpl']);
 
-        $xform->setValidateField('unique', ['user_id,to_user_id', pz_i18n::msg('user_perm_user_exists')]);
-        $xform->setValueField('pz_select_screen', ['to_user_id', pz_i18n::msg('user'), pz::getUsersAsString(), '', '', 0]);
+        $yform->setValidateField('unique', ['user_id,to_user_id', pz_i18n::msg('user_perm_user_exists')]);
+        $yform->setValueField('select', ['to_user_id', pz_i18n::msg('user'), pz::getUsersAsString(), '', '', 0]);
 
         function pz_checkIsMe($label, $user_id, $me_id)
         {
@@ -140,30 +140,30 @@ class pz_user_perm_screen
             return false;
         }
 
-        $xform->setValidateField('customfunction', ['to_user_id', 'pz_checkIsMe', pz::getUser()->getId(), pz_i18n::msg('user_perm_user_isme')]);
+        $yform->setValidateField('customfunction', ['to_user_id', 'pz_checkIsMe', pz::getUser()->getId(), pz_i18n::msg('user_perm_user_isme')]);
 
-        $xform->setValueField('checkbox', ['calendar_read', pz_i18n::msg('user_perm_calendar_read'), '', '0']);
-        $xform->setValueField('checkbox', ['calendar_write', pz_i18n::msg('user_perm_calendar_write'), '', '0']);
-        $xform->setValueField('checkbox', ['email_read', pz_i18n::msg('user_perm_email_read'), '', '0']);
-        $xform->setValueField('checkbox', ['email_write', pz_i18n::msg('user_perm_email_write'), '', '0']);
+        $yform->setValueField('checkbox', ['calendar_read', pz_i18n::msg('user_perm_calendar_read'), '', '0']);
+        $yform->setValueField('checkbox', ['calendar_write', pz_i18n::msg('user_perm_calendar_write'), '', '0']);
+        $yform->setValueField('checkbox', ['email_read', pz_i18n::msg('user_perm_email_read'), '', '0']);
+        $yform->setValueField('checkbox', ['email_write', pz_i18n::msg('user_perm_email_write'), '', '0']);
 
-        $xform->setValueField('hidden', ['user_id', pz::getUser()->getId()]);
+        $yform->setValueField('hidden', ['user_id', pz::getUser()->getId()]);
 
-        $xform->setValueField('datestamp', ['created', 'mysql', '', '0', '1']);
-        $xform->setValueField('datestamp', ['updated', 'mysql', '', '0', '0']);
+        $yform->setValueField('datestamp', ['created', 'mysql', '', '0', '1']);
+        $yform->setValueField('datestamp', ['updated', 'mysql', '', '0', '0']);
 
-        $xform->setActionField('db', ['pz_user_perm']);
+        $yform->setActionField('db', ['pz_user_perm']);
 
-        $return = $xform->getForm();
+        $return = $yform->getForm();
 
-        if ($xform->getObjectparams('actions_executed')) {
-            $user_id = $xform->getObjectparams('main_id');
-            $return = $header.'<p class="xform-info">'.pz_i18n::msg('user_perm_added').'</p>'.$return;
+        if ($yform->getObjectparams('actions_executed')) {
+            $user_id = $yform->getObjectparams('main_id');
+            $return = $header.'<p class="yform-info">'.pz_i18n::msg('user_perm_added').'</p>'.$return;
             $return .= pz_screen::getJSUpdateLayer('user_perms_list', pz::url('screen', 'tools', 'perms', ['mode' => 'list_user_perms']));
         } else {
             $return = $header.$return;
         }
-        $return = '<div id="user_perm_form"><div id="user_perm_add" class="design1col xform-edit">'.$return.'</div></div>';
+        $return = '<div id="user_perm_form"><div id="user_perm_add" class="design1col yform-edit">'.$return.'</div></div>';
 
         return $return;
     }
@@ -177,24 +177,24 @@ class pz_user_perm_screen
           </div>
         </header>';
 
-        $xform = new rex_xform();
-        // $xform->setDebug(TRUE);
+        $yform = new rex_yform();
+        // $yform->setDebug(TRUE);
 
-        $xform->setObjectparams('main_table', 'pz_user_perm');
-        $xform->setObjectparams('main_id', $this->user_perm->getId());
-        $xform->setObjectparams('main_where', 'id='.$this->user_perm->getId());
-        $xform->setObjectparams('getdata', true);
+        $yform->setObjectparams('main_table', 'pz_user_perm');
+        $yform->setObjectparams('main_id', $this->user_perm->getId());
+        $yform->setObjectparams('main_where', 'id='.$this->user_perm->getId());
+        $yform->setObjectparams('getdata', true);
 
-        $xform->setHiddenField('user_perm_id', $this->user_perm->getId());
+        $yform->setHiddenField('user_perm_id', $this->user_perm->getId());
 
-        $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('user_perm_form','user_perm_edit_form','".pz::url('screen', 'tools', 'perms', ['mode' => 'edit_user_perm'])."')");
-        $xform->setObjectparams('form_id', 'user_perm_edit_form');
-        $xform->setObjectparams('form_showformafterupdate', 1);
+        $yform->setObjectparams('form_action', "javascript:pz_loadFormPage('user_perm_form','user_perm_edit_form','".pz::url('screen', 'tools', 'perms', ['mode' => 'edit_user_perm'])."')");
+        $yform->setObjectparams('form_id', 'user_perm_edit_form');
+        $yform->setObjectparams('form_showformafterupdate', 1);
 
-        $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl']);
+        $yform->setValueField('objparams', ['fragment', 'pz_screen_yform.tpl']);
 
-        $xform->setValidateField('unique', ['user_id,to_user_id', pz_i18n::msg('user_perm_user_exists')]);
-        $xform->setValueField('pz_select_screen', ['to_user_id', pz_i18n::msg('user'), pz::getUsersAsString(), '', '', 0]);
+        $yform->setValidateField('unique', ['user_id,to_user_id', pz_i18n::msg('user_perm_user_exists')]);
+        $yform->setValueField('select', ['to_user_id', pz_i18n::msg('user'), pz::getUsersAsString(), '', '', 0]);
         function pz_checkIsMe($label, $user_id, $me_id)
         {
             if ($user_id == $me_id) {
@@ -202,29 +202,29 @@ class pz_user_perm_screen
             }
             return false;
         }
-        $xform->setValidateField('customfunction', ['to_user_id', 'pz_checkIsMe', pz::getUser()->getId(), pz_i18n::msg('user_perm_user_isme')]);
+        $yform->setValidateField('customfunction', ['to_user_id', 'pz_checkIsMe', pz::getUser()->getId(), pz_i18n::msg('user_perm_user_isme')]);
 
-        $xform->setValueField('checkbox', ['calendar_read', pz_i18n::msg('user_perm_calendar_read'), '', '0']);
-        $xform->setValueField('checkbox', ['calendar_write', pz_i18n::msg('user_perm_calendar_write'), '', '0']);
-        $xform->setValueField('checkbox', ['email_read', pz_i18n::msg('user_perm_email_read'), '', '0']);
-        $xform->setValueField('checkbox', ['email_write', pz_i18n::msg('user_perm_email_write'), '', '0']);
+        $yform->setValueField('checkbox', ['calendar_read', pz_i18n::msg('user_perm_calendar_read'), '', '0']);
+        $yform->setValueField('checkbox', ['calendar_write', pz_i18n::msg('user_perm_calendar_write'), '', '0']);
+        $yform->setValueField('checkbox', ['email_read', pz_i18n::msg('user_perm_email_read'), '', '0']);
+        $yform->setValueField('checkbox', ['email_write', pz_i18n::msg('user_perm_email_write'), '', '0']);
 
-        $xform->setValueField('hidden', ['user_id', pz::getUser()->getId()]);
+        $yform->setValueField('hidden', ['user_id', pz::getUser()->getId()]);
 
-        $xform->setValueField('datestamp', ['created', 'mysql', '', '0', '1']);
-        $xform->setValueField('datestamp', ['updated', 'mysql', '', '0', '0']);
+        $yform->setValueField('datestamp', ['created', 'mysql', '', '0', '1']);
+        $yform->setValueField('datestamp', ['updated', 'mysql', '', '0', '0']);
 
-        $xform->setActionField('db', ['pz_user_perm', 'id='.$this->user_perm->getId()]);
+        $yform->setActionField('db', ['pz_user_perm', 'id='.$this->user_perm->getId()]);
 
-        $return = $xform->getForm();
+        $return = $yform->getForm();
 
-        if ($xform->getObjectparams('actions_executed')) {
-            $return = $header.'<p class="xform-info">'.pz_i18n::msg('user_perm_updated').'</p>'.$return;
+        if ($yform->getObjectparams('actions_executed')) {
+            $return = $header.'<p class="yform-info">'.pz_i18n::msg('user_perm_updated').'</p>'.$return;
             $return .= pz_screen::getJSUpdateLayer('user_perms_list', pz::url('screen', 'tools', 'perms', ['mode' => 'list_user_perms']));
         } else {
             $return = $header.$return;
         }
-        $return = '<div id="user_perm_form"><div id="user_perm_edit" class="design1col xform-edit">'.$return.'</div></div>';
+        $return = '<div id="user_perm_form"><div id="user_perm_edit" class="design1col yform-edit">'.$return.'</div></div>';
 
         return $return;
     }

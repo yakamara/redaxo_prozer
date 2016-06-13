@@ -3,7 +3,7 @@
 /**
  * @package redaxo\core
  */
-class pz_exception extends Exception
+class rex_exception extends Exception
 {
     /**
      * @param string    $message
@@ -16,18 +16,11 @@ class pz_exception extends Exception
 }
 
 /**
- * @package redaxo\core
- */
-class pz_sql_exception extends pz_exception
-{
-}
-
-/**
  * Exception class for user-friendly error messages.
  *
  * @package redaxo\core
  */
-class pz_functional_exception extends pz_exception
+class pz_functional_exception extends rex_exception
 {
 }
 
@@ -36,7 +29,7 @@ class pz_functional_exception extends pz_exception
  *
  * @package redaxo\core
  */
-class pz_http_exception extends pz_exception
+class pz_http_exception extends rex_exception
 {
     private $httpCode;
 

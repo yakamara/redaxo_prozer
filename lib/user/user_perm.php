@@ -24,7 +24,7 @@ class pz_user_perm extends pz_model
 
         $class = get_called_class();
 
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
 
         $user_perms = $sql->getArray('select * from pz_user_perm where id = ? LIMIT 2', [$id]);
         if (count($user_perms) != 1) {
@@ -67,7 +67,7 @@ class pz_user_perm extends pz_model
 
     public function delete()
     {
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $sql->setQuery('delete from pz_user_perm where id = ? and user_id = ?', [$this->getId(), pz::getLoginUser()->getId()]);
         return true;
     }
@@ -117,7 +117,7 @@ class pz_user_perm extends pz_model
     public static function getUserPermsByUserId($user_id)
     {
         $return = [];
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $user_perms = $sql->getArray('select * from pz_user_perm where user_id = ?', [$user_id]);
 
         foreach ($user_perms as $user_perm) {
@@ -130,7 +130,7 @@ class pz_user_perm extends pz_model
     public static function getGivenUserPermsByUserId($user_id)
     {
         $return = [];
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $user_perms = $sql->getArray('select * from pz_user_perm where to_user_id = ?', [$user_id]);
 
         foreach ($user_perms as $user_perm) {

@@ -70,7 +70,7 @@ class pz_model
             $query = preg_replace('/^SELECT/i', 'SELECT SQL_CALC_FOUND_ROWS', $query, 1);
             $query .= ' LIMIT '.$pager->getCursor().', '.$pager->getRowsPerPage();
 
-            $sql = pz_sql::factory();
+            $sql = rex_sql::factory();
             $rows = $sql->getArray($query, $params);
 
             $sql->setQuery('SELECT FOUND_ROWS() as rows;');
@@ -79,7 +79,7 @@ class pz_model
 
             return $rows;
         } else {
-            $sql = pz_sql::factory();
+            $sql = rex_sql::factory();
             return $sql->getArray($query, $params);
         }
     }

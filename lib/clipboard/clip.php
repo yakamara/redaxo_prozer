@@ -16,7 +16,7 @@ class pz_clip extends pz_model
         }
         $id = (int) $id;
 
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $sql->setQuery('select * from pz_clipboard where id = ? LIMIT 1', [$id]);
 
         $vars = $sql->getArray();
@@ -34,7 +34,7 @@ class pz_clip extends pz_model
             return false;
         }
 
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $sql->setQuery('select * from pz_clipboard where uri = ? LIMIT 1', [$uri]);
 
         $vars = $sql->getArray();
@@ -50,7 +50,7 @@ class pz_clip extends pz_model
     {
         $return = pz::getFilter($filter);
 
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         // $sql->debugsql = 1;
         $clips_array = $sql->getArray('SELECT * FROM pz_clipboard '.$return['where_sql'].' ORDER BY id desc', $return['params']);
 
@@ -173,7 +173,7 @@ class pz_clip extends pz_model
             $offline_date->modify('+3 months');
         }
 
-        $s = pz_sql::factory();
+        $s = rex_sql::factory();
         $s->setTable('pz_clipboard');
         $s->setWhere(['id' => $this->getId()]);
         $s->setValue('updated', pz::getDateTime()->format('Y-m-d H:i:s'));
@@ -192,7 +192,7 @@ class pz_clip extends pz_model
 
     public function unrelease()
     {
-        $s = pz_sql::factory();
+        $s = rex_sql::factory();
         $s->setTable('pz_clipboard');
         $s->setWhere(['id' => $this->getId()]);
         $s->setValue('updated', pz::getDateTime()->format('Y-m-d H:i:s'));
@@ -205,7 +205,7 @@ class pz_clip extends pz_model
 
     public function refresh()
     {
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $clips_array = $sql->getArray('select * from pz_clipboard where id = ? LIMIT 1', [$this->getId()]);
 
         if (count($clips_array) == 1) {
@@ -229,7 +229,7 @@ class pz_clip extends pz_model
 
         $this->saveToHistory('delete');
 
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         // $sql->debugsql = 1;
         $clips = $sql->setQuery('delete from pz_clipboard where id = ?', [$this->getId()]);
 
@@ -242,7 +242,7 @@ class pz_clip extends pz_model
             $user = pz::getLoginUser();
         }
 
-        $s = pz_sql::factory();
+        $s = rex_sql::factory();
         $s->setTable('pz_clipboard');
         $s->setValue('created', date('Y-m-d H:i:s'));
         $s->setValue('updated', date('Y-m-d H:i:s'));
@@ -314,7 +314,7 @@ class pz_clip extends pz_model
             $user_id = pz::getUser()->getId();
         }
 
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $sql->setTable('pz_history')
             ->setValue('control', 'clip')
             ->setValue('func', $func)

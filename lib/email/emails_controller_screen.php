@@ -660,7 +660,7 @@ class pz_emails_controller_screen extends pz_emails_controller
 
         $p['trackerlink'] = pz::url('screen', 'emails', 'inbox', array_merge($p['linkvars'], ['mode' => 'getnew', 'date' => $tracker_date]));
         $p['javascript'] = 'pz_add_tracker("inbox_emails", "'.$p['trackerlink'].'", 5000, 0);';
-        $p['xform_warning'] = (count($filter) > 1) ? 'xform-warning' : 'xform-info';
+        $p['yform_warning'] = (count($filter) > 1) ? 'yform-warning' : 'yform-info';
 
         $p['list_title_links'] = [];
         $p['list_title_links'][] = $this->getTitleFunctions($p, ['delete']);
@@ -1092,9 +1092,9 @@ class pz_emails_controller_screen extends pz_emails_controller
                 // TODO - permission prüfen
                 if ($email = pz_email::get($email_id)) {
                     $email->delete();
-                    $p['info'] = '<p class="xform-info">' . pz_i18n::msg('email_account_delete') . '</p>';
+                    $p['info'] = '<p class="yform-info">' . pz_i18n::msg('email_account_delete') . '</p>';
                 } else {
-                    $p['info'] = '<p class="xform-warning">' . pz_i18n::msg('email_account_not_exists') . '</p>';
+                    $p['info'] = '<p class="yform-warning">' . pz_i18n::msg('email_account_not_exists') . '</p>';
                 }
 
                 $return = '<script language="Javascript">';
@@ -1118,7 +1118,7 @@ class pz_emails_controller_screen extends pz_emails_controller
                     $cs = new pz_email_screen($email);
                     return $cs->getEditForm($p);
                 }
-                return '<p class="xform-warning">' . pz_i18n::msg('email_not_exists') . '</p>';
+                return '<p class="yform-warning">' . pz_i18n::msg('email_not_exists') . '</p>';
 
             case '':
 

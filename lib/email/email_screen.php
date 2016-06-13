@@ -121,7 +121,7 @@ class pz_email_screen
         $f->setVar('orders', $orders);
         $return = $f->parse('pz_screen_list.tpl');
         if (count($emails) == 0) {
-            $return .= '<div class="xform-warning">'.pz_i18n::msg('no_emails_found').'</div>';
+            $return .= '<div class="yform-warning">'.pz_i18n::msg('no_emails_found').'</div>';
         }
 
         return '<div id="emails_list" class="design2col" data-url="'.$link_refresh.'">'.$return.'ddd</div>';
@@ -185,8 +185,8 @@ class pz_email_screen
         $return = $f->parse('pz_screen_list.tpl');
 
         if (count($emails) == 0) {
-            $p['xform_warning'] = (isset($p['xform_warning']))? $p['xform_warning'] :'xform-info';
-            $return .= '<div class="'.$p['xform_warning'].'">'.pz_i18n::msg('no_emails_found').'</div>';
+            $p['yform_warning'] = (isset($p['yform_warning']))? $p['yform_warning'] :'yform-info';
+            $return .= '<div class="'.$p['yform_warning'].'">'.pz_i18n::msg('no_emails_found').'</div>';
         }
 
         return '<div id="emails_list" class="design2col" data-url="'.$link_refresh.'">'.$return.'</div>';
@@ -218,7 +218,7 @@ class pz_email_screen
 
         $return = $f->parse('pz_screen_list.tpl');
         if (count($emails) == 0) {
-            $return .= '<div class="xform-warning">'.pz_i18n::msg('no_emails_found').'</div>';
+            $return .= '<div class="yform-warning">'.pz_i18n::msg('no_emails_found').'</div>';
         }
 
         return '<div id="emails_list" class="design3col">'.$return.'</div>';
@@ -868,7 +868,7 @@ class pz_email_screen
         $existsingEvent = $importStatus['event'];
         $import_link = pz::url('screen', 'emails', 'email', ['email_id' => $this->email->getId(), 'mode' => 'import', 'action' => 1, 'element_id' => $element->getElementId()]);
         if ('CANCEL' == $importStatus['method']) {
-            $actions .= '<p class="xform-warning">'.pz_i18n::msg('import_info_cancel').'</p>';
+            $actions .= '<p class="yform-warning">'.pz_i18n::msg('import_info_cancel').'</p>';
 
             if ($existsingEvent && pz::getUser()->getEventDeletePerm($importStatus['event'])) {
 
@@ -954,63 +954,63 @@ class pz_email_screen
 	          </div>
 	        </header>';
 
-        $xform = new rex_xform();
-        $xform->setObjectparams('real_field_names', true);
-        $xform->setObjectparams('form_showformafterupdate', true);
-        $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('".$p['layer_list']."','emails_search_form','".pz::url('screen', $p['controll'], $p['function'], $p['linkvars'])."')");
-        $xform->setObjectparams('form_id', 'emails_search_form');
+        $yform = new rex_yform();
+        $yform->setObjectparams('real_field_names', true);
+        $yform->setObjectparams('form_showformafterupdate', true);
+        $yform->setObjectparams('form_action', "javascript:pz_loadFormPage('".$p['layer_list']."','emails_search_form','".pz::url('screen', $p['controll'], $p['function'], $p['linkvars'])."')");
+        $yform->setObjectparams('form_id', 'emails_search_form');
 
-        $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl', 'runtime']);
-        // $xform->setValueField("text",array("search_name",pz_i18n::msg("search_email_fulltext")));
+        $yform->setValueField('objparams', ['fragment', 'pz_screen_yform.tpl', 'runtime']);
+        // $yform->setValueField("text",array("search_name",pz_i18n::msg("search_email_fulltext")));
 
         if (!in_array('fulltext', $ignore_fields)) {
-            $xform->setValueField('text', ['search_fulltext', pz_i18n::msg('search_email_fulltext')]);
+            $yform->setValueField('text', ['search_fulltext', pz_i18n::msg('search_email_fulltext')]);
         }
         if (!in_array('subject', $ignore_fields)) {
-            $xform->setValueField('text', ['search_subject', pz_i18n::msg('search_email_subject')]);
+            $yform->setValueField('text', ['search_subject', pz_i18n::msg('search_email_subject')]);
         }
         if (!in_array('from', $ignore_fields)) {
-            $xform->setValueField('text', ['search_from', pz_i18n::msg('search_email_from')]);
+            $yform->setValueField('text', ['search_from', pz_i18n::msg('search_email_from')]);
         }
         if (!in_array('to', $ignore_fields)) {
-            $xform->setValueField('text', ['search_to', pz_i18n::msg('search_email_to')]);
+            $yform->setValueField('text', ['search_to', pz_i18n::msg('search_email_to')]);
         }
 
-        // $xform->setValueField('pz_select_screen',array('search_label', pz_i18n::msg('label'), pz_labels::getAsString(),"","",1,pz_i18n::msg("please_choose")));
-        // $xform->setValueField('pz_select_screen',array('search_customer', pz_i18n::msg('customer'), pz_customers::getAsString(),"","",1,pz_i18n::msg("please_choose")));
-        // $xform->setValueField('pz_select_screen',array('search_account_id', pz_i18n::msg('email_account'), pz::getUser()->getEmailaccountsAsString(),"","",1,pz_i18n::msg("please_choose")));
+        // $yform->setValueField('select',array('search_label', pz_i18n::msg('label'), pz_labels::getAsString(),"","",1,pz_i18n::msg("please_choose")));
+        // $yform->setValueField('select',array('search_customer', pz_i18n::msg('customer'), pz_customers::getAsString(),"","",1,pz_i18n::msg("please_choose")));
+        // $yform->setValueField('select',array('search_account_id', pz_i18n::msg('email_account'), pz::getUser()->getEmailaccountsAsString(),"","",1,pz_i18n::msg("please_choose")));
 
         if (!in_array('date_from', $ignore_fields)) {
-            $xform->setValueField('pz_date_screen', ['search_date_from', pz_i18n::msg('search_date_from')]);
+            $yform->setValueField('pz_date_screen', ['search_date_from', pz_i18n::msg('search_date_from')]);
         }
         if (!in_array('date_to', $ignore_fields)) {
-            $xform->setValueField('pz_date_screen', ['search_date_to', pz_i18n::msg('search_date_to')]);
+            $yform->setValueField('pz_date_screen', ['search_date_to', pz_i18n::msg('search_date_to')]);
         }
 
         if (!in_array('project_id', $ignore_fields)) {
             $filter = [['field' => 'archived', 'value' => 0]];
             $projects = pz::getUser()->getEmailProjects($filter);
-            $xform->setValueField('pz_select_screen', ['search_project_id', pz_i18n::msg('project'), pz_project::getProjectsAsString($projects), '', '', 0, pz_i18n::msg('please_choose')]);
+            $yform->setValueField('select', ['search_project_id', pz_i18n::msg('project'), pz_project::getProjectsAsString($projects), '', '', 0, pz_i18n::msg('please_choose')]);
         }
 
         if (!in_array('unread', $ignore_fields)) {
-            $xform->setValueField('checkbox', ['search_unread', pz_i18n::msg('search_email_unread')]);
+            $yform->setValueField('checkbox', ['search_unread', pz_i18n::msg('search_email_unread')]);
         }
         if (!in_array('my', $ignore_fields)) {
-            $xform->setValueField('checkbox', ['search_my', pz_i18n::msg('search_email_my')]);
+            $yform->setValueField('checkbox', ['search_my', pz_i18n::msg('search_email_my')]);
         }
         if (!in_array('noprojects', $ignore_fields)) {
-            $xform->setValueField('checkbox', ['search_noprojects', pz_i18n::msg('search_email_noprojects')]);
+            $yform->setValueField('checkbox', ['search_noprojects', pz_i18n::msg('search_email_noprojects')]);
         }
         if (!in_array('intrash', $ignore_fields)) {
-            $xform->setValueField('checkbox', ['search_intrash', pz_i18n::msg('search_email_intrash')]);
+            $yform->setValueField('checkbox', ['search_intrash', pz_i18n::msg('search_email_intrash')]);
         }
 
-        $xform->setValueField('submit', ['submit', pz_i18n::msg('search'), '', 'search']);
+        $yform->setValueField('submit', ['submit', pz_i18n::msg('search'), '', 'search']);
 
-        $return .= $xform->getForm();
+        $return .= $yform->getForm();
 
-        $return = '<div id="emails_search" class="design1col xform-search" data-url="'.$link_refresh.'">'.$return.'</div>';
+        $return = '<div id="emails_search" class="design1col yform-search" data-url="'.$link_refresh.'">'.$return.'</div>';
         return $return;
     }
 
@@ -1023,83 +1023,83 @@ class pz_email_screen
 	          </div>
 	        </header>';
 
-        $xform = new rex_xform();
-        // $xform->setDebug(TRUE);
+        $yform = new rex_yform();
+        // $yform->setDebug(TRUE);
 
         $accounts = pz_email_account::getAsArray(pz::getUser()->getId());
 
         if (count($accounts) == 0) {
-            $return = $header.'<p class="xform-warning">'.pz_i18n::msg('email_account_not_exists').'</p>';
+            $return = $header.'<p class="yform-warning">'.pz_i18n::msg('email_account_not_exists').'</p>';
         } else {
             if (!($account_id_default = pz::getUser()->getDefaultEmailAccountId())) {
                 $account_id_default = 0;
             }
 
-            $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('email_form','email_add_form','".pz::url('screen', 'emails', 'create', ['mode' => 'add_email'])."')");
-            $xform->setObjectparams('form_id', 'email_add_form');
-            $xform->setObjectparams('form_showformafterupdate', 1);
-            $xform->setObjectparams('real_field_names', true);
+            $yform->setObjectparams('form_action', "javascript:pz_loadFormPage('email_form','email_add_form','".pz::url('screen', 'emails', 'create', ['mode' => 'add_email'])."')");
+            $yform->setObjectparams('form_id', 'email_add_form');
+            $yform->setObjectparams('form_showformafterupdate', 1);
+            $yform->setObjectparams('real_field_names', true);
 
-            $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl']);
+            $yform->setValueField('objparams', ['fragment', 'pz_screen_yform.tpl']);
 
-            $xform->setValueField('pz_select_screen', ['account_id', pz_i18n::msg('email_account'), $accounts, '', $account_id_default, 0]);
-            $xform->setValueField('pz_email_screen', ['to', pz_i18n::msg('email_to')]);
-            $xform->setValueField('pz_email_screen', ['cc', pz_i18n::msg('email_cc')]);
-            $xform->setValueField('pz_email_screen', ['bcc', pz_i18n::msg('email_bcc')]);
+            $yform->setValueField('select', ['account_id', pz_i18n::msg('email_account'), $accounts, '', $account_id_default, 0]);
+            $yform->setValueField('pz_email_screen', ['to', pz_i18n::msg('email_to')]);
+            $yform->setValueField('pz_email_screen', ['cc', pz_i18n::msg('email_cc')]);
+            $yform->setValueField('pz_email_screen', ['bcc', pz_i18n::msg('email_bcc')]);
 
-            $xform->setValueField('text', ['subject', pz_i18n::msg('email_subject')]);
-            $xform->setValueField('pz_attachment_screen', ['clip_ids', pz_i18n::msg('email_attachments')]);
-            $xform->setValueField('pz_email_textarea', ['body', pz_i18n::msg('email_body')]);
-            // $xform->setValueField("textarea",array("html",pz_i18n::msg("email_html"),"","0"));
+            $yform->setValueField('text', ['subject', pz_i18n::msg('email_subject')]);
+            $yform->setValueField('pz_attachment_screen', ['clip_ids', pz_i18n::msg('email_attachments')]);
+            $yform->setValueField('pz_email_textarea', ['body', pz_i18n::msg('email_body')]);
+            // $yform->setValueField("textarea",array("html",pz_i18n::msg("email_html"),"","0"));
 
             $filter = [['field' => 'archived', 'value' => 0]];
             $projects = pz::getUser()->getEmailProjects($filter);
-            $xform->setValueField('pz_select_screen', ['project_id', pz_i18n::msg('project'), pz_project::getProjectsAsString($projects), '', '', 0, pz_i18n::msg('please_choose')]);
+            $yform->setValueField('select', ['project_id', pz_i18n::msg('project'), pz_project::getProjectsAsString($projects), '', '', 0, pz_i18n::msg('please_choose')]);
 
-            $xform->setValueField('datestamp', ['created', 'mysql', '', '0', '1']);
-            $xform->setValueField('datestamp', ['updated', 'mysql', '', '0', '0']);
+            $yform->setValueField('datestamp', ['created', 'mysql', '', '0', '1']);
+            $yform->setValueField('datestamp', ['updated', 'mysql', '', '0', '0']);
 
-            $xform->setValueField('hidden', ['create_user_id', pz::getUser()->getId()]);
-            $xform->setValueField('hidden', ['update_user_id', pz::getUser()->getId()]);
+            $yform->setValueField('hidden', ['create_user_id', pz::getUser()->getId()]);
+            $yform->setValueField('hidden', ['update_user_id', pz::getUser()->getId()]);
 
-            $xform->setValueField('hidden', ['reply_id', rex_request('reply_id', 'int', 0)]);
-            $xform->setValueField('hidden', ['forward_id', rex_request('forward_id', 'int', 0)]);
+            $yform->setValueField('hidden', ['reply_id', rex_request('reply_id', 'int', 0)]);
+            $yform->setValueField('hidden', ['forward_id', rex_request('forward_id', 'int', 0)]);
 
-            $xform->setValueField('checkbox', ['draft', pz_i18n::msg('save_as_draft')]);
-            $xform->setValueField('hidden', ['user_id', pz::getUser()->getId()]);
+            $yform->setValueField('checkbox', ['draft', pz_i18n::msg('save_as_draft')]);
+            $yform->setValueField('hidden', ['user_id', pz::getUser()->getId()]);
 
             if (rex_request('draft', 'int') != 1) {
-                $xform->setValidateField('empty', ['subject', pz_i18n::msg('error_email_subject_empty')]);
-                $xform->setValidateField('empty', ['body', pz_i18n::msg('error_email_body_empty')]);
-                $xform->setValidateField('empty', ['to', pz_i18n::msg('error_email_to_empty')]);
+                $yform->setValidateField('empty', ['subject', pz_i18n::msg('error_email_subject_empty')]);
+                $yform->setValidateField('empty', ['body', pz_i18n::msg('error_email_body_empty')]);
+                $yform->setValidateField('empty', ['to', pz_i18n::msg('error_email_to_empty')]);
             }
 
             // if(rex_request("reply_id","int",0)>0)
-            // 	$xform->setValueField("checkbox",array("move_replymail_to_project",pz_i18n::msg("move_replymail_to_project"),0,1,"no_db"));
+            // 	$yform->setValueField("checkbox",array("move_replymail_to_project",pz_i18n::msg("move_replymail_to_project"),0,1,"no_db"));
 
-            $xform->setActionField('db', ['pz_email']);
+            $yform->setActionField('db', ['pz_email']);
 
-            $return = $xform->getForm();
+            $return = $yform->getForm();
 
-            if ($xform->getObjectparams('actions_executed')) {
+            if ($yform->getObjectparams('actions_executed')) {
                 if (rex_request('draft', 'string') != '1') {
-                    $email_id = $xform->getObjectparams('main_id');
+                    $email_id = $yform->getObjectparams('main_id');
 
                     if ($email = pz_email::get($email_id)) {
                         if (!$email->sendDraft()) {
-                            $return = $header.'<p class="xform-warning">'.pz_i18n::msg('email_send_failed').'</p>'.$return;
+                            $return = $header.'<p class="yform-warning">'.pz_i18n::msg('email_send_failed').'</p>'.$return;
                             $email->delete();
                         } else {
 
                             // TODO ..
                             // move_replymail_to_project
 
-                            $return = $header.'<p class="xform-info">'.pz_i18n::msg('email_send').'</p>';
+                            $return = $header.'<p class="yform-info">'.pz_i18n::msg('email_send').'</p>';
                             $return .= pz_screen::getJSUpdatePage(pz::url('screen', 'emails', 'inbox'));
                         }
                     }
                 } else {
-                    $return = $header.'<p class="xform-info">'.pz_i18n::msg('email_saved_in_drafts').'</p>';
+                    $return = $header.'<p class="yform-info">'.pz_i18n::msg('email_saved_in_drafts').'</p>';
                 }
 
                 $return .= pz_screen::getJSUpdateLayer('emails_list', pz::url('screen', 'emails', 'create', ['mode' => 'list']));
@@ -1109,7 +1109,7 @@ class pz_email_screen
             }
         }
 
-        $return = '<div id="email_form" class="design2col"><div id="email_add" class="design2col xform-add">'.$return.'</div></div>';
+        $return = '<div id="email_form" class="design2col"><div id="email_add" class="design2col yform-add">'.$return.'</div></div>';
 
         return $return;
     }
@@ -1123,69 +1123,69 @@ class pz_email_screen
 	          </div>
 	        </header>';
 
-        $xform = new rex_xform();
-        // $xform->setDebug(TRUE);
+        $yform = new rex_yform();
+        // $yform->setDebug(TRUE);
 
         $accounts = pz_email_account::getAsArray(pz::getUser()->getId());
 
         if (count($accounts) == 0) {
-            $return = $header.'<p class="xform-warning">'.pz_i18n::msg('email_account_not_exists').'</p>';
+            $return = $header.'<p class="yform-warning">'.pz_i18n::msg('email_account_not_exists').'</p>';
         } else {
-            $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('email_edit','email_edit_form','".pz::url('screen', 'emails', 'create', ['mode' => 'edit_email'])."')");
-            $xform->setObjectparams('form_id', 'email_edit_form');
-            $xform->setObjectparams('form_showformafterupdate', 1);
-            $xform->setObjectparams('real_field_names', true);
+            $yform->setObjectparams('form_action', "javascript:pz_loadFormPage('email_edit','email_edit_form','".pz::url('screen', 'emails', 'create', ['mode' => 'edit_email'])."')");
+            $yform->setObjectparams('form_id', 'email_edit_form');
+            $yform->setObjectparams('form_showformafterupdate', 1);
+            $yform->setObjectparams('real_field_names', true);
 
-            $xform->setObjectparams('main_table', 'pz_email');
-            $xform->setObjectparams('main_id', $this->email->getId());
-            $xform->setObjectparams('main_where', 'id='.$this->email->getId());
-            $xform->setObjectparams('getdata', true);
-            $xform->setHiddenField('email_id', $this->email->getId());
+            $yform->setObjectparams('main_table', 'pz_email');
+            $yform->setObjectparams('main_id', $this->email->getId());
+            $yform->setObjectparams('main_where', 'id='.$this->email->getId());
+            $yform->setObjectparams('getdata', true);
+            $yform->setHiddenField('email_id', $this->email->getId());
 
-            $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl']);
+            $yform->setValueField('objparams', ['fragment', 'pz_screen_yform.tpl']);
 
-            $xform->setValueField('pz_select_screen', ['account_id', pz_i18n::msg('email_account'), $accounts, '', '', 0]);
-            $xform->setValueField('pz_email_screen', ['to', pz_i18n::msg('email_to')]);
-            $xform->setValueField('pz_email_screen', ['cc', pz_i18n::msg('email_cc')]);
-            $xform->setValueField('pz_email_screen', ['bcc', pz_i18n::msg('email_bcc')]);
+            $yform->setValueField('select', ['account_id', pz_i18n::msg('email_account'), $accounts, '', '', 0]);
+            $yform->setValueField('pz_email_screen', ['to', pz_i18n::msg('email_to')]);
+            $yform->setValueField('pz_email_screen', ['cc', pz_i18n::msg('email_cc')]);
+            $yform->setValueField('pz_email_screen', ['bcc', pz_i18n::msg('email_bcc')]);
 
-            $xform->setValueField('text', ['subject', pz_i18n::msg('email_subject'), '', '0']);
-            $xform->setValueField('pz_attachment_screen', ['clip_ids', pz_i18n::msg('email_attachments')]);
-            $xform->setValueField('pz_email_textarea', ['body', pz_i18n::msg('email_body')]);
-            // $xform->setValueField("textarea",array("html",pz_i18n::msg("email_html"),"","0"));
+            $yform->setValueField('text', ['subject', pz_i18n::msg('email_subject'), '', '0']);
+            $yform->setValueField('pz_attachment_screen', ['clip_ids', pz_i18n::msg('email_attachments')]);
+            $yform->setValueField('pz_email_textarea', ['body', pz_i18n::msg('email_body')]);
+            // $yform->setValueField("textarea",array("html",pz_i18n::msg("email_html"),"","0"));
             $filter = [['field' => 'archived', 'value' => 0]];
             $projects = pz::getUser()->getEmailProjects($filter);
-            $xform->setValueField('pz_select_screen', ['project_id', pz_i18n::msg('project'), pz::getProjectsAsArray($projects), '', '', 0, pz_i18n::msg('please_choose')]);
+            $yform->setValueField('select', ['project_id', pz_i18n::msg('project'), pz::getProjectsAsArray($projects), '', '', 0, pz_i18n::msg('please_choose')]);
 
-            $xform->setValueField('datestamp', ['created', 'mysql', '', '0', '1']);
-            $xform->setValueField('datestamp', ['updated', 'mysql', '', '0', '0']);
+            $yform->setValueField('datestamp', ['created', 'mysql', '', '0', '1']);
+            $yform->setValueField('datestamp', ['updated', 'mysql', '', '0', '0']);
 
-            $xform->setValueField('hidden', ['create_user_id', pz::getUser()->getId()]);
-            $xform->setValueField('hidden', ['update_user_id', pz::getUser()->getId()]);
-            $xform->setValueField('checkbox', ['draft', pz_i18n::msg('save_as_draft')]);
-            $xform->setValueField('hidden', ['user_id', pz::getUser()->getId()]);
+            $yform->setValueField('hidden', ['create_user_id', pz::getUser()->getId()]);
+            $yform->setValueField('hidden', ['update_user_id', pz::getUser()->getId()]);
+            $yform->setValueField('checkbox', ['draft', pz_i18n::msg('save_as_draft')]);
+            $yform->setValueField('hidden', ['user_id', pz::getUser()->getId()]);
 
             if (rex_request('draft', 'int') != 1) {
-                $xform->setValidateField('empty', ['subject', pz_i18n::msg('error_email_subject_empty')]);
-                $xform->setValidateField('empty', ['body', pz_i18n::msg('error_email_body_empty')]);
-                $xform->setValidateField('empty', ['to', pz_i18n::msg('error_email_to_empty')]);
+                $yform->setValidateField('empty', ['subject', pz_i18n::msg('error_email_subject_empty')]);
+                $yform->setValidateField('empty', ['body', pz_i18n::msg('error_email_body_empty')]);
+                $yform->setValidateField('empty', ['to', pz_i18n::msg('error_email_to_empty')]);
             }
 
-            $xform->setActionField('db', ['pz_email', 'id='.$this->email->getId()]);
+            $yform->setActionField('db', ['pz_email', 'id='.$this->email->getId()]);
 
-            $return = $xform->getForm();
+            $return = $yform->getForm();
 
-            if ($xform->getObjectparams('actions_executed')) {
+            if ($yform->getObjectparams('actions_executed')) {
                 if (rex_request('draft', 'string') != '1') {
                     if ($email = pz_email::get($this->email->getId())) {
                         if (!$email->sendDraft()) {
-                            $return = $header.'<p class="xform-warning">'.pz_i18n::msg('email_send_failed_saved_in_drafts').'</p>'.$return;
+                            $return = $header.'<p class="yform-warning">'.pz_i18n::msg('email_send_failed_saved_in_drafts').'</p>'.$return;
                         } else {
-                            $return = $header.'<p class="xform-info">'.pz_i18n::msg('email_send').'</p>';
+                            $return = $header.'<p class="yform-info">'.pz_i18n::msg('email_send').'</p>';
                         }
                     }
                 } else {
-                    $return = $header.'<p class="xform-info">'.pz_i18n::msg('email_saved_in_drafts').'</p>'.$return;
+                    $return = $header.'<p class="yform-info">'.pz_i18n::msg('email_saved_in_drafts').'</p>'.$return;
                 }
             } else {
                 $return = $header.$return;
@@ -1193,7 +1193,7 @@ class pz_email_screen
         }
 
         $return .= pz_screen::getJSUpdateLayer('emails_list', pz::url('screen', 'emails', 'create', ['mode' => 'list']));
-        $return = '<div id="email_form" class="design2col"><div id="email_edit" class="design2col xform-add">'.$return.'</div></div>';
+        $return = '<div id="email_form" class="design2col"><div id="email_edit" class="design2col yform-add">'.$return.'</div></div>';
 
         return $return;
     }

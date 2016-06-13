@@ -65,7 +65,7 @@ class pz_fragment
      * @param bool   $delete_whitespaces
      *
      * @throws InvalidArgumentException
-     * @throws pz_exception
+     * @throws rex_exception
      *
      * @return string
      */
@@ -98,7 +98,7 @@ class pz_fragment
             }
         }
 
-        throw new pz_exception(sprintf('Fragmentfile "%s" not found!', $filename));
+        throw new rex_exception(sprintf('Fragmentfile "%s" not found!', $filename));
     }
 
     /**
@@ -120,7 +120,7 @@ class pz_fragment
      *
      * @param mixed $val the value to escape
      *
-     * @throws pz_exception
+     * @throws rex_exception
      *
      * @return mixed
      */
@@ -145,7 +145,7 @@ class pz_fragment
         } elseif (is_null($val)) {
             return $val;
         } else {
-            throw new pz_exception(sprintf('Unexpected type for $val, "%s" given', gettype($val)));
+            throw new rex_exception(sprintf('Unexpected type for $val, "%s" given', gettype($val)));
         }
     }
 

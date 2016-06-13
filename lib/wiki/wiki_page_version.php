@@ -61,7 +61,7 @@ class pz_wiki_page_version extends pz_wiki_page
 
     public function revert()
     {
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $sql->setTable('pz_wiki')
             ->setWhere(['id' => $this->getId()])
             ->setValue('title', $this->getTitle())

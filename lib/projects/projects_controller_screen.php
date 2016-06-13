@@ -376,7 +376,7 @@ class pz_projects_controller_screen extends pz_projects_controller
                     }
                     return $cs->getEditForm($p);
                 } else {
-                    return '<p class="xform-warning">'.pz_i18n::msg('customer_not_exists').'</p>';
+                    return '<p class="yform-warning">'.pz_i18n::msg('customer_not_exists').'</p>';
                 }
                 break;
             case(''):
@@ -453,7 +453,7 @@ class pz_projects_controller_screen extends pz_projects_controller
                     }
                     return $cs->getEditForm($p);
                 } else {
-                    return '<div id="label_form"><p class="xform-warning">'.pz_i18n::msg('label_not_found').'</p></div>';
+                    return '<div id="label_form"><p class="yform-warning">'.pz_i18n::msg('label_not_found').'</p></div>';
                 }
                 break;
 
@@ -463,7 +463,7 @@ class pz_projects_controller_screen extends pz_projects_controller
                     $cs = new pz_label_screen($label);
                     $s2_content = $cs->getInfoPage($p);
                 } else {
-                    return '<div id="label_form"><p class="xform-warning">'.pz_i18n::msg('label_not_found').'</p></div>';
+                    return '<div id="label_form"><p class="yform-warning">'.pz_i18n::msg('label_not_found').'</p></div>';
                 }
                 break;
 

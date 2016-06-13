@@ -674,7 +674,7 @@ class pz_eml
     public static function refreshInformations()
     {
         $return = '';
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         // $sql->debugsql = 1;
         $emails = $sql->getArray('select * from pz_email where header <> "" and id > ?', [0]);
 
@@ -714,7 +714,7 @@ class pz_eml
                         $return .= '<tr><td>'.$k.'</td><td>'.substr(htmlspecialchars($email[$k]), 0, 100).'</td><td>'.htmlspecialchars($update[$k]).'</td></tr>';
                     }
 
-                    $u = pz_sql::factory();
+                    $u = rex_sql::factory();
                     // $u->debugsql = 1;
                     $u->setTable('pz_email');
                     $u->setWhere('id = '.$email['id']);

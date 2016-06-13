@@ -64,10 +64,10 @@
     .section1 .design1col > div > header, 
     .section1 .design1col > .design1col,  
     .section1 .design1col.is-visible > *:not(script), 
-    .section1 .xform-edit > header, 
-    .section1 .xform-edit > div > header, 
-    .section1 .xform-edit > .design1col, 
-    .section1 .xform-edit > *:not(script) {
+    .section1 .yform-edit > header,
+    .section1 .yform-edit > div > header,
+    .section1 .yform-edit > .design1col,
+    .section1 .yform-edit > *:not(script) {
         display: block;
     }
     .section1 .design1col.is-visible > header, 

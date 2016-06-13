@@ -114,7 +114,7 @@ class pz_calendar_rule_event extends pz_calendar_event
                 $params[] = $this->rule->getId();
                 $params[] = $base->getId();
 
-                pz_sql::factory()->setQuery('
+                rex_sql::factory()->setQuery('
                     UPDATE ' . self::TABLE . '
                     SET ' . $set . 'updated = NOW()
                     WHERE rule_id = ? AND id != ?
@@ -176,7 +176,7 @@ class pz_calendar_rule_event extends pz_calendar_event
                 $params[] = $this->from->format(self::DATETIME);
                 $params[] = $this->rule->getId();
                 $params[] = $nBase->getId();
-                pz_sql::factory()->setQuery('
+                rex_sql::factory()->setQuery('
                     UPDATE ' . self::TABLE . '
                     SET ' . $set . 'rule = ?, updatedate = NOW()
                     WHERE `from` >= ? AND rule_id = ? AND id != ?
@@ -269,7 +269,7 @@ class pz_calendar_rule_event extends pz_calendar_event
 
         static $sql = null;
         if (!$sql) {
-            $sql = pz_sql::factory();
+            $sql = rex_sql::factory();
             $sql->prepareQuery('
                 SELECT *
                 FROM ' . self::TABLE . ' e
@@ -311,7 +311,7 @@ class pz_calendar_rule_event extends pz_calendar_event
 
         static $sql = null;
         if (!$sql) {
-            $sql = pz_sql::factory();
+            $sql = rex_sql::factory();
             $sql->prepareQuery('
                 SELECT *
                 FROM ' . self::TABLE . ' e
@@ -523,7 +523,7 @@ class pz_calendar_rule_event extends pz_calendar_event
     {
         static $sql = null;
         if (!$sql) {
-            $sql = pz_sql::factory();
+            $sql = rex_sql::factory();
             $sql->prepareQuery('
                 SELECT *
                 FROM ' . self::TABLE . ' e

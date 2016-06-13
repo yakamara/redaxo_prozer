@@ -65,9 +65,9 @@ class pz_project_sub_screen
 	          </div>
 	        </header>';
 
-        $return = $header.'<p class="xform-info">'.pz_i18n::msg('project_sub_deleted', htmlspecialchars($p['project_sub_name'])).'</p>';
+        $return = $header.'<p class="yform-info">'.pz_i18n::msg('project_sub_deleted', htmlspecialchars($p['project_sub_name'])).'</p>';
         $return .= pz_screen::getJSLoadFormPage('project_subs_list', 'labels_search_form', pz::url('screen', 'project', $p['function'], ['project_id' => $project->getId(), 'mode' => 'list']));
-        $return = '<div id="project_sub_form"><div id="project_sub_delete" class="design1col xform-delete">'.$return.'</div></div>';
+        $return = '<div id="project_sub_form"><div id="project_sub_delete" class="design1col yform-delete">'.$return.'</div></div>';
 
         return $return;
     }
@@ -81,30 +81,30 @@ class pz_project_sub_screen
 	          </div>
 	        </header>';
 
-        $xform = new rex_xform();
-        // $xform->setDebug(TRUE);
+        $yform = new rex_yform();
+        // $yform->setDebug(TRUE);
 
-        $xform->setObjectparams('main_table', 'pz_project_sub');
-        $xform->setObjectparams('main_id', $this->project_sub->getId());
-        $xform->setObjectparams('main_where', 'id='.$this->project_sub->getId()); // array("id"=>$this->label->getId())
-        $xform->setObjectparams('getdata', true);
-        $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl']);
+        $yform->setObjectparams('main_table', 'pz_project_sub');
+        $yform->setObjectparams('main_id', $this->project_sub->getId());
+        $yform->setObjectparams('main_where', 'id='.$this->project_sub->getId()); // array("id"=>$this->label->getId())
+        $yform->setObjectparams('getdata', true);
+        $yform->setValueField('objparams', ['fragment', 'pz_screen_yform.tpl']);
 
-        $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('project_sub_form','project_sub_edit_form','".pz::url('screen', 'project', 'project_sub', ['mode' => 'edit_project_sub'])."')");
-        $xform->setObjectparams('form_id', 'project_sub_edit_form');
-        $xform->setHiddenField('project_sub_id', $this->project_sub->getId());
-        $xform->setHiddenField('project_id', $this->project_sub->getProject()->getId());
-        $xform->setObjectparams('form_showformafterupdate', 1);
+        $yform->setObjectparams('form_action', "javascript:pz_loadFormPage('project_sub_form','project_sub_edit_form','".pz::url('screen', 'project', 'project_sub', ['mode' => 'edit_project_sub'])."')");
+        $yform->setObjectparams('form_id', 'project_sub_edit_form');
+        $yform->setHiddenField('project_sub_id', $this->project_sub->getId());
+        $yform->setHiddenField('project_id', $this->project_sub->getProject()->getId());
+        $yform->setObjectparams('form_showformafterupdate', 1);
 
-        $xform->setValueField('text', ['name', pz_i18n::msg('project_sub_name')]);
-        $xform->setValidateField('empty', ['name', pz_i18n::msg('error_project_sub_name_empty')]);
+        $yform->setValueField('text', ['name', pz_i18n::msg('project_sub_name')]);
+        $yform->setValidateField('empty', ['name', pz_i18n::msg('error_project_sub_name_empty')]);
 
-        $xform->setActionField('db', ['pz_project_sub', 'id='.$this->project_sub->getId()]); // array("id"=>$this->label->getId())
+        $yform->setActionField('db', ['pz_project_sub', 'id='.$this->project_sub->getId()]); // array("id"=>$this->label->getId())
 
-        $return = $xform->getForm();
+        $return = $yform->getForm();
 
-        if ($xform->getObjectparams('actions_executed')) {
-            $return = $header.'<p class="xform-info">'.pz_i18n::msg('project_sub_updated').'</p>'.$return;
+        if ($yform->getObjectparams('actions_executed')) {
+            $return = $header.'<p class="yform-info">'.pz_i18n::msg('project_sub_updated').'</p>'.$return;
             $return .= pz_screen::getJSUpdateLayer('labels_list', pz::url('screen', 'project', 'project_sub', ['mode' => 'list']));
         } else {
             $return = $header.$return;
@@ -112,7 +112,7 @@ class pz_project_sub_screen
 
         if ($p['show_delete']) {
             $delete_link = pz::url('screen', 'project', 'project_sub', ['project_id' => $this->project_sub->getProject()->getid(), 'project_sub_id' => $this->project_sub->getId(), 'mode' => 'delete_project_sub']);
-            $return .= '<div class="xform">
+            $return .= '<div class="yform">
 				<p><a class="bt17" onclick="check = confirm(\''.
                 pz_i18n::msg('project_sub_confirm_delete', htmlspecialchars($this->project_sub->getName())).
                 '\'); if (check == true) pz_loadPage(\'project_sub_form\',\''.
@@ -120,7 +120,7 @@ class pz_project_sub_screen
 				</div>';
         }
 
-        $return = '<div id="project_sub_form"><div id="project_sub_edit" class="design1col xform-edit">'.$return.'</div></div>';
+        $return = '<div id="project_sub_form"><div id="project_sub_edit" class="design1col yform-edit">'.$return.'</div></div>';
 
         return $return;
     }
@@ -134,30 +134,30 @@ class pz_project_sub_screen
 	          </div>
 	        </header>';
 
-        $xform = new rex_xform();
-        // $xform->setDebug(TRUE);
+        $yform = new rex_yform();
+        // $yform->setDebug(TRUE);
 
-        $xform->setObjectparams('main_table', 'pz_project_sub');
-        $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('project_sub_form','project_sub_add_form','".pz::url('screen', 'project', 'project_sub', ['mode' => 'add_project_sub', 'project_id' => $project->getId()])."')");
-        $xform->setObjectparams('form_id', 'project_sub_add_form');
+        $yform->setObjectparams('main_table', 'pz_project_sub');
+        $yform->setObjectparams('form_action', "javascript:pz_loadFormPage('project_sub_form','project_sub_add_form','".pz::url('screen', 'project', 'project_sub', ['mode' => 'add_project_sub', 'project_id' => $project->getId()])."')");
+        $yform->setObjectparams('form_id', 'project_sub_add_form');
 
-        $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl']);
+        $yform->setValueField('objparams', ['fragment', 'pz_screen_yform.tpl']);
 
-        $xform->setValueField('hidden', ['project_id', $project->getId()]);
+        $yform->setValueField('hidden', ['project_id', $project->getId()]);
 
-        $xform->setValueField('text', ['name', pz_i18n::msg('project_sub_name')]);
-        $xform->setValidateField('empty', ['name', pz_i18n::msg('error_project_sub_name_empty')]);
-        $xform->setActionField('db', []); // array("id"=>$label_id)
-        $return = $xform->getForm();
+        $yform->setValueField('text', ['name', pz_i18n::msg('project_sub_name')]);
+        $yform->setValidateField('empty', ['name', pz_i18n::msg('error_project_sub_name_empty')]);
+        $yform->setActionField('db', []); // array("id"=>$label_id)
+        $return = $yform->getForm();
 
-        if ($xform->getObjectparams('actions_executed')) {
-            $return = $header.'<p class="xform-info">'.pz_i18n::msg('project_sub_added').'</p>'.$return;
+        if ($yform->getObjectparams('actions_executed')) {
+            $return = $header.'<p class="yform-info">'.pz_i18n::msg('project_sub_added').'</p>'.$return;
             $return .= pz_screen::getJSUpdateLayer('project_subs_list', pz::url('screen', 'project', 'project_sub', ['mode' => 'list', 'project_id' => $project->getId()]));
         } else {
             $return = $header.$return;
         }
 
-        $return = '<div id="project_sub_form"><div id="project_sub_add" class="design1col xform-add">'.$return.'</div></div>';
+        $return = '<div id="project_sub_form"><div id="project_sub_add" class="design1col yform-add">'.$return.'</div></div>';
 
         return $return;
     }

@@ -34,7 +34,7 @@ class pz_address extends pz_model
             return false;
         }
         $id = (int) $id;
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $sql->setQuery('select * from pz_address where id=' . $id . ' LIMIT 2');
         $addresses = $sql->getArray();
         if (count($addresses) != 1) {
@@ -45,7 +45,7 @@ class pz_address extends pz_model
 
     public static function getByUri($uri)
     {
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $sql->setQuery('select * from pz_address where uri="' . $uri . '" LIMIT 2');
         $addresses = $sql->getArray();
         if (count($addresses) != 1) {
@@ -56,7 +56,7 @@ class pz_address extends pz_model
 
     public static function getByEmail($email)
     {
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $sql->setQuery('select * from pz_address_field where type="EMAIL" and value=? LIMIT 1', [$email]);
         $sql_a = $sql->getArray();
 
@@ -102,7 +102,7 @@ class pz_address extends pz_model
             $order_sql[] = $order['orderby'] . ' ' . $order['sort'];
         }
 
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         // $sql->debugsql = 1;
         $sql->setQuery('SELECT * FROM pz_address ' . $return_filter['where_sql'] . ' order by ' . implode(',', $order_sql) . ' LIMIT 5000', $return_filter['params']);
         $addresses = [];
@@ -214,7 +214,7 @@ class pz_address extends pz_model
             return $this->fields;
         }
 
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $sql->setQuery('SELECT * FROM pz_address_field WHERE address_id = ? ORDER BY type ASC, preferred DESC', [$this->getId()]);
         foreach ($sql->getArray() as $row) {
             $this->fields[] = new pz_address_field($row);
@@ -224,7 +224,7 @@ class pz_address extends pz_model
 
     public function saveToHistory($mode = 'update')
     {
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $sql->setTable('pz_history')
             ->setValue('control', 'address')
             ->setValue('data_id', $this->getId())
@@ -264,7 +264,7 @@ class pz_address extends pz_model
             }
         }
 
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $sql->setTable('pz_address')
             ->setWhere(['id' => $this->getId()])
             ->setValue('vt', implode(' ', $vt))
@@ -305,7 +305,7 @@ class pz_address extends pz_model
     {
         $this->saveToHistory('delete');
 
-        pz_sql::factory()->setQuery('
+        rex_sql::factory()->setQuery('
             DELETE a, af
             FROM pz_address a
             LEFT JOIN pz_address_field af

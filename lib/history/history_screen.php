@@ -29,46 +29,46 @@ class pz_history_screen
           </div>
         </header>';
 
-        $xform = new rex_xform();
-        $xform->setObjectparams('real_field_names', true);
-        $xform->setObjectparams('form_showformafterupdate', true);
-        $xform->setObjectparams('form_action', "javascript:pz_loadFormPage('".$p['layer_list']."','history_search_form','".pz::url('screen', $p['controll'], $p['function'], $p['linkvars'])."')");
-        $xform->setObjectparams('form_id', 'history_search_form');
+        $yform = new rex_yform();
+        $yform->setObjectparams('real_field_names', true);
+        $yform->setObjectparams('form_showformafterupdate', true);
+        $yform->setObjectparams('form_action', "javascript:pz_loadFormPage('".$p['layer_list']."','history_search_form','".pz::url('screen', $p['controll'], $p['function'], $p['linkvars'])."')");
+        $yform->setObjectparams('form_id', 'history_search_form');
 
-        $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl', 'runtime']);
-        $xform->setValueField('pz_date_screen', ['search_date_from', pz_i18n::msg('search_date_from')]);
-        $xform->setValueField('pz_date_screen', ['search_date_to', pz_i18n::msg('search_date_to')]);
-        $xform->setValueField('pz_select_screen', ['search_modi', pz_i18n::msg('history_modi'), pz_history::getModi(), '', '', 0, pz_i18n::msg('please_choose')]);
-        $xform->setValueField('pz_select_screen', ['search_control', pz_i18n::msg('history_control'), pz_history::getControls(), '', '', 0, pz_i18n::msg('please_choose')]);
-        $xform->setValueField('text', ['search_control_file', pz_i18n::msg('history_control_file')]);
-        $xform->setValueField('pz_select_screen', ['search_user_id', pz_i18n::msg('user'), pz::getUsersAsArray(pz::getUser()->getUsers()), '', '', 0, pz_i18n::msg('please_choose')]);
-        $xform->setValueField('pz_select_screen', ['search_project_id', pz_i18n::msg('project'), pz::getProjectsAsArray(pz::getUser()->getProjects()), '', '', 0, pz_i18n::msg('please_choose')]);
+        $yform->setValueField('objparams', ['fragment', 'pz_screen_yform.tpl', 'runtime']);
+        $yform->setValueField('pz_date_screen', ['search_date_from', pz_i18n::msg('search_date_from')]);
+        $yform->setValueField('pz_date_screen', ['search_date_to', pz_i18n::msg('search_date_to')]);
+        $yform->setValueField('select', ['search_modi', pz_i18n::msg('history_modi'), pz_history::getModi(), '', '', 0, pz_i18n::msg('please_choose')]);
+        $yform->setValueField('select', ['search_control', pz_i18n::msg('history_control'), pz_history::getControls(), '', '', 0, pz_i18n::msg('please_choose')]);
+        $yform->setValueField('text', ['search_control_file', pz_i18n::msg('history_control_file')]);
+        $yform->setValueField('select', ['search_user_id', pz_i18n::msg('user'), pz::getUsersAsArray(pz::getUser()->getUsers()), '', '', 0, pz_i18n::msg('please_choose')]);
+        $yform->setValueField('select', ['search_project_id', pz_i18n::msg('project'), pz::getProjectsAsArray(pz::getUser()->getProjects()), '', '', 0, pz_i18n::msg('please_choose')]);
 
-        $xform->setValueField('checkbox', ['search_fetch_all', pz_i18n::msg('fetch_all'), "0,1", '', '', 0, pz_i18n::msg('please_choose')]);
+        $yform->setValueField('checkbox', ['search_fetch_all', pz_i18n::msg('fetch_all'), "0,1", '', '', 0, pz_i18n::msg('please_choose')]);
 
         /*
                 $projects = pz::getUser()->getProjects();
-                $xform->setValueField("pz_select_screen",array("search_project_id",pz_i18n::msg("project"),pz_project::getProjectsAsArray($projects),"","",0,pz_i18n::msg("please_choose")));
+                $yform->setValueField("select",array("search_project_id",pz_i18n::msg("project"),pz_project::getProjectsAsArray($projects),"","",0,pz_i18n::msg("please_choose")));
 
                 $users = pz::getUser()->getUsers();
-                $xform->setValueField("pz_select_screen",array("search_user_id",pz_i18n::msg("project"),pz_user::getUsersAsArray($users),"","",0,pz_i18n::msg("please_choose")));
+                $yform->setValueField("select",array("search_user_id",pz_i18n::msg("project"),pz_user::getUsersAsArray($users),"","",0,pz_i18n::msg("please_choose")));
         */
-        // $xform->setValueField("checkbox",array("search_intrash",pz_i18n::msg("search_email_intrash")));
-        $xform->setValueField('submit', ['submit', pz_i18n::msg('search'), '', 'search']);
-        $return .= $xform->getForm();
+        // $yform->setValueField("checkbox",array("search_intrash",pz_i18n::msg("search_email_intrash")));
+        $yform->setValueField('submit', ['submit', pz_i18n::msg('search'), '', 'search']);
+        $return .= $yform->getForm();
 
-        $style = " <style> #history_search #xform-formular-search_control_file { display: none; } </style> ";
+        $style = " <style> #history_search #yform-formular-search_control_file { display: none; } </style> ";
         $script = "
         <script type='text/javascript'>
         $( document ).ready(function() {
-            pz_history_control($('#xform-formular-search_control_file'), $('#xform-formular-field-4'), 'project_file');
+            pz_history_control($('#yform-formular-search_control_file'), $('#yform-formular-field-4'), 'project_file');
         });
 
 
 </script>
         ";
 
-        $return = '<div id="history_search" class="design1col xform-search" data-url="'.$link_refresh.'">'.$return.$script.$style.'</div>';
+        $return = '<div id="history_search" class="design1col yform-search" data-url="'.$link_refresh.'">'.$return.$script.$style.'</div>';
         return $return;
     }
 
@@ -107,7 +107,7 @@ class pz_history_screen
         $return = $f->parse('pz_screen_list.tpl');
 
         if (count($entries) == 0) {
-            $return .= '<div class="xform-warning">'.pz_i18n::msg('no_history_entries_found').'</div>';
+            $return .= '<div class="yform-warning">'.pz_i18n::msg('no_history_entries_found').'</div>';
         }
 
         return '<div id="history_list" class="design2col" data-url="'.$link_refresh.'">'.$return.'</div>';

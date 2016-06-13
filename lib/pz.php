@@ -224,7 +224,7 @@ class pz
         $params = $f['params'];
         $where_sql = $f['where_sql'];
 
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $sql->setQuery('SELECT u.* FROM pz_user u ' . $where_sql . ' ORDER BY u.name', $params);
         $users = [];
         foreach ($sql->getArray() as $row) {
@@ -257,7 +257,7 @@ class pz
     public static function getActiveAdminUsersAsString()
     {
 
-        $sql = pz_sql::factory();
+        $sql = rex_sql::factory();
         $query = 'SELECT * FROM pz_user WHERE id IN '
                . '(SELECT pu.user_id FROM pz_project AS p INNER JOIN pz_project_user AS pu ON p.id = pu.project_id '
                . 'WHERE p.archived=0 AND p.archived IS NOT NULL AND pu.`admin` GROUP BY pu.user_id) ORDER BY name;';

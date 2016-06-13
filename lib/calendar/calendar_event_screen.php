@@ -374,13 +374,13 @@ class pz_calendar_event_screen {
         $info_message = '';
         if(isset($p["info_message"]))
         {
-            $info_message = '<p class="xform-info">'.$p["info_message"].'</p>';
+            $info_message = '<p class="yform-info">'.$p["info_message"].'</p>';
         }
 
         $warning_message = '';
         if(isset($p["warning_message"]))
         {
-            $warning_message = '<p class="xform-warning">'.$p["warning_message"].'</p>';
+            $warning_message = '<p class="yform-warning">'.$p["warning_message"].'</p>';
         }
 
         $additionalActions = '';
@@ -2750,7 +2750,7 @@ class pz_calendar_event_screen {
 
     function getDeleteForm($p = array())
     {
-        // $return = $header.'<p class="xform-info">'.pz_i18n::msg("calendar_event_deleted", htmlspecialchars($title)).'</p>';
+        // $return = $header.'<p class="yform-info">'.pz_i18n::msg("calendar_event_deleted", htmlspecialchars($title)).'</p>';
         $return = '<script>pz_refresh_calendar_lists();pz_remove_calendar_events_by_id('.$this->calendar_event->getId().');pz_tooltipbox_close()</script>';
         return $return;
 
@@ -2765,32 +2765,32 @@ class pz_calendar_event_screen {
 	          </div>
 	        </header>';
 
-        $xform = new rex_xform;
-        // $xform->setDebug(TRUE);
-        $xform->setObjectparams("form_id", "calendar_event_add_form");
-        $xform->setObjectparams("form_action", "javascript:pz_loadFormPage('calendar_event_form','calendar_event_add_form','".pz::url('screen','calendars','event',array("mode"=>'add_calendar_event'))."')");
-        $xform->setObjectparams("real_field_names",TRUE);
-        $xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
-        $xform->setObjectparams('form_showformafterupdate',1);
+        $yform = new rex_yform;
+        // $yform->setDebug(TRUE);
+        $yform->setObjectparams("form_id", "calendar_event_add_form");
+        $yform->setObjectparams("form_action", "javascript:pz_loadFormPage('calendar_event_form','calendar_event_add_form','".pz::url('screen','calendars','event',array("mode"=>'add_calendar_event'))."')");
+        $yform->setObjectparams("real_field_names",TRUE);
+        $yform->setValueField('objparams',array('fragment', 'pz_screen_yform.tpl'));
+        $yform->setObjectparams('form_showformafterupdate',1);
 
-        $xform->setValueField("checkbox",array("booked",pz_i18n::msg("calendar_event_booked"),'',1));
-        $xform->setValueField("text",array("title",pz_i18n::msg("calendar_event_title")));
+        $yform->setValueField("checkbox",array("booked",pz_i18n::msg("calendar_event_booked"),'',1));
+        $yform->setValueField("text",array("title",pz_i18n::msg("calendar_event_title")));
 
         $projects = pz::getUser()->getCalendarProjects();
-        $xform->setValueField("pz_select_screen",array("project_id",pz_i18n::msg("project"),pz_project::getProjectsAsString($projects),"","",0,pz_i18n::msg("please_choose")));
+        $yform->setValueField("select",array("project_id",pz_i18n::msg("project"),pz_project::getProjectsAsString($projects),"","",0,pz_i18n::msg("please_choose")));
 
         $subprojects = array();
         $filter = array("field" => "project_id", "value" => rex_request("project_id","int"));
         if( rex_request("project_id","int") > 0 && ($project = pz::getUser()->getAllProjects($filter)) ) {
             $subprojects = $project;
         }
-        $xform->setValueField("pz_select_screen",array("project_sub_id",pz_i18n::msg("project_sub"),pz_project::getProjectSubsAsString($subprojects),"","",0,pz_i18n::msg("please_choose")));
+        $yform->setValueField("select",array("project_sub_id",pz_i18n::msg("project_sub"),pz_project::getProjectSubsAsString($subprojects),"","",0,pz_i18n::msg("please_choose")));
 
-        // $xform->setValueField("html",array("timesplit",'<div class="split-h"></div>'));
-        $xform->setValueField("checkbox",array("allday",pz_i18n::msg("calendar_event_allday")));
+        // $yform->setValueField("html",array("timesplit",'<div class="split-h"></div>'));
+        $yform->setValueField("checkbox",array("allday",pz_i18n::msg("calendar_event_allday")));
 
-        $xform->setValueField("datestamp",array("created","mysql","","0","1"));
-        $xform->setValueField("datestamp",array("updated","mysql","","0","0"));
+        $yform->setValueField("datestamp",array("created","mysql","","0","1"));
+        $yform->setValueField("datestamp",array("updated","mysql","","0","0"));
 
         if(rex_request("allday","int") == 1)
         {
@@ -2800,21 +2800,21 @@ class pz_calendar_event_screen {
             $_REQUEST["to"]["minutes"] = 45;
         }
 
-        $xform->setValueField("pz_datetime_screen",array("from",pz_i18n::msg("calendar_event_from")));
-        $xform->setValueField("pz_datetime_screen",array("to",pz_i18n::msg("calendar_event_to")));
-        $xform->setValueField("pz_calendar_event_attendees",array("attendees",pz_i18n::msg("calendar_event_attendees")));
-        $xform->setValueField("pz_attachment_screen",array("clip_ids",pz_i18n::msg("calendar_event_attachments")));
-        $xform->setValueField("text",array("location",pz_i18n::msg("calendar_event_location")));
-        $xform->setValueField("text",array("url",pz_i18n::msg("calendar_event_url")));
+        $yform->setValueField("pz_datetime_screen",array("from",pz_i18n::msg("calendar_event_from")));
+        $yform->setValueField("pz_datetime_screen",array("to",pz_i18n::msg("calendar_event_to")));
+        $yform->setValueField("pz_calendar_event_attendees",array("attendees",pz_i18n::msg("calendar_event_attendees")));
+        $yform->setValueField("pz_attachment_screen",array("clip_ids",pz_i18n::msg("calendar_event_attachments")));
+        $yform->setValueField("text",array("location",pz_i18n::msg("calendar_event_location")));
+        $yform->setValueField("text",array("url",pz_i18n::msg("calendar_event_url")));
 
-        $xform->setValueField("textarea",array("description",pz_i18n::msg("calendar_event_description")));
-        $xform->setValidateField("mysql_datetime",array("from",pz_i18n::msg("error_calendar_from_datetime")));
-        $xform->setValidateField("mysql_datetime",array("to",pz_i18n::msg("error_calendar_to_datetime")));
+        $yform->setValueField("textarea",array("description",pz_i18n::msg("calendar_event_description")));
+        $yform->setValidateField("mysql_datetime",array("from",pz_i18n::msg("error_calendar_from_datetime")));
+        $yform->setValidateField("mysql_datetime",array("to",pz_i18n::msg("error_calendar_to_datetime")));
 
-        $xform->setValidateField("pz_project_jobevent_id",array("project_id",rex_request("booked","int"),pz_i18n::msg("error_calendar_job_project_id"),pz_i18n::msg("error_calendar_event_project_id")));
-        $xform->setValidateField("pz_project_id",array("project_id",pz_i18n::msg("error_calendar_event_project_id")));
-        $xform->setValidateField("empty",array("title",pz_i18n::msg("error_calendar_event_title_empty")));
-        $xform->setValidateField("pz_comparefields",array("from","to",">=",pz_i18n::msg("error_calendar_event_fromto_compare")));
+        $yform->setValidateField("pz_project_jobevent_id",array("project_id",rex_request("booked","int"),pz_i18n::msg("error_calendar_job_project_id"),pz_i18n::msg("error_calendar_event_project_id")));
+        $yform->setValidateField("pz_project_id",array("project_id",pz_i18n::msg("error_calendar_event_project_id")));
+        $yform->setValidateField("empty",array("title",pz_i18n::msg("error_calendar_event_title_empty")));
+        $yform->setValidateField("pz_comparefields",array("from","to",">=",pz_i18n::msg("error_calendar_event_fromto_compare")));
 
         /*
             TODO
@@ -2831,44 +2831,44 @@ class pz_calendar_event_screen {
         $jquery ='
 		<script>
 
-		$("#calendar_event_add_form #xform-formular-booked input, #calendar_event_add_form #xform-formular-allday input, #calendar_event_add_form #xform-formular-project_id select").bind("change",function() {
+		$("#calendar_event_add_form #yform-formular-booked input, #calendar_event_add_form #yform-formular-allday input, #calendar_event_add_form #yform-formular-project_id select").bind("change",function() {
 			calendar_event_add_form_updater();
 		});
 
 		function calendar_event_add_form_updater()
 		{
-			var booked = $("#calendar_event_add_form #xform-formular-booked input:checkbox:checked").val();
-			var allday = $("#calendar_event_add_form #xform-formular-allday input:checkbox:checked").val();
-			var project_id = $("#calendar_event_add_form #xform-formular-project_id select").val();
-			var project_sub_id = $("#calendar_event_add_form #xform-formular-project_sub_id select").val();
+			var booked = $("#calendar_event_add_form #yform-formular-booked input:checkbox:checked").val();
+			var allday = $("#calendar_event_add_form #yform-formular-allday input:checkbox:checked").val();
+			var project_id = $("#calendar_event_add_form #yform-formular-project_id select").val();
+			var project_sub_id = $("#calendar_event_add_form #yform-formular-project_sub_id select").val();
 
 			if(allday == 1)
 			{
-				$("#calendar_event_add_form #xform-formular-from .fafter, #calendar_event_add_form #xform-formular-from .xform-time").hide();
-				$("#calendar_event_add_form #xform-formular-to .fafter, #calendar_event_add_form #xform-formular-to .xform-time").hide();
+				$("#calendar_event_add_form #yform-formular-from .fafter, #calendar_event_add_form #yform-formular-from .yform-time").hide();
+				$("#calendar_event_add_form #yform-formular-to .fafter, #calendar_event_add_form #yform-formular-to .yform-time").hide();
 
 			}else
 			{
-				$("#calendar_event_add_form #xform-formular-from .fafter, #calendar_event_add_form #xform-formular-from .xform-time").show();
-				$("#calendar_event_add_form #xform-formular-to .fafter, #calendar_event_add_form #xform-formular-to .xform-time").show();
+				$("#calendar_event_add_form #yform-formular-from .fafter, #calendar_event_add_form #yform-formular-from .yform-time").show();
+				$("#calendar_event_add_form #yform-formular-to .fafter, #calendar_event_add_form #yform-formular-to .yform-time").show();
 			}
 
 			if(booked == 1)
 			{
-				$("#calendar_event_add_form #xform-formular-allday input").removeAttr("checked");
-				$("#calendar_event_add_form #xform-formular-allday").hide();
+				$("#calendar_event_add_form #yform-formular-allday input").removeAttr("checked");
+				$("#calendar_event_add_form #yform-formular-allday").hide();
 				$("#calendar_event_add_form .pz_address_fields_attandees").hide();
-				$("#calendar_event_add_form #xform-formular-from").show();
-				$("#calendar_event_add_form #xform-formular-to").show();
-				$("#calendar_event_add_form #xform-formular-label-id").hide();
-				$("#calendar_event_add_form #xform-formular-clip-ids").hide();
+				$("#calendar_event_add_form #yform-formular-from").show();
+				$("#calendar_event_add_form #yform-formular-to").show();
+				$("#calendar_event_add_form #yform-formular-label-id").hide();
+				$("#calendar_event_add_form #yform-formular-clip-ids").hide();
 
 			}else
 			{
-				$("#calendar_event_add_form #xform-formular-allday").show();
+				$("#calendar_event_add_form #yform-formular-allday").show();
 				$("#calendar_event_add_form .pz_address_fields_attandees").show();
-				$("#calendar_event_add_form #xform-formular-label-id").show();
-				$("#calendar_event_add_form #xform-formular-clip-ids").show();
+				$("#calendar_event_add_form #yform-formular-label-id").show();
+				$("#calendar_event_add_form #yform-formular-clip-ids").show();
 
 			}
 
@@ -2890,26 +2890,26 @@ class pz_calendar_event_screen {
         $jquery .= '
 
       // project_sub_id;
-      $("#calendar_event_add_form #xform-formular-project_sub_id select option").remove();
+      $("#calendar_event_add_form #yform-formular-project_sub_id select option").remove();
 
       if(project_id == "" || typeof(project_sub_ids[project_id]) == "undefined" ) {
-        $("#calendar_event_add_form #xform-formular-project_sub_id").hide();
+        $("#calendar_event_add_form #yform-formular-project_sub_id").hide();
 
       }else {
         if(project_sub_ids[project_id].length == 0) {
-          $("#calendar_event_add_form #xform-formular-project_sub_id").hide();
+          $("#calendar_event_add_form #yform-formular-project_sub_id").hide();
         }else {
-          $("<option/>").val(0).text("'.pz_i18n::msg("please_choose").'").appendTo("#calendar_event_add_form #xform-formular-project_sub_id select");
+          $("<option/>").val(0).text("'.pz_i18n::msg("please_choose").'").appendTo("#calendar_event_add_form #yform-formular-project_sub_id select");
           $.each(project_sub_ids[project_id], function(t, v) {
 
-            $("<option/>").val(v).text(project_sub_name[v]).appendTo("#calendar_event_add_form #xform-formular-project_sub_id select");
+            $("<option/>").val(v).text(project_sub_name[v]).appendTo("#calendar_event_add_form #yform-formular-project_sub_id select");
             if(v == project_sub_id) {
-              $("#calendar_event_add_form #xform-formular-project_sub_id select option[value=\'"+v+"\']").attr("selected", true);
+              $("#calendar_event_add_form #yform-formular-project_sub_id select option[value=\'"+v+"\']").attr("selected", true);
             }
           });
-          //$("#calendar_event_add_form #xform-formular-project_sub_id select").trigger("liszt:updated");
-          $("#calendar_event_add_form #xform-formular-project_sub_id select").trigger("chosen:updated");
-          $("#calendar_event_add_form #xform-formular-project_sub_id").show();
+          //$("#calendar_event_add_form #yform-formular-project_sub_id select").trigger("liszt:updated");
+          $("#calendar_event_add_form #yform-formular-project_sub_id select").trigger("chosen:updated");
+          $("#calendar_event_add_form #yform-formular-project_sub_id").show();
         }
       }
 
@@ -2919,12 +2919,12 @@ class pz_calendar_event_screen {
 		</script>
 		';
 
-        $form = $xform->getForm().$jquery;
+        $form = $yform->getForm().$jquery;
 
-        if($xform->getObjectparams("actions_executed"))
+        if($yform->getObjectparams("actions_executed"))
         {
 
-            $value_pool = $xform->getObjectparams("value_pool");
+            $value_pool = $yform->getObjectparams("value_pool");
             $data = $value_pool["sql"];
 
             $data = pz::stripSlashes($data);
@@ -2978,14 +2978,14 @@ class pz_calendar_event_screen {
                     pz_calendar_attendee::saveAll($event);
                 }
 
-                $return = $header.'<p class="xform-info">'.pz_i18n::msg("calendar_event_added").'</p>';
+                $return = $header.'<p class="yform-info">'.pz_i18n::msg("calendar_event_added").'</p>';
                 $return .= '<script>pz_refresh_calendar_lists();</script>';
-                $return .= pz_screen::getJSDelayedUpdateLayer('calendar_event_form', pz::url('screen', $p['controll'], $p['function'], ['mode' => 'add_calendar_event', 'day' => $from->format('Ymd')]), 0, 'xform-info');
+                $return .= pz_screen::getJSDelayedUpdateLayer('calendar_event_form', pz::url('screen', $p['controll'], $p['function'], ['mode' => 'add_calendar_event', 'day' => $from->format('Ymd')]), 0, 'yform-info');
 
 
             }else
             {
-                $return = $header.'<p class="xform-warning">'.pz_i18n::msg("error_calendar_event_not_added").'</p>'.$form;
+                $return = $header.'<p class="yform-warning">'.pz_i18n::msg("error_calendar_event_not_added").'</p>'.$form;
             }
 
         }else
@@ -2996,7 +2996,7 @@ class pz_calendar_event_screen {
             $return = $header.$form.$script;
         }
         $script = '<script>pz_toggleSection(1);</script>';
-        $return = '<div id="calendar_event_form" class="design1col"><div id="calendar_event_add" class="design1col xform-add">'.$return.'</div>'.$script.'</div>';
+        $return = '<div id="calendar_event_form" class="design1col"><div id="calendar_event_add" class="design1col yform-add">'.$return.'</div>'.$script.'</div>';
         return $return;
 
     }
@@ -3018,36 +3018,36 @@ class pz_calendar_event_screen {
           </div>
         </header>';
 
-        $xform = new rex_xform;
-        // $xform->setDebug(TRUE);
+        $yform = new rex_yform;
+        // $yform->setDebug(TRUE);
 
-        $xform->setObjectparams("form_id", "calendar_event_edit_form");
+        $yform->setObjectparams("form_id", "calendar_event_edit_form");
 
-        $xform->setObjectparams("main_table",'pz_calendar_event');
-        $xform->setObjectparams("main_id",$this->calendar_event->getId());
-        $xform->setObjectparams("main_where",'id='.$this->calendar_event->getId());
-        $xform->setObjectparams('getdata',true);
-        $xform->setObjectparams("form_action", "javascript:pz_loadFormPage('calendar_event_edit','calendar_event_edit_form','".pz::url('screen','calendars',"event",array("mode"=>'edit_calendar_event'))."')");
+        $yform->setObjectparams("main_table",'pz_calendar_event');
+        $yform->setObjectparams("main_id",$this->calendar_event->getId());
+        $yform->setObjectparams("main_where",'id='.$this->calendar_event->getId());
+        $yform->setObjectparams('getdata',true);
+        $yform->setObjectparams("form_action", "javascript:pz_loadFormPage('calendar_event_edit','calendar_event_edit_form','".pz::url('screen','calendars',"event",array("mode"=>'edit_calendar_event'))."')");
 
-        $xform->setObjectparams("real_field_names",TRUE);
-        $xform->setObjectparams('form_showformafterupdate',1);
-        $xform->setHiddenField("calendar_event_id",$this->calendar_event->getId());
-        $xform->setValueField('objparams',array('fragment', 'pz_screen_xform.tpl'));
+        $yform->setObjectparams("real_field_names",TRUE);
+        $yform->setObjectparams('form_showformafterupdate',1);
+        $yform->setHiddenField("calendar_event_id",$this->calendar_event->getId());
+        $yform->setValueField('objparams',array('fragment', 'pz_screen_yform.tpl'));
         if($this->calendar_event->isBooked())
         {
-            $xform->setValueField("html",array("booked",'<div class="xform1 data xform-checkbox"><div class="flabel"><label>'.pz_i18n::msg("job").'</label></div><div class="felement">'.pz_i18n::msg("is_job").'</div></div>'));
+            $yform->setValueField("html",array("booked",'<div class="yform1 data yform-checkbox"><div class="flabel"><label>'.pz_i18n::msg("job").'</label></div><div class="felement">'.pz_i18n::msg("is_job").'</div></div>'));
         }
-        $xform->setValueField("text",array("title",pz_i18n::msg("calendar_event_title")));
+        $yform->setValueField("text",array("title",pz_i18n::msg("calendar_event_title")));
 
         $projects = pz::getUser()->getCalendarProjects();
-        $xform->setValueField("pz_select_screen",array("project_id",pz_i18n::msg("project"),pz_project::getProjectsAsString($projects),"","",0,pz_i18n::msg("please_choose")));
+        $yform->setValueField("select",array("project_id",pz_i18n::msg("project"),pz_project::getProjectsAsString($projects),"","",0,pz_i18n::msg("please_choose")));
 
         $subprojects = array($this->calendar_event->getProject()); // array();
         $filter = array("field" => "project_id", "value" => rex_request("project_id","int"));
         if( rex_request("project_id","int") > 0 && ($project = pz::getUser()->getAllProjects($filter)) ) {
             $subprojects = $project;
         }
-        $xform->setValueField("pz_select_screen",array("project_sub_id",pz_i18n::msg("project_sub"),pz_project::getProjectSubsAsString($subprojects),"","",0,pz_i18n::msg("please_choose")));
+        $yform->setValueField("select",array("project_sub_id",pz_i18n::msg("project_sub"),pz_project::getProjectSubsAsString($subprojects),"","",0,pz_i18n::msg("please_choose")));
 
 
 
@@ -3055,10 +3055,10 @@ class pz_calendar_event_screen {
 
         if(!$this->calendar_event->isBooked())
         {
-            $xform->setValueField("checkbox",array("allday",pz_i18n::msg("calendar_event_allday")));
+            $yform->setValueField("checkbox",array("allday",pz_i18n::msg("calendar_event_allday")));
         }
-        $xform->setValueField("datestamp",array("created","mysql","","0","1"));
-        $xform->setValueField("datestamp",array("updated","mysql","","0","0"));
+        $yform->setValueField("datestamp",array("created","mysql","","0","1"));
+        $yform->setValueField("datestamp",array("updated","mysql","","0","0"));
 
         if(rex_request("allday","int") == 1)
         {
@@ -3068,66 +3068,66 @@ class pz_calendar_event_screen {
             $_REQUEST["to"]["minutes"] = 45;
         }
 
-        $xform->setValueField("pz_datetime_screen",array("from",pz_i18n::msg("calendar_event_from")));
-        $xform->setValueField("pz_datetime_screen",array("to",pz_i18n::msg("calendar_event_to")));
+        $yform->setValueField("pz_datetime_screen",array("from",pz_i18n::msg("calendar_event_from")));
+        $yform->setValueField("pz_datetime_screen",array("to",pz_i18n::msg("calendar_event_to")));
 
         if(!$this->calendar_event->isBooked())
         {
-            $xform->setValueField("pz_calendar_event_attendees",array("attendees",pz_i18n::msg("calendar_event_attendees"),1));
-            $xform->setValueField("pz_attachment_screen",array("clip_ids",pz_i18n::msg("calendar_event_attachments")));
+            $yform->setValueField("pz_calendar_event_attendees",array("attendees",pz_i18n::msg("calendar_event_attendees"),1));
+            $yform->setValueField("pz_attachment_screen",array("clip_ids",pz_i18n::msg("calendar_event_attachments")));
         }
 
-        $xform->setValueField("text",array("location",pz_i18n::msg("calendar_event_location")));
-        $xform->setValueField("text",array("url",pz_i18n::msg("calendar_event_url")));
-        $xform->setValueField("textarea",array("description",pz_i18n::msg("calendar_event_description")));
+        $yform->setValueField("text",array("location",pz_i18n::msg("calendar_event_location")));
+        $yform->setValueField("text",array("url",pz_i18n::msg("calendar_event_url")));
+        $yform->setValueField("textarea",array("description",pz_i18n::msg("calendar_event_description")));
 
-        $xform->setValidateField("mysql_datetime",array("from",pz_i18n::msg("error_calendar_from_datetime")));
-        $xform->setValidateField("mysql_datetime",array("to",pz_i18n::msg("error_calendar_to_datetime_wrong")));
+        $yform->setValidateField("mysql_datetime",array("from",pz_i18n::msg("error_calendar_from_datetime")));
+        $yform->setValidateField("mysql_datetime",array("to",pz_i18n::msg("error_calendar_to_datetime_wrong")));
 
-        $xform->setValidateField("pz_project_jobevent_id",array("project_id",$this->calendar_event->isBooked(),pz_i18n::msg("error_calendar_job_project_id"),pz_i18n::msg("error_calendar_event_project_id")));
-        $xform->setValidateField("pz_project_id",array("project_id",pz_i18n::msg("error_calendar_event_project_id")));
-        $xform->setValidateField("empty",array("title",pz_i18n::msg("error_calendar_event_title_empty")));
-        $xform->setValidateField("pz_comparefields",array("from","to",">=",pz_i18n::msg("error_calendar_event_fromto_compare")));
+        $yform->setValidateField("pz_project_jobevent_id",array("project_id",$this->calendar_event->isBooked(),pz_i18n::msg("error_calendar_job_project_id"),pz_i18n::msg("error_calendar_event_project_id")));
+        $yform->setValidateField("pz_project_id",array("project_id",pz_i18n::msg("error_calendar_event_project_id")));
+        $yform->setValidateField("empty",array("title",pz_i18n::msg("error_calendar_event_title_empty")));
+        $yform->setValidateField("pz_comparefields",array("from","to",">=",pz_i18n::msg("error_calendar_event_fromto_compare")));
 
         $jquery ='
 		<script>
 
-		$("#calendar_event_edit_form #xform-formular-booked input, #calendar_event_edit_form #xform-formular-allday input, #calendar_event_edit_form #xform-formular-project_id select").bind("change",function() {
+		$("#calendar_event_edit_form #yform-formular-booked input, #calendar_event_edit_form #yform-formular-allday input, #calendar_event_edit_form #yform-formular-project_id select").bind("change",function() {
 			calendar_event_edit_form_updater();
 		});
 
 		function calendar_event_edit_form_updater()
 		{
-			booked = $("#calendar_event_edit_form #xform-formular-booked input:checkbox:checked").val();
-			allday = $("#calendar_event_edit_form #xform-formular-allday input:checkbox:checked").val();
-			project_id = $("#calendar_event_edit_form #xform-formular-project_id select").val();
-			project_sub_id = $("#calendar_event_edit_form #xform-formular-project_sub_id select").val();
+			booked = $("#calendar_event_edit_form #yform-formular-booked input:checkbox:checked").val();
+			allday = $("#calendar_event_edit_form #yform-formular-allday input:checkbox:checked").val();
+			project_id = $("#calendar_event_edit_form #yform-formular-project_id select").val();
+			project_sub_id = $("#calendar_event_edit_form #yform-formular-project_sub_id select").val();
 
 			if(allday == 1)
 			{
-				$("#calendar_event_edit_form #xform-formular-from .fafter, #calendar_event_edit_form #xform-formular-from .xform-time").hide();
-				$("#calendar_event_edit_form #xform-formular-to .fafter, #calendar_event_edit_form #xform-formular-to .xform-time").hide();
+				$("#calendar_event_edit_form #yform-formular-from .fafter, #calendar_event_edit_form #yform-formular-from .yform-time").hide();
+				$("#calendar_event_edit_form #yform-formular-to .fafter, #calendar_event_edit_form #yform-formular-to .yform-time").hide();
 
 			}else
 			{
-				$("#calendar_event_edit_form #xform-formular-from .fafter, #calendar_event_edit_form #xform-formular-from .xform-time").show();
-				$("#calendar_event_edit_form #xform-formular-to .fafter, #calendar_event_edit_form #xform-formular-to .xform-time").show();
+				$("#calendar_event_edit_form #yform-formular-from .fafter, #calendar_event_edit_form #yform-formular-from .yform-time").show();
+				$("#calendar_event_edit_form #yform-formular-to .fafter, #calendar_event_edit_form #yform-formular-to .yform-time").show();
 			}
 
 			if(booked == 1)
 			{
-				$("#calendar_event_edit_form #xform-formular-allday input").removeAttr("checked");
-				$("#calendar_event_edit_form #xform-formular-allday").hide();
+				$("#calendar_event_edit_form #yform-formular-allday input").removeAttr("checked");
+				$("#calendar_event_edit_form #yform-formular-allday").hide();
 				$("#calendar_event_edit_form .pz_address_fields_attandees").hide();
-				$("#calendar_event_edit_form #xform-formular-from").show();
-				$("#calendar_event_edit_form #xform-formular-to").show();
-				$("#calendar_event_edit_form #xform-formular-clip-ids").hide();
+				$("#calendar_event_edit_form #yform-formular-from").show();
+				$("#calendar_event_edit_form #yform-formular-to").show();
+				$("#calendar_event_edit_form #yform-formular-clip-ids").hide();
 
 			}else
 			{
-				$("#calendar_event_edit_form #xform-formular-allday").show();
+				$("#calendar_event_edit_form #yform-formular-allday").show();
 				$("#calendar_event_edit_form .pz_address_fields_attandees").show();
-				$("#calendar_event_edit_form #xform-formular-clip-ids").show();
+				$("#calendar_event_edit_form #yform-formular-clip-ids").show();
 
 			}
 
@@ -3149,25 +3149,25 @@ class pz_calendar_event_screen {
         $jquery .= '
 
       // project_sub_id;
-      $("#calendar_event_edit_form #xform-formular-project_sub_id select option").remove();
+      $("#calendar_event_edit_form #yform-formular-project_sub_id select option").remove();
 
       if(project_id == "" || typeof(project_sub_ids[project_id]) == "undefined" ) {
-        $("#calendar_event_edit_form #xform-formular-project_sub_id").hide();
+        $("#calendar_event_edit_form #yform-formular-project_sub_id").hide();
 
       }else {
         if(project_sub_ids[project_id].length == 0) {
-          $("#calendar_event_edit_form #xform-formular-project_sub_id").hide();
+          $("#calendar_event_edit_form #yform-formular-project_sub_id").hide();
         }else {
-          $("<option/>").val(0).text("'.pz_i18n::msg("please_choose").'").appendTo("#calendar_event_edit_form #xform-formular-project_sub_id select");
+          $("<option/>").val(0).text("'.pz_i18n::msg("please_choose").'").appendTo("#calendar_event_edit_form #yform-formular-project_sub_id select");
           $.each(project_sub_ids[project_id], function(t, v) {
 
-            $("<option/>").val(v).text(project_sub_name[v]).appendTo("#calendar_event_edit_form #xform-formular-project_sub_id select");
+            $("<option/>").val(v).text(project_sub_name[v]).appendTo("#calendar_event_edit_form #yform-formular-project_sub_id select");
             if(v == project_sub_id) {
-              $("#calendar_event_edit_form #xform-formular-project_sub_id select option[value=\'"+v+"\']").attr("selected", true);
+              $("#calendar_event_edit_form #yform-formular-project_sub_id select option[value=\'"+v+"\']").attr("selected", true);
             }
           });
-          $("#calendar_event_edit_form #xform-formular-project_sub_id select").trigger("liszt:updated");
-          $("#calendar_event_edit_form #xform-formular-project_sub_id").show();
+          $("#calendar_event_edit_form #yform-formular-project_sub_id select").trigger("liszt:updated");
+          $("#calendar_event_edit_form #yform-formular-project_sub_id").show();
         }
       }
 
@@ -3176,11 +3176,11 @@ class pz_calendar_event_screen {
 		</script>
 		';
 
-        $return = $xform->getForm().$jquery;
+        $return = $yform->getForm().$jquery;
 
-        if($xform->getObjectparams("actions_executed")) {
+        if($yform->getObjectparams("actions_executed")) {
 
-            $value_pool = $xform->getObjectparams("value_pool");
+            $value_pool = $yform->getObjectparams("value_pool");
             $data = $value_pool["sql"];
 
             $data = pz::stripSlashes($data);
@@ -3238,7 +3238,7 @@ class pz_calendar_event_screen {
 
             }
 
-            $return = $header.'<p class="xform-info">'.pz_i18n::msg("calendar_event_updated").'</p>'.$return;
+            $return = $header.'<p class="yform-info">'.pz_i18n::msg("calendar_event_updated").'</p>'.$return;
             $return .= '<script>pz_refresh_calendar_lists();</script>';
 
         }else
@@ -3246,7 +3246,7 @@ class pz_calendar_event_screen {
             $return = $header.$return;
         }
         $script = '<script>pz_toggleSection(1);</script>';
-        $return = '<div id="calendar_event_form" class="design1col"><div id="calendar_event_edit" class="design1col xform-edit">'.$return.'</div>'.$script.'</div>';
+        $return = '<div id="calendar_event_form" class="design1col"><div id="calendar_event_edit" class="design1col yform-edit">'.$return.'</div>'.$script.'</div>';
 
         return $return;
 

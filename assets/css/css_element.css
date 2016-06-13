@@ -6,7 +6,7 @@ a.bt1, a.bt2, a.bt3, a.bt4, a.bt5, a.bt6, a.bt7, a.bt8, a.bt9, a.bt10,
 a.bt11, a.bt12, a.bt13, a.bt14, a.bt15, a.bt16, a.bt17, 
 .info1, .info1 .inner, 
 .status, 
-.xform-submit[type="submit"] {
+.yform-submit[type="submit"] {
   display: inline-block;
   text-align: center;
   vertical-align: middle;
@@ -14,7 +14,7 @@ a.bt11, a.bt12, a.bt13, a.bt14, a.bt15, a.bt16, a.bt17,
 a.bt1, a.bt2, a.bt3, a.bt4, a.bt5, a.bt6, a.bt7, a.bt17, 
 .info1, .info1 .inner, 
 span.tooltip .inner, 
-.xform-submit[type="submit"] {
+.yform-submit[type="submit"] {
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
@@ -37,11 +37,11 @@ a.bt1 {
 
 /* 23 Hoehe - N: Blau - H: Grau */
 a.bt2, 
-.xform-submit[type="submit"] {
+.yform-submit[type="submit"] {
   height: 21px;
   padding: 0 5px;
 }
-.xform-submit[type="submit"] {
+.yform-submit[type="submit"] {
   padding-bottom: 2px;
   cursor: pointer;
 }
