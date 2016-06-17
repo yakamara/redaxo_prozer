@@ -453,7 +453,7 @@ class pz_calendar_event_screen {
         if ($this->calendar_event->getDescription() != '')
             $text .= '<p>'.nl2br(htmlspecialchars($this->calendar_event->getDescription())).'</p>';
         
-        $image_from_address = "";
+        $image_from_address = pz_user::getDefaultImage();
         $image_from_adresse_title = "";
         
         if ( ($event_user = $this->calendar_event->getUser())) {
@@ -522,10 +522,13 @@ class pz_calendar_event_screen {
         if ($this->calendar_event->getDescription() != '')
             $text .= '<p>'.nl2br(htmlspecialchars($this->calendar_event->getDescription())).'</p>';
 
-        $image_from_address = $this->calendar_event->getUser()->getInlineImage();
-        $image_from_adresse_title = $this->calendar_event->getUser()->getName();
+        $image_from_address = pz_user::getDefaultImage();
+        $image_from_adresse_title = "";
 
-
+        if ( ($event_user = $this->calendar_event->getUser())) {
+            $image_from_address = $this->calendar_event->getUser()->getInlineImage();
+            $image_from_adresse_title = $this->calendar_event->getUser()->getName();
+        }
 
         $classes = array();
         $classes[] = 'event';
