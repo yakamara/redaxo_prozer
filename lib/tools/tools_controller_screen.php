@@ -4,7 +4,7 @@ class pz_tools_controller_screen extends pz_tools_controller
 {
     public $name = 'tools';
     public $function = '';
-    public $functions = ['clean', 'profile', 'jobs', 'tracker', 'perms', 'emailsetup'];
+    public $functions = ['clean', 'profile', 'jobs', 'perms', 'emailsetup'];
     public $function_default = 'profile';
     public $navigation = ['profile', 'jobs', 'perms', 'emailsetup'];
 
@@ -15,10 +15,10 @@ class pz_tools_controller_screen extends pz_tools_controller
         if (!in_array($function, $this->functions)) {
             $function = $this->function_default;
         }
-        if (!pz::getUser()->isMe() && $function != 'tracker') {
+        /*if (!pz::getUser()->isMe() && $function != 'tracker') {
             $function = 'clean';
             $this->navigation = ['no_page'];
-        }
+        }*/
 
         $this->function = $function;
 
@@ -28,8 +28,8 @@ class pz_tools_controller_screen extends pz_tools_controller
         $p['function'] = $this->function;
 
         switch ($this->function) {
-            case('clean'): return $this->getCleanPage($p);
-            case('tracker'): return $this->getTracker($p);
+            //case('clean'): return $this->getCleanPage($p);
+            //case('tracker'): return $this->getTracker($p);
             case('profile'): return $this->getProfilePage($p);
             case('perms'): return $this->getPermsPage($p);
             case('jobs'): return $this->getJobsPage($p);

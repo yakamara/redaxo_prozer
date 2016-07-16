@@ -112,6 +112,11 @@ class pz_user_perm extends pz_model
         return false;
     }
 
+    public function hasAdminPerm()
+    {
+        return false;
+    }
+
     // ----------------------------------------
 
     public static function getUserPermsByUserId($user_id)
@@ -139,4 +144,14 @@ class pz_user_perm extends pz_model
 
         return $return;
     }
+
+
+    public function __call($name, $arguments)
+    {
+        if (count(strstr($name, 'Perm')) > 0) {
+
+            return false;
+        }
+    }
+
 }

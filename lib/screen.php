@@ -100,7 +100,7 @@ class pz_screen
             }
         }
         if ($temp_k != '') {
-            $items[$temp_k]['classes'] = $k.' last';
+            $items[$temp_k]['classes'] = $temp_k.' last';
         }
 
         $f = new pz_fragment();

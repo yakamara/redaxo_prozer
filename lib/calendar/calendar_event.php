@@ -563,7 +563,9 @@ class pz_calendar_event extends pz_calendar_item
         ', $params);
 
         foreach ($sql as $row) {
-            $events[$row->getValue('id')] = new self($row->getRow());
+            if (pz::getUser() && (pz::getUser()->isMe() || pz::getUser()->getUserPerm()->hasCalendarReadPerm())) {
+                $events[$row->getValue('id')] = new self($row->getRow());
+            }
         }
 
         if (!$onlyJobs && $from) {

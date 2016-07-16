@@ -4,15 +4,38 @@ class pz_emails_controller_screen extends pz_emails_controller
 {
     public $name = 'emails';
     public $function = '';
-    public $functions = ['inbox', 'outbox', 'trash', 'email', 'emails', 'create', 'search']; // "history", "spam", "search",
-    public $function_default = 'inbox';
-    public $navigation = ['inbox', 'outbox', 'trash', 'search']; // "history", "spam", "search",
+    public $functions = [/*'inbox', 'outbox', 'trash', 'email', 'emails', 'create', 'search'*/]; // "history", "spam", "search",
+
+    public $functions_read = ['inbox', 'outbox', 'trash', 'email', 'emails', 'search'];
+    public $functions_write = ['create'];
+
+    public $function_default = '';
+    public $navigation = []; // "history", "spam", "search",
 
     private $emails_modes = ['unread_current_emails', 'read_current_emails', 'trash_current_emails', 'delete_current_emails', 'move_current_emails_to_project_id'];
 
+    public function __construct()
+    {
+        if ($this->hasReadPerm()) {
+            $this->functions = array_merge($this->functions, $this->functions_read);
+            $this->navigation = array_merge($this->navigation, ['inbox', 'outbox', 'trash', 'search']);
+            $this->function_default = 'inbox';
+        }
+
+        if ($this->hasWritePerm()) {
+            $this->functions = array_merge($this->functions, $this->functions_write);
+            $this->navigation = array_merge($this->navigation, ['create']);
+            
+            if (!$this->hasReadPerm()) {
+                $this->function_default = 'create';
+            }
+        }
+    }
+
+
     public function controller($function = '')
     {
-        $this->navigation[] = 'create';
+
 
         if (!in_array($function, $this->functions)) {
             $function = $this->function_default;

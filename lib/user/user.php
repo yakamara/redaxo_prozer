@@ -329,15 +329,19 @@ class pz_user
 
     public function isMe()
     {
-        if (isset($this->user_perm)) {
-            return false;
+        if (pz::getUser() === pz::getLoginUser()) {
+            return true;
         }
-        return true;
+
+        return false;
     }
 
+    /**
+     * @return pz_user_perm|null
+     */
     public function getUserPerm()
     {
-        return $this->user_perm;
+        return isset($this->user_perm) ? $this->user_perm : null;
     }
 
     public function getUserPerms()
@@ -557,7 +561,7 @@ class pz_user
             return false;
         }
 
-        if ($event->getUserId() == $this->getId()) {
+        if ((pz::getUser() && (pz::getUser()->isMe() || pz::getUser()->getUserPerm()->hasCalendarWritePerm())) && $event->getUserId() == $this->getId()) {
             foreach ($event->getAttendees() as $attendee) {
                 if (pz_calendar_attendee::ROLE_CHAIR == $attendee->getRole() && $attendee->getUserId() != $this->getId()) {
                     return false;
@@ -579,7 +583,7 @@ class pz_user
             return false;
         }
 
-        if ($event->getUserId() == $this->getId()) {
+        if ((pz::getUser() && (pz::getUser()->isMe() || pz::getUser()->getUserPerm()->hasCalendarWritePerm())) && $event->getUserId() == $this->getId()) {
             return true;
         }
 
@@ -975,6 +979,7 @@ class pz_user
             return false;
         }
         $email = current($emails);
+
         return $email;
     }
 }

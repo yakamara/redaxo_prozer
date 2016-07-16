@@ -7,10 +7,21 @@ class pz_calendars_controller extends pz_controller
         if (pz::getUser() && pz::getUser()->isMe()) {
             return true;
         }
-        if (pz::getUser() && pz::getUser()->getUserPerm()->hasCalendarReadPerm()) {
+
+        if ($this->hasReadPerm() || $this->hasWritePerm()) {
             return true;
-        } else {
-            return false;
         }
+
+        return false;
+    }
+
+    protected function hasReadPerm()
+    {
+        return (pz::getUser() && (pz::getUser()->isMe() || pz::getUser()->getUserPerm()->hasCalendarReadPerm()));
+    }
+
+    protected function hasWritePerm()
+    {
+        return (pz::getUser() && (pz::getUser()->isMe() || pz::getUser()->getUserPerm()->hasCalendarWritePerm()));
     }
 }

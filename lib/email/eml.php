@@ -661,7 +661,7 @@ class pz_eml
             if (isset($val->mailbox) && isset($val->host) && $val->host != '.SYNTAX-ERROR.' && $val->host != 'example.com') {
                 $return[] = [
                   'email' => strtolower($val->mailbox.'@'.$val->host),
-                  'personal' =>  $val->personal
+                  'personal' =>  empty($val->personal)? '' : $val->personal
                 ];
             }
         }

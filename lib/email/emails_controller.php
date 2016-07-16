@@ -7,12 +7,26 @@ class pz_emails_controller extends pz_controller
     public function checkPerm()
     {
         if (pz::getUser() && pz::getUser()->isMe()) {
+
             return true;
         }
-        if (pz::getUser() && pz::getUser()->getUserPerm()->hasEmailReadPerm()) {
+
+        if ($this->hasReadPerm() || $this->hasWritePerm()) {
+
             return true;
-        } else {
-            return false;
         }
+
+        return false;
+    }
+
+
+    protected function hasReadPerm()
+    {
+        return (pz::getUser() && (pz::getUser()->isMe() || pz::getUser()->getUserPerm()->hasEmailReadPerm()));
+    }
+
+    protected function hasWritePerm()
+    {
+        return (pz::getUser() && (pz::getUser()->isMe() || pz::getUser()->getUserPerm()->hasEmailWritePerm()));
     }
 }
