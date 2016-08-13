@@ -1010,7 +1010,7 @@ class pz_emails_controller_screen extends pz_emails_controller
 
             $body = ' ' . pz_i18n::msg('email_original');
             $body .= "\n" . pz_i18n::msg('email_from') . ': ' . $email->getFromEmail();
-            $body .= "\n" . pz_i18n::msg('email_original_send') . ': ' . $email->getDate();
+            $body .= "\n" . pz_i18n::msg('email_original_send') . ': ' . $email->getDateTime()->format(DateTime::RFC3339);
             $body .= "\n" . pz_i18n::msg('email_to') . ': ' . $email->getToEmails();
             $body .= "\n" . pz_i18n::msg('email_cc') . ': ' . $email->getCcEmails();
             $body .= "\n" . pz_i18n::msg('email_subject') . ': ' . $email->getSubject();
@@ -1029,7 +1029,7 @@ class pz_emails_controller_screen extends pz_emails_controller
 
             $body = ' ' . pz_i18n::msg('email_original');
             $body .= "\n" . pz_i18n::msg('email_to') . ': ' . $email->getFromEmail();
-            $body .= "\n" . pz_i18n::msg('email_original_send') . ': ' . $email->getDate();
+            $body .= "\n" . pz_i18n::msg('email_original_send') . ': ' . $email->getDateTime()->format(DateTime::RFC3339);
             $body .= "\n" . pz_i18n::msg('email_to') . ': ' . $email->getToEmails();
             $body .= "\n" . pz_i18n::msg('email_cc') . ': ' . $email->getCcEmails();
             $body .= "\n" . pz_i18n::msg('email_subject') . ': ' . $email->getSubject();
