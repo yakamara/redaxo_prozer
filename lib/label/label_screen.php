@@ -91,10 +91,16 @@ class pz_label_screen
         $xform->setValueField('text', ['name', pz_i18n::msg('label_name')]);
         $xform->setValidateField('empty', ['name', pz_i18n::msg('error_label_name_empty')]);
 
-        $xform->setValueField('text', ['color', pz_i18n::msg('label_color')]);
+        $xform->setValueField('pz_color_screen',
+            ['color', pz_i18n::msg('label_color'), 'default_color'=>pz_label::COLOR]
+        );
+        
         $xform->setValidateField('empty', ['color', pz_i18n::msg('error_label_color_empty')]);
 
-        $xform->setValueField('text', ['border', pz_i18n::msg('label_border')]);
+        $xform->setValueField('pz_color_screen',
+            ['border', pz_i18n::msg('label_border'), 'default_color'=>pz_label::BORDER]
+        );
+
         $xform->setValidateField('empty', ['border', pz_i18n::msg('error_label_bordercolor_empty')]);
 
         $xform->setActionField('db', ['pz_label', 'id='.$this->label->getId()]); // array("id"=>$this->label->getId())
@@ -143,9 +149,16 @@ class pz_label_screen
         $xform->setValueField('objparams', ['fragment', 'pz_screen_xform.tpl']);
         $xform->setValueField('text', ['name', pz_i18n::msg('label_name')]);
         $xform->setValidateField('empty', ['name', pz_i18n::msg('error_label_name_empty')]);
-        $xform->setValueField('text', ['color', pz_i18n::msg('label_color')]);
+
+        $xform->setValueField('pz_color_screen',
+            ['color', pz_i18n::msg('label_color'), 'default_color'=>pz_label::COLOR ]
+        );
+
         $xform->setValidateField('empty', ['color', pz_i18n::msg('error_label_color_empty')]);
-        $xform->setValueField('text', ['border', pz_i18n::msg('label_border')]);
+
+        $xform->setValueField('pz_color_screen',
+            ['border', pz_i18n::msg('label_border'), 'default_color'=>pz_label::BORDER ]
+        );
         $xform->setValidateField('empty', ['border', pz_i18n::msg('error_label_bordercolor_empty')]);
         $xform->setActionField('db', []); // array("id"=>$label_id)
         $return = $xform->getForm();
